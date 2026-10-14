@@ -76,6 +76,9 @@ fun shouldValidateStableSigning(taskNames: List<String>): Boolean {
 // Every string resource that names Pastiera is regenerated for the stable flavor with the fork's
 // name, so Pastiera's own string files stay untouched; credits in assets still name Pastiera.
 val forkAppName = "Flux Keyboard"
+// Flux Hub: the app holding Flux Keyboard, Flux Game and Flux Shine (its launcher name; the
+// keyboard keeps its own name in Android's keyboard list)
+val hubAppName = "Flux Hub"
 val forkCompactModeName = "Solderina" // Pastiera's compact mode, Pastierina
 val forkNamesDir = layout.buildDirectory.dir("generated/forkNames/res")
 val generateForkNames = tasks.register("generateForkNames") {
@@ -144,9 +147,10 @@ android {
         )
     }
 
-    // Flux Keyboard: stable builds update from this repository's "flux/" GitHub releases
+    // Stable builds update from Flux Hub's "flux/" GitHub releases, wherever they were built (a
+    // release from the old Flux Keyboard repository moves its users to Flux Hub)
     val forkGithubRepository = providers.gradleProperty("PASTIERA_FORK_GITHUB_REPOSITORY")
-        .orNull ?: "Flux-Sniffer-Mods/Flux-Keyboard"
+        .orNull ?: "Flux-Sniffer-Mods/Flux-Hub"
     if (forkGithubRepository.isNotEmpty() && !forkGithubRepository.matches(Regex("[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+"))) {
         throw GradleException(
             "PASTIERA_FORK_GITHUB_REPOSITORY must be empty or have the form owner/repository"
@@ -210,7 +214,7 @@ android {
             // Flux Keyboard (Flux-Sniffer-Mods fork): its own name and app ID, so it installs next
             // to official Pastiera and never presents itself as Pastiera
             applicationId = "io.github.fluxsniffermods.fluxkeyboard"
-            manifestPlaceholders["appLabel"] = forkAppName
+            manifestPlaceholders["appLabel"] = hubAppName
             manifestPlaceholders["imeLabel"] = forkAppName
             buildConfigField("String", "APP_NAME", "\"$forkAppName\"")
             buildConfigField("String", "COMPACT_MODE_NAME", "\"$forkCompactModeName\"")

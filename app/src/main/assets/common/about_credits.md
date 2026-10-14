@@ -1,8 +1,8 @@
 
-# Flux Keyboard
-An unofficial fork of Pastiera, tuned for the Unihertz Titan 2 Elite. Pastiera and everything credited below is the work of the original Pastiera team; the fork is not affiliated with or endorsed by them. Please report problems with Flux Keyboard to the fork, not to Pastiera's issue tracker.
-#### [Flux Keyboard repository](https://github.com/Flux-Sniffer-Mods/Flux-Keyboard)
-#### [Changelog: Flux Keyboard over Pastiera 0.86](https://github.com/Flux-Sniffer-Mods/Flux-Keyboard/blob/flux-release/FORK_CHANGES.md)
+# Flux Hub
+Flux Keyboard, gaming mode and streaming in one app: an unofficial fork of Pastiera, tuned for the Unihertz Titan 2 Elite. Pastiera and everything credited below is the work of the original Pastiera team; the fork is not affiliated with or endorsed by them. Please report problems with Flux Hub to the fork, not to Pastiera's issue tracker.
+#### [Flux Hub repository](https://github.com/Flux-Sniffer-Mods/Flux-Hub)
+#### [Changelog: Flux Hub over Pastiera 0.86](https://github.com/Flux-Sniffer-Mods/Flux-Hub/blob/flux-release/FORK_CHANGES.md)
 #### [Support me on Ko-fi](https://ko-fi.com/fluxsniffermods)
 ---
 

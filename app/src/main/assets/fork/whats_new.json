@@ -795,6 +795,9 @@
     },
     {
       "text": "Keyboard swipes' and the keyboard light's notes say Shell access rather than Shizuku, and Install Shizuku only shows when the built-in shell isn't set up"
+    },
+    {
+      "text": "The app is now Flux Hub: its icon and settings are called Flux Hub, while the keyboard keeps the name Flux Keyboard in Android's keyboard list. Updates now come from the Flux-Hub repository"
     }
   ],
   "upstreamTitle": "From the Pastiera team: 0.85 to 0.86",
@@ -1203,7 +1206,7 @@
       "text": "Games: a game opened from the Games app, a home screen shortcut or the quick launcher starts once, not three times while the screen changes size (GameHub Lite could close before the game loaded)"
     }
   ],
-  "docsUrl": "https://github.com/Flux-Sniffer-Mods/Flux-Keyboard/blob/flux-release/FORK_CHANGES.md",
+  "docsUrl": "https://github.com/Flux-Sniffer-Mods/Flux-Hub/blob/flux-release/FORK_CHANGES.md",
   "docsLabel": "Full Flux Keyboard changelog",
   "introSince": "What's new in Flux Keyboard since the version you had.",
   "releases": {
