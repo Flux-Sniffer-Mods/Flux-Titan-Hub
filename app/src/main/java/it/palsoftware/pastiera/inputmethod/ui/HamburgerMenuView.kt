@@ -21,6 +21,7 @@ import it.palsoftware.pastiera.getMenuBarButtons
 import it.palsoftware.pastiera.getTitan2EliteContourLeds
 import it.palsoftware.pastiera.getTitan2EliteRoundedCornerInsetsEnabled
 import it.palsoftware.pastiera.getTitan2EliteStraightOuterButtons
+import it.palsoftware.pastiera.gifsAvailable
 
 /**
  * Overlay menu that replaces the status bar row with fixed buttons.
@@ -43,6 +44,7 @@ class HamburgerMenuView(
         StatusBarButtonId.ExtraKeys,
         StatusBarButtonId.Symbols,
         StatusBarButtonId.Emoji,
+        StatusBarButtonId.Gif,
         StatusBarButtonId.Microphone,
         StatusBarButtonId.Clipboard,
         StatusBarButtonId.Undo,
@@ -178,6 +180,10 @@ class HamburgerMenuView(
                 onClose()
                 callbacks.onEmojiPickerRequested?.invoke()
             },
+            onGifSearchRequested = {
+                onClose()
+                callbacks.onGifSearchRequested?.invoke()
+            },
             onLanguageSwitchRequested = {
                 onClose()
                 callbacks.onLanguageSwitchRequested?.invoke()
@@ -219,10 +225,11 @@ class HamburgerMenuView(
         rowView.addView(closeButtonView)
         val fallbackWidth = buttonHeight
         val hostedButtons = mutableListOf<StatusBarButtonHost.HostedButton>()
-        // The buttons chosen in Settings, in their order
+        // The buttons chosen in Settings, in their order; GIF only when GIFs are on and online
         val byKey = menuButtonIds.associateBy { it.key }
         shownButtonIds = SettingsManager.getMenuBarButtons(context).mapNotNull { byKey[it] }.filter {
-            it !in StatusBarButtonRegistry.hiddenForApp
+            (it != StatusBarButtonId.Gif || SettingsManager.gifsAvailable(context)) &&
+                it !in StatusBarButtonRegistry.hiddenForApp
         }
         shownButtonIds.forEach { id ->
             val hosted = buttonHost.getOrCreateButton(
@@ -252,8 +259,8 @@ class HamburgerMenuView(
     }
 
     private fun updateButtonSizes(rowView: LinearLayout) {
-        // Close plus the buttons actually made (one the phone can't show is left out rather than
-        // leaving every width unset)
+        // Close plus the buttons actually made (one the phone can't show, like a GIF button
+        // offline, is left out rather than leaving every width unset)
         val totalButtons = rowView.childCount
         if (totalButtons == 0 || totalButtons != currentButtons.size + 1) {
             return

@@ -327,15 +327,21 @@ internal object BackupPreferenceContract {
             "emoji_key_opens_layer" to PreferenceValueType.BOOLEAN,
             "emoji_key_auto_close" to PreferenceValueType.BOOLEAN,
             "emoji_layer_recents_key" to PreferenceValueType.INT,
+            "emoji_layer_gif_key" to PreferenceValueType.INT,
             "hidden_app_standard_modifiers" to PreferenceValueType.BOOLEAN,
             "emoji_search_enter_picks" to PreferenceValueType.BOOLEAN,
             "symbol_search_enter_picks" to PreferenceValueType.BOOLEAN,
+            "gif_search_enter_picks" to PreferenceValueType.BOOLEAN,
             "recents_first_in_search" to PreferenceValueType.BOOLEAN,
             "offline_mode" to PreferenceValueType.BOOLEAN,
             "search_key" to PreferenceValueType.INT,
+            "gif_show_favourites" to PreferenceValueType.BOOLEAN,
+            "gif_show_recents" to PreferenceValueType.BOOLEAN,
             "emoji_picker_focus_search" to PreferenceValueType.BOOLEAN,
+            "gif_focus_search" to PreferenceValueType.BOOLEAN,
             "emoji_layer_type_to_search" to PreferenceValueType.BOOLEAN,
             "symbols_type_to_search" to PreferenceValueType.BOOLEAN,
+            "gifs_enabled" to PreferenceValueType.BOOLEAN,
             "smart_alt_off_after_opening" to PreferenceValueType.BOOLEAN,
             "smart_ctrl_off_after_shortcut" to PreferenceValueType.BOOLEAN,
             "developer_options_enabled" to PreferenceValueType.BOOLEAN,
@@ -568,7 +574,8 @@ internal object BackupPreferenceContract {
         "software_keyboard_mode_runtime_override" to "runtime-derived state",
         "typing_sound_updated_at" to "runtime refresh marker",
         "clicks_bluetooth_permission_explained" to "permission UI state",
-        "clicks_manual_charging_until" to "transient runtime state"
+        "clicks_manual_charging_until" to "transient runtime state",
+        "klipy_api_key" to "personal API credential"
     )
 
     fun expectedExportType(prefName: String, key: String): PreferenceValueType? {

@@ -14,11 +14,13 @@ import it.palsoftware.pastiera.getAutoCapitalizeFirstLetter
 import it.palsoftware.pastiera.getAutoCorrectEnabled
 import it.palsoftware.pastiera.getDoubleSpaceToPeriod
 import it.palsoftware.pastiera.getEmojiSuggestionsEnabled
+import it.palsoftware.pastiera.getGifsEnabled
 import it.palsoftware.pastiera.getTrackpadGesturesEnabled
 import it.palsoftware.pastiera.setAutoCapitalizeFirstLetter
 import it.palsoftware.pastiera.setAutoCorrectEnabled
 import it.palsoftware.pastiera.setDoubleSpaceToPeriod
 import it.palsoftware.pastiera.setEmojiSuggestionsEnabled
+import it.palsoftware.pastiera.setGifsEnabled
 import it.palsoftware.pastiera.setTrackpadGesturesEnabled
 
 /**
@@ -54,5 +56,7 @@ internal fun QuickSettingsScreen(modifier: Modifier, onBack: () -> Unit) {
         SettingsSectionDivider(stringResource(R.string.settings_emoji_symbols_gifs_title))
         Switch(R.string.emoji_suggestions_title, R.string.emoji_suggestions_description,
             { SettingsManager.getEmojiSuggestionsEnabled(context) }) { SettingsManager.setEmojiSuggestionsEnabled(context, it) }
+        Switch(R.string.gif_settings_title, R.string.gif_settings_description,
+            { SettingsManager.getGifsEnabled(context) }) { SettingsManager.setGifsEnabled(context, it) }
     }
 }

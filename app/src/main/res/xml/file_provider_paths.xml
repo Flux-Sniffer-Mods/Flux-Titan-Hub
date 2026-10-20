@@ -3,6 +3,10 @@
     <cache-path
         name="debug_reports"
         path="debug-reports/" />
+    <!-- GIFs sent to apps (KlipyGifs.CACHE_FOLDER) -->
+    <cache-path
+        name="gifs"
+        path="gifs/" />
     <cache-path
         name="sbom"
         path="sbom/" />

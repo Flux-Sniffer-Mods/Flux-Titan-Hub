@@ -1,6 +1,8 @@
 package it.palsoftware.pastiera.settings
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.provider.Settings
 import android.view.KeyEvent
 import android.view.accessibility.AccessibilityManager
@@ -33,6 +35,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
@@ -79,6 +82,7 @@ import it.palsoftware.pastiera.getEmojiKeyAutoClose
 import it.palsoftware.pastiera.getEmojiKeyOpensLayer
 import it.palsoftware.pastiera.getEmojiLayerCloseOnKey
 import it.palsoftware.pastiera.getEmojiLayerCloseOnTap
+import it.palsoftware.pastiera.getEmojiLayerGifKey
 import it.palsoftware.pastiera.getEmojiLayerPages
 import it.palsoftware.pastiera.getEmojiLayerRecentsKey
 import it.palsoftware.pastiera.getEmojiLayerTypeToSearch
@@ -87,6 +91,11 @@ import it.palsoftware.pastiera.getEmojiPickerFocusSearch
 import it.palsoftware.pastiera.getEmojiPickerKey
 import it.palsoftware.pastiera.getEmojiSearchEnterPicks
 import it.palsoftware.pastiera.getEmojiStickyTap
+import it.palsoftware.pastiera.getGifFocusSearch
+import it.palsoftware.pastiera.getGifSearchEnterPicks
+import it.palsoftware.pastiera.getGifShowFavourites
+import it.palsoftware.pastiera.getGifShowRecents
+import it.palsoftware.pastiera.getGifsEnabled
 import it.palsoftware.pastiera.getHiddenAppStandardModifiers
 import it.palsoftware.pastiera.getHiddenKeyboardApps
 import it.palsoftware.pastiera.getKaomojiCloseOnKey
@@ -105,12 +114,15 @@ import it.palsoftware.pastiera.getSymbolsTypeToSearch
 import it.palsoftware.pastiera.getTitan2EliteContourLeds
 import it.palsoftware.pastiera.getTitan2EliteFillCorners
 import it.palsoftware.pastiera.getTitan2EliteRoundedCornerInsetsEnabled
+import it.palsoftware.pastiera.getUserKlipyApiKey
+import it.palsoftware.pastiera.hasBuiltInKlipyApiKey
 import it.palsoftware.pastiera.isAllowedEmojiPickerKey
 import it.palsoftware.pastiera.isOfflineMode
 import it.palsoftware.pastiera.setEmojiKeyAutoClose
 import it.palsoftware.pastiera.setEmojiKeyOpensLayer
 import it.palsoftware.pastiera.setEmojiLayerCloseOnKey
 import it.palsoftware.pastiera.setEmojiLayerCloseOnTap
+import it.palsoftware.pastiera.setEmojiLayerGifKey
 import it.palsoftware.pastiera.setEmojiLayerPages
 import it.palsoftware.pastiera.setEmojiLayerRecentsKey
 import it.palsoftware.pastiera.setEmojiLayerTypeToSearch
@@ -119,9 +131,15 @@ import it.palsoftware.pastiera.setEmojiPickerFocusSearch
 import it.palsoftware.pastiera.setEmojiPickerKey
 import it.palsoftware.pastiera.setEmojiSearchEnterPicks
 import it.palsoftware.pastiera.setEmojiStickyTap
+import it.palsoftware.pastiera.setGifFocusSearch
+import it.palsoftware.pastiera.setGifSearchEnterPicks
+import it.palsoftware.pastiera.setGifShowFavourites
+import it.palsoftware.pastiera.setGifShowRecents
+import it.palsoftware.pastiera.setGifsEnabled
 import it.palsoftware.pastiera.setHiddenAppStandardModifiers
 import it.palsoftware.pastiera.setKaomojiCloseOnKey
 import it.palsoftware.pastiera.setKaomojiCloseOnTap
+import it.palsoftware.pastiera.setKlipyApiKey
 import it.palsoftware.pastiera.setOfflineMode
 import it.palsoftware.pastiera.setRecentsFirstInSearch
 import it.palsoftware.pastiera.setSearchKey
@@ -137,7 +155,7 @@ import it.palsoftware.pastiera.setTitan2EliteFillCorners
 
 /*
  * Flux Keyboard settings, one screen per area (Settings > Flux Keyboard):
- *   Emoji & symbols       - emoji key, emoji layer keys
+ *   Emoji & GIFs          - emoji key, emoji layer keys, GIF search
  *   Titan 2 Elite screen  - rounded corners, outer buttons, status bar
  *   Hidden keyboard apps  - apps where the keyboard stays out of sight, and the service they need
  *   Linux desktop         - Ctrl and Sym, and the desktop's keyboard layout
@@ -420,7 +438,9 @@ internal val fluxRowIcons: Map<String?, String> = mapOf(
     "auto_correction.show_add_word" to "+",
     "auto_correction.add_last_word_shortcut" to "+",
     SettingLinkIds.TEXT_INPUT_SEARCH_BAR_WAITS to "\u2315",     // ⌕
-    // Emoji and symbols
+    // Emoji, symbols and GIFs
+    "flux_emoji.gif_favourites" to "\u2605",                // ★
+    "flux_emoji.gif_recents" to "\u21BA",                   // ↺
     "flux_emoji.recents_first" to "\u21BA",
     "flux_emoji.layer_recents_first" to "\u21BA",
     "flux_emoji.search_key" to "\u2315",
@@ -460,12 +480,12 @@ internal fun isPastieraAccessibilityServiceOn(context: Context): Boolean {
         }
 }
 
-// ------------------------------------------------------------------ Emoji & symbols
+// ------------------------------------------------------------------ Emoji & GIFs
 
 
-/** Rows on Emoji & symbols' search page (opened when settings search lands on one). */
+/** Rows on Emoji, symbols & GIFs' search page (opened when settings search lands on one). */
 private val FLUX_EMOJI_SEARCH_PAGE_IDS = setOf(
-    "flux_emoji.focus_picker", "flux_emoji.type_to_search_layer",
+    "flux_emoji.focus_picker", "flux_emoji.focus_gif", "flux_emoji.type_to_search_layer",
     "flux_emoji.type_to_search_symbols", "flux_emoji.search_key", "flux_emoji.enter_emoji",
     "flux_emoji.recents_first"
 )
@@ -481,9 +501,15 @@ fun FluxEmojiGifsScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
     var emojiKeyAutoClose by remember { mutableStateOf(SettingsManager.getEmojiKeyAutoClose(context)) }
     var emojiLayerRecentsKey by remember { mutableIntStateOf(SettingsManager.getEmojiLayerRecentsKey(context)) }
     var showRecentsKeyDialog by remember { mutableStateOf(false) }
+    var gifsEnabled by remember { mutableStateOf(SettingsManager.getGifsEnabled(context)) }
+    var klipyApiKey by remember { mutableStateOf(SettingsManager.getUserKlipyApiKey(context)) }
+    var emojiLayerGifKey by remember { mutableIntStateOf(SettingsManager.getEmojiLayerGifKey(context)) }
+    var showGifKeyDialog by remember { mutableStateOf(false) }
     var recentsFirst by remember { mutableStateOf(SettingsManager.getRecentsFirstInSearch(context)) }
     var searchKey by remember { mutableIntStateOf(SettingsManager.getSearchKey(context)) }
     var showSearchKeyDialog by remember { mutableStateOf(false) }
+    var gifFavourites by remember { mutableStateOf(SettingsManager.getGifShowFavourites(context)) }
+    var gifRecents by remember { mutableStateOf(SettingsManager.getGifShowRecents(context)) }
     var emojiPickerExpandedHeight by remember { mutableStateOf(SettingsManager.getEmojiPickerExpandedHeight(context)) }
     var emojiSticky by remember { mutableStateOf(SettingsManager.getEmojiStickyTap(context)) }
 
@@ -509,20 +535,24 @@ fun FluxEmojiGifsScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
                 description = stringResource(R.string.search_table_description),
                 columns = listOf(
                     stringResource(R.string.enter_picks_emoji),
-                    stringResource(R.string.enter_picks_symbols)
+                    stringResource(R.string.enter_picks_symbols),
+                    stringResource(R.string.enter_picks_gifs)
                 ),
                 rows = buildList {
                     add(stringResource(R.string.search_table_ready) to listOf(
                         CheckCell({ SettingsManager.getEmojiPickerFocusSearch(context) }, "flux_emoji.focus_picker") { SettingsManager.setEmojiPickerFocusSearch(context, it) },
-                        null
+                        null,
+                        CheckCell({ SettingsManager.getGifFocusSearch(context) }, "flux_emoji.focus_gif") { SettingsManager.setGifFocusSearch(context, it) }
                     ))
                     if (!emojiPagesOn || !symbolPagesOn) add(stringResource(R.string.search_table_letters) to listOf(
                         if (emojiPagesOn) null else CheckCell({ SettingsManager.getEmojiLayerTypeToSearch(context) }, "flux_emoji.type_to_search_layer") { SettingsManager.setEmojiLayerTypeToSearch(context, it) },
-                        if (symbolPagesOn) null else CheckCell({ SettingsManager.getSymbolsTypeToSearch(context) }, "flux_emoji.type_to_search_symbols") { SettingsManager.setSymbolsTypeToSearch(context, it) }
+                        if (symbolPagesOn) null else CheckCell({ SettingsManager.getSymbolsTypeToSearch(context) }, "flux_emoji.type_to_search_symbols") { SettingsManager.setSymbolsTypeToSearch(context, it) },
+                        null
                     ))
                     add(stringResource(R.string.search_table_enter) to listOf(
                         CheckCell({ SettingsManager.getEmojiSearchEnterPicks(context) }) { SettingsManager.setEmojiSearchEnterPicks(context, it) },
-                        CheckCell({ SettingsManager.getSymbolSearchEnterPicks(context) }) { SettingsManager.setSymbolSearchEnterPicks(context, it) }
+                        CheckCell({ SettingsManager.getSymbolSearchEnterPicks(context) }) { SettingsManager.setSymbolSearchEnterPicks(context, it) },
+                        CheckCell({ SettingsManager.getGifSearchEnterPicks(context) }) { SettingsManager.setGifSearchEnterPicks(context, it) }
                     ))
                 }
             )
@@ -871,6 +901,121 @@ fun FluxEmojiGifsScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
                 }
             )
 
+            SettingsSectionDivider(stringResource(R.string.flux_section_gif_search))
+            if (SettingsManager.isOfflineMode(context)) {
+                FluxNote(stringResource(R.string.flux_gifs_offline_note))
+            }
+
+            // GIF search (KLIPY): a GIF key on the emoji layer and a GIF tab in the picker
+            Column(
+                modifier = Modifier.settingRow("flux_emoji.gif_search")
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = stringResource(R.string.gif_settings_title),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Text(
+                            text = stringResource(R.string.gif_settings_description),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Switch(
+                        checked = gifsEnabled,
+                        onCheckedChange = { enabled ->
+                            gifsEnabled = enabled
+                            SettingsManager.setGifsEnabled(context, enabled)
+                        }
+                    )
+                }
+                if (gifsEnabled) {
+                    OutlinedTextField(
+                        value = klipyApiKey,
+                        onValueChange = { value ->
+                            klipyApiKey = value
+                            SettingsManager.setKlipyApiKey(context, value)
+                        },
+                        label = { Text(stringResource(R.string.gif_api_key_label)) },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                    )
+                    Text(
+                        text = stringResource(
+                            if (SettingsManager.hasBuiltInKlipyApiKey()) R.string.gif_api_key_help_builtin
+                            else R.string.gif_api_key_help
+                        ),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                    TextButton(onClick = {
+                        runCatching {
+                            context.startActivity(
+                                Intent(Intent.ACTION_VIEW, android.net.Uri.parse(it.palsoftware.pastiera.data.gif.KlipyGifs.SIGNUP_URL))
+                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            )
+                        }
+                    }) {
+                        Text(stringResource(R.string.gif_get_key))
+                    }
+                    // The emoji layer key that opens GIF search
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                            .clickable { showGifKeyDialog = true }
+                            .padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = stringResource(R.string.emoji_layer_gif_key_title),
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Text(
+                                text = if (emojiLayerGifKey == KeyEvent.KEYCODE_UNKNOWN) {
+                                    stringResource(R.string.emoji_layer_recents_key_off)
+                                } else {
+                                    stringResource(R.string.emoji_layer_recents_key_current, getLetterFromKeyCode(emojiLayerGifKey))
+                                },
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+            }
+
+            SettingsSectionDivider(stringResource(R.string.flux_section_gif_library))
+            FluxSwitchRow(
+                linkId = "flux_emoji.gif_favourites",
+                title = stringResource(R.string.flux_gif_favourites_title),
+                description = stringResource(R.string.flux_gif_favourites_description),
+                checked = gifFavourites,
+                onCheckedChange = { enabled ->
+                    gifFavourites = enabled
+                    SettingsManager.setGifShowFavourites(context, enabled)
+                }
+            )
+            FluxSwitchRow(
+                linkId = "flux_emoji.gif_recents",
+                title = stringResource(R.string.flux_gif_recents_title),
+                description = stringResource(R.string.flux_gif_recents_description),
+                checked = gifRecents,
+                onCheckedChange = { enabled ->
+                    gifRecents = enabled
+                    SettingsManager.setGifShowRecents(context, enabled)
+                }
+            )
+
+
             SettingsSectionDivider(stringResource(R.string.flux_section_search))
             FluxActionRow(
                 linkId = "flux_emoji.search_page",
@@ -880,7 +1025,7 @@ fun FluxEmojiGifsScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
             )
         }
 
-        // The search key: press the letter key to use, like the Recents key
+        // The search key: press the letter key to use, like the Recents and GIF keys
         if (showSearchKeyDialog) {
             EmojiLayerKeyDialog(
                 title = stringResource(R.string.search_key_title),
@@ -990,6 +1135,24 @@ fun FluxEmojiGifsScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
                 onDismiss = { showRecentsKeyDialog = false }
             )
         }
+
+        // GIF key on the emoji layer: the same, for opening GIF search
+        if (showGifKeyDialog) {
+            EmojiLayerKeyDialog(
+                title = stringResource(R.string.emoji_layer_gif_key_title),
+                description = stringResource(R.string.emoji_layer_gif_key_description),
+                currentKey = emojiLayerGifKey,
+                letterFor = ::getLetterFromKeyCode,
+                onKeyPressed = { keyCode ->
+                    SettingsManager.setEmojiLayerGifKey(context, keyCode).also { if (it) emojiLayerGifKey = keyCode }
+                },
+                onTurnOff = {
+                    SettingsManager.setEmojiLayerGifKey(context, KeyEvent.KEYCODE_UNKNOWN)
+                    emojiLayerGifKey = KeyEvent.KEYCODE_UNKNOWN
+                },
+                onDismiss = { showGifKeyDialog = false }
+            )
+        }
     }
 }
 
@@ -1042,7 +1205,7 @@ internal fun emojiPickerKeyLabel(context: Context, keyCode: Int): String = when 
 }
 
 /**
- * Press-to-assign dialog for an emoji layer key (Recents, search): waits for a letter key press.
+ * Press-to-assign dialog for an emoji layer key (Recents, GIF): waits for a letter key press.
  * [onKeyPressed] stores it and returns false when it isn't allowed (not a layer key, or the
  * other special key).
  */

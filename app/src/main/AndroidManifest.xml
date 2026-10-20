@@ -18,7 +18,7 @@
     <!-- Voice input -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     
-    <!-- Internet: update checks, online layouts and dictionaries -->
+    <!-- Internet: update checks, GIF search, online layouts and dictionaries -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- Reads the Clicks Power Keyboard's details over Bluetooth LE -->

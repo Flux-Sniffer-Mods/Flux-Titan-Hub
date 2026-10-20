@@ -34,7 +34,7 @@ internal fun fluxSettingEntries(): List<SettingEntry> {
             summaryRes = R.string.learn_frequent_words_description, route = autoCorrection),
         SettingEntry("auto_correction.learn_contact_details", R.string.learn_contact_details_title,
             summaryRes = R.string.learn_contact_details_description, route = autoCorrection),
-        // Emoji & symbols
+        // Emoji & GIFs
         SettingEntry("flux_emoji.picker_key", R.string.emoji_picker_key_title, route = emoji),
         SettingEntry("flux_emoji.key_target", R.string.emoji_key_target_title, route = emoji),
         SettingEntry("modifiers.sym_sticky", R.string.sym_sticky_title,
@@ -57,8 +57,11 @@ internal fun fluxSettingEntries(): List<SettingEntry> {
             summaryRes = R.string.emoji_layer_recents_first_description, route = emoji),
         SettingEntry("flux_emoji.search_page", R.string.flux_search_page_title,
             summaryRes = R.string.flux_search_page_description, route = emoji),
+        SettingEntry("flux_emoji.gif_search", R.string.gif_settings_title, route = emoji),
         SettingEntry("flux_emoji.focus_picker", R.string.flux_focus_picker_title,
             summaryRes = R.string.flux_focus_picker_description, route = emoji),
+        SettingEntry("flux_emoji.focus_gif", R.string.flux_focus_gif_title,
+            summaryRes = R.string.flux_focus_gif_description, route = emoji),
         SettingEntry("flux_emoji.type_to_search_layer", R.string.flux_type_to_search_layer_title,
             summaryRes = R.string.flux_type_to_search_layer_description, route = emoji),
         SettingEntry("flux_emoji.type_to_search_symbols", R.string.flux_type_to_search_symbols_title,
@@ -67,6 +70,10 @@ internal fun fluxSettingEntries(): List<SettingEntry> {
             summaryRes = R.string.search_key_description, route = emoji),
         SettingEntry("flux_emoji.recents_first", R.string.flux_recents_first_title,
             summaryRes = R.string.flux_recents_first_description, route = emoji),
+        SettingEntry("flux_emoji.gif_favourites", R.string.flux_gif_favourites_title,
+            summaryRes = R.string.flux_gif_favourites_description, route = emoji),
+        SettingEntry("flux_emoji.gif_recents", R.string.flux_gif_recents_title,
+            summaryRes = R.string.flux_gif_recents_description, route = emoji),
         SettingEntry("flux_emoji.enter_emoji", R.string.enter_picks_title,
             summaryRes = R.string.enter_picks_description, route = emoji),
         // Titan 2 Elite screen (display contour calibration is in Developer options)

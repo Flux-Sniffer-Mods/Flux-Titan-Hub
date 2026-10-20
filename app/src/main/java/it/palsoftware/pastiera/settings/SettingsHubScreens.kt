@@ -92,8 +92,8 @@ import it.palsoftware.pastiera.setTerminalModeShowLeds
  *   Keyboards & layouts  - input languages, keyboards and devices, showing the keyboard, Titan 2 Elite screen
  *   Apps                 - app shortcuts, Enter per app, Quick Launcher; terminals and desktops
  *   Look & sound         - theme and LED colours, the status bar, sound and haptics
- * Quick settings, Modifiers & SYM, Emoji & symbols and Privacy & clipboard open their screens
- * directly.
+ * Quick settings, Modifiers & SYM, Emoji, symbols & GIFs, Privacy & clipboard and Shell extras open their
+ * screens directly.
  */
 
 @Composable

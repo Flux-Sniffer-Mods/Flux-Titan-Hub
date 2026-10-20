@@ -84,6 +84,14 @@ android {
     val nightlyVersionNameSuffix = providers.gradleProperty("PASTIERA_NIGHTLY_VERSION_SUFFIX").orNull ?: "-nightly"
     val isFdroidBuild = gradleBooleanProperty("PASTIERA_FDROID_BUILD")
     val isUnsignedReleaseBuild = gradleBooleanProperty("PASTIERA_UNSIGNED_RELEASE_BUILD")
+    // Built-in KLIPY key for GIF search: from the build environment (a CI secret), never the source
+    val klipyApiKey = (providers.environmentVariable("KLIPY_API_KEY").orNull
+        ?: providers.gradleProperty("KLIPY_API_KEY").orNull ?: "").trim().let { key ->
+        if (key.isEmpty() || key.matches(Regex("[A-Za-z0-9_-]+"))) key else {
+            logger.warn("KLIPY_API_KEY has unexpected characters; building without a built-in GIF key")
+            ""
+        }
+    }
     val successorGithubRepository = providers.gradleProperty("PASTIERA_SUCCESSOR_GITHUB_REPOSITORY")
         .orNull ?: "pkb-rocks/plektra"
     if (!successorGithubRepository.matches(Regex("[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+"))) {
@@ -103,6 +111,7 @@ android {
         buildConfigField("String", "APP_NAME", "\"Pastiera\"")
         buildConfigField("String", "COMPACT_MODE_NAME", "\"Pastierina\"")
         buildConfigField("String", "SUCCESSOR_GITHUB_REPOSITORY", "\"$successorGithubRepository\"")
+        buildConfigField("String", "KLIPY_API_KEY", "\"$klipyApiKey\"")
     }
 
     signingConfigs {

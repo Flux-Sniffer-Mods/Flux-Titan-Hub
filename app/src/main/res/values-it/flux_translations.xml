@@ -127,6 +127,7 @@
     <string name="recommended_label_double_space_to_period">Doppio spazio inserisce un punto</string>
     <string name="recommended_label_emoji_key_opens_layer">Il tasto emoji apre il livello emoji</string>
     <string name="recommended_label_emoji_suggestions_enabled">Suggerimenti emoji</string>
+    <string name="recommended_label_gifs_enabled">GIF</string>
     <string name="recommended_label_keyboard_theme_wallpaper_colours">Colori dello sfondo</string>
     <string name="recommended_label_one_time_codes_enabled">Codici monouso</string>
     <string name="recommended_label_quick_launcher_behavior">Lanciatore rapido</string>
@@ -823,6 +824,7 @@
     <string name="titan2_elite_off_with_contour_leds">Disattivato con i LED sagomati, che seguono la curva dello schermo.</string>
     <string name="flux_section_recents_search">Risultati</string>
     <string name="flux_section_search">Ricerca</string>
+    <string name="flux_section_gif_library">GIF preferite e recenti</string>
     <string name="flux_search_page_title">Ricerca e Invio</string>
     <string name="flux_search_page_description">Cosa si apre pronto per scrivere, il tasto di ricerca, cosa sceglie Invio e prima gli elementi usati di recente</string>
     <string name="settings_accessibility_bounce_keys_delay_link_title">Intervallo minimo per lo stesso tasto</string>
@@ -914,7 +916,7 @@
     <string name="kaomoji_no_results">Nessun kaomoji trovato</string>
     <string name="layer_next_page">Pagina successiva</string>
     <string name="emoji_layer_pages_title">Livello emoji a pagine</string>
-    <string name="emoji_layer_pages_description">Si apre sulle tue emoji recenti (ricerca su A); Q e P sfogliano pagine di emoji per trovarne altre. Le emoji che usi vanno nella pagina dei recenti.</string>
+    <string name="emoji_layer_pages_description">Si apre sulle tue emoji recenti (ricerca su A, GIF su L); Q e P sfogliano pagine di emoji per trovarne altre. Le emoji che usi vanno nella pagina dei recenti.</string>
     <string name="symbols_pages_title">Simboli a pagine</string>
     <string name="symbols_pages_description">Si apre sui tuoi simboli recenti (ricerca su A, i kaomoji su L); Q e P sfogliano pagine di simboli comuni, frecce, matematica, valute, punteggiatura, forme e altro, poi i kaomoji. I simboli che usi vanno nella pagina dei recenti.</string>
     <string name="emoji_skin_tone_title">Tonalità della pelle predefinita</string>
@@ -931,6 +933,7 @@
     <string name="enter_picks_description">Nella ricerca, Invio digita (o invia) il primo risultato e chiude. Dopo una scelta, o senza risultati, Invio chiude soltanto.</string>
     <string name="enter_picks_emoji">Emoji</string>
     <string name="enter_picks_symbols">Simboli</string>
+    <string name="enter_picks_gifs">GIF</string>
     <string name="search_table_title">Come funziona la ricerca</string>
     <string name="search_table_description">Per ogni ricerca: se si apre pronta per scrivere, se una lettera su un livello la avvia e se Invio sceglie il primo risultato (dopo una scelta, o senza risultati, Invio chiude soltanto).</string>
     <string name="search_table_ready">Si apre pronta</string>

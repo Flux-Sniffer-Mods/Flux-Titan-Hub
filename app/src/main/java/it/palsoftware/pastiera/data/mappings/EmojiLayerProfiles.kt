@@ -9,6 +9,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.util.UUID
 import it.palsoftware.pastiera.apps.AppEnterStandards
+import it.palsoftware.pastiera.activeEmojiLayerGifKey
 import it.palsoftware.pastiera.getEmojiLayerRecentsKey
 import it.palsoftware.pastiera.getSearchKey
 import it.palsoftware.pastiera.saveSymMappings
@@ -114,7 +115,7 @@ object EmojiLayerProfiles {
             .also { saveCustom(context, it) }
 
     /**
-     * A layer's emoji moved off the keys the Recents and search buttons take: in order onto
+     * A layer's emoji moved off the keys the Recents, GIF and search buttons take: in order onto
      * the free keys, so the least-used (last) ones drop off instead of hiding under a button.
      */
     fun aroundButtons(mappings: Map<Int, String>, buttonKeys: Set<Int>): Map<Int, String> {
@@ -127,6 +128,7 @@ object EmojiLayerProfiles {
     /** The emoji layer's button keys as set now. */
     fun buttonKeys(context: Context): Set<Int> = setOf(
         SettingsManager.getEmojiLayerRecentsKey(context),
+        SettingsManager.activeEmojiLayerGifKey(context),
         SettingsManager.getSearchKey(context)
     ) - KeyEvent.KEYCODE_UNKNOWN
 

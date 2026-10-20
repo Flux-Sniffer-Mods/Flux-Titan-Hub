@@ -34,11 +34,11 @@ class MenuBarButtonsTest {
     @Test
     fun yourChoiceAndOrderAreKept() {
         val mine = listOf(
-            SettingsManager.STATUS_BAR_BUTTON_SETTINGS,
+            SettingsManager.STATUS_BAR_BUTTON_GIF,
             SettingsManager.STATUS_BAR_BUTTON_CLIPBOARD,
-            SettingsManager.STATUS_BAR_BUTTON_UNDO
+            SettingsManager.STATUS_BAR_BUTTON_SETTINGS
         )
-        SettingsManager.setMenuBarButtons(context, mine + "not_a_button" + SettingsManager.STATUS_BAR_BUTTON_SETTINGS)
+        SettingsManager.setMenuBarButtons(context, mine + "not_a_button" + SettingsManager.STATUS_BAR_BUTTON_GIF)
         assertEquals(mine, SettingsManager.getMenuBarButtons(context))
     }
 

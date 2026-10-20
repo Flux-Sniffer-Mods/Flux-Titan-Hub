@@ -77,6 +77,7 @@ class VariationBarView(
     var onClipboardRequested: (() -> Unit)? = null
     var onEmojiPickerRequested: (() -> Unit)? = null
     var onSymbolsPageRequested: (() -> Unit)? = null
+    var onGifSearchRequested: (() -> Unit)? = null
     var onUndoRequested: (() -> Unit)? = null
     var onRedoRequested: (() -> Unit)? = null
     var onHamburgerMenuRequested: (() -> Unit)? = null
@@ -601,6 +602,7 @@ class VariationBarView(
             onClipboardRequested = onClipboardRequested,
             onSpeechRecognitionRequested = onSpeechRecognitionRequested ?: { startSpeechRecognition() },
             onEmojiPickerRequested = onEmojiPickerRequested,
+            onGifSearchRequested = onGifSearchRequested,
             onLanguageSwitchRequested = onLanguageSwitchRequested,
             onHamburgerMenuRequested = onHamburgerMenuRequested,
             onMinimalUiToggleRequested = onMinimalUiToggleRequested,

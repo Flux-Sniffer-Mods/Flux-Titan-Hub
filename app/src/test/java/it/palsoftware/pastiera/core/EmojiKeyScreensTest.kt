@@ -17,13 +17,16 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import it.palsoftware.pastiera.emojiScreenClosesAfterInput
+import it.palsoftware.pastiera.getEmojiLayerGifKey
 import it.palsoftware.pastiera.getEmojiLayerRecentsKey
 import it.palsoftware.pastiera.getSearchKey
 import it.palsoftware.pastiera.setEmojiKeyAutoClose
+import it.palsoftware.pastiera.setEmojiLayerGifKey
 import it.palsoftware.pastiera.setEmojiLayerPages
 import it.palsoftware.pastiera.setEmojiLayerRecentsKey
 import it.palsoftware.pastiera.setEmojiLayerTypeToSearch
 import it.palsoftware.pastiera.setEmojiPickerKey
+import it.palsoftware.pastiera.setGifsEnabled
 import it.palsoftware.pastiera.setSearchKey
 import it.palsoftware.pastiera.setSymAutoClose
 import it.palsoftware.pastiera.setSymAutoCloseOnTouch
@@ -153,6 +156,47 @@ class EmojiKeyScreensTest {
     }
 
     @Test
+    fun gifKeyIsPAndShowsOnlyWhileGifSearchIsOn() {
+        assertEquals(KeyEvent.KEYCODE_P, SettingsManager.getEmojiLayerGifKey(context))
+        controller.toggleEmojiKeyPage(layer = true)
+        assertTrue(controller.currentSymMappings()!![KeyEvent.KEYCODE_P] != SymLayoutController.GIF_KEY_LABEL)
+
+        SettingsManager.setGifsEnabled(context, true)
+
+        assertEquals(SymLayoutController.GIF_KEY_LABEL, controller.currentSymMappings()!![KeyEvent.KEYCODE_P])
+    }
+
+    @Test
+    fun pressingTheGifKeyAsksForGifSearch() {
+        SettingsManager.setGifsEnabled(context, true)
+        var gifRequests = 0
+        controller.onEmojiLayerGifKey = { gifRequests++ }
+        controller.toggleEmojiKeyPage(layer = true)
+
+        val result = controller.handleKeyWhenActive(
+            KeyEvent.KEYCODE_P,
+            KeyEvent(0L, 0L, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_P, 0),
+            null,
+            ctrlLatchActive = false,
+            altLatchActive = false,
+            updateStatusBar = {}
+        )
+
+        assertEquals(SymLayoutController.SymKeyResult.CONSUME, result)
+        assertEquals(1, gifRequests)
+    }
+
+    @Test
+    fun recentsAndGifKeysNeverShareALetter() {
+        SettingsManager.setGifsEnabled(context, true)
+        // Defaults: Recents Q, GIF P
+        assertFalse(SettingsManager.setEmojiLayerRecentsKey(context, KeyEvent.KEYCODE_P))
+        assertFalse(SettingsManager.setEmojiLayerGifKey(context, KeyEvent.KEYCODE_A))
+        assertTrue(SettingsManager.setEmojiLayerGifKey(context, KeyEvent.KEYCODE_L))
+        assertEquals(KeyEvent.KEYCODE_L, SettingsManager.getEmojiLayerGifKey(context))
+    }
+
+    @Test
     fun aLetterOnTheEmojiLayerStartsASearchWhenTypeToSearchIsOn() {
         SettingsManager.setEmojiLayerTypeToSearch(context, true)
         val searches = mutableListOf<Pair<Boolean, String>>()
@@ -192,6 +236,32 @@ class EmojiKeyScreensTest {
     }
 
     @Test
+    fun withRecentsShownTheGifKeyKeepsItsJob() {
+        SettingsManager.setGifsEnabled(context, true)
+        SettingsManager.setEmojiLayerRecentsKey(context, KeyEvent.KEYCODE_A)
+        val recent = listOf("😀", "😂", "😍", "😎", "👍", "🙏", "🎉", "🔥", "❤", "😢")
+        recent.forEach { RecentEmojiManager.addRecentEmoji(context, it) }
+        var gifRequests = 0
+        controller.onEmojiLayerGifKey = { gifRequests++ }
+        controller.toggleEmojiKeyPage(layer = true)
+        assertEquals(SymLayoutController.GIF_KEY_LABEL, controller.currentSymMappings()!![KeyEvent.KEYCODE_P])
+
+        assertTrue(controller.toggleEmojiLayerRecents())
+
+        // P stays GIF, the recents running round it
+        assertEquals(SymLayoutController.GIF_KEY_LABEL, controller.currentSymMappings()!![KeyEvent.KEYCODE_P])
+        controller.handleKeyWhenActive(
+            KeyEvent.KEYCODE_P,
+            KeyEvent(0L, 0L, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_P, 0),
+            null,
+            ctrlLatchActive = false,
+            altLatchActive = false,
+            updateStatusBar = {}
+        )
+        assertEquals(1, gifRequests)
+    }
+
+    @Test
     fun searchKeyIsQAndShowsItsLabelOnTheLayer() {
         assertEquals(KeyEvent.KEYCODE_Q, SettingsManager.getSearchKey(context))
         controller.toggleEmojiKeyPage(layer = true)
@@ -219,10 +289,13 @@ class EmojiKeyScreensTest {
     }
 
     @Test
-    fun searchKeyNeverSharesALetterWithRecents() {
-        // Defaults: Recents A, search Q
+    fun searchKeyNeverSharesALetterWithRecentsOrGif() {
+        SettingsManager.setGifsEnabled(context, true)
+        // Defaults: Recents A, GIF P, search Q
         assertFalse(SettingsManager.setSearchKey(context, KeyEvent.KEYCODE_A))
+        assertFalse(SettingsManager.setSearchKey(context, KeyEvent.KEYCODE_P))
         assertFalse(SettingsManager.setEmojiLayerRecentsKey(context, KeyEvent.KEYCODE_Q))
+        assertFalse(SettingsManager.setEmojiLayerGifKey(context, KeyEvent.KEYCODE_Q))
         assertTrue(SettingsManager.setSearchKey(context, KeyEvent.KEYCODE_S))
         assertEquals(KeyEvent.KEYCODE_S, SettingsManager.getSearchKey(context))
     }

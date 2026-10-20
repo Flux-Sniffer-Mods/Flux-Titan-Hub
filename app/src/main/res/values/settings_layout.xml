@@ -10,8 +10,8 @@
     <string name="settings_typing_description">Suggestions and auto-correction, capitals and punctuation, text expansion, variations, editing keys, Nav Mode</string>
     <string name="settings_modifiers_sym_title">Modifiers &amp; SYM</string>
     <string name="settings_modifiers_sym_description">Tap, lock and long press, SYM pages, key shortcuts, Nav Mode</string>
-    <string name="settings_emoji_symbols_gifs_title">Emoji &amp; symbols</string>
-    <string name="settings_emoji_symbols_gifs_description">Emoji key and layer, the picker, symbol search</string>
+    <string name="settings_emoji_symbols_gifs_title">Emoji, symbols &amp; GIFs</string>
+    <string name="settings_emoji_symbols_gifs_description">Emoji key and layer, the picker, symbol and GIF search</string>
     <string name="settings_look_sound_title">Look &amp; sound</string>
     <string name="settings_look_sound_description">Theme, status LEDs, status bar, sound and haptics</string>
     <string name="settings_trackpad_gestures_title">Trackpad &amp; gestures</string>
@@ -67,7 +67,7 @@
     <string name="terminal_mode_add_app">Add a terminal app</string>
     <string name="terminal_mode_add_app_description">SSH clients and other terminals</string>
     <string name="incognito_always_title">Incognito typing</string>
-    <string name="incognito_always_description">Learn nothing from anything you type: no new words, predictions, emails or numbers, and no recent emoji or symbols</string>
+    <string name="incognito_always_description">Learn nothing from anything you type: no new words, predictions, emails or numbers, and no recent emoji, symbols or GIFs</string>
     <string name="incognito_follow_apps_title">Incognito when an app asks</string>
     <string name="incognito_follow_apps_description">Learn nothing in fields that ask keyboards not to, such as private browser tabs</string>
     <string name="paste_suggestion_title">Suggest pasting what you copied</string>

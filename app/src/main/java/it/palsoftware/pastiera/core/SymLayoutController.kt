@@ -11,6 +11,7 @@ import it.palsoftware.pastiera.sym.SymPagesConfig
 import it.palsoftware.pastiera.data.emoji.RecentEmojiManager
 import it.palsoftware.pastiera.data.symbols.Kaomoji
 import it.palsoftware.pastiera.inputmethod.AlternateCharacterManager
+import it.palsoftware.pastiera.activeEmojiLayerGifKey
 import it.palsoftware.pastiera.clearRestoreSymPage
 import it.palsoftware.pastiera.emojiScreenClosesAfterInput
 import it.palsoftware.pastiera.getEmojiLayerCloseOnKey
@@ -27,6 +28,7 @@ import it.palsoftware.pastiera.getSymPagesConfig
 import it.palsoftware.pastiera.getSymbolsCloseOnKey
 import it.palsoftware.pastiera.getSymbolsPages
 import it.palsoftware.pastiera.getSymbolsTypeToSearch
+import it.palsoftware.pastiera.gifsAvailable
 import it.palsoftware.pastiera.shouldApplyFrenchPunctuationSpacing
 
 class SymLayoutController(
@@ -48,6 +50,8 @@ class SymLayoutController(
          * isn't mistaken for an emoji the key would type.
          */
         const val SEARCH_KEY_LABEL = "\u2315"         // ⌕
+        /** Label of the emoji layer's GIF key. */
+        const val GIF_KEY_LABEL = "GIF"
         /** Labels of the symbols page's kaomoji key: open the kaomoji, next page of them. */
         const val KAOMOJI_KEY_LABEL = "(ᵔᴗᵔ)"
         /**
@@ -64,7 +68,7 @@ class SymLayoutController(
         /** Layers shown as pages: Q the page before, P the next (round and round). */
         const val PAGE_PREVIOUS_KEY = KeyEvent.KEYCODE_Q
         const val PAGE_NEXT_KEY = KeyEvent.KEYCODE_P
-        /** A recents page's search key (A) and its other button (L: the kaomoji). */
+        /** A recents page's search key (A) and its other button (L: GIFs, or the kaomoji). */
         const val PAGE_SEARCH_KEY = KeyEvent.KEYCODE_A
         const val PAGE_EXTRA_KEY = KeyEvent.KEYCODE_L
 
@@ -119,6 +123,9 @@ class SymLayoutController(
 
     /** The search key was pressed: the input method opens that screen's search. */
     var onSearchKey: ((SearchTarget) -> Unit)? = null
+
+    /** The emoji layer's GIF key was pressed: the input method opens GIF search. */
+    var onEmojiLayerGifKey: (() -> Unit)? = null
 
     /** Type to search: a letter on the emoji layer (true) or a symbols page (false), and its text. */
     var onTypeToSearch: ((emoji: Boolean, text: String) -> Unit)? = null
@@ -284,9 +291,10 @@ class SymLayoutController(
      * mapped yourself: the pages are for finding, the recents are yours.
      */
     private fun emojiPages(): List<LayerPage> {
+        val gifs = SettingsManager.gifsAvailable(context)
         val all = emojiInOrder()
         val recents = emojiRecentsShown ?: RecentEmojiManager.getRecentEmojis(context).also { emojiRecentsShown = it }
-        val keep = emptySet<Int>()
+        val keep = if (gifs) setOf(PAGE_EXTRA_KEY) else emptySet()
         val pages = mutableListOf(recentsPage(recents, all, PageKind.RECENTS, keep))
         pages += homePage(alternateCharacterManager.getSymMappings(), PageKind.LAYER, keep)
         all.chunked(pageSlots.size).forEach { emoji -> pages += LayerPage(sequential(emoji), PageKind.LAYER) }
@@ -377,6 +385,7 @@ class SymLayoutController(
         }
         if (page.kind == PageKind.RECENTS || (page.home && page.kind == PageKind.LAYER)) {
             if (!emoji) shown[PAGE_EXTRA_KEY] = KAOMOJI_KEY_LABEL
+            else if (SettingsManager.gifsAvailable(context)) shown[PAGE_EXTRA_KEY] = GIF_KEY_LABEL
         }
         return shown
     }
@@ -643,12 +652,15 @@ class SymLayoutController(
         val base = alternateCharacterManager.getSymMappings()
         val recentsKey = SettingsManager.getEmojiLayerRecentsKey(context)
         val showingRecents = emojiLayerShowsRecents && recentsKey != KeyEvent.KEYCODE_UNKNOWN
-        // The search key keeps its job, recent emoji shown or not
+        // The GIF and search keys keep their jobs, recent emoji shown or not
+        val gifKey = SettingsManager.activeEmojiLayerGifKey(context)
         val searchKey = SettingsManager.getSearchKey(context)
-        if (recentsKey == KeyEvent.KEYCODE_UNKNOWN && searchKey == KeyEvent.KEYCODE_UNKNOWN) return base
+        if (recentsKey == KeyEvent.KEYCODE_UNKNOWN && gifKey == KeyEvent.KEYCODE_UNKNOWN &&
+            searchKey == KeyEvent.KEYCODE_UNKNOWN
+        ) return base
         val shown = if (showingRecents) {
             // The recents run round the keys that keep their job, topped up with the layer's own
-            val keep = setOf(recentsKey, searchKey)
+            val keep = setOf(recentsKey, gifKey, searchKey)
             recentsWithStarters(
                 RecentEmojiManager.getRecentEmojis(context, SettingsManager.EMOJI_LAYER_KEYS.size),
                 base.filterKeys { it !in keep }.values.toList(),
@@ -658,7 +670,7 @@ class SymLayoutController(
             // Recent emoji first: the ones you used last on the first free keys, the layer's
             // own moved along by as many
             val recents = it.palsoftware.pastiera.data.emoji.EmojiLayerRecents
-            val keys = SettingsManager.EMOJI_LAYER_KEYS.filter { key -> key != recentsKey && key != searchKey }
+            val keys = SettingsManager.EMOJI_LAYER_KEYS.filter { key -> key != recentsKey && key != gifKey && key != searchKey }
             recents.arrange(keys, base, recents.used(context), recents.count(context)).toMutableMap()
         } else {
             base.toMutableMap()
@@ -666,6 +678,7 @@ class SymLayoutController(
         if (recentsKey != KeyEvent.KEYCODE_UNKNOWN) {
             shown[recentsKey] = if (emojiLayerShowsRecents) RECENTS_BACK_LABEL else RECENTS_KEY_LABEL
         }
+        if (gifKey != KeyEvent.KEYCODE_UNKNOWN) shown[gifKey] = GIF_KEY_LABEL
         if (searchKey != KeyEvent.KEYCODE_UNKNOWN) shown[searchKey] = SEARCH_KEY_LABEL
         return shown
     }
@@ -907,6 +920,8 @@ class SymLayoutController(
                     setPageIndex(false, symbolPages.indexOfFirst { it.home && it.kind == PageKind.LAYER }.coerceAtLeast(0), symbolPages)
                     updateStatusBar()
                 }
+                (current.kind == PageKind.RECENTS || current.home) && keyCode == PAGE_EXTRA_KEY && SettingsManager.gifsAvailable(context) ->
+                    if (first) onEmojiLayerGifKey?.invoke()
                 else -> {
                     val text = current.keys[keyCode] ?: return SymKeyResult.CONSUME
                     if (!first) return SymKeyResult.CONSUME
@@ -945,6 +960,12 @@ class SymLayoutController(
             return SymKeyResult.CONSUME
         }
 
+        // The GIF key, recent emoji shown or not
+        val gifKey = SettingsManager.activeEmojiLayerGifKey(context)
+        if (page == SymPage.EMOJI && gifKey != KeyEvent.KEYCODE_UNKNOWN && keyCode == gifKey) {
+            if ((event?.repeatCount ?: 0) == 0) onEmojiLayerGifKey?.invoke()
+            return SymKeyResult.CONSUME
+        }
         // The kaomoji key, and the kaomoji on the keys while they're shown
         val kaomojiKey = kaomojiKey(context)
         if (page == SymPage.SYMBOLS && kaomojiKey != KeyEvent.KEYCODE_UNKNOWN && !symbolsPaged() &&

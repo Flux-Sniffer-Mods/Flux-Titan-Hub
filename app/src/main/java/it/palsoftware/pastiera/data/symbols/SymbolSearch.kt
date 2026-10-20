@@ -32,7 +32,7 @@ object SymbolSearch {
     private val OLD_FILES = listOf("symbol-search-v1.tsv", "symbol-search-v2.tsv")
 
     // Symbol search's own thread (reading the list and every search): its work never waits
-    // behind the emoji data loading on the shared pools
+    // behind GIF downloads, GIF decoding or the emoji data loading on the shared pools
     private val executor = Executors.newSingleThreadExecutor { runnable ->
         Thread(runnable, "symbol-search").apply { isDaemon = true }
     }

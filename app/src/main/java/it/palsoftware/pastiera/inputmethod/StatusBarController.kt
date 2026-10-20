@@ -33,6 +33,7 @@ import android.widget.TextView
 import android.util.Log
 import android.util.TypedValue
 import it.palsoftware.pastiera.R
+import it.palsoftware.pastiera.data.gif.KlipyGifs
 import it.palsoftware.pastiera.data.symbols.SymbolSearch
 import it.palsoftware.pastiera.data.symbols.Kaomoji
 import it.palsoftware.pastiera.data.emoji.EmojiLayerRecents
@@ -72,6 +73,7 @@ import androidx.core.view.updatePadding
 import it.palsoftware.pastiera.SettingsActivity
 import it.palsoftware.pastiera.device.T2eCornerCalibration
 import it.palsoftware.pastiera.device.T2eCornerGeometry
+import it.palsoftware.pastiera.activeEmojiLayerGifKey
 import it.palsoftware.pastiera.emojiScreenClosesAfterInput
 import it.palsoftware.pastiera.getAccessibilityLiveAnnouncementsEnabled
 import it.palsoftware.pastiera.getAccessibilityReadSecondRowEnabled
@@ -85,6 +87,7 @@ import it.palsoftware.pastiera.getEmojiPickerKey
 import it.palsoftware.pastiera.getKaomojiCloseOnTap
 import it.palsoftware.pastiera.getKeyboardBackgroundFraming
 import it.palsoftware.pastiera.getKeyboardLayout
+import it.palsoftware.pastiera.getKlipyApiKey
 import it.palsoftware.pastiera.getLongPressModifier
 import it.palsoftware.pastiera.getLongPressThreshold
 import it.palsoftware.pastiera.getModifierIndicatorShowsBottomStrip
@@ -109,6 +112,7 @@ import it.palsoftware.pastiera.getTitan2EliteFillCorners
 import it.palsoftware.pastiera.getTitan2EliteRoundedCornerInsetsEnabled
 import it.palsoftware.pastiera.getTitan2EliteStatusBarLiftPx
 import it.palsoftware.pastiera.getTitan2EliteStraightOuterButtons
+import it.palsoftware.pastiera.gifsAvailable
 import it.palsoftware.pastiera.isExperimentalSuggestionsEnabled
 import it.palsoftware.pastiera.isImeOverlayDebugLoggingEnabled
 import it.palsoftware.pastiera.isTitan2LayoutEnabled
@@ -217,10 +221,20 @@ class StatusBarController(
     var onEmojiVariantsRequested: ((String) -> Unit)? = null
     /** An emoji was tapped on the emoji layer (its variants page goes back). */
     var onEmojiLayerTyped: (() -> Unit)? = null
+    // GIF search: the emoji layer's GIF key, and a GIF picked in the picker's GIF mode
+    var onEmojiLayerGifRequested: (() -> Unit)? = null
+        set(value) {
+            field = value
+            variationBarView?.onGifSearchRequested = value
+        }
+    // The status bar's and menu's GIF button: the same GIF search
+    private val onGifSearchRequested: (() -> Unit) get() = { onEmojiLayerGifRequested?.invoke() }
     // Symbol search from the SYM symbols pages
     var onSymbolSearchRequested: (() -> Unit)? = null
     private var pendingSymbolSearch: Boolean = false
     private var pendingKaomojiSearch: Boolean = false
+    var onGifChosen: ((it.palsoftware.pastiera.data.gif.GifResult) -> Unit)? = null
+    private var pendingEmojiPickerGifs: Boolean = false
     private var lastSnapshotSymPage: Int = 0
     private var lastEmojiScreenFromEmojiKey: Boolean = false
     private var pendingEmojiPickerSearch: Boolean = false
@@ -237,6 +251,11 @@ class StatusBarController(
     fun requestEmojiPickerSearch(initialText: String? = null) {
         pendingEmojiPickerSearch = true
         pendingSearchText = initialText
+    }
+
+    /** The next time the emoji picker shows, open its GIF search. */
+    fun requestEmojiPickerGifs() {
+        pendingEmojiPickerGifs = true
     }
 
     /** The next time the emoji picker shows, open its symbol search. */
@@ -434,7 +453,7 @@ class StatusBarController(
     // Pastierina: on the emoji layer and symbols pages, a search bar sits there instead (tap for
     // the picker's search)
     private var emojiLayerBarRow: LinearLayout? = null
-    // What the emoji layer grid's slot after L held when last built: search or nothing
+    // What the emoji layer grid's slot after L held when last built: search, GIF or nothing
     private var lastEmojiLayerSlot: String? = null
 
     /** Hidden app with "Show status LEDs only": draw nothing but the LED strip, over the app. */
@@ -619,6 +638,7 @@ class StatusBarController(
             onClipboardRequested = onClipboardRequested,
             onSpeechRecognitionRequested = onSpeechRecognitionRequested,
             onEmojiPickerRequested = onEmojiPickerRequested,
+            onGifSearchRequested = onGifSearchRequested,
             onLanguageSwitchRequested = onLanguageSwitchRequested,
             onHamburgerMenuRequested = onHamburgerMenuRequested,
             onMinimalUiToggleRequested = { handleMinimalUiToggleFromMenu() },
@@ -1437,7 +1457,7 @@ class StatusBarController(
             onEmojiPickerSearchPanelToggled?.invoke(visible)
         }
         val freshOpen = lastSymPageRendered != 4
-        val requested = pendingEmojiPickerSearch || pendingSymbolSearch
+        val requested = pendingEmojiPickerSearch || pendingEmojiPickerGifs || pendingSymbolSearch
         val searchText = pendingSearchText
         pendingSearchText = null
         if (pendingEmojiPickerSearch) {
@@ -1451,6 +1471,12 @@ class StatusBarController(
             // Opened by the emoji key: its search takes typing at once, or after a tap
             val focus = SettingsManager.getEmojiPickerFocusSearch(context)
             view.post { view.applyOpenFocus(focus) }
+        }
+        view.onGifChosen = { gif -> onGifChosen?.invoke(gif) }
+        if (pendingEmojiPickerGifs) {
+            // Opened from the emoji layer's GIF key: GIF search once the picker is in place
+            pendingEmojiPickerGifs = false
+            view.post { view.openGifs() }
         }
         if (pendingSymbolSearch) {
             // Opened from a symbols page's search: symbol search once the picker is in place
@@ -1540,7 +1566,7 @@ class StatusBarController(
         // Don't scroll if view is already in container (user is browsing)
         if (lastSymPageRendered != 4 || view.isStaleForCurrentEditor()) {
             // First time, switching from another page, or the field / emoji font changed.
-            // Only a fresh opening leaves symbol search; a data refresh keeps it.
+            // Only a fresh opening leaves GIF or symbol search; a data refresh keeps it.
             view.refresh(resetModes = lastSymPageRendered != 4)
         } else if (wasDetachedFromHost) {
             view.scrollToTop() // View was just added (happens when reopening after being removed)
@@ -1604,6 +1630,7 @@ class StatusBarController(
                     isClickable = true
                     isFocusable = true
                 }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f))
+                // GIF search: the emoji layer's GIF key (P unless changed), not a tab here
             }.also { emojiLayerBarRow = it }
             val searchBar = row.getChildAt(0) as TextView
             // Emoji layer: emoji search; symbols pages: symbol search
@@ -1755,7 +1782,7 @@ class StatusBarController(
         container.setPadding(sidePadding, gap, sidePadding, gap)
         val inputConnectionChanged = lastInputConnectionUsed != inputConnection
         val inputConnectionBecameAvailable = lastInputConnectionUsed == null && inputConnection != null
-        // The slot after L: search outside Pastierina (which has it in the bar)
+        // The slot after L: search outside Pastierina (which has it, and the GIF tab, in the bar)
         val searchInGrid = page in listOf(1, 2, 5) && !pastierinaModeActive
         val slot = if (searchInGrid) "search" else "none"
         if (lastSymPageRendered == page && lastSymMappingsRendered == symMappings && !inputConnectionChanged &&
@@ -2844,10 +2871,13 @@ class StatusBarController(
             content == it.palsoftware.pastiera.core.SymLayoutController.RECENTS_KEY_LABEL ||
                 content == it.palsoftware.pastiera.core.SymLayoutController.RECENTS_BACK_LABEL
             )
+        // Emoji layer's GIF key: a short bold word, smaller than an emoji
+        val gifLabel = page == 1 && content == it.palsoftware.pastiera.core.SymLayoutController.GIF_KEY_LABEL
         val contentText = TextView(context).apply {
             text = content
             textSize = when {
                 recentsSymbol -> contentTextSize * 1.35f
+                gifLabel -> contentTextSize * 0.55f
                 else -> contentTextSize
             } // textSize è in sp
             gravity = Gravity.CENTER
@@ -2861,7 +2891,7 @@ class StatusBarController(
             }
             // Emoji layer: glyphs centre on their own box, not on the font's extra padding
             if (page == 1) includeFontPadding = false
-            if (recentsSymbol) setTypeface(null, android.graphics.Typeface.BOLD)
+            if (recentsSymbol || gifLabel) setTypeface(null, android.graphics.Typeface.BOLD)
             if (roundedCorners) setTextColor(theme.textAndIcons)
             // Per pagina 2 (caratteri), rendi bianco e in grassetto
             if (textPage) {
@@ -3194,7 +3224,7 @@ class StatusBarController(
     }
 
     /**
-     * A layer key's job: the search and Recents keys stand apart and do their thing; the
+     * A layer key's job: the search, GIF and Recents keys stand apart and do their thing; the
      * others type what they hold. The same on the Titan 2 layout and the centred one.
      */
     private fun bindLayerKey(
@@ -3213,6 +3243,8 @@ class StatusBarController(
         val recentsKey = !arrowToRecents && (page == 1 || page == 2) && keyCode == SettingsManager.getEmojiLayerRecentsKey(context) &&
             (content == it.palsoftware.pastiera.core.SymLayoutController.RECENTS_KEY_LABEL ||
                 content == it.palsoftware.pastiera.core.SymLayoutController.RECENTS_BACK_LABEL)
+        // The GIF key only while it shows GIF (with recent emoji shown it holds one of them)
+        val gifKey = page == 1 && content == it.palsoftware.pastiera.core.SymLayoutController.GIF_KEY_LABEL
         // The search key (on A on a paged layer's recents page)
         val searchKey = (page == 1 || page == 2 || page == 5) &&
             content == it.palsoftware.pastiera.core.SymLayoutController.SEARCH_KEY_LABEL
@@ -3222,8 +3254,8 @@ class StatusBarController(
             (content == labels.KAOMOJI_PREVIOUS_LABEL || arrowToRecents)
         val nextPageKey = (page == 1 || page == 2) && keyCode == labels.PAGE_NEXT_KEY &&
             (content == labels.KAOMOJI_NEXT_LABEL || arrowToRecents)
-        if (searchKey || recentsKey || kaomojiKey || kaomojiBackKey || nextPageKey) {
-            // Search and Recents stand apart from the mapped keys: the key colour with a
+        if (searchKey || gifKey || recentsKey || kaomojiKey || kaomojiBackKey || nextPageKey) {
+            // Search, GIF and Recents stand apart from the mapped keys: the key colour with a
             // touch of the accent
             (keyButton.background as? GradientDrawable)?.mutate()?.let { background ->
                 val theme = activeThemeColors()
@@ -3235,7 +3267,7 @@ class StatusBarController(
         // A recents page's starters (not yet used, from the first pages): the key colour with a
         // touch of the accent's neighbour on the colour wheel, at the accent's brightness
         if ((page == 1 || page == 2) && content.isNotEmpty() && keyCode in labels.starterKeys &&
-            !(searchKey || recentsKey || kaomojiKey || kaomojiBackKey || nextPageKey)
+            !(searchKey || gifKey || recentsKey || kaomojiKey || kaomojiBackKey || nextPageKey)
         ) {
             (keyButton.background as? GradientDrawable)?.mutate()?.let { background ->
                 val theme = activeThemeColors()
@@ -3260,6 +3292,12 @@ class StatusBarController(
                     else -> onSymbolSearchRequested?.invoke()
                 }
             }
+        } else if (gifKey) {
+            // Emoji layer's GIF key: GIF search
+            keyButton.isClickable = true
+            keyButton.isFocusable = true
+            keyButton.contentDescription = context.getString(R.string.gif_tab_description)
+            keyButton.setOnClickListener { onEmojiLayerGifRequested?.invoke() }
         } else if (kaomojiBackKey) {
             // The kaomoji pages' Q: the page before (the first goes round to the last)
             keyButton.isClickable = true
@@ -3549,7 +3587,7 @@ class StatusBarController(
                 // The same createEmojiKeyButton as the real keyboard
                 val keyButton = createEmojiKeyButton(label, reserved ?: emoji, keyHeight, page)
                 
-                // The search and Recents keys aren't mapped: greyed, showing their job
+                // The search, GIF and Recents keys aren't mapped: greyed, showing their job
                 if (reserved != null) greyOutReservedKey(keyButton) else {
                     keyButton.setOnClickListener { onKeyClick(keyCode, emoji) }
                     dragToSwap(keyButton, keyCode, onSwap)
@@ -3578,13 +3616,13 @@ class StatusBarController(
         return container
     }
 
-    /** The keys a layer keeps for itself (search, Recents), with the label each shows. */
+    /** The keys a layer keeps for itself (search, GIF, Recents), with the label each shows. */
     private fun reservedLayerKeys(page: Int): Map<Int, String> {
         val reserved = mutableMapOf<Int, String>()
         val unknown = android.view.KeyEvent.KEYCODE_UNKNOWN
         val labels = it.palsoftware.pastiera.core.SymLayoutController
         // Layers shown as pages keep Q and P for the page arrows
-        // and A for search, L for the kaomoji or back to the symbols (the default pages)
+        // and A for search, L for GIFs, the kaomoji or back to the symbols (the default pages)
         if ((page == 1 && SettingsManager.getEmojiLayerPages(context)) ||
             (page == 2 && SettingsManager.getSymbolsPages(context)) || page == KAOMOJI_EDIT_PAGE
         ) {
@@ -3594,12 +3632,16 @@ class StatusBarController(
             when {
                 page == KAOMOJI_EDIT_PAGE -> reserved[labels.PAGE_EXTRA_KEY] = labels.SYMBOLS_KEY_LABEL
                 page == 2 -> reserved[labels.PAGE_EXTRA_KEY] = labels.KAOMOJI_KEY_LABEL
+                SettingsManager.gifsAvailable(context) -> reserved[labels.PAGE_EXTRA_KEY] = labels.GIF_KEY_LABEL
             }
             return reserved
         }
         if (page == 1 || page == 2) {
             SettingsManager.getEmojiLayerRecentsKey(context).takeIf { it != unknown }?.let { reserved[it] = labels.RECENTS_KEY_LABEL }
             SettingsManager.getSearchKey(context).takeIf { it != unknown }?.let { reserved[it] = labels.SEARCH_KEY_LABEL }
+        }
+        if (page == 1) {
+            SettingsManager.activeEmojiLayerGifKey(context).takeIf { it != unknown }?.let { reserved[it] = labels.GIF_KEY_LABEL }
         }
         if (page == 2) {
             labels.kaomojiKey(context).takeIf { it != unknown }?.let { reserved[it] = labels.KAOMOJI_KEY_LABEL }
@@ -3616,7 +3658,7 @@ class StatusBarController(
 
     /**
      * A layer editor's key: held, it can be dragged onto another key, and the two swap what they
-     * type. Reserved keys (search, recents) are neither dragged nor dropped on.
+     * type. Reserved keys (search, GIFs, recents) are neither dragged nor dropped on.
      */
     private fun dragToSwap(keyButton: View, keyCode: Int, onSwap: ((Int, Int) -> Unit)?) {
         if (onSwap == null) return
@@ -3914,6 +3956,15 @@ class StatusBarController(
         // Symbol search: read the bundled list before it's needed
         if (snapshot.symPage == 2 || snapshot.symPage == 5) {
             SymbolSearch.prewarm(context)
+        }
+        // GIF search is one key away (emoji layer) or one tap (picker): have featured GIFs ready,
+        // except while the picker is there for symbol search (that gets the phone to itself)
+        val symbolSearchInPicker = snapshot.symPage == 4 &&
+            (pendingSymbolSearch || emojiPickerView?.isSymbolSearchOpen() == true)
+        if ((snapshot.symPage == 1 || snapshot.symPage == 4) && !symbolSearchInPicker &&
+            SettingsManager.gifsAvailable(context)
+        ) {
+            KlipyGifs.prefetchFeatured(context, SettingsManager.getKlipyApiKey(context))
         }
         // Emoji layer (1) and the symbols pages (2 symbols, 5 device) have a search bar there
         val barSearchPage = snapshot.symPage.takeIf {
@@ -4350,7 +4401,7 @@ class StatusBarController(
     }
 
     /**
-     * The side buttons' width on every panel (bar, emoji, symbols, kaomoji, clipboard): the
+     * The side buttons' width on every panel (bar, emoji, symbols, kaomoji, GIFs, clipboard): the
      * suggestion bar's own, so the corners line up whichever panel is open.
      */
     private fun panelSideButtonWidthPx(): Int =

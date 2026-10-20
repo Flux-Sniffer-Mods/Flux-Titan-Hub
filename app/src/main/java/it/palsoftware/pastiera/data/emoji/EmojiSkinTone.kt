@@ -4,7 +4,7 @@ import android.content.Context
 import it.palsoftware.pastiera.SettingsManager
 
 /**
- * The default emoji skin tone (Emoji & symbols): emoji that come in skin tones show in it in the
+ * The default emoji skin tone (Emoji & GIFs): emoji that come in skin tones show in it in the
  * emoji picker and on the emoji layer's pages. Holding one still offers every tone.
  */
 object EmojiSkinTone {

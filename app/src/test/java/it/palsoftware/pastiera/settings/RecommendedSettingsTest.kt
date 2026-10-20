@@ -12,6 +12,7 @@ import org.robolectric.annotation.Config
 import it.palsoftware.pastiera.SettingsManager
 import it.palsoftware.pastiera.getDevChoiceStaticVariationBasePreset
 import it.palsoftware.pastiera.getEmojiSuggestionsEnabled
+import it.palsoftware.pastiera.getGifsEnabled
 import it.palsoftware.pastiera.getHiddenKeyboardApps
 import it.palsoftware.pastiera.getLedIndividualColorsEnabled
 import it.palsoftware.pastiera.getQuickLauncherBehavior
@@ -41,6 +42,7 @@ class RecommendedSettingsTest {
         assertTrue(SettingsManager.getShiftBackspaceDelete(context))
         // The whole configuration from Flux Keyboard's Titan 2 Elite, matters of taste included
         assertFalse(SettingsManager.getEmojiSuggestionsEnabled(context))
+        assertTrue(SettingsManager.getGifsEnabled(context))
         assertTrue(SettingsManager.getOneTimeCodesEnabled(context))
         // App lists aren't part of it: those stay at their defaults
         assertEquals(listOf("bitpit.launcher", "com.termux.x11"), SettingsManager.getHiddenKeyboardApps(context))

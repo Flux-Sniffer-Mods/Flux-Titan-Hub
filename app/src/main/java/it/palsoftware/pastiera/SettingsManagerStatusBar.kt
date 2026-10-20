@@ -365,6 +365,7 @@ fun SettingsManager.getAvailableStatusBarButtons(): List<String> {
         STATUS_BAR_BUTTON_NONE,
         STATUS_BAR_BUTTON_CLIPBOARD,
         STATUS_BAR_BUTTON_EMOJI,
+        STATUS_BAR_BUTTON_GIF,
         STATUS_BAR_BUTTON_MICROPHONE,
         STATUS_BAR_BUTTON_LANGUAGE,
         STATUS_BAR_BUTTON_HAMBURGER,

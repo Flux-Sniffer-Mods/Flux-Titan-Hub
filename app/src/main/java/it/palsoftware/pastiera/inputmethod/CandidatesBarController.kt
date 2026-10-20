@@ -198,6 +198,20 @@ class CandidatesBarController(
             candidatesStatusBar.onKaomojiSearchRequested = value
         }
 
+    var onEmojiLayerGifRequested: (() -> Unit)? = null
+        set(value) {
+            field = value
+            inputStatusBar.onEmojiLayerGifRequested = value
+            candidatesStatusBar.onEmojiLayerGifRequested = value
+        }
+
+    var onGifChosen: ((it.palsoftware.pastiera.data.gif.GifResult) -> Unit)? = null
+        set(value) {
+            field = value
+            inputStatusBar.onGifChosen = value
+            candidatesStatusBar.onGifChosen = value
+        }
+
     var onSymbolSearchRequested: (() -> Unit)? = null
         set(value) {
             field = value
@@ -217,7 +231,13 @@ class CandidatesBarController(
         candidatesStatusBar.requestKaomojiSearch()
     }
 
-    /** The emoji picker is showing: its search (or symbol search) takes typing. */
+    /** The next time the emoji picker shows, open its GIF search. */
+    fun requestEmojiPickerGifs() {
+        inputStatusBar.requestEmojiPickerGifs()
+        candidatesStatusBar.requestEmojiPickerGifs()
+    }
+
+    /** The emoji picker is showing: its search (or GIF/symbol search) takes typing. */
     fun focusEmojiPickerSearch() {
         inputStatusBar.focusEmojiPickerSearch()
         candidatesStatusBar.focusEmojiPickerSearch()

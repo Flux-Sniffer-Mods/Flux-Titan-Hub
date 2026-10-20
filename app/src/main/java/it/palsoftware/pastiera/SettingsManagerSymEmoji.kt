@@ -8,7 +8,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import it.palsoftware.pastiera.sym.SymPagesConfig
 
-// SettingsManager: the SYM, emoji and symbols layers, the emoji picker and search. The keys and defaults live in SettingsManager.kt.
+// SettingsManager: the SYM, emoji and symbols layers, the emoji picker, GIFs and search. The keys and defaults live in SettingsManager.kt.
 
 /**
  * Returns custom SYM mappings.
@@ -592,6 +592,14 @@ fun SettingsManager.setEmojiPickerFocusSearch(context: Context, enabled: Boolean
     getPreferences(context).edit().putBoolean(KEY_EMOJI_PICKER_FOCUS_SEARCH, enabled).apply()
 }
 
+/** GIF search opens with its search taking typing. On by default. */
+fun SettingsManager.getGifFocusSearch(context: Context): Boolean =
+    getPreferences(context).getBoolean(KEY_GIF_FOCUS_SEARCH, true)
+
+fun SettingsManager.setGifFocusSearch(context: Context, enabled: Boolean) {
+    getPreferences(context).edit().putBoolean(KEY_GIF_FOCUS_SEARCH, enabled).apply()
+}
+
 /** On the emoji layer, a letter key starts emoji search with that letter (off: it types its emoji). */
 fun SettingsManager.getEmojiLayerTypeToSearch(context: Context): Boolean =
     getPreferences(context).getBoolean(KEY_EMOJI_LAYER_TYPE_TO_SEARCH, false)
@@ -610,7 +618,7 @@ fun SettingsManager.setSymbolsTypeToSearch(context: Context, enabled: Boolean) {
 
 /**
  * The key that opens search on the emoji layer and the symbols pages, and puts typing into
- * the emoji picker's search: A unless changed (KEYCODE_UNKNOWN = off).
+ * the emoji and GIF picker's search: A unless changed (KEYCODE_UNKNOWN = off).
  */
 fun SettingsManager.getSearchKey(context: Context): Int {
     val keyCode = getPreferences(context).getInt(KEY_SEARCH_KEY, KeyEvent.KEYCODE_Q)
@@ -620,8 +628,8 @@ fun SettingsManager.getSearchKey(context: Context): Int {
 fun SettingsManager.setSearchKey(context: Context, keyCode: Int): Boolean {
     if (keyCode != KeyEvent.KEYCODE_UNKNOWN) {
         if (keyCode !in EMOJI_LAYER_KEYS) return false
-        // One key, one job: not the Recents key
-        if (keyCode == getEmojiLayerRecentsKey(context)) return false
+        // One key, one job: not the Recents or GIF key
+        if (keyCode == getEmojiLayerRecentsKey(context) || keyCode == getEmojiLayerGifKey(context)) return false
     }
     getPreferences(context).edit().putInt(KEY_SEARCH_KEY, keyCode).apply()
     return true
@@ -636,8 +644,11 @@ fun SettingsManager.setOfflineMode(context: Context, enabled: Boolean) {
     OfflineMode.update(enabled)
 }
 
+/** GIF search is switched on and allowed online (not in offline mode). */
+fun SettingsManager.gifsAvailable(context: Context): Boolean = getGifsEnabled(context) && !isOfflineMode(context)
+
 /**
- * Emoji and symbols used recently come first in their searches.
+ * Emoji, symbols and GIFs used recently (and favourite GIFs) come first in their searches.
  * On by default.
  */
 fun SettingsManager.getRecentsFirstInSearch(context: Context): Boolean =
@@ -645,6 +656,22 @@ fun SettingsManager.getRecentsFirstInSearch(context: Context): Boolean =
 
 fun SettingsManager.setRecentsFirstInSearch(context: Context, enabled: Boolean) {
     getPreferences(context).edit().putBoolean(KEY_RECENTS_FIRST_IN_SEARCH, enabled).apply()
+}
+
+/** GIF search shows the favourite GIFs at its top (with an empty search). On by default. */
+fun SettingsManager.getGifShowFavourites(context: Context): Boolean =
+    getPreferences(context).getBoolean(KEY_GIF_SHOW_FAVOURITES, true)
+
+fun SettingsManager.setGifShowFavourites(context: Context, enabled: Boolean) {
+    getPreferences(context).edit().putBoolean(KEY_GIF_SHOW_FAVOURITES, enabled).apply()
+}
+
+/** GIF search shows the recently sent GIFs (with an empty search). On by default. */
+fun SettingsManager.getGifShowRecents(context: Context): Boolean =
+    getPreferences(context).getBoolean(KEY_GIF_SHOW_RECENTS, true)
+
+fun SettingsManager.setGifShowRecents(context: Context, enabled: Boolean) {
+    getPreferences(context).edit().putBoolean(KEY_GIF_SHOW_RECENTS, enabled).apply()
 }
 
 /** Enter in emoji search picks the first emoji and closes (after a pick, only closes). On by default. */
@@ -663,6 +690,59 @@ fun SettingsManager.setSymbolSearchEnterPicks(context: Context, enabled: Boolean
     getPreferences(context).edit().putBoolean(KEY_SYMBOL_SEARCH_ENTER_PICKS, enabled).apply()
 }
 
+/** Enter in GIF search sends the first GIF (which closes the picker). On by default. */
+fun SettingsManager.getGifSearchEnterPicks(context: Context): Boolean =
+    getPreferences(context).getBoolean(KEY_GIF_SEARCH_ENTER_PICKS, true)
+
+fun SettingsManager.setGifSearchEnterPicks(context: Context, enabled: Boolean) {
+    getPreferences(context).edit().putBoolean(KEY_GIF_SEARCH_ENTER_PICKS, enabled).apply()
+}
+
+/** The emoji layer key that opens GIF search (while it's on): P unless changed (KEYCODE_UNKNOWN = off). */
+fun SettingsManager.getEmojiLayerGifKey(context: Context): Int {
+    val keyCode = getPreferences(context).getInt(KEY_EMOJI_LAYER_GIF_KEY, KeyEvent.KEYCODE_P)
+    return if (keyCode in EMOJI_LAYER_KEYS) keyCode else KeyEvent.KEYCODE_UNKNOWN
+}
+
+fun SettingsManager.setEmojiLayerGifKey(context: Context, keyCode: Int): Boolean {
+    if (keyCode != KeyEvent.KEYCODE_UNKNOWN && keyCode !in EMOJI_LAYER_KEYS) return false
+    // One key, one job: not the Recents key or the search key
+    if (keyCode != KeyEvent.KEYCODE_UNKNOWN && keyCode == getEmojiLayerRecentsKey(context)) return false
+    if (keyCode != KeyEvent.KEYCODE_UNKNOWN && keyCode == getSearchKey(context)) return false
+    getPreferences(context).edit().putInt(KEY_EMOJI_LAYER_GIF_KEY, keyCode).apply()
+    return true
+}
+
+/** The emoji layer's GIF key while GIF search is on and it isn't also the Recents key, else KEYCODE_UNKNOWN. */
+fun SettingsManager.activeEmojiLayerGifKey(context: Context): Int {
+    if (!gifsAvailable(context)) return KeyEvent.KEYCODE_UNKNOWN
+    val keyCode = getEmojiLayerGifKey(context)
+    return if (keyCode == getEmojiLayerRecentsKey(context)) KeyEvent.KEYCODE_UNKNOWN else keyCode
+}
+
+/** GIF search (KLIPY): a GIF key on the emoji layer and a GIF tab in the emoji picker. */
+fun SettingsManager.getGifsEnabled(context: Context): Boolean =
+    getPreferences(context).getBoolean(KEY_GIFS_ENABLED, false)
+
+fun SettingsManager.setGifsEnabled(context: Context, enabled: Boolean) {
+    getPreferences(context).edit().putBoolean(KEY_GIFS_ENABLED, enabled).apply()
+}
+
+/** The KLIPY key GIF search uses: the user's own, else the build's built-in one (may be empty). */
+fun SettingsManager.getKlipyApiKey(context: Context): String =
+    getUserKlipyApiKey(context).ifEmpty { BuildConfig.KLIPY_API_KEY.trim() }
+
+/** Only the key the user entered (the settings field never shows the built-in one). */
+fun SettingsManager.getUserKlipyApiKey(context: Context): String =
+    getPreferences(context).getString(KEY_KLIPY_API_KEY, "").orEmpty().trim()
+
+/** This build has a KLIPY key built in (set as a CI secret when it was built). */
+fun SettingsManager.hasBuiltInKlipyApiKey(): Boolean = BuildConfig.KLIPY_API_KEY.isNotBlank()
+
+fun SettingsManager.setKlipyApiKey(context: Context, apiKey: String) {
+    getPreferences(context).edit().putString(KEY_KLIPY_API_KEY, apiKey.trim()).apply()
+}
+
 /** The emoji layer key that shows recent emoji instead of its own: Q unless changed (KEYCODE_UNKNOWN = off). */
 fun SettingsManager.getEmojiLayerRecentsKey(context: Context): Int {
     val keyCode = getPreferences(context).getInt(KEY_EMOJI_LAYER_RECENTS_KEY, KeyEvent.KEYCODE_A)
@@ -671,7 +751,8 @@ fun SettingsManager.getEmojiLayerRecentsKey(context: Context): Int {
 
 fun SettingsManager.setEmojiLayerRecentsKey(context: Context, keyCode: Int): Boolean {
     if (keyCode != KeyEvent.KEYCODE_UNKNOWN && keyCode !in EMOJI_LAYER_KEYS) return false
-    // One key, one job: not the search key
+    // One key, one job: not the GIF key while GIF search is on, nor the search key
+    if (keyCode != KeyEvent.KEYCODE_UNKNOWN && getGifsEnabled(context) && keyCode == getEmojiLayerGifKey(context)) return false
     if (keyCode != KeyEvent.KEYCODE_UNKNOWN && keyCode == getSearchKey(context)) return false
     getPreferences(context).edit().putInt(KEY_EMOJI_LAYER_RECENTS_KEY, keyCode).apply()
     return true

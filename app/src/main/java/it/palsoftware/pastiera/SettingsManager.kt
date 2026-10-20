@@ -175,15 +175,22 @@ object SettingsManager {
     internal const val KEY_EMOJI_KEY_OPENS_LAYER = "emoji_key_opens_layer" // Emoji key opens the emoji layer instead of the picker
     internal const val KEY_EMOJI_KEY_AUTO_CLOSE = "emoji_key_auto_close" // Emoji key screens close after an emoji
     internal const val KEY_EMOJI_LAYER_RECENTS_KEY = "emoji_layer_recents_key" // Emoji layer key that shows recents
+    internal const val KEY_EMOJI_LAYER_GIF_KEY = "emoji_layer_gif_key" // Emoji layer key that opens GIF search
     internal const val KEY_HIDDEN_APP_STANDARD_MODIFIERS = "hidden_app_standard_modifiers" // Titan Ctrl/Sym as standard keys
     internal const val KEY_EMOJI_SEARCH_ENTER_PICKS = "emoji_search_enter_picks" // Enter: first emoji, close
     internal const val KEY_SYMBOL_SEARCH_ENTER_PICKS = "symbol_search_enter_picks" // Enter: first symbol, close
+    internal const val KEY_GIF_SEARCH_ENTER_PICKS = "gif_search_enter_picks" // Enter: first GIF (closes)
     internal const val KEY_RECENTS_FIRST_IN_SEARCH = "recents_first_in_search" // recently used first in searches
     internal const val KEY_OFFLINE_MODE = "offline_mode" // nothing goes online (see OfflineMode)
     internal const val KEY_SEARCH_KEY = "search_key" // opens search on the emoji layer, symbols pages, picker
+    internal const val KEY_GIF_SHOW_FAVOURITES = "gif_show_favourites" // Favourites section in GIF search
+    internal const val KEY_GIF_SHOW_RECENTS = "gif_show_recents" // Recent section in GIF search
     internal const val KEY_EMOJI_PICKER_FOCUS_SEARCH = "emoji_picker_focus_search" // typing searches on open
+    internal const val KEY_GIF_FOCUS_SEARCH = "gif_focus_search" // typing searches GIFs on open
     internal const val KEY_EMOJI_LAYER_TYPE_TO_SEARCH = "emoji_layer_type_to_search" // a letter starts emoji search
     internal const val KEY_SYMBOLS_TYPE_TO_SEARCH = "symbols_type_to_search" // a letter starts symbol search
+    internal const val KEY_GIFS_ENABLED = "gifs_enabled" // GIF key on the emoji layer, GIF tab in the picker
+    internal const val KEY_KLIPY_API_KEY = "klipy_api_key" // User's own KLIPY key (not backed up)
     private const val KEY_DISMISSED_RELEASES = "dismissed_releases" // Set of release tag_names that were dismissed
     private const val KEY_TUTORIAL_COMPLETED = "tutorial_completed" // Whether the first-run tutorial has been completed
     internal const val KEY_LAST_SEEN_WHATS_NEW_VERSION = "last_seen_whats_new_version"
@@ -289,6 +296,7 @@ object SettingsManager {
     const val STATUS_BAR_BUTTON_CLIPBOARD = "clipboard"
     const val STATUS_BAR_BUTTON_MICROPHONE = "microphone"
     const val STATUS_BAR_BUTTON_EMOJI = "emoji"
+    const val STATUS_BAR_BUTTON_GIF = "gif"
     const val STATUS_BAR_BUTTON_LANGUAGE = "language"
     const val STATUS_BAR_BUTTON_HAMBURGER = "hamburger"
     const val STATUS_BAR_BUTTON_MINIMAL_UI = "minimal_ui"
@@ -1227,6 +1235,7 @@ object SettingsManager {
         STATUS_BAR_BUTTON_EXTRA_KEYS,
         STATUS_BAR_BUTTON_SYMBOLS,
         STATUS_BAR_BUTTON_EMOJI,
+        STATUS_BAR_BUTTON_GIF,
         STATUS_BAR_BUTTON_MICROPHONE,
         STATUS_BAR_BUTTON_CLIPBOARD,
         STATUS_BAR_BUTTON_UNDO,
