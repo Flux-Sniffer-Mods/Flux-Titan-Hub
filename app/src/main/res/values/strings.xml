@@ -51,13 +51,13 @@
     <string name="french_punctuation_only_french_title">Only for French layouts</string>
     <string name="french_punctuation_only_french_description">Apply this spacing only while the active input language is French.</string>
     <string name="auto_space_punctuation_title">Punctuation spacing</string>
-    <string name="auto_space_punctuation_dialog_instruction">When you type one of these after a word, Pastiera tidies the spaces around it: no space before it, and one after it once you carry on typing.</string>
+    <string name="auto_space_punctuation_dialog_instruction">When you type one of these after a word, Flux Keyboard tidies the spaces around it: no space before it, and one after it once you carry on typing.</string>
     <string name="auto_space_punctuation_character_column">Mark</string>
     <string name="auto_space_punctuation_before_column">No space before</string>
     <string name="auto_space_punctuation_after_column">Space after</string>
     <string name="auto_space_punctuation_help_action">Explain punctuation spacing</string>
     <string name="auto_space_punctuation_help_title">How punctuation spacing works</string>
-    <string name="auto_space_punctuation_help_text">No space before: “word ,” becomes “word,”. Only a space Pastiera added itself is removed, never one you typed.\n\nSpace after: a space follows the mark, but only once you type the next word, so sending a message or pressing Enter never leaves a space at the end.</string>
+    <string name="auto_space_punctuation_help_text">No space before: “word ,” becomes “word,”. Only a space Flux Keyboard added itself is removed, never one you typed.\n\nSpace after: a space follows the mark, but only once you type the next word, so sending a message or pressing Enter never leaves a space at the end.</string>
     <string name="auto_space_punctuation_choose_off">Off</string>
     <string name="auto_space_punctuation_reset">Reset</string>
     <string name="smart_quotes_title">Quotation mark style</string>
@@ -133,7 +133,7 @@
     <!-- Installation Section -->
     
     <!-- Main Activity - Enable/Select IME -->
-    <string name="enable_pastiera">Turn on Pastiera</string>
+    <string name="enable_pastiera">Turn on Flux Keyboard</string>
     
     <!-- Test Section -->
     <string name="test_field_placeholder">Type here with the physical keyboard…</string>
@@ -192,7 +192,7 @@
     <string name="auto_correct_max_distance_off">Off</string>
     <string name="auto_correct_max_distance_description">Maximum number of character differences allowed for auto-correction. 0 = disabled, 1-3 = increasing tolerance.</string>
     <string name="auto_correct_manage_user_dict_title">Personal dictionary</string>
-    <string name="auto_correct_manage_user_dict_description">Words Pastiera should know and suggest, without creating replacement rules.</string>
+    <string name="auto_correct_manage_user_dict_description">Words Flux Keyboard should know and suggest, without creating replacement rules.</string>
     <string name="auto_correct_keyboard_proximity_title">Keyboard Proximity Ranking</string>
     <string name="auto_correct_keyboard_proximity_description">Filter unlikely typos based on key distance (QWERTY/AZERTY/QWERTZ)</string>
     <string name="auto_correct_edit_type_ranking_title">Edit Type Ranking</string>
@@ -388,11 +388,11 @@
     <string name="clicks_cursor_mode_title">Cursor Mode</string>
     <string name="clicks_cursor_mode_description">Enable the keyboard firmware’s cursor navigation mode.</string>
     <string name="clicks_recommended_settings_title">Apply recommended settings</string>
-    <string name="clicks_recommended_settings_description">Restore native Tab and Alt outputs; assign the microphone button to Pastiera dictation; assign the red Clicks button and Launcher button directly to the quick launcher; and disable Caps Lock and Cursor Mode.</string>
+    <string name="clicks_recommended_settings_description">Restore native Tab and Alt outputs; assign the microphone button to Flux Keyboard dictation; assign the red Clicks button and Launcher button directly to the quick launcher; and disable Caps Lock and Cursor Mode.</string>
     <string name="clicks_recommended_settings_success">Recommended Clicks settings applied.</string>
     <string name="clicks_recommended_settings_failure">Recommended settings could not be applied completely.</string>
-    <string name="clicks_sticky_alt_help">Controls the Clicks firmware’s SYM Lock behaviour. Pastiera’s separate Sticky Alt behaviour remains configured under Modifiers.</string>
-    <string name="clicks_sticky_shift_help">Controls the Clicks firmware’s Caps Lock behaviour. Pastiera’s separate Sticky Shift behaviour remains configured under Modifiers.</string>
+    <string name="clicks_sticky_alt_help">Controls the Clicks firmware’s SYM Lock behaviour. Flux Keyboard’s separate Sticky Alt behaviour remains configured under Modifiers.</string>
+    <string name="clicks_sticky_shift_help">Controls the Clicks firmware’s Caps Lock behaviour. Flux Keyboard’s separate Sticky Shift behaviour remains configured under Modifiers.</string>
     <string name="clicks_cursor_mode_help">The Clicks firmware uses the SYM combinations W, A, S, and D for cursor movement when Cursor Mode is enabled.</string>
     <string name="clicks_soft_return_help">This is a firmware option exposed by the keyboard. Its exact behaviour is not yet documented reliably, so leave it unchanged unless you are testing it.</string>
     <string name="clicks_backlight_brightness_title">Brightness</string>
@@ -416,16 +416,16 @@
     <string name="clicks_remap_custom_value">Current custom mapping (%1$s)</string>
     <string name="clicks_button_bindings_title">Launcher and special buttons</string>
     <string name="clicks_button_bindings_description">Configure the red Clicks button, Launcher button, Keyboard button, and microphone button in one place.</string>
-    <string name="clicks_button_bindings_screen_description">Choose whether each physical button keeps its original function, directly invokes a Pastiera function, or sends a key or key combination.</string>
+    <string name="clicks_button_bindings_screen_description">Choose whether each physical button keeps its original function, directly invokes a Flux Keyboard function, or sends a key or key combination.</string>
     <string name="clicks_binding_category_original">Original function</string>
-    <string name="clicks_binding_category_function">Pastiera function</string>
-    <string name="clicks_binding_category_pastiera_shortcut">Pastiera shortcut</string>
+    <string name="clicks_binding_category_function">Flux Keyboard function</string>
+    <string name="clicks_binding_category_pastiera_shortcut">Flux Keyboard shortcut</string>
     <string name="clicks_binding_category_key">Key input</string>
     <string name="clicks_binding_category_shortcut">Key combination</string>
     <string name="clicks_function_language_switch">Switch language (Ctrl+Space)</string>
-    <string name="clicks_function_language_switch_description">Send Ctrl+Space and enable Pastiera’s Ctrl+Space language switch.</string>
+    <string name="clicks_function_language_switch_description">Send Ctrl+Space and enable Flux Keyboard’s Ctrl+Space language switch.</string>
     <string name="clicks_function_dictation">Dictation mode (Alt+Ctrl)</string>
-    <string name="clicks_function_dictation_description">Send Alt+Ctrl and start Pastiera’s dictation mode instead of Android Gemini. The required Pastiera shortcut is enabled automatically.</string>
+    <string name="clicks_function_dictation_description">Send Alt+Ctrl and start Flux Keyboard’s dictation mode instead of Android Gemini. The required Flux Keyboard shortcut is enabled automatically.</string>
     <string name="clicks_red_button_title">red Clicks button</string>
     <string name="clicks_red_button_hardware_description">Red C button.</string>
     <string name="clicks_launcher_button_title">Launcher button</string>
@@ -443,14 +443,14 @@
     <string name="clicks_microphone_native_action">Native voice input</string>
     <string name="clicks_microphone_native_description">Use Android’s native voice-input action.</string>
     <string name="clicks_binding_alt_output_description">Send a real Alt modifier directly from the keyboard firmware.</string>
-    <string name="clicks_binding_shortcut_description">Send %1$s as a keyboard combination. It is not implicitly linked to a Pastiera function.</string>
+    <string name="clicks_binding_shortcut_description">Send %1$s as a keyboard combination. It is not implicitly linked to a Flux Keyboard function.</string>
     <string name="clicks_binding_custom_description">Keep the currently stored custom keyboard-firmware combination.</string>
     <string name="clicks_button_binding_applying">Applying…</string>
     <string name="clicks_button_binding_success">Button assignment applied.</string>
     <string name="clicks_button_binding_failure">Button assignment could not be applied.</string>
     <string name="clicks_button_binding_pending">Will be applied when a supported keyboard connection is ready.</string>
-    <string name="clicks_launcher_interception_service_label">Pastiera keys and screen size</string>
-    <string name="clicks_launcher_interception_service_description">Lets Pastiera do what a keyboard alone can\'t, for the options you turn on: read keyboard swipes, handle the keys an app would otherwise read first (buttons you assigned to Pastiera actions and, in apps where the keyboard is hidden, the keys for the status LEDs, the emoji key and Sym), and see which app is in front, so screen size per app can follow it. It can\'t read what\'s on screen.</string>
+    <string name="clicks_launcher_interception_service_label">Flux Keyboard keys and screen size</string>
+    <string name="clicks_launcher_interception_service_description">Lets Flux Keyboard do what a keyboard alone can\'t, for the options you turn on: read keyboard swipes, handle the keys an app would otherwise read first (buttons you assigned to Flux Keyboard actions and, in apps where the keyboard is hidden, the keys for the status LEDs, the emoji key and Sym), and see which app is in front, so screen size per app can follow it. It can\'t read what\'s on screen.</string>
     <string name="clicks_launcher_interception_title">Android Clicks-button interception</string>
     <string name="clicks_launcher_interception_enabled">Enabled · Only explicitly configured buttons of a supported Clicks Power Keyboard are filtered.</string>
     <string name="clicks_launcher_interception_disabled">Required for software-assigned Clicks buttons. Tap to enable it in Android Accessibility settings.</string>
@@ -458,18 +458,18 @@
     <string name="clicks_button_mode_native_description">Keep the button’s original Android key event.</string>
     <string name="clicks_button_mode_quick_launcher">Quick launcher</string>
     <string name="clicks_button_mode_quick_launcher_description">Open the built-in quick launcher directly and do not pass the key event to the app.</string>
-    <string name="clicks_button_mode_open_pastiera">Open Pastiera</string>
-    <string name="clicks_button_mode_open_pastiera_description">Open the Pastiera settings directly and do not pass the key event to the app.</string>
+    <string name="clicks_button_mode_open_pastiera">Open Flux Titan Hub</string>
+    <string name="clicks_button_mode_open_pastiera_description">Open the Flux Titan Hub settings directly and do not pass the key event to the app.</string>
     <string name="clicks_button_mode_toggle_keyboard_mode">Toggle keyboard mode</string>
     <string name="clicks_button_mode_toggle_keyboard_mode_description">Temporarily open or close the on-screen keyboard until the next hardware connection change.</string>
     <string name="clicks_button_mode_toggle_emoji_picker">Toggle emoji picker</string>
-    <string name="clicks_button_mode_toggle_emoji_picker_description">Open the Pastiera emoji picker, or close it when it is already visible.</string>
+    <string name="clicks_button_mode_toggle_emoji_picker_description">Open the Flux Keyboard emoji picker, or close it when it is already visible.</string>
     <string name="clicks_button_mode_alt">Alt</string>
     <string name="clicks_button_mode_alt_description">Act as a real held Alt modifier.</string>
     <string name="clicks_button_mode_tab">Tab</string>
-    <string name="clicks_button_mode_tab_description">Send a real Tab key through Pastiera’s normal input path.</string>
+    <string name="clicks_button_mode_tab_description">Send a real Tab key through Flux Keyboard’s normal input path.</string>
     <string name="clicks_button_mode_sym">SYM</string>
-    <string name="clicks_button_mode_sym_description">Send a real Android SYM modifier to Pastiera. This is independent of the Clicks firmware’s physical SYM layer.</string>
+    <string name="clicks_button_mode_sym_description">Send a real Android SYM modifier to Flux Keyboard. This is independent of the Clicks firmware’s physical SYM layer.</string>
     <string name="clicks_gatt_error_disconnected">Clicks Power Keyboard disconnected (GATT %1$d)</string>
     <string name="clicks_gatt_error_services">Could not read GATT services.</string>
     <string name="clicks_gatt_error_control_service">Clicks Control Service is unavailable.</string>
@@ -494,7 +494,7 @@
     <string name="clicks_firmware_updates_open_app">Open the Clicks app to check for and install firmware updates.</string>
     <string name="clicks_firmware_updates_install_app">Install the Clicks app from Google Play to update the keyboard firmware.</string>
     <string name="clicks_bluetooth_permission_title">Allow access to nearby devices?</string>
-    <string name="clicks_bluetooth_permission_description">Pastiera needs Nearby devices access to communicate directly with the paired Clicks Power Keyboard. This lets it read keyboard status and battery data and control extended functions such as key behaviour, backlight, remapping, and charging automation.</string>
+    <string name="clicks_bluetooth_permission_description">Flux Keyboard needs Nearby devices access to communicate directly with the paired Clicks Power Keyboard. This lets it read keyboard status and battery data and control extended functions such as key behaviour, backlight, remapping, and charging automation.</string>
     <string name="clicks_bluetooth_permission_continue">Continue</string>
     <string name="clicks_bluetooth_permission_not_now">Not now</string>
     <string name="clicks_section_keyboard_behavior">Keyboard behaviour</string>
@@ -520,7 +520,7 @@
     <string name="clicks_section_wireless_charging">Wireless charging</string>
     <string name="clicks_manual_wireless_charging_title">Charge for 15 minutes</string>
     <string name="clicks_manual_wireless_charging_description">Temporarily override the automatic thresholds.</string>
-    <string name="clicks_charging_connection_boundary_description">Pastiera cannot send charging commands while the keyboard is closed and disconnected. Its current state remains unchanged; thresholds and expired overrides are applied immediately after reconnecting.</string>
+    <string name="clicks_charging_connection_boundary_description">Flux Keyboard cannot send charging commands while the keyboard is closed and disconnected. Its current state remains unchanged; thresholds and expired overrides are applied immediately after reconnecting.</string>
     <string name="clicks_charging_automation_title">Automatic wireless charging</string>
     <string name="clicks_charging_automation_description">Charge below the start threshold and stop at the upper threshold.</string>
     <string name="clicks_charging_start_title">Turn on at or below</string>
@@ -538,18 +538,19 @@
     <string name="alt_key_editor_clone_profile_description">Use any BlackBerry, Unihertz, Minimal, or Clicks profile as an editable template.</string>
     <string name="alt_key_editor_mappings_title">Device SYM and key mappings</string>
     <string name="alt_key_editor_transfer_title">Import and export</string>
-    <string name="alt_key_editor_transfer_description">Share custom profiles and restore them with Pastiera backups.</string>
+    <string name="alt_key_editor_transfer_description">Share custom profiles and restore them with Flux Titan Hub backups.</string>
     <string name="feature_status_construction_content_description">Under construction</string>
     <string name="feature_status_construction_hint">This feature is work in progress or planned. It may be incomplete, unavailable, or still change.</string>
     <string name="feature_status_experimental_content_description">Experimental feature</string>
     <string name="feature_status_experimental_hint">This may already work, but it is new and may soon be changed or improved. Bug reports are welcome.</string>
     <string name="tutorial_feature_status_title">Feature status symbols</string>
-    <string name="tutorial_feature_status_description">Pastiera marks work in progress directly in the app, so you do not need to search through every GitHub issue.</string>
+    <string name="tutorial_feature_status_description">Flux Titan Hub marks work in progress directly in the app, so you do not need to search through every GitHub issue.</string>
     <string name="tutorial_feature_status_experimental_title">Experimental</string>
     <string name="tutorial_feature_status_experimental_description">The feature can work already, but it is new and may be adjusted or improved soon. Bug reports are welcome.</string>
     <string name="tutorial_feature_status_footer">Tap either symbol in Settings for a short explanation. A roadmap marker is not a promise for a particular release.</string>
     
     <!-- About Section -->
+    <string name="about_flux_sniffer_mods" translatable="false">flux sniffer mods</string>
     <string name="settings_device_keyboard_info">Device: %1$s; Keyboard: %2$s</string>
     <string name="about_title">About</string>
     <string name="about_credits_error">Unable to load credits information.</string>
@@ -558,13 +559,13 @@
     <!-- Launcher Shortcuts Section -->
     <string name="starter_launcher_shortcuts_title">Quick launcher</string>
     <string name="starter_launcher_shortcuts_description">Quick launching, SYM shortcuts, and launcher key assignments</string>
-    <string name="starter_launcher_shortcuts_intro">These settings share one launcher-key assignment list. Choose where Pastiera should listen for those assigned keys.</string>
+    <string name="starter_launcher_shortcuts_intro">These settings share one launcher-key assignment list. Choose where Flux Keyboard should listen for those assigned keys.</string>
     <string name="launcher_shortcuts_title">Homescreen shortcuts</string>
     <string name="launcher_shortcuts_description">Use assigned launcher keys directly on the Android launcher or home screen.</string>
     <string name="launcher_shortcuts_configure">Assigned launcher keys</string>
     <string name="launcher_shortcuts_configure_description">Tap a key to assign or replace a command. Assigned keys are shared by both trigger modes.</string>
     <string name="launcher_shortcuts_configure_description_with_quick_launcher">Tap a key to assign or replace a command. Quick launcher is currently assigned to %1$s.</string>
-    <string name="quick_launcher_default_blocked_hint">New: SYM can open the quick launcher. Pastiera would normally assign it to Space, but Space already has a shortcut. Open the assignments page and choose “Open quick launcher” on any key to try it.</string>
+    <string name="quick_launcher_default_blocked_hint">New: SYM can open the quick launcher. Flux Keyboard would normally assign it to Space, but Space already has a shortcut. Open the assignments page and choose “Open quick launcher” on any key to try it.</string>
     
     <!-- Launcher Shortcuts Screen -->
     <string name="launcher_shortcuts_screen_title">Quick launcher</string>
@@ -587,11 +588,11 @@
     <string name="quick_launcher_limit_results_description">Do not render the full alphabetical app list. The quick launcher stays empty until you type and then shows only the top three matches.</string>
     <string name="quick_launcher_text_field_shortcuts_hint">In text fields, hold SYM and press Space. SYM latch cannot trigger this because tapping SYM cycles the SYM pages.</string>
     <string name="quick_launcher_respect_keyboard_layout_title">Use active keyboard layout</string>
-    <string name="quick_launcher_respect_keyboard_layout_description">When enabled, search input follows the current Pastiera layout instead of Android’s raw QWERTY key output.</string>
+    <string name="quick_launcher_respect_keyboard_layout_description">When enabled, search input follows the current Flux Keyboard layout instead of Android’s raw QWERTY key output.</string>
     <string name="quick_launcher_typo_tolerant_ranking_title">Typo-tolerant search</string>
     <string name="quick_launcher_typo_tolerant_ranking_description">Also match app names with small typing mistakes. Existing prefix and abbreviation matches still rank higher.</string>
     <string name="quick_launcher_provider_title">Quick launcher behaviour</string>
-    <string name="quick_launcher_provider_description">Choose whether the shortcut opens Pastiera search or Niagara Launcher search. Niagara falls back to Pastiera if unavailable.</string>
+    <string name="quick_launcher_provider_description">Choose whether the shortcut opens Flux Keyboard search or Niagara Launcher search. Niagara falls back to Flux Keyboard if unavailable.</string>
     <string name="quick_launcher_provider_pastiera">Built-in quick launcher</string>
     <string name="quick_launcher_provider_niagara">Niagara Launcher Search</string>
     <string name="quick_launcher_ranking_info_button">How ranking works</string>
@@ -712,16 +713,16 @@
     <string name="alt_shortcuts_in_text_fields_description">Also use assigned Alt shortcuts while typing.</string>
     <string name="sym_shortcuts_compatibility_info">About SYM key compatibility</string>
     <string name="sym_shortcuts_compatibility_title">SYM key compatibility</string>
-    <string name="sym_shortcuts_compatibility_description">SYM key shortcuts require a keyboard that exposes SYM as a modifier to Android. They cannot currently work with keyboards whose firmware converts SYM combinations into final characters or navigation events before Pastiera receives them. This includes the Clicks Power Keyboard’s current SYM behaviour.</string>
+    <string name="sym_shortcuts_compatibility_description">SYM key shortcuts require a keyboard that exposes SYM as a modifier to Android. They cannot currently work with keyboards whose firmware converts SYM combinations into final characters or navigation events before Flux Keyboard receives them. This includes the Clicks Power Keyboard’s current SYM behaviour.</string>
     <string name="power_shortcuts_press_key">Press shortcut key to launch</string>
     
     <!-- Notification Helper -->
-    <string name="notification_nav_mode_channel_name">Pastiera Nav Mode</string>
-    <string name="notification_nav_mode_channel_description">Notifications for Pastiera nav mode</string>
+    <string name="notification_nav_mode_channel_name">Flux Keyboard Nav Mode</string>
+    <string name="notification_nav_mode_channel_description">Notifications for Flux Keyboard nav mode</string>
     
     <!-- Update Notifications -->
-    <string name="notification_update_channel_name">Pastiera Updates</string>
-    <string name="notification_update_channel_description">Notifications about new Pastiera versions</string>
+    <string name="notification_update_channel_name">Flux Titan Hub Updates</string>
+    <string name="notification_update_channel_description">Notifications about new Flux Titan Hub versions</string>
     <string name="notification_successor_release_title">Plektra release available</string>
     <string name="notification_successor_release_text">%1$s is available as the successor to Pastiera.</string>
     <string name="notification_pastiera_stable_update_title">Pastiera security update available</string>
@@ -765,7 +766,7 @@ QWERTZ on physical QWERTY
 Nav Mode uses the physical key position so navigation remains stable. Layout hints on keys show when the active text layout would treat that physical key as a different letter, such as Y/Z on QWERTZ.
 
 Layout-aware app Ctrl shortcuts
-When held Ctrl is passed to apps, this optional setting can translate Ctrl+letter through the active Pastiera layout first. It affects app shortcuts, not the physical Nav Mode grid.
+When held Ctrl is passed to apps, this optional setting can translate Ctrl+letter through the active Flux Keyboard layout first. It affects app shortcuts, not the physical Nav Mode grid.
 
 Overrides
 Each key can be configured as Keycode, Action, Native Ctrl, or None. Use overrides to solve app-specific conflicts without changing the whole mode.</string>
@@ -774,10 +775,10 @@ Each key can be configured as Keycode, Action, Native Ctrl, or None. Use overrid
     <string name="nav_mode_ctrl_hold_title">Ctrl-hold navigation</string>
     <string name="nav_mode_ctrl_hold_description">When enabled, text fields use Nav Mode mappings while Ctrl is held. When off, Ctrl shortcuts are passed to the app. Keys set to Native Ctrl are always passed through as real Ctrl shortcuts.</string>
     <string name="layout_aware_ctrl_shortcuts_title">Layout-aware app Ctrl shortcuts</string>
-    <string name="layout_aware_ctrl_shortcuts_description">When held Ctrl is passed to apps, translate Ctrl+letter through the active Pastiera layout first.</string>
+    <string name="layout_aware_ctrl_shortcuts_description">When held Ctrl is passed to apps, translate Ctrl+letter through the active Flux Keyboard layout first.</string>
     <string name="layout_aware_ctrl_shortcuts_disabled_description">Disabled while Ctrl-hold navigation is active, because held Ctrl is handled by Nav Mode instead of the app.</string>
     <string name="layout_aware_ctrl_shortcuts_info_title">Ctrl shortcuts and Nav Mode</string>
-    <string name="layout_aware_ctrl_shortcuts_info_text">There are two paths for held Ctrl. If Ctrl-hold navigation is on, Pastiera handles Ctrl+key with the Nav Mode mappings shown below. If Ctrl-hold navigation is off, Pastiera passes Ctrl+key to the app. This option only affects that app path: when enabled, Ctrl+letter is translated through the active Pastiera layout first, so shortcuts can follow the letters you type. When disabled, apps receive the original physical key positions.</string>
+    <string name="layout_aware_ctrl_shortcuts_info_text">There are two paths for held Ctrl. If Ctrl-hold navigation is on, Flux Keyboard handles Ctrl+key with the Nav Mode mappings shown below. If Ctrl-hold navigation is off, Flux Keyboard passes Ctrl+key to the app. This option only affects that app path: when enabled, Ctrl+letter is translated through the active Flux Keyboard layout first, so shortcuts can follow the letters you type. When disabled, apps receive the original physical key positions.</string>
     <string name="nav_mode_revert_to_default">Revert to Default</string>
     <string name="nav_mode_configure_key">Configure %1$s</string>
     <string name="nav_mode_type">Type</string>
@@ -821,7 +822,7 @@ Each key can be configured as Keycode, Action, Native Ctrl, or None. Use overrid
     <string name="app_enter_behaviour_title">Enter key behaviour</string>
     <string name="app_enter_behaviour_description">Configure app-specific Enter and newline handling</string>
     <string name="app_enter_behaviour_enable_title">App-specific Enter behaviour</string>
-    <string name="app_enter_behaviour_enable_description">Use Pastiera overrides for selected messaging apps. Tested apps show the strategy Pastiera actually uses.</string>
+    <string name="app_enter_behaviour_enable_description">Use Flux Keyboard overrides for selected messaging apps. Tested apps show the strategy Flux Keyboard actually uses.</string>
     <string name="app_enter_behaviour_preset_title">Messaging preset</string>
     <string name="app_enter_behaviour_preset_description">Apply a consistent default to installed known messaging apps.</string>
     <string name="app_enter_behaviour_preset_app_default">App default</string>
@@ -846,7 +847,7 @@ Each key can be configured as Keycode, Action, Native Ctrl, or None. Use overrid
     <string name="app_enter_behaviour_option_newline_ctrl_send">Enter newline, Ctrl+Enter sends</string>
     <string name="app_enter_behaviour_option_enter_newline">Enter newline</string>
     <string name="app_enter_behaviour_status_not_active">Not active yet: %1$s is planned.</string>
-    <string name="app_enter_behaviour_status_native_result">App default: Pastiera does not intervene.</string>
+    <string name="app_enter_behaviour_status_native_result">App default: Flux Keyboard does not intervene.</string>
     <string name="app_enter_behaviour_status_strategy_result">Active: %1$s.</string>
     <string name="app_enter_behaviour_status_experimental_result">Experimentally active: %1$s.</string>
     <string name="app_enter_behaviour_strategy_none_label">No override</string>
@@ -854,12 +855,12 @@ Each key can be configured as Keycode, Action, Native Ctrl, or None. Use overrid
     <string name="app_enter_behaviour_strategy_plain_enter_label">Plain Enter</string>
     <string name="app_enter_behaviour_strategy_unconfigured_label">Not configured</string>
     <string name="app_enter_behaviour_strategy_app_default_detail">The app decides whether Enter sends or inserts a newline.</string>
-    <string name="app_enter_behaviour_strategy_whatsapp_newline_ctrl_send">Pastiera inserts newlines directly and sends through the app\'s send action.</string>
-    <string name="app_enter_behaviour_strategy_whatsapp_send_shift_newline">Pastiera sends through the app\'s send action. Shift+Enter is inserted directly as a newline.</string>
-    <string name="app_enter_behaviour_strategy_whatsapp_newline_only">Tested: Pastiera inserts Enter directly as a newline and does not trigger send.</string>
-    <string name="app_enter_behaviour_strategy_discord_app_default_detail">Tested: Discord already behaves correctly for Enter sends and Shift+Enter newline. Pastiera does not intervene here.</string>
+    <string name="app_enter_behaviour_strategy_whatsapp_newline_ctrl_send">Flux Keyboard inserts newlines directly and sends through the app\'s send action.</string>
+    <string name="app_enter_behaviour_strategy_whatsapp_send_shift_newline">Flux Keyboard sends through the app\'s send action. Shift+Enter is inserted directly as a newline.</string>
+    <string name="app_enter_behaviour_strategy_whatsapp_newline_only">Tested: Flux Keyboard inserts Enter directly as a newline and does not trigger send.</string>
+    <string name="app_enter_behaviour_strategy_discord_app_default_detail">Tested: Discord already behaves correctly for Enter sends and Shift+Enter newline. Flux Keyboard does not intervene here.</string>
     <string name="app_enter_behaviour_strategy_discord_partial_detail">Tested: Newlines are inserted directly. Ctrl+Enter sends a plain Enter without Ctrl meta because Discord\'s app action only hides the keyboard.</string>
-    <string name="app_enter_behaviour_strategy_experimental_detail">Not confirmed: Pastiera is trying the app\'s send action and direct newline insertion.</string>
+    <string name="app_enter_behaviour_strategy_experimental_detail">Not confirmed: Flux Keyboard is trying the app\'s send action and direct newline insertion.</string>
     <string name="app_enter_behaviour_strategy_not_tested_detail">The technical strategy still needs to be tested for this app.</string>
     <string name="app_enter_behaviour_desired_label">Wanted behaviour</string>
     <string name="app_enter_behaviour_strategy_label">Send strategy</string>
@@ -1053,25 +1054,25 @@ Each key can be configured as Keycode, Action, Native Ctrl, or None. Use overrid
     <string name="tutorial_whats_new_title">New in this version: %1$s</string>
     <string name="tutorial_whats_new_description">A few changes are worth knowing before you continue.</string>
     <string name="tutorial_whats_new_bug_fixes_title">Bug fixes</string>
-    <string name="tutorial_whats_new_docs_button">Open Pastiera docs</string>
+    <string name="tutorial_whats_new_docs_button">Open Flux Titan Hub docs</string>
     <string name="tutorial_whats_new_continue_hint">Continue through the tutorial to review the most useful settings for this release.</string>
-    <string name="tutorial_page_welcome_title">Welcome to Pastiera</string>
+    <string name="tutorial_page_welcome_title">Welcome to Flux Titan Hub</string>
     <string name="tutorial_devs_choice_button">Dev\'s Choice</string>
     <string name="tutorial_devs_choice_applied">Dev\'s Choice settings applied.</string>
-    <string name="tutorial_page_enable_title">Enable Pastiera</string>
-    <string name="tutorial_page_enable_description">To get started, you need to enable Pastiera as an input method in Android Settings. Tap the button below to open settings.</string>
-    <string name="tutorial_page_select_title">Select Pastiera</string>
-    <string name="tutorial_page_select_description">To use Pastiera, select it among the input methods. The next step lets you choose whether Pastiera should use a virtual keyboard or hardware-keyboard mode.</string>
+    <string name="tutorial_page_enable_title">Enable Flux Keyboard</string>
+    <string name="tutorial_page_enable_description">To get started, you need to enable Flux Keyboard as an input method in Android Settings. Tap the button below to open settings.</string>
+    <string name="tutorial_page_select_title">Select Flux Keyboard</string>
+    <string name="tutorial_page_select_description">To use Flux Keyboard, select it among the input methods. The next step lets you choose whether Flux Keyboard should use a virtual keyboard or hardware-keyboard mode.</string>
     <string name="tutorial_page_software_keyboard_title">Keyboard Mode</string>
-    <string name="tutorial_page_software_keyboard_description">Pick the keyboard surface Pastiera should use here.</string>
+    <string name="tutorial_page_software_keyboard_description">Pick the keyboard surface Flux Keyboard should use here.</string>
     <string name="tutorial_software_keyboard_auto_bullet">Recommended: hardware mode on known PKB devices, virtual mode on touch devices.</string>
     <string name="tutorial_software_keyboard_virtual_bullet">Full on-screen keyboard for touch-first use. Still alpha.</string>
     <string name="tutorial_software_keyboard_hardware_bullet">Compact surface for devices with physical keys.</string>
     <string name="tutorial_software_keyboard_alpha_warning">Alpha feature: the virtual keyboard is still heavily under construction and is not recommended for daily use yet.</string>
     <string name="tutorial_android16_ime_caption_title">Hide IME caption bar</string>
-    <string name="tutorial_android16_ime_caption_description">Titan 2 devices can show an extra IME caption bar under Pastiera. This OEM setting hides it and keeps Pastiera compact.</string>
+    <string name="tutorial_android16_ime_caption_description">Titan 2 devices can show an extra IME caption bar under Flux Keyboard. This OEM setting hides it and keeps Flux Keyboard compact.</string>
     <string name="tutorial_android16_ime_caption_before">Before: extra caption bar</string>
-    <string name="tutorial_android16_ime_caption_after">After: compact Pastiera</string>
+    <string name="tutorial_android16_ime_caption_after">After: compact Flux Keyboard</string>
     <string name="tutorial_android16_ime_caption_check_android16">Android 16 or newer</string>
     <string name="tutorial_android16_ime_caption_check_titan2">Unihertz Titan 2 or Titan 2 Elite</string>
     <string name="tutorial_android16_ime_caption_check_setting">OEM gesture setting available</string>
@@ -1090,13 +1091,13 @@ Each key can be configured as Keycode, Action, Native Ctrl, or None. Use overrid
     <string name="tutorial_page_nav_mode_description">Nav Mode turns letter keys into navigation and editing controls. Press Ctrl twice to latch it, or enable Ctrl-hold navigation below.</string>
     <string name="tutorial_nav_mode_bullet_selection">Selection actions can extend text selection left, right, or word by word.</string>
     <string name="tutorial_nav_mode_bullet_words">Word actions jump by whole words for faster cursor movement in text fields.</string>
-    <string name="tutorial_nav_mode_bullet_media">Mappings can also handle app shortcuts, media controls, Escape, Tab, Page Up/Down, and Pastierina.</string>
+    <string name="tutorial_nav_mode_bullet_media">Mappings can also handle app shortcuts, media controls, Escape, Tab, Page Up/Down, and Solderina.</string>
     <string name="tutorial_quick_launcher_title">Quick launcher</string>
     <string name="tutorial_quick_launcher_description">Open apps from the keyboard without leaving your typing flow.</string>
     <string name="tutorial_quick_launcher_bullet_sym_space">Hold SYM and press Space to open the quick launcher from anywhere.</string>
     <string name="tutorial_quick_launcher_bullet_text_fields">It also works while the cursor is inside a text field, so you can switch apps from typing context.</string>
     <string name="tutorial_quick_launcher_bullet_search">Type a few letters, abbreviations, or small typos to find the app you want.</string>
-    <string name="tutorial_quick_launcher_bullet_layout">Search can respect your active Pastiera layout, such as QWERTZ.</string>
+    <string name="tutorial_quick_launcher_bullet_layout">Search can respect your active Flux Keyboard layout, such as QWERTZ.</string>
     <string name="tutorial_quick_launcher_button">Open quick launcher settings</string>
     <string name="tutorial_quick_launcher_mapping_conflict_title">SYM + Space is assigned to something else</string>
     <string name="tutorial_quick_launcher_mapping_conflict_description">Space currently opens “%1$s”. Replace that mapping with the quick launcher and enable it in text fields to try the new feature.</string>
@@ -1112,16 +1113,16 @@ Each key can be configured as Keycode, Action, Native Ctrl, or None. Use overrid
     <string name="tutorial_typing_sound_demo_input_label">Try typing here</string>
     <string name="tutorial_sym_emoji_button">SYM / Emoji</string>
     <string name="tutorial_device_sym_layer_title">Device-specific characters use Device SYM</string>
-    <string name="tutorial_device_sym_layer_description">Pastiera now calls the device-specific secondary-character mapping the Device SYM Layer. Alt remains the modifier key that can trigger it; Emoji and Symbols are additional SYM layers.</string>
+    <string name="tutorial_device_sym_layer_description">Flux Keyboard now calls the device-specific secondary-character mapping the Device SYM Layer. Alt remains the modifier key that can trigger it; Emoji and Symbols are additional SYM layers.</string>
     <string name="tutorial_variations_button">Variations</string>
     <string name="tutorial_status_bar_button">Status bar</string>
     <string name="tutorial_page_ready_title">Ready to Start</string>
     <string name="tutorial_page_ready_description">You\'re set. Each module\'s tile on the home screen says what it still needs, and a long-press (or its ⚙) opens its settings.</string>
-    <string name="tutorial_enable_button">Enable Pastiera</string>
-    <string name="tutorial_enabled_message">Pastiera is enabled!</string>
-    <string name="tutorial_select_button">Select Pastiera</string>
-    <string name="tutorial_enable_first_message">Enable Pastiera first on the previous page</string>
-    <string name="tutorial_selected_message">Pastiera is selected!</string>
+    <string name="tutorial_enable_button">Enable Flux Keyboard</string>
+    <string name="tutorial_enabled_message">Flux Keyboard is enabled!</string>
+    <string name="tutorial_select_button">Select Flux Keyboard</string>
+    <string name="tutorial_enable_first_message">Enable Flux Keyboard first on the previous page</string>
+    <string name="tutorial_selected_message">Flux Keyboard is selected!</string>
     <string name="tutorial_show">Show Tutorial</string>
     <string name="tutorial_review_description">Review the introductory tutorial</string>
     <string name="tutorial_show_release_notes">Show release notes tutorial</string>
@@ -1167,7 +1168,7 @@ Each key can be configured as Keycode, Action, Native Ctrl, or None. Use overrid
     <string name="backup_now">Backup now</string>
     <string name="backup_now_description">Export all settings and custom layouts to a ZIP</string>
     <string name="restore_from_file">Restore from file</string>
-    <string name="restore_from_file_description">Import a Pastiera backup ZIP</string>
+    <string name="restore_from_file_description">Import a Flux Titan Hub backup ZIP</string>
     <string name="backup_completed">Backup completed</string>
     <string name="restore_completed">Restore completed</string>
     <string name="backup_failed">Backup failed: %1$s</string>
@@ -1349,7 +1350,7 @@ Each key can be configured as Keycode, Action, Native Ctrl, or None. Use overrid
     <string name="trackpad_tutorial_how_it_works_title">How It Works</string>
     <string name="trackpad_tutorial_how_it_works_description">• Swipe up over the left, middle or right third of the keys for that suggestion.\n• With Swipe direction on, swipe left, up or right anywhere for the left, middle or right suggestion instead.\n• Delete a word with a swipe left or down: Delete a word with a swipe.\n• Trackpad sensitivity sets how far each swipe has to go.</string>
     <string name="trackpad_tutorial_shizuku_required_title">Set up the phone</string>
-    <string name="trackpad_tutorial_shizuku_required_description">On the Titan 2 Elite the phone only passes keyboard swipes on while its own Scroll assistant is on: Settings › Gestures › Keyboard gesture (Phone trackpad settings below opens it), or the Scroll assistant tile in quick settings.\n\n• Scroll assistant: on. Without it, no swipe reaches the keyboard.\n• Cursor assistant: optional. While its cursor mode is on (double tap the keys), swipes move the cursor instead.\n\nPastiera reads the swipes itself (Native IME events); Shizuku is only needed with the Shizuku provider.</string>
+    <string name="trackpad_tutorial_shizuku_required_description">On the Titan 2 Elite the phone only passes keyboard swipes on while its own Scroll assistant is on: Settings › Gestures › Keyboard gesture (Phone trackpad settings below opens it), or the Scroll assistant tile in quick settings.\n\n• Scroll assistant: on. Without it, no swipe reaches the keyboard.\n• Cursor assistant: optional. While its cursor mode is on (double tap the keys), swipes move the cursor instead.\n\nFlux Keyboard reads the swipes itself (Native IME events); Shizuku is only needed with the Shizuku provider.</string>
     <string name="trackpad_tutorial_tips_title">Tips</string>
     <string name="trackpad_tutorial_tips_description">• Quick, deliberate swipes work best.\n• A natural flick on the Titan 2 Elite covers about 300 of its 750 points of height, so a sensitivity around 200–250 suits it.\n• Fingers resting on other keys can stop a swipe being seen.\n• If no swipe registers at all, check Scroll assistant is on.</string>
     <string name="trackpad_tutorial_complete">Got It</string>
@@ -1360,7 +1361,7 @@ Each key can be configured as Keycode, Action, Native Ctrl, or None. Use overrid
 
     <!-- Status Bar Buttons Configuration -->
     <string name="status_bar_buttons_title">Status Bar</string>
-    <string name="status_bar_buttons_description">Pastierina or minimal mode, and the buttons on the bar.</string>
+    <string name="status_bar_buttons_description">Solderina or minimal mode, and the buttons on the bar.</string>
     <string name="status_bar_style_section">Keyboard bar</string>
     <string name="status_bar_buttons_section">Buttons</string>
     <string name="pastierina_preview_suggestions">Suggestions</string>
@@ -1368,8 +1369,8 @@ Each key can be configured as Keycode, Action, Native Ctrl, or None. Use overrid
     <string name="titan2_elite_rounded_corners_description">Round the bottom corners of the status bar to match the Elite’s rounded display corners.</string>
     <string name="status_bar_slots_left">Left buttons</string>
     <string name="status_bar_slots_right">Right buttons</string>
-    <string name="pastierina_status_bar_buttons_title">Pastierina</string>
-    <string name="pastierina_status_bar_buttons_description">Choose which buttons appear on the left and right edges of the compact Pastierina row.</string>
+    <string name="pastierina_status_bar_buttons_title">Solderina</string>
+    <string name="pastierina_status_bar_buttons_description">Choose which buttons appear on the left and right edges of the compact Solderina row.</string>
     <string name="status_bar_slot_add">Add status bar button</string>
     <string name="status_bar_slot_remove">Remove status bar button</string>
     <string name="status_bar_button_none">None</string>
@@ -1402,11 +1403,11 @@ Each key can be configured as Keycode, Action, Native Ctrl, or None. Use overrid
     <string name="modifier_indicators_title">Modifier indicators</string>
     <string name="modifier_indicators_description">Choose where Shift, Ctrl, Alt, and SYM state appears for the hardware keyboard.</string>
     <string name="modifier_indicators_bottom_strip">Bottom Strip LEDs</string>
-    <string name="modifier_indicators_bottom_strip_description">Colored modifier LEDs in the strip below Pastiera.</string>
+    <string name="modifier_indicators_bottom_strip_description">Colored modifier LEDs in the strip below Flux Keyboard.</string>
     <string name="modifier_indicators_menu_bar">Menubar</string>
     <string name="modifier_indicators_menu_bar_description">One compact icon in Android\'s top statusbar.</string>
     <string name="modifier_indicators_status_bar">Statusbar</string>
-    <string name="modifier_indicators_status_bar_description">Compact symbols at the left edge of the Pastiera statusbar.</string>
+    <string name="modifier_indicators_status_bar_description">Compact symbols at the left edge of the Flux Keyboard statusbar.</string>
     <string name="modifier_indicators_off_state">All modifier indicators are off.</string>
     <string name="status_bar_state_on">On</string>
     <string name="status_bar_state_off">Off</string>
@@ -1525,13 +1526,13 @@ Each key can be configured as Keycode, Action, Native Ctrl, or None. Use overrid
     <string name="titan2_elite_corner_style_straight">Straight buttons</string>
     <string name="titan2_elite_off_with_contour_leds">Off with contoured LEDs, which run along the display’s curve.</string>
     <string name="hidden_keyboard_apps_title">Hide keyboard in these apps</string>
-    <string name="hidden_keyboard_apps_description">Pastiera stays out of sight in the apps you list and leaves every key to them. Useful for Termux:X11 desktops.</string>
+    <string name="hidden_keyboard_apps_description">Flux Keyboard stays out of sight in the apps you list and leaves every key to them. Useful for Termux:X11 desktops.</string>
     <string name="hidden_keyboard_apps_search">Search apps</string>
     <string name="hidden_keyboard_apps_done">Done</string>
-    <string name="hidden_keyboard_apps_per_app_options">Each ticked app has two options. Status LEDs keeps the modifier LEDs visible over the app. Emoji &amp; Sym lets your emoji key and Sym open Pastiera there; Sym then no longer reaches the app.</string>
+    <string name="hidden_keyboard_apps_per_app_options">Each ticked app has two options. Status LEDs keeps the modifier LEDs visible over the app. Emoji &amp; Sym lets your emoji key and Sym open Flux Keyboard there; Sym then no longer reaches the app.</string>
     <string name="hidden_keyboard_apps_option_leds">Status LEDs</string>
     <string name="hidden_keyboard_apps_option_panels">Emoji &amp; Sym</string>
-    <string name="hidden_keyboard_apps_accessibility_hint">Apps that read the keyboard themselves, like Termux:X11, need Pastiera’s accessibility service for these options.</string>
+    <string name="hidden_keyboard_apps_accessibility_hint">Apps that read the keyboard themselves, like Termux:X11, need Flux Keyboard’s accessibility service for these options.</string>
     <string name="hidden_keyboard_apps_open_accessibility">Open accessibility settings</string>
     <string name="emoji_key_target_title">Emoji key opens</string>
     <string name="emoji_key_target_picker">Emoji picker</string>
@@ -1585,21 +1586,21 @@ Each key can be configured as Keycode, Action, Native Ctrl, or None. Use overrid
     <string name="flux_section_gif_search">GIF search</string>
     <string name="flux_titan_screen_title">Titan 2 Elite screen</string>
     <string name="flux_titan_screen_description">Rounded corners, outer buttons and the status bar</string>
-    <string name="flux_titan_screen_note">How Pastiera fits the Titan 2 Elite’s rounded screen.</string>
+    <string name="flux_titan_screen_note">How Flux Keyboard fits the Titan 2 Elite’s rounded screen.</string>
     <string name="flux_hidden_apps_title">Hidden keyboard apps</string>
-    <string name="flux_hidden_apps_description">Apps where Pastiera stays out of sight, like Termux:X11</string>
-    <string name="flux_hidden_apps_note">In these apps Pastiera shows nothing and leaves the keys to the app. Tap an app in the list for its extras: status LEDs, and Pastiera’s emoji and symbol panels.</string>
+    <string name="flux_hidden_apps_description">Apps where Flux Keyboard stays out of sight, like Termux:X11</string>
+    <string name="flux_hidden_apps_note">In these apps Flux Keyboard shows nothing and leaves the keys to the app. Tap an app in the list for its extras: status LEDs, and Flux Keyboard’s emoji and symbol panels.</string>
     <string name="flux_section_accessibility">Accessibility service</string>
-    <string name="flux_accessibility_title">Pastiera’s accessibility service</string>
+    <string name="flux_accessibility_title">Flux Keyboard’s accessibility service</string>
     <string name="flux_accessibility_on">On. Status LEDs, panels, Ctrl and Sym work in apps like Termux:X11.</string>
     <string name="flux_accessibility_off">Off. Tap to turn it on: apps like Termux:X11 read keys before any keyboard, so the status LEDs, panels, Ctrl and Sym there need it.</string>
     <string name="flux_linux_desktop_title">Linux desktop</string>
     <string name="flux_linux_desktop_description">Ctrl, Sym and the keyboard layout for Termux:X11</string>
-    <string name="flux_linux_desktop_note">For a Linux desktop in Termux:X11, such as the Titan 2 Elite Debian chroot, with Pastiera hidden there.</string>
+    <string name="flux_linux_desktop_note">For a Linux desktop in Termux:X11, such as the Titan 2 Elite Debian chroot, with Flux Keyboard hidden there.</string>
     <string name="flux_section_keys">Keys</string>
     <string name="flux_section_layout">Keyboard layout</string>
     <string name="flux_standard_ctrl_sym_title">Standard Ctrl and Sym</string>
-    <string name="flux_standard_ctrl_sym_description">In apps with Pastiera hidden, send the Titan’s Ctrl and Sym as a standard Ctrl and Right Alt, which Termux:X11 can pass to Linux.</string>
+    <string name="flux_standard_ctrl_sym_description">In apps with Flux Keyboard hidden, send the Titan’s Ctrl and Sym as a standard Ctrl and Right Alt, which Termux:X11 can pass to Linux.</string>
     <string name="flux_desktop_layout_title">Desktop keyboard layout</string>
     <string name="flux_desktop_layout_description">Written from your Alt map and SYM page each time Termux:X11 opens; the desktop uses it at its next start. Tap to write it now.</string>
     <string name="flux_desktop_layout_not_written">Not written yet.</string>
@@ -1631,11 +1632,11 @@ Each key can be configured as Keycode, Action, Native Ctrl, or None. Use overrid
     <string name="flux_gif_recents_title">Recent GIFs</string>
     <string name="flux_gif_recents_description">The GIFs you’ve sent lately, after your favourites in GIF search.</string>
     <string name="flux_offline_title">Offline mode</string>
-    <string name="flux_offline_description">Keep Pastiera off the internet</string>
+    <string name="flux_offline_description">Keep Flux Titan Hub off the internet</string>
     <string name="flux_offline_on">On: nothing goes online</string>
-    <string name="flux_offline_note">Pastiera has no analytics or telemetry. These are the only things that go online, and offline mode turns them all off.</string>
+    <string name="flux_offline_note">Flux Titan Hub has no analytics or telemetry. These are the only things that go online, and offline mode turns them all off.</string>
     <string name="flux_offline_switch_title">Offline mode</string>
-    <string name="flux_offline_switch_description">Nothing in Pastiera goes online.</string>
+    <string name="flux_offline_switch_description">Nothing in Flux Titan Hub goes online.</string>
     <string name="flux_section_offline_affects">While it’s on</string>
     <string name="flux_offline_affects">• GIF search is gone, with its tab and the emoji layer’s GIF key\n• Dictionaries and layouts can’t be downloaded\n• No update checks or release notes\n• Emoji come from the system font only, without the downloadable emoji font (from the next start of the keyboard)</string>
     <string name="flux_gifs_offline_note">Offline mode is on, so GIF search is off (Settings → Offline mode).</string>

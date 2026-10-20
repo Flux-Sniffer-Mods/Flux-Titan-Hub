@@ -30,7 +30,7 @@
     <string name="static_variation_bar_mode_description">Завжди показувати фіксований набір утиліт замість контекстних варіацій.</string>
     <string name="swipe_to_move_cursor">Свайп для переміщення курсора</string>
     <string name="settings_content_description">Налаштування</string>
-    <string name="enable_pastiera">Увімкнути Pastiera</string>
+    <string name="enable_pastiera">Увімкнути Flux Keyboard</string>
     <string name="test_field_placeholder">Друкуйте тут на фізичній клавіатурі…</string>
     <string name="last_keyboard_event_title">Остання подія клавіатури</string>
     <string name="change_keyboard_button">Змінити клавіатуру</string>
@@ -68,7 +68,7 @@
     <string name="auto_correct_max_distance_off">Вимкнено</string>
     <string name="auto_correct_max_distance_description">Максимальна кількість відмінностей символів для автокорекції. 0 = вимкнено, 1-3 = збільшення толерантності.</string>
     <string name="auto_correct_manage_user_dict_title">Особистий словник</string>
-    <string name="auto_correct_manage_user_dict_description">Слова, які Pastiera має знати й пропонувати, без створення правил заміни.</string>
+    <string name="auto_correct_manage_user_dict_description">Слова, які Flux Keyboard має знати й пропонувати, без створення правил заміни.</string>
     <string name="auto_correct_keyboard_proximity_title">Ранжування за близькістю клавіш</string>
     <string name="auto_correct_keyboard_proximity_description">Фільтрувати малоймовірні друкарські помилки на основі відстані клавіш (QWERTY/AZERTY/QWERTZ)</string>
     <string name="auto_correct_edit_type_ranking_title">Ранжування за типом редагування</string>
@@ -126,10 +126,10 @@
     <string name="power_shortcuts_title">Швидкі ярлики</string>
     <string name="power_shortcuts_description">Натисніть SYM, а потім клавішу, щоб запускати ярлики поза текстовим полем</string>
     <string name="power_shortcuts_press_key">Натисніть клавішу ярлика для запуску</string>
-    <string name="notification_nav_mode_channel_name">Режим навігації Pastiera</string>
+    <string name="notification_nav_mode_channel_name">Режим навігації Flux Keyboard</string>
     <string name="notification_nav_mode_channel_description">Сповіщення для режиму навігації</string>
-    <string name="notification_update_channel_name">Оновлення Pastiera</string>
-    <string name="notification_update_channel_description">Сповіщення про нові версії Pastiera</string>
+    <string name="notification_update_channel_name">Оновлення Flux Titan Hub</string>
+    <string name="notification_update_channel_description">Сповіщення про нові версії Flux Titan Hub</string>
     <string name="notification_successor_release_title">Доступний випуск Plektra</string>
     <string name="notification_successor_release_text">%1$s доступний як наступник Pastiera.</string>
     <string name="speech_recognition_prompt">Говоріть…</string>
@@ -248,22 +248,22 @@
     <string name="tutorial_previous">Назад</string>
     <string name="tutorial_next">Далі</string>
     <string name="tutorial_finish">Завершити</string>
-    <string name="tutorial_page_welcome_title">Ласкаво просимо до Pastiera</string>
-    <string name="tutorial_page_enable_title">Увімкнути Pastiera</string>
-    <string name="tutorial_page_enable_description">Для початку потрібно увімкнути Pastiera як метод введення в налаштуваннях Android. Натисніть кнопку нижче щоб відкрити налаштування.</string>
-    <string name="tutorial_page_select_title">Обрати Pastiera</string>
-    <string name="tutorial_page_select_description">Щоб використовувати Pastiera, оберіть її серед методів введення. На наступному кроці можна вибрати віртуальну клавіатуру або режим апаратної клавіатури.</string>
+    <string name="tutorial_page_welcome_title">Ласкаво просимо до Flux Titan Hub</string>
+    <string name="tutorial_page_enable_title">Увімкнути Flux Keyboard</string>
+    <string name="tutorial_page_enable_description">Для початку потрібно увімкнути Flux Keyboard як метод введення в налаштуваннях Android. Натисніть кнопку нижче щоб відкрити налаштування.</string>
+    <string name="tutorial_page_select_title">Обрати Flux Keyboard</string>
+    <string name="tutorial_page_select_description">Щоб використовувати Flux Keyboard, оберіть її серед методів введення. На наступному кроці можна вибрати віртуальну клавіатуру або режим апаратної клавіатури.</string>
     <string name="tutorial_page_nav_mode_title">Режим навігації</string>
     <string name="tutorial_page_nav_mode_description">Режим навігації дозволяє керувати інтерфейсом пристрою за допомогою літерних скорочень, таких як IJKL або ESDF.\nЩоб активувати:\n• Натисніть Ctrl двічі швидко\n• Літерні клавіші стають елементами керування навігацією\n• Натисніть Ctrl знову, щоб вийти\nКожне скорочення можна переналаштувати в Додаткових налаштуваннях.</string>
     <string name="tutorial_nav_mode_bullet_selection">Дії виділення розширюють виділений текст ліворуч, праворуч або по словах.</string>
     <string name="tutorial_nav_mode_bullet_words">Дії зі словами швидше переміщують курсор цілими словами в текстових полях.</string>
-    <string name="tutorial_nav_mode_bullet_media">Призначення також можуть викликати ярлики застосунків, керування медіа, Escape, Tab, Page Up/Down і Pastierina.</string>
+    <string name="tutorial_nav_mode_bullet_media">Призначення також можуть викликати ярлики застосунків, керування медіа, Escape, Tab, Page Up/Down і Solderina.</string>
     <string name="tutorial_quick_launcher_title">QuickLauncher</string>
     <string name="tutorial_quick_launcher_description">Відкривайте застосунки з клавіатури, не виходячи з потоку введення.</string>
     <string name="tutorial_quick_launcher_bullet_sym_space">Утримуйте SYM і натисніть Пробіл, щоб відкрити QuickLauncher будь-де.</string>
     <string name="tutorial_quick_launcher_bullet_text_fields">Це працює і коли курсор у текстовому полі, щоб перемикати застосунки під час набору.</string>
     <string name="tutorial_quick_launcher_bullet_search">Введіть кілька літер, скорочення або невелику помилку, щоб знайти потрібний застосунок.</string>
-    <string name="tutorial_quick_launcher_bullet_layout">Пошук може враховувати активну розкладку Pastiera, наприклад QWERTZ.</string>
+    <string name="tutorial_quick_launcher_bullet_layout">Пошук може враховувати активну розкладку Flux Keyboard, наприклад QWERTZ.</string>
     <string name="tutorial_quick_launcher_button">Відкрити налаштування QuickLauncher</string>
     <string name="tutorial_quick_launcher_mapping_conflict_title">SYM + Пробіл призначено на іншу дію</string>
     <string name="tutorial_quick_launcher_mapping_conflict_description">Пробіл зараз відкриває «%1$s». Замініть це призначення на QuickLauncher і ввімкніть його в текстових полях, щоб спробувати нову функцію.</string>
@@ -276,11 +276,11 @@
     <string name="tutorial_messenger_presets_button">Відкрити пресети месенджерів</string>
     <string name="tutorial_page_ready_title">Готово до роботи</string>
     <string name="tutorial_page_ready_description">Усе готово. Плитка кожного модуля на головному екрані показує, чого йому ще бракує, а довге натискання (або його ⚙) відкриває його налаштування.</string>
-    <string name="tutorial_enable_button">Увімкнути Pastiera</string>
-    <string name="tutorial_enabled_message">Pastiera увімкнено!</string>
-    <string name="tutorial_select_button">Обрати Pastiera</string>
-    <string name="tutorial_enable_first_message">Спочатку увімкніть Pastiera на попередній сторінці</string>
-    <string name="tutorial_selected_message">Pastiera обрано!</string>
+    <string name="tutorial_enable_button">Увімкнути Flux Keyboard</string>
+    <string name="tutorial_enabled_message">Flux Keyboard увімкнено!</string>
+    <string name="tutorial_select_button">Обрати Flux Keyboard</string>
+    <string name="tutorial_enable_first_message">Спочатку увімкніть Flux Keyboard на попередній сторінці</string>
+    <string name="tutorial_selected_message">Flux Keyboard обрано!</string>
     <string name="tutorial_show">Показати туторіал</string>
     <string name="tutorial_review_description">Переглянути вступний туторіал</string>
     <string name="backup_now">Створити резервну копію</string>
@@ -360,7 +360,7 @@
     <string name="trackpad_tutorial_how_it_works_title">Як це працює</string>
     <string name="trackpad_tutorial_how_it_works_description">Тачпад розділено на три секції:\n\n• Ліва третина → Прийняти ліву пропозицію\n• Центральна третина → Прийняти центральну пропозицію\n• Права третина → Прийняти праву пропозицію\n\nПросто проведіть вгору у відповідній області, щоб вставити цю пропозицію.</string>
     <string name="trackpad_tutorial_shizuku_required_title">Потрібен Shizuku</string>
-    <string name="trackpad_tutorial_shizuku_required_description">Ця функція потребує Shizuku для доступу до подій тачпада.\n\n1. Встановіть Shizuku з релізів GitHub\n2. Увімкніть опції розробника в налаштуваннях Android\n3. Підключіть пристрій до ПК з встановленим ADB\n4. Запустіть команду, яку Shizuku показує в своєму додатку\n5. Надайте дозвіл Pastiera в Shizuku\n\nФункція працюватиме автоматично, як тільки Shizuku запущено.</string>
+    <string name="trackpad_tutorial_shizuku_required_description">Ця функція потребує Shizuku для доступу до подій тачпада.\n\n1. Встановіть Shizuku з релізів GitHub\n2. Увімкніть опції розробника в налаштуваннях Android\n3. Підключіть пристрій до ПК з встановленим ADB\n4. Запустіть команду, яку Shizuku показує в своєму додатку\n5. Надайте дозвіл Flux Keyboard в Shizuku\n\nФункція працюватиме автоматично, як тільки Shizuku запущено.</string>
     <string name="trackpad_tutorial_tips_title">Поради</string>
     <string name="trackpad_tutorial_tips_description">• Переконайтеся, що ваш свайп переважно вертикальний\n• Жест працює краще зі швидкими, цілеспрямованими свайпами\n• Якщо інші пальці на клавіатурі, жести можуть не виявлятися (апаратне відхилення долоні)\n• Функцію можна увімкнути/вимкнути в Додаткових налаштуваннях</string>
     <string name="trackpad_tutorial_complete">Зрозуміло</string>
@@ -446,7 +446,7 @@
     <string name="installed_dictionaries_uninstall_cannot_delete_asset">Вбудовані словники не можна видалити</string>
     <string name="installed_dictionaries_uninstall_failed">Не вдалося видалити словник</string>
     <string name="status_bar_buttons_title">Status Bar Buttons</string>
-    <string name="status_bar_buttons_description">Pastierina або мінімальний режим, і кнопки на панелі.</string>
+    <string name="status_bar_buttons_description">Solderina або мінімальний режим, і кнопки на панелі.</string>
     <string name="status_bar_button_none">None</string>
     <string name="status_bar_button_none_description">Empty</string>
     <string name="status_bar_button_clipboard">Clipboard</string>
@@ -466,7 +466,7 @@
     <string name="status_bar_button_symbols_description">Клавіатура символів</string>
     <string name="status_bar_buttons_reset">Reset</string>
     <string name="tutorial_page_software_keyboard_title">Режим клавіатури</string>
-    <string name="tutorial_page_software_keyboard_description">Виберіть, яку клавіатурну поверхню Pastiera має використовувати.</string>
+    <string name="tutorial_page_software_keyboard_description">Виберіть, яку клавіатурну поверхню Flux Keyboard має використовувати.</string>
     <string name="software_keyboard_mode_title">Режим клавіатури</string>
     <string name="software_keyboard_mode_always_virtual">Завжди віртуальна клавіатура</string>
     <string name="software_keyboard_mode_always_hardware">Завжди апаратна клавіатура</string>
@@ -512,12 +512,12 @@
     <string name="keyboard_profile_option_mp01">Minimal Phone (MP01)</string>
     <string name="keyboard_currency_symbol_title">Символ валюти</string>
     <string name="keyboard_currency_symbol_description">Символ, який вставляють виділені апаратні клавіші валюти.</string>
-    <string name="starter_launcher_shortcuts_title">Pastiera-QuickLauncher</string>
+    <string name="starter_launcher_shortcuts_title">Flux Keyboard-QuickLauncher</string>
     <string name="starter_launcher_shortcuts_description">Швидкий запуск, ярлики SYM і призначення клавіш застосунків</string>
-    <string name="starter_launcher_shortcuts_intro">Ці налаштування спільно використовують один список призначень застосунок-клавіша. Виберіть, де Pastiera має слухати ці призначені клавіші.</string>
+    <string name="starter_launcher_shortcuts_intro">Ці налаштування спільно використовують один список призначень застосунок-клавіша. Виберіть, де Flux Keyboard має слухати ці призначені клавіші.</string>
     <string name="launcher_shortcuts_configure_description_with_quick_launcher">Торкніться клавіші, щоб призначити або замінити застосунок. QuickLauncher зараз призначено на %1$s.</string>
-    <string name="quick_launcher_default_blocked_hint">Нове: SYM може відкривати QuickLauncher. Pastiera зазвичай призначила б його на Пробіл, але Пробіл уже має ярлик. Відкрийте сторінку призначень і виберіть «Відкрити QuickLauncher» на будь-якій клавіші, щоб спробувати.</string>
-    <string name="quick_launcher_title">Pastiera-QuickLauncher</string>
+    <string name="quick_launcher_default_blocked_hint">Нове: SYM може відкривати QuickLauncher. Flux Keyboard зазвичай призначила б його на Пробіл, але Пробіл уже має ярлик. Відкрийте сторінку призначень і виберіть «Відкрити QuickLauncher» на будь-якій клавіші, щоб спробувати.</string>
+    <string name="quick_launcher_title">Flux Keyboard-QuickLauncher</string>
     <string name="quick_launcher_close">Закрити</string>
     <string name="quick_launcher_search_placeholder">Почніть вводити...</string>
     <string name="quick_launcher_auto_start_single_title">Автоматично відкривати єдиний збіг</string>
@@ -526,7 +526,7 @@
     <string name="quick_launcher_limit_results_description">Не показувати повний алфавітний список застосунків. QuickLauncher лишається порожнім, доки ви не почнете вводити, а потім показує лише три найкращі збіги.</string>
     <string name="quick_launcher_text_field_shortcuts_hint">У текстових полях утримуйте SYM і натисніть Пробіл. Фіксація SYM не може це запустити, бо натискання SYM перемикає сторінки SYM.</string>
     <string name="quick_launcher_respect_keyboard_layout_title">Використовувати активну розкладку клавіатури</string>
-    <string name="quick_launcher_respect_keyboard_layout_description">Якщо ввімкнено, пошуковий ввід слідує поточній розкладці Pastiera замість сирого QWERTY-виводу Android.</string>
+    <string name="quick_launcher_respect_keyboard_layout_description">Якщо ввімкнено, пошуковий ввід слідує поточній розкладці Flux Keyboard замість сирого QWERTY-виводу Android.</string>
     <string name="quick_launcher_typo_tolerant_ranking_title">Пошук із допуском помилок</string>
     <string name="quick_launcher_typo_tolerant_ranking_description">Також знаходить назви застосунків із невеликими помилками набору. Збіги за префіксом і скороченням усе одно мають вищий рейтинг.</string>
     <string name="quick_launcher_ranking_info_button">Як працює рейтинг</string>
@@ -566,22 +566,22 @@ QWERTZ на фізичній QWERTY
 Nav Mode використовує фізичне положення клавіші, щоб навігація залишалася стабільною. Підказки розкладки на клавішах показують, коли активна текстова розкладка трактувала б цю фізичну клавішу як іншу літеру, наприклад Y/Z на QWERTZ.
 
 Ctrl-ярлики застосунків із урахуванням розкладки
-Коли утриманий Ctrl передається застосункам, це додаткове налаштування може спершу перекладати Ctrl+літера через активну розкладку Pastiera. Воно впливає на ярлики застосунків, а не на фізичну сітку Nav Mode.
+Коли утриманий Ctrl передається застосункам, це додаткове налаштування може спершу перекладати Ctrl+літера через активну розкладку Flux Keyboard. Воно впливає на ярлики застосунків, а не на фізичну сітку Nav Mode.
 
 Перевизначення
 Кожну клавішу можна налаштувати як Keycode, Дія, Native Ctrl або Немає. Використовуйте перевизначення, щоб вирішувати конфлікти окремих застосунків без зміни всього режиму.</string>
     <string name="nav_mode_ctrl_hold_title">Навігація з утриманим Ctrl</string>
     <string name="nav_mode_ctrl_hold_description">Якщо ввімкнено, текстові поля використовують призначення Nav Mode, поки Ctrl утримується. Якщо вимкнено, скорочення Ctrl передаються застосунку. Клавіші, налаштовані як Native Ctrl, завжди передаються як справжні скорочення Ctrl.</string>
     <string name="layout_aware_ctrl_shortcuts_title">Ctrl-ярлики застосунків із урахуванням розкладки</string>
-    <string name="layout_aware_ctrl_shortcuts_description">Коли утриманий Ctrl передається застосункам, спершу перекладати Ctrl+літера через активну розкладку Pastiera.</string>
+    <string name="layout_aware_ctrl_shortcuts_description">Коли утриманий Ctrl передається застосункам, спершу перекладати Ctrl+літера через активну розкладку Flux Keyboard.</string>
     <string name="layout_aware_ctrl_shortcuts_disabled_description">Вимкнено, поки активна навігація з утриманим Ctrl, бо утриманий Ctrl обробляє Nav Mode замість застосунку.</string>
     <string name="layout_aware_ctrl_shortcuts_info_title">Ctrl-ярлики та Nav Mode</string>
-    <string name="layout_aware_ctrl_shortcuts_info_text">Для утриманого Ctrl є два шляхи. Якщо навігацію з утриманим Ctrl увімкнено, Pastiera обробляє Ctrl+клавіша призначеннями Nav Mode, показаними нижче. Якщо її вимкнено, Pastiera передає Ctrl+клавіша застосунку. Цей параметр впливає лише на шлях застосунку: якщо ввімкнено, Ctrl+літера спершу перекладається через активну розкладку Pastiera, щоб ярлики могли відповідати літерам, які ви вводите. Якщо вимкнено, застосунки отримують початкові фізичні позиції клавіш.</string>
+    <string name="layout_aware_ctrl_shortcuts_info_text">Для утриманого Ctrl є два шляхи. Якщо навігацію з утриманим Ctrl увімкнено, Flux Keyboard обробляє Ctrl+клавіша призначеннями Nav Mode, показаними нижче. Якщо її вимкнено, Flux Keyboard передає Ctrl+клавіша застосунку. Цей параметр впливає лише на шлях застосунку: якщо ввімкнено, Ctrl+літера спершу перекладається через активну розкладку Flux Keyboard, щоб ярлики могли відповідати літерам, які ви вводите. Якщо вимкнено, застосунки отримують початкові фізичні позиції клавіш.</string>
     <string name="nav_mode_native_ctrl">Native Ctrl</string>
     <string name="app_enter_behaviour_title">Поведінка клавіші Enter</string>
     <string name="app_enter_behaviour_description">Налаштуйте Enter і новий рядок окремо для застосунків</string>
     <string name="app_enter_behaviour_enable_title">Поведінка Enter для застосунків</string>
-    <string name="app_enter_behaviour_enable_description">Використовуйте перевизначення Pastiera для вибраних застосунків обміну повідомленнями. Перевірені застосунки показують стратегію, яку Pastiera фактично використовує.</string>
+    <string name="app_enter_behaviour_enable_description">Використовуйте перевизначення Flux Keyboard для вибраних застосунків обміну повідомленнями. Перевірені застосунки показують стратегію, яку Flux Keyboard фактично використовує.</string>
     <string name="app_enter_behaviour_preset_title">Пресет повідомлень</string>
     <string name="app_enter_behaviour_preset_description">Застосувати узгоджене значення за замовчуванням до встановлених відомих застосунків обміну повідомленнями.</string>
     <string name="app_enter_behaviour_preset_app_default">За замовчуванням застосунку</string>
@@ -600,7 +600,7 @@ Ctrl-ярлики застосунків із урахуванням розкл�
     <string name="app_enter_behaviour_option_newline_ctrl_send">Enter новий рядок, Ctrl+Enter надсилає</string>
     <string name="app_enter_behaviour_option_enter_newline">Enter новий рядок</string>
     <string name="app_enter_behaviour_status_not_active">Ще не активно: %1$s заплановано.</string>
-    <string name="app_enter_behaviour_status_native_result">За замовчуванням застосунку: Pastiera не втручається.</string>
+    <string name="app_enter_behaviour_status_native_result">За замовчуванням застосунку: Flux Keyboard не втручається.</string>
     <string name="app_enter_behaviour_status_strategy_result">Активно: %1$s.</string>
     <string name="app_enter_behaviour_status_experimental_result">Експериментально активно: %1$s.</string>
     <string name="app_enter_behaviour_strategy_none_label">Без перевизначення</string>
@@ -608,12 +608,12 @@ Ctrl-ярлики застосунків із урахуванням розкл�
     <string name="app_enter_behaviour_strategy_plain_enter_label">Звичайний Enter</string>
     <string name="app_enter_behaviour_strategy_unconfigured_label">Не налаштовано</string>
     <string name="app_enter_behaviour_strategy_app_default_detail">Застосунок вирішує, чи Enter надсилає, чи вставляє новий рядок.</string>
-    <string name="app_enter_behaviour_strategy_whatsapp_newline_ctrl_send">Pastiera вставляє нові рядки напряму й надсилає через дію надсилання застосунку.</string>
-    <string name="app_enter_behaviour_strategy_whatsapp_send_shift_newline">Pastiera надсилає через дію надсилання застосунку. Shift+Enter вставляється напряму як новий рядок.</string>
-    <string name="app_enter_behaviour_strategy_whatsapp_newline_only">Перевірено: Pastiera вставляє Enter напряму як новий рядок і не запускає надсилання.</string>
-    <string name="app_enter_behaviour_strategy_discord_app_default_detail">Перевірено: Discord уже правильно обробляє Enter для надсилання та Shift+Enter для нового рядка. Pastiera тут не втручається.</string>
+    <string name="app_enter_behaviour_strategy_whatsapp_newline_ctrl_send">Flux Keyboard вставляє нові рядки напряму й надсилає через дію надсилання застосунку.</string>
+    <string name="app_enter_behaviour_strategy_whatsapp_send_shift_newline">Flux Keyboard надсилає через дію надсилання застосунку. Shift+Enter вставляється напряму як новий рядок.</string>
+    <string name="app_enter_behaviour_strategy_whatsapp_newline_only">Перевірено: Flux Keyboard вставляє Enter напряму як новий рядок і не запускає надсилання.</string>
+    <string name="app_enter_behaviour_strategy_discord_app_default_detail">Перевірено: Discord уже правильно обробляє Enter для надсилання та Shift+Enter для нового рядка. Flux Keyboard тут не втручається.</string>
     <string name="app_enter_behaviour_strategy_discord_partial_detail">Перевірено: нові рядки вставляються напряму. Ctrl+Enter надсилає звичайний Enter без meta Ctrl, бо дія застосунку Discord лише ховає клавіатуру.</string>
-    <string name="app_enter_behaviour_strategy_experimental_detail">Не підтверджено: Pastiera пробує дію надсилання застосунку та пряме вставлення нового рядка.</string>
+    <string name="app_enter_behaviour_strategy_experimental_detail">Не підтверджено: Flux Keyboard пробує дію надсилання застосунку та пряме вставлення нового рядка.</string>
     <string name="app_enter_behaviour_strategy_not_tested_detail">Технічну стратегію для цього застосунку ще потрібно протестувати.</string>
     <string name="app_enter_behaviour_desired_label">Бажана поведінка</string>
     <string name="app_enter_behaviour_strategy_label">Стратегія надсилання</string>
@@ -654,15 +654,15 @@ Ctrl-ярлики застосунків із урахуванням розкл�
     <string name="tutorial_whats_new_title">Нове в цій версії: %1$s</string>
     <string name="tutorial_whats_new_description">Перед продовженням варто знати про кілька змін.</string>
     <string name="tutorial_whats_new_bug_fixes_title">Виправлення помилок</string>
-    <string name="tutorial_whats_new_docs_button">Відкрити документацію Pastiera</string>
+    <string name="tutorial_whats_new_docs_button">Відкрити документацію Flux Titan Hub</string>
     <string name="tutorial_whats_new_continue_hint">Продовжте посібник, щоб переглянути найкорисніші налаштування цієї версії.</string>
     <string name="tutorial_devs_choice_button">Вибір розробника</string>
     <string name="tutorial_devs_choice_applied">Налаштування Вибір розробника застосовано.</string>
     <string name="tutorial_software_keyboard_alpha_warning">Alpha-функція: віртуальна клавіатура ще активно доробляється й поки не рекомендована для щоденного використання.</string>
     <string name="tutorial_android16_ime_caption_title">Сховати панель підпису IME</string>
-    <string name="tutorial_android16_ime_caption_description">Пристрої Titan 2 можуть показувати додаткову панель IME під Pastiera. Це OEM-налаштування ховає її й лишає Pastiera компактною.</string>
+    <string name="tutorial_android16_ime_caption_description">Пристрої Titan 2 можуть показувати додаткову панель IME під Flux Keyboard. Це OEM-налаштування ховає її й лишає Flux Keyboard компактною.</string>
     <string name="tutorial_android16_ime_caption_before">До: зайва панель</string>
-    <string name="tutorial_android16_ime_caption_after">Після: компактна Pastiera</string>
+    <string name="tutorial_android16_ime_caption_after">Після: компактна Flux Keyboard</string>
     <string name="tutorial_android16_ime_caption_check_android16">Android 16 або новіший</string>
     <string name="tutorial_android16_ime_caption_check_titan2">Unihertz Titan 2 або Titan 2 Elite</string>
     <string name="tutorial_android16_ime_caption_check_setting">OEM-налаштування жестів доступне</string>

@@ -48,7 +48,7 @@ fun AdbSettingsScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
     }
     // A setting that uses the shell, opened where it is
     fun jump(id: String) = context.startActivity(
-        android.content.Intent(context, SettingsActivity::class.java).setData(android.net.Uri.parse("pastiera://setting/$id"))
+        android.content.Intent(context, SettingsActivity::class.java).setData(android.net.Uri.parse("fluxkeyboard://setting/$id"))
     )
 
     FluxScreenScaffold(stringResource(R.string.root_title), onBack, modifier) {
@@ -318,7 +318,7 @@ internal fun ShellExtrasScreen(modifier: Modifier = Modifier, onBack: () -> Unit
         FluxNote(stringResource(R.string.root_shortcuts_note))
         // Where they're assigned: Key shortcuts (Modifiers & SYM), opened as a setting link
         fun jump(id: String) = context.startActivity(
-            android.content.Intent(context, SettingsActivity::class.java).setData(android.net.Uri.parse("pastiera://setting/$id"))
+            android.content.Intent(context, SettingsActivity::class.java).setData(android.net.Uri.parse("fluxkeyboard://setting/$id"))
         )
         FluxActionRow(
             linkId = null,

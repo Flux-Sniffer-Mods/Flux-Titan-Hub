@@ -145,14 +145,14 @@ fun SettingsScreen(
         val target = route.toSettingsPage()
         if (currentEntry != target) {
             context.startActivity(Intent(context, SettingsActivity::class.java).apply {
-                data = android.net.Uri.parse("pastiera://setting/${visibleEntry.id}")
+                data = android.net.Uri.parse("fluxkeyboard://setting/${visibleEntry.id}")
             })
             return
         }
         highlightSettingId = visibleEntry.id
     }
 
-    // Deep link (pastiera://setting/<id>) arriving via intent or onNewIntent
+    // Deep link (fluxkeyboard://setting/<id>) arriving via intent or onNewIntent
     LaunchedEffect(settingLinkRequest?.serial) {
         val request = settingLinkRequest ?: return@LaunchedEffect
         val entry = SettingLinkRegistry.byId(request.id)

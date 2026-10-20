@@ -7,7 +7,7 @@
     <string name="setting_link_quick_launcher_entries">QuickLauncher-Einträge</string>
     <string name="setting_link_quick_launcher_customize_entries">QuickLauncher-Einträge anpassen</string>
     <string name="setting_link_quick_launcher_source_apps">Apps</string>
-    <string name="setting_link_quick_launcher_source_pastiera">Pastiera-Aktionen</string>
+    <string name="setting_link_quick_launcher_source_pastiera">Flux Keyboard-Aktionen</string>
     <string name="setting_link_quick_launcher_source_appactions">App-Aktionen</string>
     <string name="setting_link_quick_launcher_source_devicecontrol">Gerätesteuerung</string>
     <string name="setting_link_quick_launcher_source_navactions">Navigationsaktionen</string>
@@ -16,8 +16,8 @@
     <string name="setting_link_max_icon_shrink">Maximale Verkleinerung der Symbole</string>
     <string name="setting_link_theme_preview_viewport">Maximale Größe der Vorschau</string>
     <string name="setting_link_theme_assignment">Designzuordnung</string>
-    <string name="setting_link_status_pastierina_left">Pastierina: linke Tasten</string>
-    <string name="setting_link_status_pastierina_right">Pastierina: rechte Tasten</string>
+    <string name="setting_link_status_pastierina_left">Solderina: linke Tasten</string>
+    <string name="setting_link_status_pastierina_right">Solderina: rechte Tasten</string>
     <string name="setting_link_theme_hardware_chrome_rounding">Hardwaretastatur: Rundung von Vorschlägen und Varianten</string>
     <string name="setting_link_theme_hardware_suggestions_height">Hardwaretastatur: Höhe der Vorschläge</string>
     <string name="setting_link_theme_hardware_variations_height">Hardwaretastatur: Höhe der Varianten</string>

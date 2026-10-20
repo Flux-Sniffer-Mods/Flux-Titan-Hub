@@ -79,7 +79,7 @@
     <!-- Installation Section -->
     
     <!-- Main Activity - Enable/Select IME -->
-    <string name="enable_pastiera">Abilita Pastiera</string>
+    <string name="enable_pastiera">Abilita Flux Keyboard</string>
     
     <!-- Test Section -->
     <string name="test_field_placeholder">Digita qui con la tastiera fisica…</string>
@@ -130,7 +130,7 @@
     <string name="auto_correct_max_distance_off">Disattivato</string>
     <string name="auto_correct_max_distance_description">Numero massimo di differenze di caratteri consentite per l\'auto-correzione. 0 = disabilitato, 1-3 = tolleranza crescente.</string>
     <string name="auto_correct_manage_user_dict_title">Dizionario personale</string>
-    <string name="auto_correct_manage_user_dict_description">Parole che Pastiera deve conoscere e suggerire, senza creare regole di sostituzione.</string>
+    <string name="auto_correct_manage_user_dict_description">Parole che Flux Keyboard deve conoscere e suggerire, senza creare regole di sostituzione.</string>
     
     <!-- User dictionary management -->
     <string name="user_dict_title">Dizionario utente</string>
@@ -233,14 +233,14 @@
     
     <!-- Launcher Shortcuts Section -->
     <string name="launcher_shortcuts_title">Scorciatoie</string>
-    <string name="starter_launcher_shortcuts_title">Pastiera-QuickLauncher</string>
+    <string name="starter_launcher_shortcuts_title">Flux Keyboard-QuickLauncher</string>
     <string name="starter_launcher_shortcuts_description">Avvio rapido, scorciatoie SYM e assegnazioni dei tasti app</string>
-    <string name="starter_launcher_shortcuts_intro">Queste impostazioni condividono un unico elenco di assegnazioni app-tasto. Scegli dove Pastiera deve ascoltare i tasti assegnati.</string>
+    <string name="starter_launcher_shortcuts_intro">Queste impostazioni condividono un unico elenco di assegnazioni app-tasto. Scegli dove Flux Keyboard deve ascoltare i tasti assegnati.</string>
     <string name="launcher_shortcuts_description">Abilita le scorciatoie da tastiera</string>
     <string name="launcher_shortcuts_configure">Configura scorciatoie</string>
     <string name="launcher_shortcuts_configure_description">Assegna tasti per aprire app</string>
     <string name="launcher_shortcuts_configure_description_with_quick_launcher">Tocca un tasto per assegnare o sostituire un\'app. Il QuickLauncher è attualmente assegnato a %1$s.</string>
-    <string name="quick_launcher_default_blocked_hint">Novità: SYM può aprire il QuickLauncher. Pastiera normalmente lo assegnerebbe a Spazio, ma Spazio ha già una scorciatoia. Apri la pagina delle assegnazioni e scegli “Apri QuickLauncher” su un tasto qualsiasi per provarlo.</string>
+    <string name="quick_launcher_default_blocked_hint">Novità: SYM può aprire il QuickLauncher. Flux Keyboard normalmente lo assegnerebbe a Spazio, ma Spazio ha già una scorciatoia. Apri la pagina delle assegnazioni e scegli “Apri QuickLauncher” su un tasto qualsiasi per provarlo.</string>
     
     <!-- Launcher Shortcuts Screen -->
     <string name="launcher_shortcuts_screen_title">Scorciatoie</string>
@@ -254,7 +254,7 @@
     <string name="launcher_shortcut_assignment_no_apps">Nessuna app trovata</string>
     <string name="launcher_shortcut_assignment_no_results">Nessun risultato per \"%1$s\"</string>
     <string name="launcher_shortcut_assignment_key_name">Tasto %1$d</string>
-    <string name="quick_launcher_title">Pastiera-QuickLauncher</string>
+    <string name="quick_launcher_title">Flux Keyboard-QuickLauncher</string>
     <string name="quick_launcher_close">Chiudi</string>
     <string name="quick_launcher_search_placeholder">Inizia a digitare...</string>
     <string name="quick_launcher_auto_start_single_title">Apri automaticamente la corrispondenza unica</string>
@@ -263,7 +263,7 @@
     <string name="quick_launcher_limit_results_description">Non mostrare l\'elenco alfabetico completo delle app. Il QuickLauncher resta vuoto finché non digiti e poi mostra solo le prime tre corrispondenze.</string>
     <string name="quick_launcher_text_field_shortcuts_hint">Nei campi di testo, tieni premuto SYM e premi Spazio. Il blocco SYM non può attivarlo perché toccare SYM scorre le pagine SYM.</string>
     <string name="quick_launcher_respect_keyboard_layout_title">Usa layout tastiera attivo</string>
-    <string name="quick_launcher_respect_keyboard_layout_description">Se attivo, l\'input di ricerca segue il layout Pastiera corrente invece dell\'output QWERTY grezzo di Android.</string>
+    <string name="quick_launcher_respect_keyboard_layout_description">Se attivo, l\'input di ricerca segue il layout Flux Keyboard corrente invece dell\'output QWERTY grezzo di Android.</string>
     <string name="quick_launcher_typo_tolerant_ranking_title">Ricerca tollerante agli errori</string>
     <string name="quick_launcher_typo_tolerant_ranking_description">Trova anche nomi app con piccoli errori di battitura. Le corrispondenze per prefisso e abbreviazione restano comunque più in alto.</string>
     <string name="quick_launcher_ranking_info_button">Come funziona il ranking</string>
@@ -289,12 +289,12 @@
     <string name="power_shortcuts_press_key">Premi tasto scorciatoia per lanciare</string>
     
     <!-- Notification Helper -->
-    <string name="notification_nav_mode_channel_name">Pastiera Nav Mode</string>
-    <string name="notification_nav_mode_channel_description">Notifiche per il nav mode di Pastiera</string>
+    <string name="notification_nav_mode_channel_name">Flux Keyboard Nav Mode</string>
+    <string name="notification_nav_mode_channel_description">Notifiche per il nav mode di Flux Keyboard</string>
     
     <!-- Update Notifications -->
-    <string name="notification_update_channel_name">Aggiornamenti Pastiera</string>
-    <string name="notification_update_channel_description">Notifiche sui nuovi aggiornamenti di Pastiera</string>
+    <string name="notification_update_channel_name">Aggiornamenti Flux Titan Hub</string>
+    <string name="notification_update_channel_description">Notifiche sui nuovi aggiornamenti di Flux Titan Hub</string>
     <string name="notification_successor_release_title">Release di Plektra disponibile</string>
     <string name="notification_successor_release_text">%1$s è disponibile come successore di Pastiera.</string>
     
@@ -351,7 +351,7 @@ QWERTZ su QWERTY fisica
 Nav Mode usa la posizione fisica del tasto, così la navigazione resta stabile. I suggerimenti layout sui tasti mostrano quando il layout di testo attivo tratterebbe quel tasto fisico come una lettera diversa, per esempio Y/Z su QWERTZ.
 
 Scorciatoie Ctrl app sensibili al layout
-Quando Ctrl tenuto premuto viene passato alle app, questa impostazione opzionale può prima tradurre Ctrl+lettera tramite il layout Pastiera attivo. Influisce sulle scorciatoie app, non sulla griglia fisica di Nav Mode.
+Quando Ctrl tenuto premuto viene passato alle app, questa impostazione opzionale può prima tradurre Ctrl+lettera tramite il layout Flux Keyboard attivo. Influisce sulle scorciatoie app, non sulla griglia fisica di Nav Mode.
 
 Override
 Ogni tasto può essere configurato come Keycode, Azione, Native Ctrl o Nessuno. Usa gli override per risolvere conflitti specifici di un\'app senza cambiare l\'intera modalità.</string>
@@ -360,10 +360,10 @@ Ogni tasto può essere configurato come Keycode, Azione, Native Ctrl o Nessuno. 
     <string name="nav_mode_ctrl_hold_title">Navigazione con Ctrl tenuto premuto</string>
     <string name="nav_mode_ctrl_hold_description">Se attiva, i campi di testo usano le mappature Nav Mode mentre Ctrl è premuto. Se disattivata, le scorciatoie Ctrl vengono passate all\'app. I tasti impostati su Native Ctrl vengono sempre passati come vere scorciatoie Ctrl.</string>
     <string name="layout_aware_ctrl_shortcuts_title">Scorciatoie Ctrl app sensibili al layout</string>
-    <string name="layout_aware_ctrl_shortcuts_description">Quando Ctrl tenuto premuto viene passato alle app, traduci prima Ctrl+lettera tramite il layout Pastiera attivo.</string>
+    <string name="layout_aware_ctrl_shortcuts_description">Quando Ctrl tenuto premuto viene passato alle app, traduci prima Ctrl+lettera tramite il layout Flux Keyboard attivo.</string>
     <string name="layout_aware_ctrl_shortcuts_disabled_description">Disattivato mentre la navigazione con Ctrl tenuto premuto è attiva, perché Ctrl premuto viene gestito da Nav Mode invece che dall\'app.</string>
     <string name="layout_aware_ctrl_shortcuts_info_title">Scorciatoie Ctrl e Nav Mode</string>
-    <string name="layout_aware_ctrl_shortcuts_info_text">Ci sono due percorsi per Ctrl tenuto premuto. Se la navigazione con Ctrl tenuto premuto è attiva, Pastiera gestisce Ctrl+tasto con le mappature Nav Mode mostrate sotto. Se è disattivata, Pastiera passa Ctrl+tasto all\'app. Questa opzione influisce solo su quel percorso app: se attiva, Ctrl+lettera viene prima tradotto tramite il layout Pastiera attivo, così le scorciatoie possono seguire le lettere che digiti. Se disattivata, le app ricevono le posizioni fisiche originali dei tasti.</string>
+    <string name="layout_aware_ctrl_shortcuts_info_text">Ci sono due percorsi per Ctrl tenuto premuto. Se la navigazione con Ctrl tenuto premuto è attiva, Flux Keyboard gestisce Ctrl+tasto con le mappature Nav Mode mostrate sotto. Se è disattivata, Flux Keyboard passa Ctrl+tasto all\'app. Questa opzione influisce solo su quel percorso app: se attiva, Ctrl+lettera viene prima tradotto tramite il layout Flux Keyboard attivo, così le scorciatoie possono seguire le lettere che digiti. Se disattivata, le app ricevono le posizioni fisiche originali dei tasti.</string>
     <string name="nav_mode_revert_to_default">Ripristina Predefiniti</string>
     <string name="nav_mode_configure_key">Configura %1$s</string>
     <string name="nav_mode_type">Tipo</string>
@@ -407,7 +407,7 @@ Ogni tasto può essere configurato come Keycode, Azione, Native Ctrl o Nessuno. 
     <string name="app_enter_behaviour_title">Comportamento tasto Invio</string>
     <string name="app_enter_behaviour_description">Configura la gestione di Invio e nuova riga per singole app</string>
     <string name="app_enter_behaviour_enable_title">Comportamento Invio per app</string>
-    <string name="app_enter_behaviour_enable_description">Usa gli override di Pastiera per le app di messaggistica selezionate. Le app testate mostrano la strategia realmente usata da Pastiera.</string>
+    <string name="app_enter_behaviour_enable_description">Usa gli override di Flux Keyboard per le app di messaggistica selezionate. Le app testate mostrano la strategia realmente usata da Flux Keyboard.</string>
     <string name="app_enter_behaviour_preset_title">Preset messaggistica</string>
     <string name="app_enter_behaviour_preset_description">Applica un comportamento predefinito coerente alle app di messaggistica note installate.</string>
     <string name="app_enter_behaviour_preset_app_default">Predefinito app</string>
@@ -426,7 +426,7 @@ Ogni tasto può essere configurato come Keycode, Azione, Native Ctrl o Nessuno. 
     <string name="app_enter_behaviour_option_newline_ctrl_send">Invio nuova riga, Ctrl+Invio invia</string>
     <string name="app_enter_behaviour_option_enter_newline">Invio nuova riga</string>
     <string name="app_enter_behaviour_status_not_active">Non ancora attivo: %1$s è pianificato.</string>
-    <string name="app_enter_behaviour_status_native_result">Predefinito app: Pastiera non interviene.</string>
+    <string name="app_enter_behaviour_status_native_result">Predefinito app: Flux Keyboard non interviene.</string>
     <string name="app_enter_behaviour_status_strategy_result">Attivo: %1$s.</string>
     <string name="app_enter_behaviour_status_experimental_result">Attivo sperimentalmente: %1$s.</string>
     <string name="app_enter_behaviour_strategy_none_label">Nessun override</string>
@@ -434,12 +434,12 @@ Ogni tasto può essere configurato come Keycode, Azione, Native Ctrl o Nessuno. 
     <string name="app_enter_behaviour_strategy_plain_enter_label">Invio semplice</string>
     <string name="app_enter_behaviour_strategy_unconfigured_label">Non configurato</string>
     <string name="app_enter_behaviour_strategy_app_default_detail">L\'app decide se Invio invia o inserisce una nuova riga.</string>
-    <string name="app_enter_behaviour_strategy_whatsapp_newline_ctrl_send">Pastiera inserisce direttamente le nuove righe e invia tramite l\'azione di invio dell\'app.</string>
-    <string name="app_enter_behaviour_strategy_whatsapp_send_shift_newline">Pastiera invia tramite l\'azione di invio dell\'app. Shift+Invio viene inserito direttamente come nuova riga.</string>
-    <string name="app_enter_behaviour_strategy_whatsapp_newline_only">Testato: Pastiera inserisce Invio direttamente come nuova riga e non attiva l\'invio.</string>
-    <string name="app_enter_behaviour_strategy_discord_app_default_detail">Testato: Discord gestisce già correttamente Invio per inviare e Shift+Invio per nuova riga. Pastiera non interviene qui.</string>
+    <string name="app_enter_behaviour_strategy_whatsapp_newline_ctrl_send">Flux Keyboard inserisce direttamente le nuove righe e invia tramite l\'azione di invio dell\'app.</string>
+    <string name="app_enter_behaviour_strategy_whatsapp_send_shift_newline">Flux Keyboard invia tramite l\'azione di invio dell\'app. Shift+Invio viene inserito direttamente come nuova riga.</string>
+    <string name="app_enter_behaviour_strategy_whatsapp_newline_only">Testato: Flux Keyboard inserisce Invio direttamente come nuova riga e non attiva l\'invio.</string>
+    <string name="app_enter_behaviour_strategy_discord_app_default_detail">Testato: Discord gestisce già correttamente Invio per inviare e Shift+Invio per nuova riga. Flux Keyboard non interviene qui.</string>
     <string name="app_enter_behaviour_strategy_discord_partial_detail">Testato: le nuove righe vengono inserite direttamente. Ctrl+Invio invia un Invio semplice senza meta Ctrl perché l\'azione app di Discord nasconde solo la tastiera.</string>
-    <string name="app_enter_behaviour_strategy_experimental_detail">Non confermato: Pastiera sta provando l\'azione di invio dell\'app e l\'inserimento diretto di nuove righe.</string>
+    <string name="app_enter_behaviour_strategy_experimental_detail">Non confermato: Flux Keyboard sta provando l\'azione di invio dell\'app e l\'inserimento diretto di nuove righe.</string>
     <string name="app_enter_behaviour_strategy_not_tested_detail">La strategia tecnica deve ancora essere testata per questa app.</string>
     <string name="app_enter_behaviour_desired_label">Comportamento desiderato</string>
     <string name="app_enter_behaviour_strategy_label">Strategia di invio</string>
@@ -593,18 +593,18 @@ Ogni tasto può essere configurato come Keycode, Azione, Native Ctrl o Nessuno. 
     <string name="tutorial_previous">Precedente</string>
     <string name="tutorial_next">Successivo</string>
     <string name="tutorial_finish">Fine</string>
-    <string name="tutorial_page_welcome_title">Benvenuto in Pastiera</string>
+    <string name="tutorial_page_welcome_title">Benvenuto in Flux Titan Hub</string>
     <string name="tutorial_devs_choice_button">Scelta dello sviluppatore</string>
     <string name="tutorial_devs_choice_applied">Impostazioni Scelta dello sviluppatore applicate.</string>
-    <string name="tutorial_page_enable_title">Abilita Pastiera</string>
-    <string name="tutorial_page_enable_description">Per iniziare, devi abilitare Pastiera come metodo di input nelle Impostazioni Android. Tocca il pulsante qui sotto per aprire le impostazioni.</string>
-    <string name="tutorial_page_select_title">Seleziona Pastiera</string>
-    <string name="tutorial_page_select_description">Per usare Pastiera, selezionala fra i metodi di input. Nel passaggio successivo scegli se Pastiera deve usare una tastiera virtuale o la modalità tastiera hardware.</string>
+    <string name="tutorial_page_enable_title">Abilita Flux Keyboard</string>
+    <string name="tutorial_page_enable_description">Per iniziare, devi abilitare Flux Keyboard come metodo di input nelle Impostazioni Android. Tocca il pulsante qui sotto per aprire le impostazioni.</string>
+    <string name="tutorial_page_select_title">Seleziona Flux Keyboard</string>
+    <string name="tutorial_page_select_description">Per usare Flux Keyboard, selezionala fra i metodi di input. Nel passaggio successivo scegli se Flux Keyboard deve usare una tastiera virtuale o la modalità tastiera hardware.</string>
     <string name="tutorial_software_keyboard_alpha_warning">Funzione alpha: la tastiera virtuale è ancora in forte sviluppo e non è ancora consigliata per l’uso quotidiano.</string>
     <string name="tutorial_android16_ime_caption_title">Nascondi barra didascalia IME</string>
-    <string name="tutorial_android16_ime_caption_description">I dispositivi Titan 2 possono mostrare una barra didascalia IME extra sotto Pastiera. Questa impostazione OEM la nasconde e mantiene Pastiera compatta.</string>
+    <string name="tutorial_android16_ime_caption_description">I dispositivi Titan 2 possono mostrare una barra didascalia IME extra sotto Flux Keyboard. Questa impostazione OEM la nasconde e mantiene Flux Keyboard compatta.</string>
     <string name="tutorial_android16_ime_caption_before">Prima: barra extra</string>
-    <string name="tutorial_android16_ime_caption_after">Dopo: Pastiera compatta</string>
+    <string name="tutorial_android16_ime_caption_after">Dopo: Flux Keyboard compatta</string>
     <string name="tutorial_android16_ime_caption_check_android16">Android 16 o successivo</string>
     <string name="tutorial_android16_ime_caption_check_titan2">Unihertz Titan 2 o Titan 2 Elite</string>
     <string name="tutorial_android16_ime_caption_check_setting">Impostazione gesture OEM disponibile</string>
@@ -623,13 +623,13 @@ Ogni tasto può essere configurato come Keycode, Azione, Native Ctrl o Nessuno. 
     <string name="tutorial_page_nav_mode_description">Il Nav Mode ti fa navigare nell\'interfaccia con scorciatoie come IJKL o ESDF.\nPer attivarlo:\n• Premi Ctrl due volte rapidamente\n• I tasti alfabetici diventano controlli di navigazione\n• Premi Ctrl di nuovo per uscire\nOgni scorciatoia è rimappabile nelle impostazioni avanzate.</string>
     <string name="tutorial_nav_mode_bullet_selection">Le azioni di selezione estendono il testo selezionato a sinistra, a destra o parola per parola.</string>
     <string name="tutorial_nav_mode_bullet_words">Le azioni parola saltano parole intere per muovere più rapidamente il cursore nei campi di testo.</string>
-    <string name="tutorial_nav_mode_bullet_media">Le mappature possono gestire anche scorciatoie delle app, controlli multimediali, Esc, Tab, Pagina su/giù e Pastierina.</string>
+    <string name="tutorial_nav_mode_bullet_media">Le mappature possono gestire anche scorciatoie delle app, controlli multimediali, Esc, Tab, Pagina su/giù e Solderina.</string>
     <string name="tutorial_quick_launcher_title">QuickLauncher</string>
     <string name="tutorial_quick_launcher_description">Apri app dalla tastiera senza interrompere il flusso di scrittura.</string>
     <string name="tutorial_quick_launcher_bullet_sym_space">Tieni premuto SYM e premi Spazio per aprire QuickLauncher da ovunque.</string>
     <string name="tutorial_quick_launcher_bullet_text_fields">Funziona anche con il cursore in un campo di testo, così puoi cambiare app mentre scrivi.</string>
     <string name="tutorial_quick_launcher_bullet_search">Digita poche lettere, abbreviazioni o piccoli errori per trovare l’app che vuoi.</string>
-    <string name="tutorial_quick_launcher_bullet_layout">La ricerca può rispettare il layout Pastiera attivo, per esempio QWERTZ.</string>
+    <string name="tutorial_quick_launcher_bullet_layout">La ricerca può rispettare il layout Flux Keyboard attivo, per esempio QWERTZ.</string>
     <string name="tutorial_quick_launcher_button">Apri impostazioni QuickLauncher</string>
     <string name="tutorial_quick_launcher_mapping_conflict_title">SYM + Spazio è già assegnato ad altro</string>
     <string name="tutorial_quick_launcher_mapping_conflict_description">Spazio ora apre “%1$s”. Sostituisci quella mappatura con QuickLauncher e abilitalo nei campi di testo per provare la nuova funzione.</string>
@@ -652,15 +652,15 @@ Ogni tasto può essere configurato come Keycode, Azione, Native Ctrl o Nessuno. 
     <string name="tutorial_whats_new_title">Novità in questa versione: %1$s</string>
     <string name="tutorial_whats_new_description">Alcune modifiche sono utili da conoscere prima di continuare.</string>
     <string name="tutorial_whats_new_bug_fixes_title">Correzioni bug</string>
-    <string name="tutorial_whats_new_docs_button">Apri documentazione Pastiera</string>
+    <string name="tutorial_whats_new_docs_button">Apri documentazione Flux Titan Hub</string>
     <string name="tutorial_whats_new_continue_hint">Continua il tutorial per rivedere le impostazioni più utili di questa versione.</string>
     <string name="tutorial_page_ready_title">Pronto per Iniziare</string>
     <string name="tutorial_page_ready_description">Tutto pronto. Il riquadro di ogni modulo nella schermata Home dice cosa manca ancora, e una pressione prolungata (o il suo ⚙) apre le sue impostazioni.</string>
-    <string name="tutorial_enable_button">Abilita Pastiera</string>
-    <string name="tutorial_enabled_message">Pastiera è abilitata!</string>
-    <string name="tutorial_select_button">Seleziona Pastiera</string>
-    <string name="tutorial_enable_first_message">Abilita prima Pastiera nella pagina precedente</string>
-    <string name="tutorial_selected_message">Pastiera è selezionata!</string>
+    <string name="tutorial_enable_button">Abilita Flux Keyboard</string>
+    <string name="tutorial_enabled_message">Flux Keyboard è abilitata!</string>
+    <string name="tutorial_select_button">Seleziona Flux Keyboard</string>
+    <string name="tutorial_enable_first_message">Abilita prima Flux Keyboard nella pagina precedente</string>
+    <string name="tutorial_selected_message">Flux Keyboard è selezionata!</string>
     <string name="tutorial_show">Mostra Tutorial</string>
     <string name="tutorial_review_description">Rivedi il tutorial introduttivo</string>
 
@@ -669,7 +669,7 @@ Ogni tasto può essere configurato come Keycode, Azione, Native Ctrl o Nessuno. 
     <string name="backup_now">Backup ora</string>
     <string name="backup_now_description">Esporta tutte le impostazioni e i layout personalizzati in un file ZIP</string>
     <string name="restore_from_file">Ripristina da file</string>
-    <string name="restore_from_file_description">Importa un backup ZIP di Pastiera</string>
+    <string name="restore_from_file_description">Importa un backup ZIP di Flux Titan Hub</string>
     <string name="backup_completed">Backup completato</string>
     <string name="restore_completed">Ripristino completato</string>
     <string name="backup_failed">Backup fallito: %1$s</string>
@@ -781,7 +781,7 @@ Ogni tasto può essere configurato come Keycode, Azione, Native Ctrl o Nessuno. 
     <string name="trackpad_tutorial_how_it_works_title">Come Funziona</string>
     <string name="trackpad_tutorial_how_it_works_description">Il trackpad è diviso in tre sezioni:\n\n• Terzo sinistro → Accetta suggerimento sinistro\n• Terzo centrale → Accetta suggerimento centrale\n• Terzo destro → Accetta suggerimento destro\n\nScorri semplicemente verso l\'alto nell\'area corrispondente per inserire quel suggerimento.</string>
     <string name="trackpad_tutorial_shizuku_required_title">Shizuku Richiesto</string>
-    <string name="trackpad_tutorial_shizuku_required_description">Questa funzionalità richiede Shizuku per accedere agli eventi del trackpad.\n\n1. Installa Shizuku dalle release di GitHub\n2. Abilita le opzioni sviluppatore nelle impostazioni Android\n3. Collega il dispositivo a un PC con ADB installato\n4. Esegui il comando che Shizuku mostra nella sua app\n5. Concedi il permesso a Pastiera in Shizuku\n\nLa funzionalità funzionerà automaticamente una volta che Shizuku è in esecuzione.</string>
+    <string name="trackpad_tutorial_shizuku_required_description">Questa funzionalità richiede Shizuku per accedere agli eventi del trackpad.\n\n1. Installa Shizuku dalle release di GitHub\n2. Abilita le opzioni sviluppatore nelle impostazioni Android\n3. Collega il dispositivo a un PC con ADB installato\n4. Esegui il comando che Shizuku mostra nella sua app\n5. Concedi il permesso a Flux Keyboard in Shizuku\n\nLa funzionalità funzionerà automaticamente una volta che Shizuku è in esecuzione.</string>
     <string name="trackpad_tutorial_tips_title">Suggerimenti</string>
     <string name="trackpad_tutorial_tips_description">• Assicurati che lo swipe sia principalmente verticale\n• Il gesto funziona meglio con swipe rapidi e deliberati\n• Se altre dita sono sulla tastiera, i gesti potrebbero non essere rilevati (reiezione palmo hardware)\n• La funzionalità può essere abilitata/disabilitata nelle Impostazioni Avanzate</string>
     <string name="trackpad_tutorial_complete">Capito</string>
@@ -792,7 +792,7 @@ Ogni tasto può essere configurato come Keycode, Azione, Native Ctrl o Nessuno. 
 
     <!-- Status Bar Buttons Configuration -->
     <string name="status_bar_buttons_title">Pulsanti Barra</string>
-    <string name="status_bar_buttons_description">Pastierina o modalità minima, e i pulsanti della barra.</string>
+    <string name="status_bar_buttons_description">Solderina o modalità minima, e i pulsanti della barra.</string>
     <string name="status_bar_slots_left">Pulsanti a sinistra</string>
     <string name="status_bar_slots_right">Pulsanti a destra</string>
     <string name="status_bar_slot_add">Aggiungi pulsante barra di stato</string>
@@ -829,7 +829,7 @@ Ogni tasto può essere configurato come Keycode, Azione, Native Ctrl o Nessuno. 
     <string name="status_bar_button_minimal_ui_description">Attiva o disattiva la modalità minima: nessuna barra della tastiera in nessuna app</string>
     <string name="status_bar_buttons_reset">Reset</string>
     <string name="tutorial_page_software_keyboard_title">Modalità tastiera</string>
-    <string name="tutorial_page_software_keyboard_description">Scegli quale superficie tastiera deve usare Pastiera qui.</string>
+    <string name="tutorial_page_software_keyboard_description">Scegli quale superficie tastiera deve usare Flux Keyboard qui.</string>
     <string name="software_keyboard_mode_title">Modalità tastiera</string>
     <string name="software_keyboard_mode_always_virtual">Sempre tastiera virtuale</string>
     <string name="software_keyboard_mode_always_hardware">Sempre tastiera hardware</string>
@@ -904,13 +904,13 @@ Ogni tasto può essere configurato come Keycode, Azione, Native Ctrl o Nessuno. 
     <string name="titan2_elite_fill_corners_title">Riempi gli angoli con lo sfondo della barra</string>
     <string name="titan2_elite_fill_corners_description">Estende lo sfondo della tastiera fino agli angoli arrotondati del display, così l\'app sottostante non si vede attorno alla barra.</string>
     <string name="hidden_keyboard_apps_title">Nascondi la tastiera in queste app</string>
-    <string name="hidden_keyboard_apps_description">Pastiera resta nascosta nelle app elencate e lascia loro tutti i tasti. Utile per i desktop Termux:X11.</string>
+    <string name="hidden_keyboard_apps_description">Flux Keyboard resta nascosta nelle app elencate e lascia loro tutti i tasti. Utile per i desktop Termux:X11.</string>
     <string name="hidden_keyboard_apps_search">Cerca app</string>
     <string name="hidden_keyboard_apps_done">Fatto</string>
-    <string name="hidden_keyboard_apps_per_app_options">Ogni app spuntata ha due opzioni. LED di stato mantiene visibili i LED dei modificatori sopra l\'app. Emoji e Sym permette al tasto emoji e a Sym di aprire Pastiera; Sym non arriva più all\'app.</string>
+    <string name="hidden_keyboard_apps_per_app_options">Ogni app spuntata ha due opzioni. LED di stato mantiene visibili i LED dei modificatori sopra l\'app. Emoji e Sym permette al tasto emoji e a Sym di aprire Flux Keyboard; Sym non arriva più all\'app.</string>
     <string name="hidden_keyboard_apps_option_leds">LED di stato</string>
     <string name="hidden_keyboard_apps_option_panels">Emoji e Sym</string>
-    <string name="hidden_keyboard_apps_accessibility_hint">Le app che leggono direttamente la tastiera, come Termux:X11, richiedono il servizio di accessibilità di Pastiera per queste opzioni.</string>
+    <string name="hidden_keyboard_apps_accessibility_hint">Le app che leggono direttamente la tastiera, come Termux:X11, richiedono il servizio di accessibilità di Flux Keyboard per queste opzioni.</string>
     <string name="hidden_keyboard_apps_open_accessibility">Apri impostazioni di accessibilità</string>
     <string name="emoji_key_target_title">Il tasto emoji apre</string>
     <string name="emoji_key_target_picker">Selettore emoji</string>
@@ -954,21 +954,21 @@ Ogni tasto può essere configurato come Keycode, Azione, Native Ctrl o Nessuno. 
     <string name="flux_section_gif_search">Ricerca GIF</string>
     <string name="flux_titan_screen_title">Schermo Titan 2 Elite</string>
     <string name="flux_titan_screen_description">Angoli arrotondati, pulsanti esterni e barra di stato</string>
-    <string name="flux_titan_screen_note">Come Pastiera si adatta allo schermo arrotondato del Titan 2 Elite.</string>
+    <string name="flux_titan_screen_note">Come Flux Keyboard si adatta allo schermo arrotondato del Titan 2 Elite.</string>
     <string name="flux_hidden_apps_title">App con tastiera nascosta</string>
-    <string name="flux_hidden_apps_description">App in cui Pastiera resta nascosta, come Termux:X11</string>
-    <string name="flux_hidden_apps_note">In queste app Pastiera non mostra nulla e lascia i tasti all’app. Tocca un’app nell’elenco per gli extra: LED di stato e i pannelli emoji e simboli di Pastiera.</string>
+    <string name="flux_hidden_apps_description">App in cui Flux Keyboard resta nascosta, come Termux:X11</string>
+    <string name="flux_hidden_apps_note">In queste app Flux Keyboard non mostra nulla e lascia i tasti all’app. Tocca un’app nell’elenco per gli extra: LED di stato e i pannelli emoji e simboli di Flux Keyboard.</string>
     <string name="flux_section_accessibility">Servizio di accessibilità</string>
-    <string name="flux_accessibility_title">Servizio di accessibilità di Pastiera</string>
+    <string name="flux_accessibility_title">Servizio di accessibilità di Flux Keyboard</string>
     <string name="flux_accessibility_on">Attivo. LED di stato, pannelli, Ctrl e Sym funzionano in app come Termux:X11.</string>
     <string name="flux_accessibility_off">Disattivato. Tocca per attivarlo: app come Termux:X11 leggono i tasti prima di qualsiasi tastiera, quindi LED di stato, pannelli, Ctrl e Sym lì ne hanno bisogno.</string>
     <string name="flux_linux_desktop_title">Desktop Linux</string>
     <string name="flux_linux_desktop_description">Ctrl, Sym e il layout di tastiera per Termux:X11</string>
-    <string name="flux_linux_desktop_note">Per un desktop Linux in Termux:X11, come il chroot Debian per Titan 2 Elite, con Pastiera nascosta lì.</string>
+    <string name="flux_linux_desktop_note">Per un desktop Linux in Termux:X11, come il chroot Debian per Titan 2 Elite, con Flux Keyboard nascosta lì.</string>
     <string name="flux_section_keys">Tasti</string>
     <string name="flux_section_layout">Layout di tastiera</string>
     <string name="flux_standard_ctrl_sym_title">Ctrl e Sym standard</string>
-    <string name="flux_standard_ctrl_sym_description">Nelle app con Pastiera nascosta, invia Ctrl e Sym del Titan come Ctrl e Alt destro standard, che Termux:X11 può passare a Linux.</string>
+    <string name="flux_standard_ctrl_sym_description">Nelle app con Flux Keyboard nascosta, invia Ctrl e Sym del Titan come Ctrl e Alt destro standard, che Termux:X11 può passare a Linux.</string>
     <string name="flux_desktop_layout_title">Layout di tastiera del desktop</string>
     <string name="flux_desktop_layout_description">Scritto dalla tua mappa Alt e pagina SYM ogni volta che si apre Termux:X11; il desktop lo usa al prossimo avvio. Tocca per scriverlo ora.</string>
     <string name="flux_desktop_layout_not_written">Non ancora scritto.</string>
@@ -995,11 +995,11 @@ Ogni tasto può essere configurato come Keycode, Azione, Native Ctrl o Nessuno. 
     <string name="flux_gif_recents_title">GIF recenti</string>
     <string name="flux_gif_recents_description">Le GIF inviate di recente, dopo le preferite nella ricerca GIF.</string>
     <string name="flux_offline_title">Modalità offline</string>
-    <string name="flux_offline_description">Tieni Pastiera lontano da internet</string>
+    <string name="flux_offline_description">Tieni Flux Titan Hub lontano da internet</string>
     <string name="flux_offline_on">Attiva: nulla va online</string>
-    <string name="flux_offline_note">Pastiera non ha analisi né telemetria. Queste sono le sole cose che vanno online, e la modalità offline le spegne tutte.</string>
+    <string name="flux_offline_note">Flux Titan Hub non ha analisi né telemetria. Queste sono le sole cose che vanno online, e la modalità offline le spegne tutte.</string>
     <string name="flux_offline_switch_title">Modalità offline</string>
-    <string name="flux_offline_switch_description">Nulla in Pastiera va online.</string>
+    <string name="flux_offline_switch_description">Nulla in Flux Titan Hub va online.</string>
     <string name="flux_section_offline_affects">Mentre è attiva</string>
     <string name="flux_offline_affects">• La ricerca GIF sparisce, con la sua scheda e il tasto GIF del livello emoji\n• Dizionari e layout non si possono scaricare\n• Nessun controllo degli aggiornamenti né note di rilascio\n• Le emoji vengono solo dal font di sistema, senza il font emoji scaricabile (dal prossimo avvio della tastiera)</string>
     <string name="flux_gifs_offline_note">La modalità offline è attiva, quindi la ricerca GIF è spenta (Impostazioni → Modalità offline).</string>

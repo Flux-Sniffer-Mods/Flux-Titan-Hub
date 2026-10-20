@@ -127,11 +127,8 @@
             android:exported="true"
             android:label="@string/settings_title"
             android:theme="@style/Theme.Pastiera">
-            <!-- Settings links only navigate and highlight; they never change values.
-                 Keep the pastiera scheme and pastiera.eu alias after the Plektra rename.
-                 Future: if multiple Stable/Nightly or Pastiera/Plektra apps are installed,
-                 consider an in-app choice with explicit forwarding to the selected package.
-                 Verified overlapping App Links do not guarantee an Android chooser. -->
+            <!-- Settings links (fluxkeyboard://setting/<id>) open that setting here; they only
+                 navigate and highlight, never change values -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -139,26 +136,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="pastiera"
+                    android:scheme="fluxkeyboard"
                     android:host="setting" />
-            </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="https"
-                    android:host="pkb.rocks"
-                    android:pathPrefix="/settings/" />
-            </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="https"
-                    android:host="pastiera.eu"
-                    android:pathPrefix="/settings/" />
             </intent-filter>
         </activity>
         

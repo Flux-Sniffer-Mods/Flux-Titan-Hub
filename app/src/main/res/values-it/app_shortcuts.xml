@@ -2,7 +2,7 @@
 <resources>
     <string name="app_shortcuts_title">Scorciatoie delle app</string>
     <string name="app_shortcuts_description">Le stesse combinazioni in ogni app</string>
-    <string name="app_shortcuts_intro">Premi la stessa combinazione in ogni app: Ctrl+F cerca, Ctrl+N crea qualcosa di nuovo, Alt+↓ passa all’elemento successivo. Pastiera invia a ogni app la sua scorciatoia o, se non ne ha, apre la sua schermata di condivisione o di ricerca.</string>
+    <string name="app_shortcuts_intro">Premi la stessa combinazione in ogni app: Ctrl+F cerca, Ctrl+N crea qualcosa di nuovo, Alt+↓ passa all’elemento successivo. Flux Keyboard invia a ogni app la sua scorciatoia o, se non ne ha, apre la sua schermata di condivisione o di ricerca.</string>
     <string name="app_shortcuts_enabled_title">Scorciatoie universali</string>
     <string name="app_shortcuts_enabled_description">Invia a ogni app la sua scorciatoia per le combinazioni standard</string>
     <string name="app_shortcuts_section_standard">Combinazioni standard</string>
@@ -30,7 +30,7 @@
     <string name="app_shortcuts_remove_app">Rimuovi questa app</string>
     <string name="app_shortcuts_remove_app_description">Smetti di inviarle scorciatoie e dimenticale</string>
 
-    <string name="app_shortcuts_capture_instruction">Premi la scorciatoia dell’app per questa azione. Pastiera la invia quando premi %1$s nell’app.</string>
+    <string name="app_shortcuts_capture_instruction">Premi la scorciatoia dell’app per questa azione. Flux Keyboard la invia quando premi %1$s nell’app.</string>
     <string name="app_shortcuts_capture_waiting">Premi una combinazione…</string>
     <string name="app_shortcuts_capture_preset">Preset: %1$s</string>
     <string name="app_shortcuts_dont_remap">Non rimappare</string>

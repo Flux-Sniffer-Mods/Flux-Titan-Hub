@@ -47,7 +47,7 @@ internal fun CrashLogRow() {
     ) {
         scope.launch {
             val saved = withContext(Dispatchers.IO) {
-                val file = "/storage/emulated/0/Download/Pastiera/crash-log.txt"
+                val file = "/storage/emulated/0/Download/Flux Keyboard/crash-log.txt"
                 val app = it.palsoftware.pastiera.BuildConfig.APPLICATION_ID
                 // When the app stopped answering: where its threads were, which only the app can read
                 val traces = anrTraces(context)

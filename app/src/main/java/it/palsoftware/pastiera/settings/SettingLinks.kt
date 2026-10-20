@@ -16,7 +16,7 @@ import it.palsoftware.pastiera.hasClicksKeyboard
 
 /**
  * Stable identifiers for addressable settings entries. They are the path segment
- * of deep links (`pastiera://setting/<id>`) and must never change once shipped.
+ * of deep links (`fluxkeyboard://setting/<id>`) and must never change once shipped.
  */
 object SettingLinkIds {
     // Main screen navigation rows
@@ -280,11 +280,8 @@ data class SettingEntry(
 object SettingLinkRegistry {
 
     // Flux Keyboard's own scheme: a link opens the setting in this app, never a website or Pastiera
-    const val LINK_SCHEME = "pastiera"
+    const val LINK_SCHEME = "fluxkeyboard"
     const val LINK_HOST = "setting"
-    const val WEB_LINK_HOST = "pastiera.eu"
-    const val ALTERNATE_WEB_LINK_HOST = "pkb.rocks"
-    const val WEB_LINK_PATH_PREFIX = "/settings/"
     private val settingIdPattern = Regex("^[a-z0-9_]+(\\.[a-z0-9_]+)+$")
 
     private fun entry(
@@ -1098,7 +1095,7 @@ object SettingLinkRegistry {
         return candidate
     }
 
-    fun buildLink(id: String): String = "https://$WEB_LINK_HOST$WEB_LINK_PATH_PREFIX$id"
+    fun buildLink(id: String): String = "$LINK_SCHEME://$LINK_HOST/$id"
 
     /**
      * Markdown link used for sharing. With [withDescription] the localized
@@ -1119,9 +1116,6 @@ object SettingLinkRegistry {
         val id = when {
             scheme == LINK_SCHEME && host == LINK_HOST ->
                 path?.trim()?.removePrefix("/")
-            scheme == "https" && (host == WEB_LINK_HOST || host == ALTERNATE_WEB_LINK_HOST) ->
-                path?.takeIf { it.startsWith(WEB_LINK_PATH_PREFIX) }
-                    ?.removePrefix(WEB_LINK_PATH_PREFIX)
             else -> null
         }
         return id?.takeIf(settingIdPattern::matches)

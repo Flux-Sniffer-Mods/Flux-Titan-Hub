@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Pastiera's in-app layout editor -->
+<!-- Flux Keyboard's in-app layout editor -->
 <resources>
     <string name="layout_editor_intro">Tap a key to change what it types, with and without Shift. Keys without a character type what the keyboard prints on them.</string>
     <string name="layout_editor_intro_changed">You\'ve changed this layout. Restore it from the menu to get the original back.</string>

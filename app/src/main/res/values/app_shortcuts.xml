@@ -3,7 +3,7 @@
 <resources>
     <string name="app_shortcuts_title">App shortcuts</string>
     <string name="app_shortcuts_description">The same key combos in every app</string>
-    <string name="app_shortcuts_intro">Press the same combo in every app: Ctrl+F searches, Ctrl+N makes something new, Alt+↓ goes to the next item. Pastiera sends each app its own shortcut for it, or where the app has none, opens the app’s own share or search screen.</string>
+    <string name="app_shortcuts_intro">Press the same combo in every app: Ctrl+F searches, Ctrl+N makes something new, Alt+↓ goes to the next item. Flux Keyboard sends each app its own shortcut for it, or where the app has none, opens the app’s own share or search screen.</string>
     <string name="app_shortcuts_enabled_title">Universal app shortcuts</string>
     <string name="app_shortcuts_enabled_description">Send each app its own shortcut for the standard combos</string>
     <string name="app_shortcuts_section_standard">Standard combos</string>
@@ -31,7 +31,7 @@
     <string name="app_shortcuts_remove_app">Remove this app</string>
     <string name="app_shortcuts_remove_app_description">Stop sending it shortcuts and forget them</string>
 
-    <string name="app_shortcuts_capture_instruction">Press the app’s own shortcut for this. Pastiera sends it when you press %1$s in the app.</string>
+    <string name="app_shortcuts_capture_instruction">Press the app’s own shortcut for this. Flux Keyboard sends it when you press %1$s in the app.</string>
     <string name="app_shortcuts_capture_waiting">Press a key combo…</string>
     <string name="app_shortcuts_capture_preset">Preset: %1$s</string>
     <string name="app_shortcuts_dont_remap">Don’t remap</string>
