@@ -19,6 +19,7 @@ import java.io.IOException
 import java.nio.ByteBuffer
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import it.palsoftware.pastiera.theme.KeyboardBackgroundImage
 import it.palsoftware.pastiera.getTypingSoundMode
 import it.palsoftware.pastiera.initializeNavModeMappingsFile
 import it.palsoftware.pastiera.notifyVariationsUpdated
@@ -284,7 +285,8 @@ object FileBackupHelper {
         "ctrl_key_mappings.json",
         "variations.json",
         "user_defaults.json",
-        "locale_layout_mapping.json"
+        "locale_layout_mapping.json",
+        it.palsoftware.pastiera.theme.KeyboardBackgroundImage.FILE_NAME
     )
     private val allowedDirectories = setOf(
         "keyboard_layouts"

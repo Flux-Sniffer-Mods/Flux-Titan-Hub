@@ -29,6 +29,7 @@ object RecommendedSettings {
         "emoji_symbols_accept_with_enter" to true,
         "emoji_symbols_exact_on_space" to true,
         "exact_typing_no_suggestions" to true,
+        "keyboard_theme_wallpaper_colours" to true,
         "learn_contact_details" to true,
         "learn_frequent_words" to true,
         "led_individual_colors" to true,

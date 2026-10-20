@@ -195,6 +195,10 @@ object SettingLinkIds {
     const val KEYBOARD_THEME_TOGGLE_PREVIEW_ON_HOLD = "keyboard_theme.toggle_preview_on_hold"
     const val KEYBOARD_THEME_TOGGLE_CHARACTER_PICKER = "keyboard_theme.toggle_character_picker"
     const val KEYBOARD_THEME_LED_COLORS = "keyboard_theme.led_colors"
+    const val KEYBOARD_THEME_WALLPAPER_COLOURS = "keyboard_theme.wallpaper_colours"
+    const val KEYBOARD_BACKGROUND_IMAGE = "keyboard_theme.background_image"
+    const val KEYBOARD_BACKGROUND_AUTO_COLOURS = "keyboard_theme.background_auto_colours"
+    const val KEYBOARD_BACKGROUND_KEY_OPACITY = "keyboard_theme.background_key_opacity"
 
     // Modifier indicator chips (rendered on the modifiers screen)
     const val MODIFIERS_INDICATOR_BOTTOM_STRIP = "modifiers.indicator_bottom_strip"

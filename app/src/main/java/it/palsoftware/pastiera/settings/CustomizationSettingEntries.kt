@@ -602,6 +602,48 @@ internal fun customizationSettingEntries(): List<SettingEntry> = listOf(
         )
     ),
     SettingEntry(
+        id = SettingLinkIds.KEYBOARD_THEME_WALLPAPER_COLOURS,
+        titleRes = R.string.keyboard_theme_wallpaper_colours_title,
+        summaryRes = R.string.keyboard_theme_wallpaper_colours_description,
+        route = SettingRoute(
+            destination = SettingsDestination.Customization,
+            customizationDestination = "keyboard_theme_assignment",
+            keyboardThemeTarget = SettingsManager.KeyboardThemeTarget.HARDWARE
+        ),
+        availabilityCheck = { android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S },
+        unavailableFallbackId = "keyboard_theme.hardware.assignment"
+    ),
+    SettingEntry(
+        id = SettingLinkIds.KEYBOARD_BACKGROUND_IMAGE,
+        titleRes = R.string.keyboard_background_image_title,
+        summaryRes = R.string.keyboard_background_image_description,
+        route = SettingRoute(
+            destination = SettingsDestination.Customization,
+            customizationDestination = "keyboard_theme_assignment",
+            keyboardThemeTarget = SettingsManager.KeyboardThemeTarget.HARDWARE
+        )
+    ),
+    SettingEntry(
+        id = SettingLinkIds.KEYBOARD_BACKGROUND_AUTO_COLOURS,
+        titleRes = R.string.keyboard_background_auto_colours_title,
+        summaryRes = R.string.keyboard_background_auto_colours_description,
+        route = SettingRoute(
+            destination = SettingsDestination.Customization,
+            customizationDestination = "keyboard_theme_assignment",
+            keyboardThemeTarget = SettingsManager.KeyboardThemeTarget.HARDWARE
+        )
+    ),
+    SettingEntry(
+        id = SettingLinkIds.KEYBOARD_BACKGROUND_KEY_OPACITY,
+        titleRes = R.string.keyboard_background_key_opacity_search,
+        summaryRes = R.string.keyboard_background_auto_colours_description,
+        route = SettingRoute(
+            destination = SettingsDestination.Customization,
+            customizationDestination = "keyboard_theme_assignment",
+            keyboardThemeTarget = SettingsManager.KeyboardThemeTarget.HARDWARE
+        )
+    ),
+    SettingEntry(
         id = "keyboard_theme.hardware.light_theme",
         titleRes = R.string.setting_link_theme_hardware_light_theme,
         route = SettingRoute(

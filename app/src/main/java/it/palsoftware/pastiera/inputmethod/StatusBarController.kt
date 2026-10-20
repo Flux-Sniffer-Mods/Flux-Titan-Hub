@@ -38,6 +38,7 @@ import it.palsoftware.pastiera.data.symbols.Kaomoji
 import it.palsoftware.pastiera.data.emoji.EmojiLayerRecents
 import it.palsoftware.pastiera.data.emoji.RecentEmojiManager
 import it.palsoftware.pastiera.SymCustomizationActivity
+import it.palsoftware.pastiera.theme.KeyboardBackgroundImage
 import it.palsoftware.pastiera.SettingsManager
 import it.palsoftware.pastiera.sym.SymPagesConfig
 import it.palsoftware.pastiera.data.mappings.KeyMappingLoader
@@ -82,6 +83,7 @@ import it.palsoftware.pastiera.getEmojiLayerRecentsKey
 import it.palsoftware.pastiera.getEmojiPickerFocusSearch
 import it.palsoftware.pastiera.getEmojiPickerKey
 import it.palsoftware.pastiera.getKaomojiCloseOnTap
+import it.palsoftware.pastiera.getKeyboardBackgroundFraming
 import it.palsoftware.pastiera.getKeyboardLayout
 import it.palsoftware.pastiera.getLongPressModifier
 import it.palsoftware.pastiera.getLongPressThreshold
@@ -562,11 +564,24 @@ class StatusBarController(
         activeThemeSettings(isFullSoftwareKeyboardMode).toKeyboardThemeColors()
 
     private fun applyKeyboardThemeOverrides(activeColors: KeyboardThemeColors) {
+        val backgroundImage = KeyboardBackgroundImage.bitmap(context)
         (context as? InputMethodService)?.window?.window?.let { imeWindow ->
-            imeWindow.navigationBarColor = activeColors.background
+            imeWindow.navigationBarColor = backgroundImage?.let { KeyboardBackgroundImage.averageColour(context) }
+                ?: activeColors.background
             imeWindow.isNavigationBarContrastEnforced = false
         }
-        statusBarLayout?.setBackgroundColor(activeColors.background)
+        statusBarLayout?.let { layout ->
+            // Flux Keyboard: the background picture, under the (see-through) theme background
+            val current = layout.background as? KeyboardBackgroundImage.Drawable
+            when {
+                backgroundImage == null && current != null -> layout.background = null
+                backgroundImage != null && current?.bitmap !== backgroundImage ->
+                    layout.background = KeyboardBackgroundImage.Drawable(backgroundImage)
+            }
+            (layout.background as? KeyboardBackgroundImage.Drawable)?.framing =
+                SettingsManager.getKeyboardBackgroundFraming(context)
+            layout.setBackgroundColor(activeColors.background)
+        }
         val roundedCorners = SettingsManager.getTitan2EliteRoundedCornerInsetsEnabled(context)
         val surfaceBackground = if (roundedCorners) Color.TRANSPARENT else activeColors.background
         symSurfaceStack?.setBackgroundColor(surfaceBackground)
@@ -4561,7 +4576,13 @@ class StatusBarController(
             cornerFillPaint.isAntiAlias = true
             cornerFillPaint.style = Paint.Style.FILL
             cornerFillPaint.color = bottomFillColors.first
-            canvas.drawPath(outside, cornerFillPaint)
+            val picture = background as? it.palsoftware.pastiera.theme.KeyboardBackgroundImage.Drawable
+            if (picture != null) {
+                picture.setBounds(0, 0, width, height)
+                picture.fillPath(canvas, outside)
+            } else {
+                canvas.drawPath(outside, cornerFillPaint)
+            }
             cornerFillPaint.isAntiAlias = false
             drawContourLeds(canvas)
         }

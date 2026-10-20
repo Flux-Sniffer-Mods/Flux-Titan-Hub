@@ -52,6 +52,11 @@ object SettingsManager {
     internal const val KEY_DEVELOPER_OPTIONS_ENABLED = "developer_options_enabled"
     private const val KEY_INCOGNITO_ALWAYS = "incognito_always"
     private const val KEY_LANGUAGE_PER_APP = "language_per_app_enabled"
+    internal const val KEY_KEYBOARD_WALLPAPER_COLOURS = "keyboard_theme_wallpaper_colours"
+    internal const val KEY_KEYBOARD_BACKGROUND_AUTO_COLOURS = "keyboard_background_auto_colours"
+    internal const val KEY_KEYBOARD_BACKGROUND_KEY_OPACITY = "keyboard_background_key_opacity"
+    const val KEY_KEYBOARD_BACKGROUND_UPDATED = "keyboard_background_updated"
+    internal const val KEY_KEYBOARD_BACKGROUND_FRAMING = "keyboard_background_framing"
     private const val KEY_AUTO_SHIFT_FIELD_TYPES = "auto_shift_field_types"
     private const val KEY_SEARCH_BAR_WAITS_FOR_TYPING = "search_bar_waits_for_typing"
     // Each app's last language, kept apart from settings (not in backups)
@@ -677,6 +682,7 @@ object SettingsManager {
         keyPopupStyle = KEYBOARD_THEME_POPUP_STYLE_CLASSIC
     )
 
+    const val KEYBOARD_BACKGROUND_KEY_OPACITY_DEFAULT = 35
 
     internal fun Any?.isJsonInt(): Boolean {
         val number = this as? Number ?: return false

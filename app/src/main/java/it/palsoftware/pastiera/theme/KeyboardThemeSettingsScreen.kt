@@ -1,6 +1,7 @@
 package it.palsoftware.pastiera.theme
 import android.content.Context
 import android.graphics.Color as AndroidColor
+import android.os.Build
 import android.view.inputmethod.InputMethodManager
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
@@ -108,6 +109,7 @@ import it.palsoftware.pastiera.getKeyboardThemeDrafts
 import it.palsoftware.pastiera.getKeyboardThemeLayoutOverrides
 import it.palsoftware.pastiera.getKeyboardThemePreviewViewportScale
 import it.palsoftware.pastiera.getKeyboardThemeSystemSlot
+import it.palsoftware.pastiera.getKeyboardWallpaperColours
 import it.palsoftware.pastiera.getSavedKeyboardThemes
 import it.palsoftware.pastiera.isSystemDarkTheme
 import it.palsoftware.pastiera.isSystemInputStyleHidden
@@ -121,6 +123,7 @@ import it.palsoftware.pastiera.setKeyboardTheme
 import it.palsoftware.pastiera.setKeyboardThemeAssignmentMode
 import it.palsoftware.pastiera.setKeyboardThemePreviewViewportScale
 import it.palsoftware.pastiera.setKeyboardThemeSystemSlot
+import it.palsoftware.pastiera.setKeyboardWallpaperColours
 import it.palsoftware.pastiera.upsertKeyboardThemeLayoutOverride
 
 @Composable
@@ -1364,6 +1367,33 @@ private fun KeyboardThemeAssignmentSection(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+            // Flux Keyboard: the theme's colours from the wallpaper (Android 12+)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                val themeContext = androidx.compose.ui.platform.LocalContext.current
+                var wallpaperColours by remember { mutableStateOf(SettingsManager.getKeyboardWallpaperColours(themeContext)) }
+                Row(
+                    modifier = Modifier.fillMaxWidth().settingRow(SettingLinkIds.KEYBOARD_THEME_WALLPAPER_COLOURS),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(stringResource(R.string.keyboard_theme_wallpaper_colours_title), style = MaterialTheme.typography.bodyLarge)
+                        Text(
+                            stringResource(R.string.keyboard_theme_wallpaper_colours_description),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Switch(
+                        checked = wallpaperColours,
+                        onCheckedChange = {
+                            wallpaperColours = it
+                            SettingsManager.setKeyboardWallpaperColours(themeContext, it)
+                        }
+                    )
+                }
+            }
+            KeyboardBackgroundImageSettings()
             if (mode == SettingsManager.KEYBOARD_THEME_ASSIGNMENT_MODE_FOLLOW_SYSTEM) {
                 KeyboardThemePickerRow(
                     linkId = if (target == SettingsManager.KeyboardThemeTarget.SOFTWARE) "keyboard_theme.software.light_theme" else "keyboard_theme.hardware.light_theme",

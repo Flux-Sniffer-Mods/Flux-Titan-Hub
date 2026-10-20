@@ -6,6 +6,7 @@ import android.util.Log
 import it.palsoftware.pastiera.legacy.LegacyMigrations
 import org.json.JSONArray
 import org.json.JSONObject
+import it.palsoftware.pastiera.theme.KeyboardBackgroundImage
 import it.palsoftware.pastiera.theme.SOFTWARE_THEME_DEFAULT_CHROME_CORNER_RADIUS
 import it.palsoftware.pastiera.theme.SOFTWARE_THEME_DEFAULT_KEY_CORNER_RADIUS
 import it.palsoftware.pastiera.theme.SOFTWARE_THEME_DEFAULT_KEY_HEIGHT
@@ -13,6 +14,7 @@ import it.palsoftware.pastiera.theme.SOFTWARE_THEME_DEFAULT_NUMBER_ROW_HEIGHT
 import it.palsoftware.pastiera.theme.SOFTWARE_THEME_DEFAULT_ROW_GAP
 import it.palsoftware.pastiera.theme.SOFTWARE_THEME_DEFAULT_SUGGESTIONS_HEIGHT
 import it.palsoftware.pastiera.theme.SOFTWARE_THEME_DEFAULT_VARIATIONS_HEIGHT
+import it.palsoftware.pastiera.theme.WallpaperKeyboardColours
 import it.palsoftware.pastiera.SettingsManager.KeyboardThemeTarget
 import it.palsoftware.pastiera.SettingsManager.KeyboardThemeSettings
 import it.palsoftware.pastiera.SettingsManager.NamedKeyboardTheme
@@ -89,7 +91,10 @@ private fun SettingsManager.keyboardThemeLayoutOverridesKeyForTarget(target: Key
     }
 
 fun SettingsManager.isKeyboardThemePreferenceKey(key: String?): Boolean {
-    return key == KEY_KEYBOARD_THEME_HARDWARE || key == KEY_KEYBOARD_THEME_SOFTWARE
+    return key == KEY_KEYBOARD_THEME_HARDWARE || key == KEY_KEYBOARD_THEME_SOFTWARE ||
+        key == KEY_KEYBOARD_WALLPAPER_COLOURS || key == KEY_KEYBOARD_BACKGROUND_AUTO_COLOURS ||
+        key == KEY_KEYBOARD_BACKGROUND_KEY_OPACITY || key == KEY_KEYBOARD_BACKGROUND_UPDATED ||
+        key == KEY_KEYBOARD_BACKGROUND_FRAMING
 }
 
 fun SettingsManager.isModifierIndicatorPreferenceKey(key: String?): Boolean {
@@ -225,12 +230,57 @@ fun SettingsManager.getEffectiveKeyboardTheme(
     layout: String?
 ): KeyboardThemeSettings {
     LegacyMigrations.removedBuiltInThemes(context)
-    return findKeyboardThemeLayoutOverride(context, target, locale, layout)?.theme
+    val theme = findKeyboardThemeLayoutOverride(context, target, locale, layout)?.theme
         ?: if (getKeyboardThemeAssignmentMode(context, target) == KEYBOARD_THEME_ASSIGNMENT_MODE_FOLLOW_SYSTEM) {
             getKeyboardThemeSystemSlot(context, target, dark = isSystemDarkTheme(context))
         } else {
             getKeyboardTheme(context, target)
         }
+    // Flux Keyboard: colours from the wallpaper, over whichever theme applies
+    val coloured = if (getKeyboardWallpaperColours(context)) WallpaperKeyboardColours.recolour(context, theme) else theme
+    // Flux Keyboard: a picture behind the keyboard, keys shaded against it
+    val luminance = KeyboardBackgroundImage.luminance(context) ?: return coloured
+    return KeyboardBackgroundImage.recolour(
+        coloured, luminance, getKeyboardBackgroundAutoColours(context), getKeyboardBackgroundKeyOpacity(context),
+        KeyboardBackgroundImage.averageColour(context)
+    )
+}
+
+/** Over a background picture: keys see-through and shaded against it. */
+fun SettingsManager.getKeyboardBackgroundAutoColours(context: Context): Boolean =
+    getPreferences(context).getBoolean(KEY_KEYBOARD_BACKGROUND_AUTO_COLOURS, true)
+
+fun SettingsManager.setKeyboardBackgroundAutoColours(context: Context, enabled: Boolean) {
+    getPreferences(context).edit().putBoolean(KEY_KEYBOARD_BACKGROUND_AUTO_COLOURS, enabled).apply()
+}
+
+/** How solid the keys are over a background picture, in percent. */
+fun SettingsManager.getKeyboardBackgroundKeyOpacity(context: Context): Int =
+    getPreferences(context).getInt(KEY_KEYBOARD_BACKGROUND_KEY_OPACITY, KEYBOARD_BACKGROUND_KEY_OPACITY_DEFAULT).coerceIn(0, 100)
+
+fun SettingsManager.setKeyboardBackgroundKeyOpacity(context: Context, percent: Int) {
+    getPreferences(context).edit().putInt(KEY_KEYBOARD_BACKGROUND_KEY_OPACITY, percent.coerceIn(0, 100)).apply()
+}
+
+/** Where the background picture sits behind the keyboard. */
+fun SettingsManager.getKeyboardBackgroundFraming(context: Context): KeyboardBackgroundImage.Framing =
+    KeyboardBackgroundImage.Framing.decode(getPreferences(context).getString(KEY_KEYBOARD_BACKGROUND_FRAMING, null))
+
+fun SettingsManager.setKeyboardBackgroundFraming(context: Context, framing: KeyboardBackgroundImage.Framing) {
+    getPreferences(context).edit().putString(KEY_KEYBOARD_BACKGROUND_FRAMING, framing.encode()).apply()
+}
+
+/** Tells the keyboard the picture changed. */
+fun SettingsManager.touchKeyboardBackgroundImage(context: Context) {
+    getPreferences(context).edit().putLong(KEY_KEYBOARD_BACKGROUND_UPDATED, System.currentTimeMillis()).apply()
+}
+
+/** Keyboard colours from the wallpaper (Material You, Android 12+). */
+fun SettingsManager.getKeyboardWallpaperColours(context: Context): Boolean =
+    getPreferences(context).getBoolean(KEY_KEYBOARD_WALLPAPER_COLOURS, false)
+
+fun SettingsManager.setKeyboardWallpaperColours(context: Context, enabled: Boolean) {
+    getPreferences(context).edit().putBoolean(KEY_KEYBOARD_WALLPAPER_COLOURS, enabled).apply()
 }
 
 fun SettingsManager.getKeyboardThemeLayoutOverrides(
