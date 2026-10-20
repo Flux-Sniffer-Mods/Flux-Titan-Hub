@@ -2077,6 +2077,9 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
         it.palsoftware.pastiera.otp.OneTimeCodes.onNewCode = { if (isInputViewShown || isInputViewActive || pasteSuggestionShown) offerOneTimeCode() }
         // One-time codes: Android 15 hides them from the listener unless allowed through the shell
         it.palsoftware.pastiera.otp.OneTimeCodeListener.allowSensitive(this)
+        it.palsoftware.pastiera.adb.shell.BuiltInShell.addStartListener {
+            it.palsoftware.pastiera.otp.OneTimeCodeListener.allowSensitive(this)
+        }
         EmojiCompatSupport.ensureLoaded(this)
         lastSystemLocalesSignature = resources.configuration.locales.toLanguageTags()
         prefs = getSharedPreferences("pastiera_prefs", Context.MODE_PRIVATE)
@@ -4605,8 +4608,9 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
         if (::trackpadGestureDetector.isInitialized) {
             val gesturesEnabled = SettingsManager.getTrackpadGesturesEnabled(this)
             if (shouldStartShizukuTrackpadDetector() && !trackpadGestureDetector.isRunning()) {
-                val shizukuRunning = try { Shizuku.pingBinder() } catch (e: Exception) { false }
-                val shizukuAuthorized = try {
+                val builtIn = it.palsoftware.pastiera.adb.shell.BuiltInShell.running()
+                val shizukuRunning = builtIn || try { Shizuku.pingBinder() } catch (e: Exception) { false }
+                val shizukuAuthorized = builtIn || try {
                     Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED
                 } catch (e: Exception) { false }
                 

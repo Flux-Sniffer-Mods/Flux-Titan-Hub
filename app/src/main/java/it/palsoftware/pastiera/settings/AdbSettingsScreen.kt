@@ -15,6 +15,8 @@ import androidx.compose.ui.res.stringResource
 import it.palsoftware.pastiera.adb.KeyboardBacklight
 import it.palsoftware.pastiera.adb.PerAppDensity
 import it.palsoftware.pastiera.adb.ScreenDensity
+import it.palsoftware.pastiera.adb.shell.BuiltInShell
+import it.palsoftware.pastiera.adb.shell.ShellSetup
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -27,13 +29,16 @@ import it.palsoftware.pastiera.apps.AppPickerDialog
 import it.palsoftware.pastiera.resolveShizukuStatus
 
 /**
- * Shell access: root or Shizuku, which the shell extras run their commands through.
+ * Shell access: the built-in shell (paired once through wireless debugging), root or Shizuku,
+ * which the shell extras run their commands through.
  */
 @Composable
 fun AdbSettingsScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
     val context = LocalContext.current
     val shell = rememberShellState()
     var status by shell.status
+    val shellRunning by shell.running
+    val shellPaired by shell.paired
     fun refresh() = shell.refresh()
     // Shizuku's answer to the permission request
     androidx.compose.runtime.DisposableEffect(Unit) {
@@ -47,6 +52,59 @@ fun AdbSettingsScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
     )
 
     FluxScreenScaffold(stringResource(R.string.root_title), onBack, modifier) {
+        // The built-in shell: paired once through wireless debugging, in place of Shizuku
+        if (ShellSetup.supported()) {
+            val scope = androidx.compose.runtime.rememberCoroutineScope()
+            FluxActionRow(
+                linkId = "main.root.built_in_shell",
+                title = stringResource(R.string.shell_title),
+                description = stringResource(
+                    when {
+                        shellRunning -> R.string.shell_running
+                        shellPaired -> R.string.shell_paired
+                        else -> R.string.shell_setup
+                    }
+                )
+            ) {
+                when {
+                    shellRunning -> Unit
+                    shellPaired -> {
+                        android.widget.Toast.makeText(context, R.string.shell_starting, android.widget.Toast.LENGTH_SHORT).show()
+                        scope.launch {
+                            val ok = withContext(Dispatchers.IO) { ShellSetup.start(context) }
+                            if (!ok) {
+                                android.widget.Toast.makeText(
+                                    context,
+                                    context.getString(R.string.shell_start_now_failed) + "\n" + ShellSetup.lastError.orEmpty(),
+                                    android.widget.Toast.LENGTH_LONG
+                                ).show()
+                            }
+                            refresh()
+                        }
+                    }
+                    !androidx.core.app.NotificationManagerCompat.from(context).areNotificationsEnabled() -> {
+                        android.widget.Toast.makeText(context, R.string.shell_notifications_off, android.widget.Toast.LENGTH_LONG).show()
+                        runCatching {
+                            context.startActivity(
+                                android.content.Intent(android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                                    .putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, context.packageName)
+                            )
+                        }
+                    }
+                    else -> ShellSetup.beginPairing(context)
+                }
+            }
+            if (shellPaired) {
+                FluxActionRow(
+                    linkId = null,
+                    title = stringResource(R.string.shell_forget_title),
+                    description = stringResource(R.string.shell_forget_description)
+                ) {
+                    ShellSetup.forget(context)
+                    refresh()
+                }
+            }
+        }
         // Root, on rooted phones: every shell command through su instead
         var rootOn by remember { mutableStateOf(it.palsoftware.pastiera.adb.RootShell.enabled(context)) }
         val rootScope = androidx.compose.runtime.rememberCoroutineScope()
@@ -86,8 +144,9 @@ fun AdbSettingsScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
                 it.palsoftware.pastiera.adb.ShizukuPermission.request(context) { status = resolveShizukuStatus() }
             }
         }
-        // Shizuku starting itself at boot (no root): it needs WRITE_SECURE_SETTINGS, granted here
-        if (status == ShizukuStatus.Connected && remember { it.palsoftware.pastiera.adb.ShizukuBoot.installed(context) }) {
+        // Shizuku starting itself at boot (no root): it needs WRITE_SECURE_SETTINGS, granted here.
+        // Not needed once the built-in shell is set up
+        if (status == ShizukuStatus.Connected && !shellPaired && remember { it.palsoftware.pastiera.adb.ShizukuBoot.installed(context) }) {
             var bootReady by remember { mutableStateOf(it.palsoftware.pastiera.adb.ShizukuBoot.granted(context)) }
             FluxActionRow(
                 linkId = "main.root.shizuku_boot",
@@ -334,16 +393,22 @@ internal fun ScreenSizeScreen(modifier: Modifier = Modifier, onBack: () -> Unit)
 }
 
 /** Whether the shell can run commands, re-read whenever the screen comes back. */
-internal class ShellState {
+internal class ShellState(context: android.content.Context) {
+    private val appContext = context.applicationContext
     val status = mutableStateOf(resolveShizukuStatus())
+    val running = mutableStateOf(BuiltInShell.running())
+    val paired = mutableStateOf(ShellSetup.paired(appContext))
     fun refresh() {
         status.value = resolveShizukuStatus()
+        running.value = BuiltInShell.running()
+        paired.value = ShellSetup.paired(appContext)
     }
 }
 
 @Composable
 internal fun rememberShellState(): ShellState {
-    val state = remember { ShellState() }
+    val context = LocalContext.current
+    val state = remember { ShellState(context) }
     // Started (or allowed) while this screen was away: checked again on coming back
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
     androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
@@ -365,8 +430,13 @@ internal fun ShellAccessRow(why: Int) {
     val context = LocalContext.current
     val shell = rememberShellState()
     val status by shell.status
+    val paired by shell.paired
     val state = stringResource(
-        if (status == ShizukuStatus.Connected) R.string.shell_access_on else R.string.shell_access_off
+        when {
+            status == ShizukuStatus.Connected -> R.string.shell_access_on
+            paired -> R.string.shell_access_paired
+            else -> R.string.shell_access_off
+        }
     )
     FluxActionRow(
         linkId = null,

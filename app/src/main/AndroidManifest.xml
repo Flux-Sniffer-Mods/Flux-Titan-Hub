@@ -262,6 +262,10 @@
             android:noHistory="true"
             android:finishOnTaskLaunch="true" />
 
+        <!-- The pairing code typed into the built-in shell's notification -->
+        <receiver
+            android:name=".adb.shell.ShellSetup$PairReceiver"
+            android:exported="false" />
         <!-- Termux's answer when the quick launcher asks for Termux:Widget's scripts -->
         <receiver
             android:name=".shortcuts.TermuxScripts$Receiver"

@@ -13,7 +13,8 @@ import it.palsoftware.pastiera.R
  * extra-keys row or its on-screen text entry box. Each setting replaces any line of its own in
  * ~/.termux/termux.properties, so pasting it again changes nothing. For Shizuku users, a second
  * command has Termux:Boot start Shizuku after a restart (assets/fork/termux/shizuku-boot.sh and
- * start-shizuku.sh): adb, the boot script and the one-time pairing with wireless debugging.
+ * start-shizuku.sh): adb, the boot script and the one-time pairing with wireless debugging. The
+ * built-in shell needs neither.
  */
 object TermuxSetup {
     private const val ASSETS = "fork/termux"

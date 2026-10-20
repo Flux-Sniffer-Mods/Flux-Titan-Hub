@@ -188,12 +188,16 @@ internal fun GeneralSettingsScreen(
             SettingsSectionDivider(stringResource(R.string.settings_section_phone))
             val shell = rememberShellState()
             val shellStatus by shell.status
+            val shellPaired by shell.paired
             SettingsCategoryRow(
                 icon = Icons.Filled.Terminal,
                 title = stringResource(R.string.root_title),
                 description = stringResource(R.string.settings_shell_access_description) + " " + stringResource(
-                    if (shellStatus == it.palsoftware.pastiera.ShizukuStatus.Connected) R.string.shell_access_on
-                    else R.string.shell_access_off
+                    when {
+                        shellStatus == it.palsoftware.pastiera.ShizukuStatus.Connected -> R.string.shell_access_on
+                        shellPaired -> R.string.shell_access_paired
+                        else -> R.string.shell_access_off
+                    }
                 ),
                 linkId = "main.shell_access",
                 onClick = { onNavigate(SettingsDestination.Root) }

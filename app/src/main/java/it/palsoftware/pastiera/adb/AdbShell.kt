@@ -4,28 +4,30 @@ import android.content.pm.PackageManager
 import android.os.Looper
 import android.util.Log
 import it.palsoftware.pastiera.FluxLog
+import it.palsoftware.pastiera.adb.shell.BuiltInShell
 import rikka.shizuku.Shizuku
 import java.util.concurrent.TimeUnit
 
 /**
  * Commands run as the ADB shell (no root needed): the keyboard light, ADB shortcuts. Through root
- * when it's switched on and granted, otherwise Shizuku when it's running and has allowed the
- * keyboard.
+ * when it's switched on and granted, else Flux Keyboard's own shell helper when it's running,
+ * otherwise Shizuku when it's running and has allowed Flux Keyboard.
  */
 object AdbShell {
     private const val TAG = "FluxAdb"
 
-    /** Root or Shizuku can run commands. */
-    fun available(): Boolean = RootShell.active || shizukuAvailable()
+    /** The shell helper or Shizuku can run commands. */
+    fun available(): Boolean = RootShell.active || BuiltInShell.running() || shizukuAvailable()
 
-    /** Shizuku is running and has allowed the keyboard. */
+    /** Shizuku is running and has allowed Flux Keyboard. */
     fun shizukuAvailable(): Boolean = runCatching {
         Shizuku.pingBinder() && Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED
     }.getOrDefault(false)
 
-    /** Starts [command] as the ADB shell user, through root or else Shizuku. */
+    /** Starts [command] as the ADB shell user, through the shell helper or else Shizuku. */
     fun newProcess(command: Array<String>): Process {
         if (RootShell.active) return RootShell.newProcess(command)
+        BuiltInShell.newProcess(command)?.let { return it }
         val method = Shizuku::class.java.getDeclaredMethod(
             "newProcess",
             Array<String>::class.java,

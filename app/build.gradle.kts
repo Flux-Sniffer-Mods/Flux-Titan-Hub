@@ -389,7 +389,8 @@ dependencies {
     // Shizuku for ADB shell access
     implementation("dev.rikka.shizuku:api:13.1.5")
     implementation("dev.rikka.shizuku:provider:13.1.5")
-    // Hidden APIs: the screen's shown brightness, which the keyboard light follows
+    // The built-in shell: pairs with wireless debugging and starts the shell helper
+    implementation("com.github.MuntashirAkon:libadb-android:3.1.1")
     implementation("org.lsposed.hiddenapibypass:hiddenapibypass:6.1")
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
