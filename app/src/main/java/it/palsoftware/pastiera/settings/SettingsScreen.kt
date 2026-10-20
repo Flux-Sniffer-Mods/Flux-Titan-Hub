@@ -74,7 +74,9 @@ enum class SettingsDestination {
     TerminalMode,
     ExactTyping,
     KeyboardHome,
-    QuickSettings
+    QuickSettings,
+    ShellExtras,
+    ScreenSize
 }
 
 /** The destination payload of one SettingsActivity, also used by deep links. */
@@ -200,6 +202,12 @@ fun SettingsScreen(
             }
             SettingsDestination.QuickSettings -> {
                 QuickSettingsScreen(modifier) { navigateBack() }
+            }
+            SettingsDestination.ScreenSize -> {
+                ScreenSizeScreen(modifier = modifier, onBack = { navigateBack() })
+            }
+            SettingsDestination.ShellExtras -> {
+                ShellExtrasScreen(modifier = modifier, onBack = { navigateBack() })
             }
             SettingsDestination.KeyboardsLayouts -> {
                 KeyboardsLayoutsHubScreen(

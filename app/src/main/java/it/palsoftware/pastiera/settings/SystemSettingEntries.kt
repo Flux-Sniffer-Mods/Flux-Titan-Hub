@@ -47,10 +47,58 @@ internal fun systemSettingEntries(): List<SettingEntry> = listOf(
         route = SettingRoute(SettingsDestination.Accessibility)
     ),
     SettingEntry(
+        id = "main.shell_extras",
+        titleRes = R.string.shell_extras_title,
+        summaryRes = R.string.shell_extras_description,
+        route = SettingRoute(SettingsDestination.ShellExtras)
+    ),
+    SettingEntry(
         id = "main.quick_settings",
         titleRes = R.string.quick_settings_title,
         summaryRes = R.string.quick_settings_row_description,
         route = SettingRoute(SettingsDestination.QuickSettings)
+    ),
+    SettingEntry(
+        id = "root.backlight_screen",
+        titleRes = R.string.root_backlight_screen_title,
+        summaryRes = R.string.root_backlight_screen_description,
+        route = SettingRoute(SettingsDestination.ShellExtras)
+    ),
+    SettingEntry(
+        id = "root.backlight_brightness",
+        titleRes = R.string.root_backlight_brightness_title,
+        summaryRes = R.string.root_backlight_brightness_description,
+        route = SettingRoute(SettingsDestination.ShellExtras)
+    ),
+    SettingEntry(
+        id = "root.backlight_level",
+        titleRes = R.string.root_backlight_level_title,
+        summaryRes = R.string.root_backlight_brightness_description,
+        route = SettingRoute(SettingsDestination.ShellExtras)
+    ),
+    SettingEntry(
+        id = "root.backlight_timeout",
+        titleRes = R.string.root_backlight_timeout_title,
+        summaryRes = R.string.root_backlight_screen_description,
+        route = SettingRoute(SettingsDestination.ShellExtras)
+    ),
+    SettingEntry(
+        id = "main.root.use_root",
+        titleRes = R.string.root_shell_title,
+        summaryRes = R.string.root_shell_description,
+        route = SettingRoute(SettingsDestination.Root)
+    ),
+    SettingEntry(
+        id = "root.backlight_fine",
+        titleRes = R.string.root_backlight_fine_title,
+        summaryRes = R.string.root_backlight_fine_description,
+        route = SettingRoute(SettingsDestination.ShellExtras)
+    ),
+    SettingEntry(
+        id = "root.backlight_flash",
+        titleRes = R.string.root_backlight_flash_title,
+        summaryRes = R.string.root_backlight_flash_description,
+        route = SettingRoute(SettingsDestination.ShellExtras)
     ),
     SettingEntry(
         id = "trackpad.swipe_learning",

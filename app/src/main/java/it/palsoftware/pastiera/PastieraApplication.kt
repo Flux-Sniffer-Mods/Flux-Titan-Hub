@@ -25,6 +25,8 @@ class PastieraApplication : Application() {
         SettingsManager.enforceTitan2EliteRoundedCornersOnce(this)
         AppPackageChangeMonitor.register(this)
         ClicksPowerKeyboardController.initialize(this)
+        // Root, when switched on: asked off the main thread, as su may wait for the user
+        Thread { it.palsoftware.pastiera.adb.RootShell.init(this) }.start()
         publishSoftwareKeyboardModeShortcut()
         Handler(Looper.getMainLooper()).post {
             AdditionalSubtypeUtils.registerAdditionalSubtypes(this)

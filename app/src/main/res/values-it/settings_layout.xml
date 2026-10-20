@@ -6,6 +6,7 @@
     <string name="quick_settings_title">Impostazioni rapide</string>
     <string name="quick_settings_row_description">Gli interruttori più usati, raggruppati per scopo</string>
     <string name="quick_settings_description">Gli interruttori della tastiera più usati, gli stessi delle loro pagine.</string>
+    <string name="quick_settings_keyboard_light">Luce della tastiera</string>
     <string name="settings_typing_description">Suggerimenti e correzione automatica, maiuscole e punteggiatura, espansione testo, varianti, tasti di modifica, Nav Mode</string>
     <string name="settings_modifiers_sym_title">Modificatori e SYM</string>
     <string name="settings_modifiers_sym_description">Tocco, blocco e pressione lunga, pagine SYM, scorciatoie, Nav Mode</string>

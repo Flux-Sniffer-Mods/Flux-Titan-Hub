@@ -31,6 +31,8 @@ class OneTimeCodeListener : NotificationListenerService() {
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         val notification = sbn?.notification ?: return
+        // Root: the keyboard's backlight flashes for a notification (the Root page)
+        if (sbn.packageName != packageName && !sbn.isOngoing) it.palsoftware.pastiera.adb.KeyboardBacklight.flash(this)
         if (sbn.packageName == packageName || !SettingsManager.getOneTimeCodesEnabled(this)) return
         val extras = notification.extras ?: return
         // Newest first: a conversation's notification (SMS, chat) keeps its older messages, with

@@ -64,6 +64,7 @@ class ClicksLauncherButtonAccessibilityService : AccessibilityService() {
             // dialog-style screen) keeps the screen size of the app beneath: switching would
             // flicker the app between the two
             val floating = confirmed && isFloating(pkg, event.className?.toString())
+            if (!overlay && !floating) it.palsoftware.pastiera.adb.PerAppDensity.onAppInFront(this, pkg, needsConfirming = !confirmed)
             // Keyboard swipes per app follow the app's own screens (the quick launcher, over
             // another app, keeps that app's choice)
             if (!confirmed && !overlay && pkg != frontPackage && pkg != packageName) {
@@ -107,6 +108,17 @@ class ClicksLauncherButtonAccessibilityService : AccessibilityService() {
         // Keyboard swipes: taken from apps while a field is typed in, handed to the keyboard
         ClicksAccessibilityKeyBridge.onTrackpadCaptureChanged = { captured -> claimTrackpad(captured) }
         claimTrackpad(ClicksAccessibilityKeyBridge.trackpadCaptured)
+        // Started with an app already in front (after an update, or the service turned on): ask
+        // Android which, through Shizuku, rather than wait for the next app to open
+        Thread {
+            val front = it.palsoftware.pastiera.adb.PerAppDensity.resumedPackage() ?: return@Thread
+            android.os.Handler(mainLooper).post {
+                if (frontPackage != null) return@post
+                frontPackage = front
+                DebugCaptureStore.recordTrackpadClaim("in front at start: $front, swipes kept from it: ${blockedHere()}")
+                claimTrackpad(ClicksAccessibilityKeyBridge.trackpadCaptured)
+            }
+        }.start()
     }
 
     /** The app whose screen is in front, for keyboard swipes per app. */

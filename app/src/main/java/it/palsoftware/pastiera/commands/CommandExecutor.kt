@@ -128,6 +128,10 @@ class CommandExecutor(
     }
 
     private fun executeInternalAction(actionId: String): CommandExecutionResult {
+        // ADB shortcuts through Shizuku (root_… ids kept for keys assigned before)
+        if (actionId.startsWith("root_")) {
+            return if (AdbCommandSource.execute(context, actionId)) CommandExecutionResult.Success else fail("Unknown action")
+        }
         return when (actionId) {
             PastieraCommandSource.ACTION_OPEN_QUICK_LAUNCHER -> {
                 try {

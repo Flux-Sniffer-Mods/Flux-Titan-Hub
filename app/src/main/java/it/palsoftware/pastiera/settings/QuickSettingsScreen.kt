@@ -10,6 +10,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import it.palsoftware.pastiera.R
 import it.palsoftware.pastiera.SettingsManager
+import it.palsoftware.pastiera.adb.KeyboardBacklight
+import it.palsoftware.pastiera.inputmethod.DeviceSpecific
 import it.palsoftware.pastiera.getAutoCapitalizeFirstLetter
 import it.palsoftware.pastiera.getAutoCorrectEnabled
 import it.palsoftware.pastiera.getDoubleSpaceToPeriod
@@ -58,5 +60,15 @@ internal fun QuickSettingsScreen(modifier: Modifier, onBack: () -> Unit) {
             { SettingsManager.getEmojiSuggestionsEnabled(context) }) { SettingsManager.setEmojiSuggestionsEnabled(context, it) }
         Switch(R.string.gif_settings_title, R.string.gif_settings_description,
             { SettingsManager.getGifsEnabled(context) }) { SettingsManager.setGifsEnabled(context, it) }
+
+        // The keyboard light: the phones that have one Flux Keyboard can reach (through the shell)
+        if (DeviceSpecific.isTitan2EliteDevice()) {
+            SettingsSectionDivider(stringResource(R.string.quick_settings_keyboard_light))
+            Switch(R.string.root_backlight_screen_title, R.string.root_backlight_screen_description,
+                { KeyboardBacklight.followScreen(context) }) { on ->
+                SettingsManager.getPreferences(context).edit().putBoolean(KeyboardBacklight.KEY_FOLLOW_SCREEN, on).apply()
+                KeyboardBacklight.start(context)
+            }
+        }
     }
 }

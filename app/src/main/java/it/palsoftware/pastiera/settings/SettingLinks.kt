@@ -1164,7 +1164,9 @@ object SettingLinkRegistry {
         SettingsDestination.TerminalMode to R.string.terminal_mode_title,
         SettingsDestination.ExactTyping to R.string.exact_typing_title,
         SettingsDestination.KeyboardHome to R.string.module_keyboard_title,
-        SettingsDestination.QuickSettings to R.string.quick_settings_title
+        SettingsDestination.QuickSettings to R.string.quick_settings_title,
+        SettingsDestination.ShellExtras to R.string.shell_extras_title,
+        SettingsDestination.ScreenSize to R.string.density_section
     )
 
     val keyboardsDevicesSubtitles: Map<KeyboardsDevicesDestination, Int> = mapOf(
@@ -1193,7 +1195,7 @@ object SettingLinkRegistry {
     val categories: List<SettingsDestination> = listOf(
         SettingsDestination.KeyboardHome, SettingsDestination.Typing, SettingsDestination.KeyboardsLayouts,
         SettingsDestination.Modifiers, SettingsDestination.FluxEmojiGifs, SettingsDestination.Apps,
-        SettingsDestination.LookSound, SettingsDestination.Advanced,
+        SettingsDestination.LookSound, SettingsDestination.Advanced, SettingsDestination.ShellExtras,
         SettingsDestination.Root, SettingsDestination.Main
     )
 
@@ -1201,7 +1203,7 @@ object SettingLinkRegistry {
     val keyboardCategories: Set<SettingsDestination> = setOf(
         SettingsDestination.KeyboardHome, SettingsDestination.Typing, SettingsDestination.KeyboardsLayouts,
         SettingsDestination.Modifiers, SettingsDestination.FluxEmojiGifs, SettingsDestination.Apps,
-        SettingsDestination.LookSound, SettingsDestination.Advanced
+        SettingsDestination.LookSound, SettingsDestination.Advanced, SettingsDestination.ShellExtras
     )
 
     /** Settings' (the gear's) own headings: what isn't the keyboard's own. */
@@ -1222,6 +1224,7 @@ object SettingLinkRegistry {
         SettingsDestination.LookSound, SettingsDestination.LedColors -> SettingsDestination.LookSound
         SettingsDestination.KeyboardHome, SettingsDestination.QuickSettings -> SettingsDestination.KeyboardHome
         SettingsDestination.Advanced -> SettingsDestination.Advanced
+        SettingsDestination.ShellExtras -> SettingsDestination.ShellExtras
         SettingsDestination.Root -> SettingsDestination.Root
         // Settings (the gear): what isn't the keyboard's own
         else -> SettingsDestination.Main

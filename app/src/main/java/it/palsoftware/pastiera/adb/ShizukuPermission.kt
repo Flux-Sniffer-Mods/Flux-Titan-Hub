@@ -66,7 +66,7 @@ object ShizukuPermission {
 
     private fun fail(app: Context, message: Int, onResult: (Boolean) -> Unit) {
         Toast.makeText(app, message, Toast.LENGTH_LONG).show()
-        app.packageManager.getLaunchIntentForPackage("moe.shizuku.privileged.api")
+        app.packageManager.getLaunchIntentForPackage(ShizukuBoot.SHIZUKU_PACKAGE)
             ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             ?.let { runCatching { app.startActivity(it) } }
         onResult(false)

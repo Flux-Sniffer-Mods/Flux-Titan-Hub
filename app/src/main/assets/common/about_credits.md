@@ -53,3 +53,6 @@ Bundled base dictionaries are frequency-list derivatives built mainly from [Leip
 
 #### eellak GSOC 2019 Greek Morphological Dictionary
 The downloadable Greek base dictionary is derived from the top frequency-ranked entries in the [eellak GSOC 2019 Greek spelling dictionary](https://github.com/eellak/gsoc2019-greek-morpho), with Pastiera-specific filtering and normalization. The project source code is GPLv3; the produced morphological database is documented as CC BY-SA 3.0.
+
+#### PhysiBoard
+The keyboard light on the Titan 2 Elite through Shizuku (the vendor service's backlight timeout, its never-off value and the broadcast that turns the light off) follows the findings documented by [PhysiBoard](https://github.com/brobata/physiboard) by brobata, GPLv3.

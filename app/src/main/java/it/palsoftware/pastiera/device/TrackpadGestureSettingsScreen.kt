@@ -1,4 +1,5 @@
 package it.palsoftware.pastiera.device
+import it.palsoftware.pastiera.adb.RootShell
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
@@ -772,7 +773,8 @@ fun TrackpadGestureSettingsScreen(
                 }
             }
 
-            if (trackpadProvider == SettingsManager.TRACKPAD_PROVIDER_SHIZUKU) {
+            // Shizuku is only needed without root
+            if (trackpadProvider == SettingsManager.TRACKPAD_PROVIDER_SHIZUKU && !RootShell.active) {
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()

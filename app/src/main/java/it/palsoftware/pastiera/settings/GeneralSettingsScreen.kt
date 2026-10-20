@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AspectRatio
 import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Code
@@ -182,7 +183,8 @@ internal fun GeneralSettingsScreen(
                 onClick = { onNavigate(SettingsDestination.FluxOffline) }
             )
 
-            // The shell the extras work through
+            // The shell the extras work through, then the whole phone's density, as a whole and
+            // per app
             SettingsSectionDivider(stringResource(R.string.settings_section_phone))
             val shell = rememberShellState()
             val shellStatus by shell.status
@@ -195,6 +197,13 @@ internal fun GeneralSettingsScreen(
                 ),
                 linkId = "main.shell_access",
                 onClick = { onNavigate(SettingsDestination.Root) }
+            )
+            SettingsCategoryRow(
+                icon = Icons.Filled.AspectRatio,
+                title = stringResource(R.string.density_section),
+                description = stringResource(R.string.screen_size_row_description),
+                linkId = "main.screen_size",
+                onClick = { onNavigate(SettingsDestination.ScreenSize) }
             )
 
             SettingsSectionDivider(stringResource(R.string.settings_section_language))

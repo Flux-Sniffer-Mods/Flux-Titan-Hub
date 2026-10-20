@@ -72,6 +72,7 @@ import java.util.Date
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import rikka.shizuku.Shizuku
 import it.palsoftware.pastiera.RestrictedSettings
 import it.palsoftware.pastiera.SettingsManager
 import it.palsoftware.pastiera.apps.AppListHelper
@@ -411,6 +412,11 @@ internal fun FluxAppIcon(packageName: String, size: androidx.compose.ui.unit.Dp 
 /** Text symbols (never emoji: VS15 where a symbol could be drawn as one) for rows by setting. */
 private const val TEXT = "\uFE0E"
 internal val fluxRowIcons: Map<String?, String> = mapOf(
+    // Shizuku extras
+    "root.backlight_screen" to "\u263C",          // ☼
+    "root.backlight_brightness" to "\u25D0",      // ◐
+    "root.backlight_flash" to "\u2726",           // ✦
+    "main.root.shizuku_boot" to "\u21BB",         // ↻
     // Terminal mode
     SettingLinkIds.TERMINAL_MODE_ENABLED to "\u276F",       // ❯
     SettingLinkIds.TERMINAL_MODE_HIDE_KEYBOARD to "\u2298", // ⊘

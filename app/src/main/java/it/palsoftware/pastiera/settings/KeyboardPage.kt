@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.EmojiEmotions
 import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material.icons.filled.Terminal
 import androidx.compose.material.icons.filled.TextFields
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.runtime.Composable
@@ -103,5 +104,13 @@ internal fun KeyboardSettingsRows(onNavigate: (SettingsDestination) -> Unit) {
         description = stringResource(R.string.settings_privacy_clipboard_description),
         linkId = SettingLinkIds.MAIN_ADVANCED,
         onClick = { onNavigate(SettingsDestination.Advanced) }
+    )
+    // What the shell adds: the keyboard light, screen sizes and shell shortcuts
+    SettingsCategoryRow(
+        icon = Icons.Filled.Terminal,
+        title = stringResource(R.string.shell_extras_title),
+        description = stringResource(R.string.shell_extras_description),
+        linkId = "main.shell_extras",
+        onClick = { onNavigate(SettingsDestination.ShellExtras) }
     )
 }

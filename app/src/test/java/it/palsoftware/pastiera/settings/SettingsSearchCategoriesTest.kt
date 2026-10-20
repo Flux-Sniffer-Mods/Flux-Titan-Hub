@@ -16,6 +16,7 @@ class SettingsSearchCategoriesTest {
         assertEquals(SettingsDestination.Main, SettingLinkRegistry.categoryOf(SettingsDestination.FluxOffline))
         assertEquals(SettingsDestination.Main, SettingLinkRegistry.categoryOf(SettingsDestination.AppLanguage))
         assertEquals(SettingsDestination.Advanced, SettingLinkRegistry.categoryOf(SettingsDestination.Advanced))
+        assertEquals(SettingsDestination.ShellExtras, SettingLinkRegistry.categoryOf(SettingsDestination.ShellExtras))
         SettingLinkRegistry.categories.forEach { assertTrue(it.name, it in SettingLinkRegistry.destinationTitles) }
     }
 }

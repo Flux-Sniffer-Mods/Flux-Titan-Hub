@@ -42,11 +42,13 @@ class SettingsLayoutTest {
             SettingLinkIds.TEXT_INPUT_AUTO_CAPITALIZE to SettingsDestination.TextInput,
             SettingLinkIds.ADVANCED_TRACKPAD_GESTURES to SettingsDestination.TrackpadGestures,
             SettingLinkIds.ADVANCED_SWIPE_INCREMENTAL_THRESHOLD to SettingsDestination.TrackpadGestures,
-            // Settings (the gear) holds what isn't the keyboard's own
+            // Settings (the gear) holds what isn't the keyboard's own; the shell's extras have a page of their own
             SettingLinkIds.ADVANCED_BACKUP to SettingsDestination.Main,
             SettingLinkIds.ADVANCED_SHOW_TUTORIAL to SettingsDestination.Main,
             SettingLinkIds.DEVELOPER_OPTIONS_ENABLED to SettingsDestination.Main,
             SettingLinkIds.PRIVACY_INCOGNITO_ALWAYS to SettingsDestination.Advanced,
+            "root.backlight_screen" to SettingsDestination.ShellExtras,
+            "main.root.use_root" to SettingsDestination.Root,
             "trackpad.swipe_to_delete" to SettingsDestination.TrackpadGestures,
             "sym.auto_close" to SettingsDestination.FluxEmojiGifs,
             "sym.emoji_height" to SettingsDestination.FluxEmojiGifs,
@@ -89,6 +91,7 @@ class SettingsLayoutTest {
         assertFalse(look.contains("MAIN_APP_LANGUAGE"))
         assertTrue(typing.contains("SettingLinkIds.MAIN_ACCESSIBILITY"))
         assertTrue(keyboard.contains("SettingLinkIds.MAIN_ADVANCED"))
+        assertTrue(keyboard.contains("\"main.shell_extras\""))
         assertTrue(trackpad.contains("SwipePadThresholdRow()"))
         assertFalse(look.contains("SwipePadThresholdRow()"))
         assertEquals(SettingsDestination.NavMode, route(SettingLinkIds.MAIN_NAV_MODE).destination)

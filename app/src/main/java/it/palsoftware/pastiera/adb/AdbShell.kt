@@ -8,22 +8,24 @@ import rikka.shizuku.Shizuku
 import java.util.concurrent.TimeUnit
 
 /**
- * Commands run as the ADB shell (no root needed), through Shizuku when it's running and has
- * allowed the keyboard.
+ * Commands run as the ADB shell (no root needed): the keyboard light, ADB shortcuts. Through root
+ * when it's switched on and granted, otherwise Shizuku when it's running and has allowed the
+ * keyboard.
  */
 object AdbShell {
     private const val TAG = "FluxAdb"
 
-    /** Shizuku can run commands. */
-    fun available(): Boolean = shizukuAvailable()
+    /** Root or Shizuku can run commands. */
+    fun available(): Boolean = RootShell.active || shizukuAvailable()
 
     /** Shizuku is running and has allowed the keyboard. */
     fun shizukuAvailable(): Boolean = runCatching {
         Shizuku.pingBinder() && Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED
     }.getOrDefault(false)
 
-    /** Starts [command] as the ADB shell user, through Shizuku. */
+    /** Starts [command] as the ADB shell user, through root or else Shizuku. */
     fun newProcess(command: Array<String>): Process {
+        if (RootShell.active) return RootShell.newProcess(command)
         val method = Shizuku::class.java.getDeclaredMethod(
             "newProcess",
             Array<String>::class.java,

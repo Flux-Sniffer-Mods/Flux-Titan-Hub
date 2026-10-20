@@ -252,6 +252,7 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
         private const val TERMINAL_SWIPE_LINE_KEYS = 1.6f
         /** Trackpad travel before a swipe moves the terminal cursor at all (of 1080 across). */
         private const val TERMINAL_SWIPE_DEAD_ZONE = 175f
+        /** Root page: read the keyboard's touch pad as root (and pause the scroll module while typing) */
         private const val PASTE_SUGGESTION_WINDOW_MS = 60_000L
         private const val TAG = "PastieraInputMethod"
         private const val TRACKPAD_DEBUG_TAG = "TrackpadDebug"
@@ -2069,6 +2070,8 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
     override fun onCreate() {
         super.onCreate()
         ClicksAccessibilityKeyBridge.register(this)
+        // Root: the keyboard backlight follows the screen, when set (the Root page)
+        it.palsoftware.pastiera.adb.KeyboardBacklight.start(this)
         // A code arriving while typing is offered straight away
         // A newer code replaces the chip too when the bar shows one already
         it.palsoftware.pastiera.otp.OneTimeCodes.onNewCode = { if (isInputViewShown || isInputViewActive || pasteSuggestionShown) offerOneTimeCode() }
@@ -4362,6 +4365,8 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
         if (!restarting) {
             val editable = info != null && info.inputType != EditorInfo.TYPE_NULL
             info?.packageName?.let { QuickLauncherOpener.foregroundPackage = it }
+            // Screen size per app (Shizuku extras)
+            it.palsoftware.pastiera.adb.PerAppDensity.onAppInFront(this, info?.packageName)
             QuickLauncherOpener.NiagaraReturn.onInputStarted(info?.packageName, editable)?.let(::returnToApp)
         }
         // Emoji layer profiles: the layer follows the app when switching by app
