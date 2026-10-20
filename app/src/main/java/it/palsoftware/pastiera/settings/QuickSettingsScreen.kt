@@ -27,7 +27,7 @@ import it.palsoftware.pastiera.setTrackpadGesturesEnabled
 
 /**
  * The keyboard's switches used most, grouped by what they're for rather than where they live:
- * each is the same setting as on its page. Gaming mode has its own on its page.
+ * each is the same setting as on its page. Gaming mode and streaming have theirs on their pages.
  */
 @Composable
 internal fun QuickSettingsScreen(modifier: Modifier, onBack: () -> Unit) {

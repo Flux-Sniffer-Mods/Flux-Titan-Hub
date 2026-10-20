@@ -48,7 +48,7 @@ class GameCommandSource : CommandSource {
         }
     }
 
-    /** The Games app and XCloud Games (with gaming mode's module on), as commands of their own. */
+    /** The Games app and XCloud Games (with gaming mode's module on), and streaming's settings (with streaming's), as commands of their own. */
     private fun entries(context: Context, gaming: Boolean): List<CommandTarget> {
         val games = context.getString(it.palsoftware.pastiera.R.string.games_app_title)
         val icon = CommandIcon.DrawableIcon(runCatching { context.packageManager.getApplicationIcon(context.packageName) }.getOrNull())
@@ -74,7 +74,10 @@ class GameCommandSource : CommandSource {
             entry("games", context.getString(it.palsoftware.pastiera.R.string.stream_flux_games), games,
                 Intent(context, GamesActivity::class.java), listOf("Flux Games", "Games", "launcher")).takeIf { gaming },
             entry("xcloud", context.getString(it.palsoftware.pastiera.R.string.games_app_xbox), "Xbox Cloud Gaming",
-                xcloud, listOf("XCloud", "Xbox", "Cloud", "Game Pass")).takeIf { gaming }
+                xcloud, listOf("XCloud", "Xbox", "Cloud", "Game Pass")).takeIf { gaming },
+            entry("stream", context.getString(it.palsoftware.pastiera.R.string.stream_section), "Moonlight",
+                Intent(context, it.palsoftware.pastiera.streaming.StreamingActivity::class.java), listOf("Stream", "Moonlight", "Streaming", "TV"))
+                .takeIf { FluxModules.on(context, FluxModule.STREAMING) }
         )
     }
 

@@ -1,6 +1,7 @@
 package it.palsoftware.pastiera.gaming
 
 import it.palsoftware.pastiera.modules.FluxModule
+import it.palsoftware.pastiera.modules.FluxModules
 import it.palsoftware.pastiera.apps.appLabel
 import android.content.ComponentName
 import android.content.Context
@@ -20,6 +21,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -64,16 +67,38 @@ class GamesActivity : ComponentActivity() {
         val editId = intent.getStringExtra(EXTRA_EDIT)
         setContent {
             PastieraTheme {
-                GamesList(editId)
+                // Shown on a TV (through Moonlight): zoomed out to a TV's layout
+                val metrics = resources.displayMetrics
+                val base = androidx.compose.ui.platform.LocalDensity.current
+                val tv = tvView()
+                val density = if (!tv) base else {
+                    val wide = maxOf(metrics.widthPixels, metrics.heightPixels)
+                    androidx.compose.ui.unit.Density((wide / TV_WIDTH_DP).coerceAtMost(base.density), base.fontScale)
+                }
+                androidx.compose.runtime.CompositionLocalProvider(androidx.compose.ui.platform.LocalDensity provides density) {
+                    GamesList(editId, tv)
+                }
             }
         }
+    }
+
+    /**
+     * Shown through Moonlight: on a screen of its own, or on the phone's while its screen is
+     * mirrored (the phone at the TV's shape).
+     */
+    private fun tvView(): Boolean {
+        @Suppress("DEPRECATION")
+        val display = windowManager.defaultDisplay?.displayId ?: android.view.Display.DEFAULT_DISPLAY
+        if (display != android.view.Display.DEFAULT_DISPLAY) return true
+        val session = it.palsoftware.pastiera.streaming.StreamHost.session ?: return false
+        return !session.separate
     }
 
     private data class Entry(val name: String, val profile: GameProfile, val intent: Intent)
 
     @OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
     @Composable
-    private fun GamesList(editId: String?) {
+    private fun GamesList(editId: String?, tv: Boolean = false) {
         // Keys move through the grid only while it's what's shown (not a game's settings, where they type)
         keyHandler = null
         var entries by remember { mutableStateOf<List<Entry>?>(null) }
@@ -113,8 +138,9 @@ class GamesActivity : ComponentActivity() {
             },
             onDismiss = { pickingApp = false }
         )
+        var streaming by remember { mutableStateOf(it.palsoftware.pastiera.streaming.StreamHostService.enabled(this)) }
         if (addingXbox) it.palsoftware.pastiera.settings.XboxCloudDialog(XboxCloud.app(this), onPicked = pick, onDismiss = { addingXbox = false },
-            // A tap plays it; long-press to add it to the games
+            // A tap plays it; long-press to add it to the games (and Moonlight)
             onPlay = { game ->
                 game.launch?.let { uri -> runCatching { Intent.parseUri(uri, Intent.URI_INTENT_SCHEME) }.getOrNull() }
                     ?.let { launch -> runCatching { startActivity(launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) } }
@@ -196,8 +222,40 @@ class GamesActivity : ComponentActivity() {
                         hint = stringResource(if (page == Page.APPS) R.string.games_app_search_apps else R.string.games_app_search),
                         onFocusChanged = { searching = it }
                     )
-                    // Gaming settings, on the right, apart from the title
+                    // A game on a screen of its own: its page, which gives it the phone's keys and touch
+                    var screenOpen by remember { mutableStateOf(it.palsoftware.pastiera.display.ExtraScreen.current != null) }
+                    androidx.compose.runtime.DisposableEffect(Unit) {
+                        val watcher = { screenOpen = it.palsoftware.pastiera.display.ExtraScreen.current != null }
+                        it.palsoftware.pastiera.display.ExtraScreen.watch(watcher)
+                        onDispose { it.palsoftware.pastiera.display.ExtraScreen.unwatch(watcher) }
+                    }
+                    if (screenOpen) androidx.compose.material3.AssistChip(
+                        onClick = { it.palsoftware.pastiera.streaming.StreamHost.openScreenPage(this@GamesActivity) },
+                        label = { Text(stringResource(R.string.extra_screen_title)) },
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    // Gaming settings, on the right with streaming, apart from the title
                     androidx.compose.material3.IconButton(onClick = openSettings) { Text("\u2699", style = MaterialTheme.typography.titleLarge) }
+                    // Streaming to Moonlight, with the streaming module on: on or off at a tap; a
+                    // long-press opens the Streaming app (no button while streaming is off)
+                    if (FluxModules.on(this@GamesActivity, FluxModule.STREAMING)) androidx.compose.material3.Surface(
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
+                        color = if (streaming) MaterialTheme.colorScheme.secondaryContainer else androidx.compose.ui.graphics.Color.Transparent,
+                        border = if (streaming) null else androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                        modifier = Modifier.clip(androidx.compose.foundation.shape.RoundedCornerShape(8.dp)).combinedClickable(
+                            onClick = {
+                                streaming = !streaming
+                                it.palsoftware.pastiera.streaming.StreamHostService.setEnabled(this@GamesActivity, streaming)
+                            },
+                            onLongClick = { startActivity(Intent(this@GamesActivity, it.palsoftware.pastiera.streaming.StreamingActivity::class.java)) }
+                        )
+                    ) {
+                        val label = stringResource(R.string.games_app_stream)
+                        Box(
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                                .semantics { contentDescription = label; stateDescription = if (streaming) "on" else "off" }
+                        ) { StreamSignal(streaming) }
+                    }
                 }
             }
         ) { inner ->
@@ -209,7 +267,10 @@ class GamesActivity : ComponentActivity() {
                     tiles += TileSpec(entry.profile.id, entry.name,
                         if (entry.profile.pending) stringResource(R.string.games_app_new) else null,
                         { GameCover(entry.profile) },
-                        { runCatching { startActivity(entry.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) } },
+                        {
+                            // Streaming with a TV set up: asked there whether to play on the TV or the phone
+                            runCatching { startActivity(entry.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }
+                        },
                         { editing = entry.profile })
                 }
                 // Gone from the phone: faded, a tap for its settings (to keep or delete it)
@@ -241,7 +302,8 @@ class GamesActivity : ComponentActivity() {
             val grid = androidx.compose.foundation.lazy.grid.rememberLazyGridState()
             // The tile picked with keys (shown only once keys are used, not for touch)
             var selected by remember(page) { mutableIntStateOf(0) }
-            var byKeys by remember { mutableStateOf(false) }
+            // On a TV, picked with a controller: the frame shows from the start
+            var byKeys by remember { mutableStateOf(tv) }
             // What gaming mode still needs (or a Turn on bar while it's off), above the tiles
             val header = 1
             LaunchedEffect(selected, byKeys) { if (byKeys && selected in tiles.indices) grid.animateScrollToItem(selected + header) }
@@ -347,6 +409,9 @@ class GamesActivity : ComponentActivity() {
 
     private enum class Page { GAMES, APPS }
 
+    /** A TV's layout: this many dp across, as Android TV lays out 1080p. */
+    private val TV_WIDTH_DP = 960f
+
     /** Launchers and emulators: those with gaming mode settings, then the known ones installed. */
     private fun launchers(): List<Pair<String, GameProfile?>> {
         val all = GameProfiles.all(this)
@@ -430,7 +495,7 @@ class GamesActivity : ComponentActivity() {
         ) else Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { fallback() }
     }
 
-    /** A game's upright art; its app's icon while there's none. */
+    /** A game's upright art, the same Moonlight shows; its app's icon while there's none. */
     @Composable
     private fun GameCover(profile: GameProfile) {
         val version = GameArt.version(this, profile)
@@ -551,3 +616,57 @@ class GamesActivity : ComponentActivity() {
         }
     }
 }
+
+/**
+ * Streaming's mark: a broadcast point with Wi-Fi's arcs, as many lit as the phone's Wi-Fi is
+ * strong while streaming is on; dimmed while it's off (or the phone isn't on Wi-Fi).
+ */
+@Composable
+internal fun StreamSignal(on: Boolean) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    var level by remember { mutableStateOf(wifiLevel(context)) }
+    LaunchedEffect(on) {
+        while (true) {
+            level = wifiLevel(context)
+            kotlinx.coroutines.delay(3_000)
+        }
+    }
+    val lit = if (on) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
+    val dim = lit.copy(alpha = 0.25f)
+    androidx.compose.foundation.Canvas(modifier = Modifier.size(width = 26.dp, height = 22.dp)) {
+        val centre = androidx.compose.ui.geometry.Offset(size.width / 2, size.height * 0.92f)
+        val stroke = size.height * 0.11f
+        // The point streaming goes out from
+        drawCircle(if (on || level < 0) lit else dim, radius = stroke * 0.9f, center = centre)
+        // Three arcs, lit up to the signal's strength (all of them dim while streaming is off)
+        for (arc in 1..3) {
+            val radius = size.height * (0.28f + 0.26f * (arc - 1))
+            val shown = on && level >= arc
+            drawArc(
+                color = if (shown) lit else dim,
+                startAngle = 225f, sweepAngle = 90f, useCenter = false,
+                topLeft = androidx.compose.ui.geometry.Offset(centre.x - radius, centre.y - radius),
+                size = androidx.compose.ui.geometry.Size(radius * 2, radius * 2),
+                style = androidx.compose.ui.graphics.drawscope.Stroke(width = stroke, cap = androidx.compose.ui.graphics.StrokeCap.Round)
+            )
+        }
+    }
+}
+
+/** The phone's Wi-Fi strength, 0 (none) to 3 arcs; 0 when it isn't on Wi-Fi. */
+private fun wifiLevel(context: Context): Int = runCatching {
+    val connectivity = context.getSystemService(android.net.ConnectivityManager::class.java)
+    val caps = connectivity?.getNetworkCapabilities(connectivity.activeNetwork) ?: return 0
+    if (!caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_WIFI) &&
+        !caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_ETHERNET)) return 0
+    // Ethernet (a USB adapter) is as good as it gets
+    if (caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_ETHERNET)) return 3
+    val rssi = caps.signalStrength
+    when {
+        rssi == android.net.NetworkCapabilities.SIGNAL_STRENGTH_UNSPECIFIED -> 2
+        rssi >= -60 -> 3
+        rssi >= -72 -> 2
+        else -> 1
+    }
+}.getOrDefault(0)
+

@@ -16,12 +16,18 @@
 
     <!-- Restarts the screen timeout after a key press -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
     
     <!-- Voice input -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     
     <!-- Internet: update checks, GIF search, online layouts and dictionaries -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Streaming games to Moonlight: the host runs while it's on -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <!-- Streaming to Moonlight: the screen and what's playing -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
 
     <!-- Reads the Clicks Power Keyboard's details over Bluetooth LE -->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
@@ -281,12 +287,25 @@
             android:taskAffinity=""
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|density|keyboard|keyboardHidden|navigation|uiMode"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        <!-- Quick Settings: gaming mode on or off; a long-press opens its settings -->
+        <!-- Quick Settings: gaming mode and streaming on or off; a long-press opens their settings -->
         <service
             android:name=".modules.GamingTileService"
             android:exported="true"
             android:icon="@drawable/ic_qs_gaming"
             android:label="@string/game_mode_title"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.quicksettings.TOGGLEABLE_TILE"
+                android:value="true" />
+        </service>
+        <service
+            android:name=".modules.StreamingTileService"
+            android:exported="true"
+            android:icon="@drawable/ic_qs_streaming"
+            android:label="@string/module_streaming_title"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
@@ -306,7 +325,52 @@
             </intent-filter>
         </activity>
 
+        <!-- Streaming games to Moonlight: the host, and the PIN typed to pair a device -->
+        <service
+            android:name=".streaming.StreamHostService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse|mediaProjection">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Game streaming host that Moonlight clients on the local network pair with" />
+        </service>
+        <activity
+            android:name=".streaming.StreamPin"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <!-- The streaming notification tapped: end the stream or keep it -->
+        <activity
+            android:name=".streaming.StreamStop"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <!-- A Moonlight client asking to stream, confirmed on the phone (started by the shell too: nothing without a request) -->
+        <activity
+            android:name=".streaming.StreamConfirm"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <!-- Started by the shell when Moonlight launches a game: does nothing without a session -->
+        <activity
+            android:name=".streaming.StreamCapture"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <!-- Xbox Cloud Gaming in Flux Keyboard's own player (sizes change while it plays: kept) -->
+        <activity
+            android:name=".gaming.ExtraScreenActivity"
+            android:exported="false"
+            android:label="@string/extra_screen_title"
+            android:taskAffinity="it.palsoftware.pastiera.screen"
+            android:launchMode="singleTask"
+            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden|navigation"
+            android:theme="@android:style/Theme.Material.NoActionBar.Fullscreen" />
+
         <activity
             android:name=".gaming.XboxPlayActivity"
             android:exported="false"
@@ -333,7 +397,7 @@
             android:taskAffinity="it.palsoftware.pastiera.games"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|density"
             android:theme="@style/Theme.Pastiera" />
-        <!-- Its entry in the app list (Games in the app list) -->
+        <!-- Its entry in the app list (Games in the app list): it opens from Moonlight either way -->
         <activity-alias
             android:name=".gaming.GamesLauncher"
             android:targetActivity=".gaming.GamesActivity"
@@ -342,6 +406,29 @@
             android:label="@string/games_app_title"
             android:icon="@mipmap/ic_games"
             android:roundIcon="@mipmap/ic_games">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <!-- Streaming: an app of its own in the app list, every app to open on the TV (on with streaming) -->
+        <activity
+            android:name=".streaming.StreamingActivity"
+            android:exported="true"
+            android:label="@string/module_streaming_title"
+            android:icon="@mipmap/ic_streaming"
+            android:roundIcon="@mipmap/ic_streaming"
+            android:taskAffinity="it.palsoftware.pastiera.streaming"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|density"
+            android:theme="@style/Theme.Pastiera" />
+        <activity-alias
+            android:name=".streaming.StreamingLauncher"
+            android:targetActivity=".streaming.StreamingActivity"
+            android:exported="true"
+            android:enabled="false"
+            android:label="@string/module_streaming_title"
+            android:icon="@mipmap/ic_streaming"
+            android:roundIcon="@mipmap/ic_streaming">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

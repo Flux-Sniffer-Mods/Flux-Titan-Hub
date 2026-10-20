@@ -27,6 +27,10 @@ class ClicksLauncherButtonAccessibilityService : AccessibilityService() {
     override fun onKeyEvent(event: KeyEvent): Boolean {
         // Gaming mode: a real controller's button, or else the key goes to the game as it is
         if (it.palsoftware.pastiera.gaming.GameMode.onKeyEvent(event)) return true
+        // The Games app's page for a game's own screen in front: the keys go to that screen
+        if (it.palsoftware.pastiera.display.ExtraScreen.key(event)) return true
+        // Streaming to the TV: the volume keys are the TV's (in a game, with SYM, through gaming mode)
+        if (it.palsoftware.pastiera.streaming.TvRemote.volumeKey(this, event)) return true
         if (it.palsoftware.pastiera.gaming.GameMode.passesKeys()) return false
         // Hidden apps: keys for Pastiera's emoji/symbols panels go to Pastiera, not the app
         val taken = HiddenAppKeyObserver.intercept(event)
@@ -112,6 +116,9 @@ class ClicksLauncherButtonAccessibilityService : AccessibilityService() {
 
     override fun onServiceConnected() {
         super.onServiceConnected()
+        // A stream that ended with the app (a crash): the phone's screen put back
+        val app = applicationContext
+        Thread { runCatching { it.palsoftware.pastiera.streaming.StreamHost.recover(app) } }.start()
         // Keyboard swipes: taken from apps while a field is typed in, handed to the keyboard
         ClicksAccessibilityKeyBridge.onTrackpadCaptureChanged = { captured -> claimTrackpad(captured) }
         claimTrackpad(ClicksAccessibilityKeyBridge.trackpadCaptured)

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apps
+import androidx.compose.material.icons.filled.WifiTethering
 import androidx.compose.material.icons.filled.DesktopWindows
 import androidx.compose.material.icons.filled.EmojiEmotions
 import androidx.compose.material.icons.filled.Keyboard
@@ -80,7 +81,7 @@ internal fun ModuleTiles(onSettings: (FluxModule) -> Unit = {}, onOpen: (FluxMod
         lifecycle.addObserver(observer)
         onDispose { lifecycle.removeObserver(observer) }
     }
-    // How each is doing, every few seconds (the shell comes up); the games once
+    // How each is doing, every few seconds (a stream starts, the shell comes up); the games once
     LaunchedEffect(check) {
         games = withContext(Dispatchers.IO) {
             runCatching { it.palsoftware.pastiera.gaming.GamesActivity.games(context).size }.getOrNull()
@@ -137,11 +138,14 @@ private fun tileLine(module: FluxModule, on: Boolean, status: ModuleReadiness.St
     val description = stringResource(when (module) {
         FluxModule.KEYBOARD -> R.string.module_keyboard_description
         FluxModule.GAMING -> R.string.module_gaming_description
+        FluxModule.STREAMING -> R.string.module_streaming_description
         FluxModule.DESKTOP -> R.string.module_coming_soon
     })
     if (!on || status == null) return description to false
     val need = status.needs.firstOrNull()
+    val streamingTo = status.streamingTo
     return when {
+        module == FluxModule.STREAMING && streamingTo != null -> stringResource(R.string.tile_streaming_to, streamingTo) to false
         need != null -> stringResource(R.string.tile_fix, stringResource(when (need) {
             Need.KEYBOARD_ON -> R.string.tile_need_keyboard_on
             Need.KEYBOARD_CHOSEN -> R.string.tile_need_keyboard_chosen
@@ -149,6 +153,7 @@ private fun tileLine(module: FluxModule, on: Boolean, status: ModuleReadiness.St
             Need.ACCESSIBILITY -> R.string.tile_need_accessibility
             Need.OVERLAY -> R.string.tile_need_overlay
             Need.NOTIFICATIONS -> R.string.tile_need_notifications
+            Need.PAIRED -> R.string.tile_need_paired
         })) to true
         module == FluxModule.KEYBOARD -> stringResource(R.string.tile_keyboard_ready) to false
         module == FluxModule.GAMING -> when (games) {
@@ -156,6 +161,8 @@ private fun tileLine(module: FluxModule, on: Boolean, status: ModuleReadiness.St
             0 -> stringResource(R.string.tile_gaming_no_games)
             else -> stringResource(R.string.tile_gaming_ready, games)
         } to false
+        module == FluxModule.STREAMING ->
+            (if (status.listening) stringResource(R.string.tile_streaming_ready, status.paired) else stringResource(R.string.tile_streaming_off)) to false
         else -> description to false
     }
 }
@@ -178,6 +185,7 @@ private fun TileGrid(gap: androidx.compose.ui.unit.Dp, modifier: Modifier, conte
 private fun moduleIcon(module: FluxModule): ImageVector = when (module) {
     FluxModule.KEYBOARD -> Icons.Filled.Keyboard
     FluxModule.GAMING -> Icons.Filled.SportsEsports
+    FluxModule.STREAMING -> Icons.Filled.WifiTethering
     FluxModule.DESKTOP -> Icons.Filled.DesktopWindows
 }
 
@@ -185,13 +193,14 @@ private fun moduleIcon(module: FluxModule): ImageVector = when (module) {
 internal fun moduleTitle(module: FluxModule): String = stringResource(when (module) {
     FluxModule.KEYBOARD -> R.string.module_keyboard_title
     FluxModule.GAMING -> R.string.game_mode_title
+    FluxModule.STREAMING -> R.string.module_streaming_title
     FluxModule.DESKTOP -> R.string.module_desktop_title
 })
 
 /**
  * A module's colours: the wallpaper's (the theme's), each module a step further round the hue
- * than the one before it, so the tiles run as a gradient (keyboard, gaming, then the desktop)
- * and tell apart at a glance while still matching the phone.
+ * than the one before it, so the tiles run as a gradient (keyboard, gaming, streaming, then the
+ * desktop) and tell apart at a glance while still matching the phone.
  */
 @Composable
 private fun moduleColors(module: FluxModule): Pair<androidx.compose.ui.graphics.Color, androidx.compose.ui.graphics.Color> {
@@ -200,7 +209,8 @@ private fun moduleColors(module: FluxModule): Pair<androidx.compose.ui.graphics.
     val turn = when (module) {
         FluxModule.KEYBOARD -> 0f
         FluxModule.GAMING -> HUE_STEP
-        FluxModule.DESKTOP -> HUE_STEP * 2
+        FluxModule.STREAMING -> HUE_STEP * 2
+        FluxModule.DESKTOP -> HUE_STEP * 3
     }
     return remember(container, accent, turn) { turned(container, turn) to turned(accent, turn) }
 }
@@ -339,6 +349,7 @@ internal fun ModuleOffBar(module: FluxModule, onTurnedOn: () -> Unit) {
                     stringResource(when (module) {
                         FluxModule.KEYBOARD -> R.string.module_off_keyboard
                         FluxModule.GAMING -> R.string.module_off_gaming
+                        FluxModule.STREAMING -> R.string.module_off_streaming
                         FluxModule.DESKTOP -> R.string.module_coming_soon
                     }),
                     style = MaterialTheme.typography.bodySmall,
@@ -420,7 +431,7 @@ internal fun KeyboardSettingsRows(onNavigate: (SettingsDestination) -> Unit) {
         linkId = "main.shell_extras",
         onClick = { onNavigate(SettingsDestination.ShellExtras) }
     )
-    // This page as an app of its own in the home screen's app list, as Games is
+    // This page as an app of its own in the home screen's app list, as Games and Streaming are
     val context = LocalContext.current
     var inAppList by remember { mutableStateOf(it.palsoftware.pastiera.KeyboardActivity.inAppList(context)) }
     FluxSwitchRow(
@@ -431,5 +442,49 @@ internal fun KeyboardSettingsRows(onNavigate: (SettingsDestination) -> Unit) {
     ) { on ->
         inAppList = on
         it.palsoftware.pastiera.KeyboardActivity.setInAppList(context, on)
+    }
+}
+
+/**
+ * Streaming's settings, the same from its tile and the Streaming app's ⚙: the module switched on
+ * or off, what it still needs, the Streaming app in the app list, then its settings by group.
+ */
+@Composable
+internal fun StreamingHomeScreen(modifier: Modifier, onBack: () -> Unit) {
+    val context = LocalContext.current
+    val on = rememberModuleOn(FluxModule.STREAMING)
+    FluxScreenScaffold(stringResource(R.string.module_streaming_title), onBack, modifier) {
+        FluxSwitchRow(
+            linkId = "main.streaming",
+            title = stringResource(R.string.module_streaming_title),
+            description = stringResource(R.string.module_streaming_switch_description),
+            checked = on.value
+        ) { checked ->
+            on.value = checked
+            FluxModules.setOn(context, FluxModule.STREAMING, checked)
+        }
+        if (on.value) {
+            ReadinessCard(FluxModule.STREAMING)
+            SettingsSearchArea(
+                fieldModifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+                scope = setOf(SettingsDestination.Streaming),
+                hint = stringResource(R.string.streaming_search)
+            ) {
+            StreamingSettings()
+            // The Streaming app in the home screen's app list (on with streaming), at the bottom as the keyboard's is
+            SettingsSectionDivider(stringResource(R.string.streaming_app_section))
+            var inAppList by remember { mutableStateOf(it.palsoftware.pastiera.streaming.StreamApps.inAppList(context)) }
+            FluxSwitchRow(
+                linkId = "streaming.app",
+                title = stringResource(R.string.streaming_app_switch),
+                description = stringResource(R.string.streaming_app_switch_description),
+                checked = inAppList
+            ) { checked ->
+                inAppList = checked
+                it.palsoftware.pastiera.streaming.StreamApps.setInAppList(context, checked)
+            }
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }

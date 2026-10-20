@@ -35,18 +35,31 @@ class GameLaunchActivity : Activity() {
             finish()
             return
         }
-        proceed(profile, packages, launch, asked = intent.getBooleanExtra(EXTRA_ASKED, false))
+        proceed(profile, packages, launch,
+            tvAsked = intent.getBooleanExtra(EXTRA_TV_ASKED, false), asked = intent.getBooleanExtra(EXTRA_ASKED, false))
     }
 
     /**
-     * The game started, after the question it needs: set up or played as it is the first time.
-     * The answer carries on here, in this same screen (starting the screen again could start the
-     * game twice, or not at all).
+     * The game started, after the questions it needs: on the TV or the phone while streaming, and
+     * set up or played as it is the first time. Each answer carries on here, in this same screen
+     * (starting the screen again could start the game twice, or not at all).
      */
-    private fun proceed(profile: GameProfile?, packages: Set<String>, launch: String?, asked: Boolean) {
+    private fun proceed(profile: GameProfile?, packages: Set<String>, launch: String?, tvAsked: Boolean, asked: Boolean) {
+        // Streaming, with a Moonlight client set up: played there (turned on, Moonlight opened into
+        // the game) or on the phone, as asked (not when the stream itself opens it)
+        if (!tvAsked && it.palsoftware.pastiera.streaming.TvPrompt.applies(this, profile)) {
+            it.palsoftware.pastiera.streaming.TvPrompt.open(this, profile,
+                onPhone = {
+                    FluxLog.w(TAG, "${profile?.name}: played on the phone, not the Moonlight client")
+                    proceed(profile, packages, launch, tvAsked = true, asked = asked)
+                },
+                onTv = { profile?.let { p -> p.packages.forEach { GameProfiles.setActive(this, it, p.id) } }; finish() },
+                onCancel = { finish() })
+            return
+        }
         // A game found by itself, starting for the first time: set it up, or play it as it is
         if (profile != null && profile.pending && !asked) {
-            ask(profile) { confirmed -> proceed(confirmed, packages, launch, asked = true) }
+            ask(profile) { confirmed -> proceed(confirmed, packages, launch, tvAsked = true, asked = true) }
             return
         }
         profile?.let { p -> p.packages.forEach { GameProfiles.setActive(this, it, p.id) } }
@@ -184,6 +197,8 @@ class GameLaunchActivity : Activity() {
         private const val EXTRA_LAUNCH = "launch"
         private const val EXTRA_PACKAGE = "package"
         private const val EXTRA_ASKED = "asked"
+        /** Already played on the phone, not asked about the TV (picked so, or opened by the stream). */
+        const val EXTRA_TV_ASKED = "tv_asked"
 
         /** Starts a game found in the folders (or a launcher), through its profile when it has one. */
         /** The app [intent] (one of these shortcuts) opens a game in. */

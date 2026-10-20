@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.SportsEsports
+import androidx.compose.material.icons.filled.WifiTethering
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -52,6 +53,8 @@ fun FluxTutorialModulesPageContent(chosen: Set<FluxModule>, onChange: (FluxModul
                     FluxModule.KEYBOARD in chosen) { onChange(FluxModule.KEYBOARD, it) }
                 ModuleChoice(Icons.Filled.SportsEsports, R.string.game_mode_title, R.string.flux_tutorial_modules_gaming,
                     FluxModule.GAMING in chosen) { onChange(FluxModule.GAMING, it) }
+                ModuleChoice(Icons.Filled.WifiTethering, R.string.module_streaming_title, R.string.flux_tutorial_modules_streaming,
+                    FluxModule.STREAMING in chosen) { onChange(FluxModule.STREAMING, it) }
                 Text(
                     stringResource(R.string.flux_tutorial_modules_later),
                     style = MaterialTheme.typography.bodySmall,
@@ -105,6 +108,29 @@ fun FluxTutorialGamingPageContent(modifier: Modifier = Modifier) {
         modifier = modifier,
         extraContent = {
             ReadinessCard(FluxModule.GAMING, modifier = Modifier.padding(top = 8.dp), readyText = stringResource(R.string.flux_tutorial_gaming_ready))
+        }
+    )
+}
+
+/** Streaming, chosen: what it does, what it still needs (pairing included), its settings. */
+@Composable
+fun FluxTutorialStreamingPageContent(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    TutorialFeaturePageContent(
+        title = stringResource(R.string.module_streaming_title),
+        description = stringResource(R.string.flux_tutorial_streaming_description),
+        icon = Icons.Filled.WifiTethering,
+        tint = MaterialTheme.colorScheme.secondary,
+        bullets = listOf(
+            stringResource(R.string.flux_tutorial_streaming_bullet_pair),
+            stringResource(R.string.flux_tutorial_streaming_bullet_apps),
+            stringResource(R.string.flux_tutorial_streaming_bullet_tile)
+        ),
+        buttonText = stringResource(R.string.flux_tutorial_streaming_button),
+        onButtonClick = { openTutorialSettingById(context, "main.streaming") },
+        modifier = modifier,
+        extraContent = {
+            ReadinessCard(FluxModule.STREAMING, modifier = Modifier.padding(top = 8.dp), readyText = stringResource(R.string.flux_tutorial_streaming_ready))
         }
     )
 }

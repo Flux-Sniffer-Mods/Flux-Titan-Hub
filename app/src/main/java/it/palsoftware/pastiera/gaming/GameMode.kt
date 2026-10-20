@@ -169,9 +169,12 @@ object GameMode {
     }
 
     internal fun placed(context: Context, updated: GameProfile) {
+        // Placed while streaming: kept apart from the phone's own placing
         val stored = GameProfiles.all(context).firstOrNull { it.id == updated.id } ?: updated
         // Only the placing is kept: the profile in use may carry a game's own screen over its app's
-        val saved = stored.copy(stickZones = updated.stickZones, taps = updated.taps, stickTuning = updated.stickTuning, touchArea = updated.touchArea)
+        val saved = (if (streamed()) stored.copy(streamStickZones = updated.stickZones, streamTaps = updated.taps,
+                streamShape = streamShapeNow())
+            else stored.copy(stickZones = updated.stickZones, taps = updated.taps)).copy(stickTuning = updated.stickTuning, touchArea = updated.touchArea)
         GameProfiles.save(context, saved)
         if (profile?.id == updated.id) profile = GameTouchEditor.withDefaults(updated)
     }
@@ -620,7 +623,7 @@ object GameMode {
 
     /**
      * SYM with Volume Up or Down: the phone's volume, with its slider shown, as games take the
-     * volume keys as triggers. SYM itself still reaches the game. True when the key is taken.
+     * volume keys as triggers (the TV's, while streaming to it). SYM itself still reaches the game. True when the key is taken.
      */
     private fun symVolume(event: KeyEvent): Boolean {
         val code = event.keyCode
@@ -633,7 +636,13 @@ object GameMode {
         if (event.action == KeyEvent.ACTION_UP) return volumeTaken.remove(code)
         if (!symHeld && code !in volumeTaken) return false
         volumeTaken += code
-        val audio = appContext?.getSystemService(android.media.AudioManager::class.java) ?: return true
+        val context = appContext ?: return true
+        // Streaming to the TV: the TV's volume, the phone being quiet meanwhile
+        if (it.palsoftware.pastiera.streaming.TvRemote.volumeHere(context)) {
+            it.palsoftware.pastiera.streaming.TvRemote.volume(context, code == KeyEvent.KEYCODE_VOLUME_UP)
+            return true
+        }
+        val audio = context.getSystemService(android.media.AudioManager::class.java) ?: return true
         val direction = if (code == KeyEvent.KEYCODE_VOLUME_UP) android.media.AudioManager.ADJUST_RAISE else android.media.AudioManager.ADJUST_LOWER
         // Held down, it keeps going, as the volume keys do
         audio.adjustStreamVolume(android.media.AudioManager.STREAM_MUSIC, direction, android.media.AudioManager.FLAG_SHOW_UI)
@@ -741,8 +750,9 @@ object GameMode {
                 Thread { runCatching { FluxLayout.refreshGames(app, pkg) } }.start()
             }
             startInput(context)
+            extra?.let { send("Z ${it.id}"); screenW = it.width.toFloat(); screenH = it.height.toFloat(); send("S ${it.width} ${it.height}") }
         } else if (input == null && AdbShell.available()) {
-            // Another game with the input helper gone: started again
+            // Another game with the input helper gone (it ended with a stream, say): started again
             restartInput(context)
         }
         if (activeId != chosen.id) { keySeen = false; keysNoted.clear(); tapsLogged.clear(); touchNoted.clear() }
@@ -751,7 +761,8 @@ object GameMode {
         // A game plays with its app's settings unless it has its own (Dolphin: Wii or GameCube)
         val next = GameProfiles.effective(context, chosen)
         // GameHub's and GameNative's games: their on-screen sticks, unless placed by hand
-        profile = GameTouchEditor.withDefaults(next)
+        profile = GameTouchEditor.withDefaults(next.forScreen(streamed()))
+        if (streamed()) askToPlaceForStream(context, next)
         // Another game: nothing held over from the one before
         releaseControls()
         // Each game's own screen choice (and size), also when switching game mid-way
@@ -790,6 +801,7 @@ object GameMode {
         runCatching { inputProcess?.destroy() }
         startInput(context)
         if (input == null) return
+        extra?.let { send("Z ${it.id}") }
         screenW = w; screenH = h
         send("S ${w.toInt()} ${h.toInt()}")
         FluxLog.w(TAG, "input helper started again")
@@ -831,9 +843,9 @@ object GameMode {
             // after that was set: placed taps would land as if the screen were upright),
             // else upright while gaming: the short side across
             val shape = gameShape
-            if (shape != null) {
+            if (extra == null && shape != null) {
                 screenW = shape.first.toFloat(); screenH = shape.second.toFloat()
-            } else {
+            } else if (extra == null) {
                 screenW = minOf(size.x, size.y).toFloat().takeIf { it > 0 } ?: 1080f
                 screenH = maxOf(size.x, size.y).toFloat().takeIf { it > 0 } ?: 1080f
             }
@@ -860,7 +872,7 @@ object GameMode {
      * for when it ended without undoing them (blocking: runs the shell).
      */
     fun recover(context: Context) {
-        if (profile != null) return
+        if (profile != null || streamSize != null) return
         val prefs = pending(context)
         val size = prefs.getString(KEY_RESTORE_SIZE, null)
         val rotation = prefs.getString(KEY_RESTORE_ROTATION, null)
@@ -886,6 +898,9 @@ object GameMode {
 
     /** The screen choice applied now (APP: nothing changed). */
     private var appliedScreen = ScreenMode.APP
+    /** What gaming mode last asked for, put back when streaming ends. */
+    @Volatile private var requestedScreen = ScreenMode.APP
+    @Volatile private var requestedHeight: Int? = null
     private var appliedHeight: Int? = null
 
     /** A landscape [size] drawn [height] rows high, its shape kept (never larger than it is). */
@@ -893,6 +908,64 @@ object GameMode {
         if (height == null || height >= size.second) return size
         return ((size.first.toLong() * height / size.second).toInt() and 1.inv()) to (height and 1.inv())
     }
+    /** Streaming's screen size (landscape-shaped), ahead of any game's choice; null when not streaming. */
+    @Volatile private var streamSize: Pair<Int, Int>? = null
+    private var appliedStream: Pair<Int, Int>? = null
+
+    /** The screen at [size] while streaming to Moonlight, or back to what gaming mode wants (null). */
+    fun streaming(context: Context, size: Pair<Int, Int>?) {
+        val app = context.applicationContext
+        worker.execute {
+            streamSize = size
+            screen(app, requestedScreen)
+            // The game's keys placed for the screen in use now
+            val id = activeId
+            val current = profile
+            if (id != null && current != null) GameProfiles.all(app).firstOrNull { it.id == id }?.let { chosen ->
+                val next = GameProfiles.effective(app, chosen)
+                profile = GameTouchEditor.withDefaults(next.forScreen(streamed()))
+                if (streamed()) askToPlaceForStream(app, next)
+            }
+        }
+    }
+
+    /** The stream's screen as width over height (its own screen's, or the phone's at its shape); null when not streaming. */
+    private fun streamShapeNow(): Float? =
+        (extra?.let { it.width to it.height } ?: streamSize)?.takeIf { it.second > 0 }?.let { it.first.toFloat() / it.second }
+
+    /** The game and stream shape last asked about, so a game is asked once per shape. */
+    @Volatile private var askedPlacing: String? = null
+
+    /**
+     * A game played by placed keys, streaming at a shape its keys weren't placed for (only the
+     * phone's placing, or the stream's at another shape: a share of a screen of another shape
+     * lands somewhere else on the game's buttons): a notification asks to place them for the
+     * stream, the placer a tap away.
+     */
+    private fun askToPlaceForStream(context: Context, game: GameProfile) {
+        if (game.taps.isEmpty() && game.streamTaps.isEmpty()) return
+        val shape = streamShapeNow() ?: return
+        val placedAt = if (game.streamTaps.isNotEmpty() || game.streamStickZones.isNotEmpty()) game.streamShape else null
+        if (placedAt != null && kotlin.math.abs(placedAt - shape) / shape < 0.03f) return
+        val key = "${game.id}|${"%.3f".format(shape)}"
+        if (askedPlacing == key) return
+        askedPlacing = key
+        FluxLog.w(TAG, "${game.name}: streaming at ${"%.2f".format(shape)} wide to 1 high, keys placed " +
+            (placedAt?.let { "for ${"%.2f".format(it)}" } ?: if (game.streamTaps.isEmpty()) "for the phone only" else "at a shape not known") + ": asked to place them again")
+        val manager = context.getSystemService(NotificationManager::class.java) ?: return
+        val notification = android.app.Notification.Builder(context, CHANNEL)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle(context.getString(R.string.game_mode_place_stream_title, game.name))
+            .setContentText(context.getString(R.string.game_mode_place_stream_text))
+            .setStyle(android.app.Notification.BigTextStyle().bigText(context.getString(R.string.game_mode_place_stream_text)))
+            .setAutoCancel(true)
+            .setContentIntent(placeKeys(context))
+            .addAction(android.app.Notification.Action.Builder(null, context.getString(R.string.game_mode_place_keys), placeKeys(context)).build())
+            .build()
+        runCatching { manager.notify(PLACE_STREAM_NOTIFICATION_ID, notification) }
+    }
+
+    private const val PLACE_STREAM_NOTIFICATION_ID = 7310
 
     /**
      * [action] on the main thread once the screen changes asked for so far are made, and a
@@ -928,14 +1001,61 @@ object GameMode {
         android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(action, 700)
     }
 
+    /** A screen of its own the game plays on (Separate screen), else null: the phone's. */
+    @Volatile private var extra: it.palsoftware.pastiera.display.ExtraScreen.Screen? = null
+
+    /** Placed and played for a stream: mirrored at the stream's shape, or on a screen of its own. */
+    private fun streamed() = streamSize != null || extra != null
+
+    /**
+     * The game on [screen], a screen of its own (null: back on the phone's): keys and the
+     * trackpad aimed there, placed for the stream, and the phone's screen left as it is.
+     */
+    fun extraScreen(context: Context, screen: it.palsoftware.pastiera.display.ExtraScreen.Screen?) {
+        val app = context.applicationContext
+        worker.execute {
+            if (extra?.id == screen?.id) return@execute
+            extra = screen
+            if (screen != null) {
+                screen(app, requestedScreen)
+                screenW = screen.width.toFloat(); screenH = screen.height.toFloat()
+                send("Z ${screen.id}")
+            } else {
+                send("Z 0")
+                val size = android.graphics.Point()
+                @Suppress("DEPRECATION")
+                app.getSystemService(android.view.WindowManager::class.java)?.defaultDisplay?.getRealSize(size)
+                screenW = minOf(size.x, size.y).toFloat().takeIf { it > 0 } ?: 1080f
+                screenH = maxOf(size.x, size.y).toFloat().takeIf { it > 0 } ?: 1080f
+                screen(app, requestedScreen)
+            }
+            send("S ${screenW.toInt()} ${screenH.toInt()}")
+            val id = activeId
+            if (id != null && profile != null) GameProfiles.all(app).firstOrNull { it.id == id }?.let { chosen ->
+                val next = GameProfiles.effective(app, chosen)
+                profile = GameTouchEditor.withDefaults(next.forScreen(streamed()))
+                if (screen != null) askToPlaceForStream(app, next)
+            }
+        }
+    }
+
+    /** The screen of its own the game plays on now, if any. */
+    fun extraScreen(): it.palsoftware.pastiera.display.ExtraScreen.Screen? = extra
 
     /**
      * Moves the screen from the choice applied to [mode]: undoes the old one, then does the new,
      * all in one go through the shell (one question first, when there's something to save), so
      * the switch is quick.
      */
-    private fun screen(context: Context, mode: ScreenMode, size: Int? = null) {
-        if (mode == appliedScreen && size == appliedHeight) return
+    private fun screen(context: Context, requested: ScreenMode, height: Int? = requestedHeight) {
+        requestedScreen = requested
+        requestedHeight = height
+        // Streaming to Moonlight comes first: the screen at the stream's size, whatever the game's choice
+        // On a screen of its own, the phone's is left as it is
+        val stream = streamSize.takeIf { extra == null }
+        val mode = if (extra != null) ScreenMode.APP else if (stream != null) ScreenMode.SIDEWAYS else requested
+        val size = if (stream == null && extra == null) height else null
+        if (mode == appliedScreen && stream == appliedStream && size == appliedHeight) return
         val prefs = pending(context)
         val commands = mutableListOf<String>()
         var restoredSize: String? = null
@@ -961,6 +1081,7 @@ object GameMode {
             prefs.edit().remove(KEY_RESTORE_ROTATION).apply()
         }
         appliedScreen = mode
+        appliedStream = stream
         appliedHeight = size
         var sideways: Pair<Int, Int>? = null
         if (mode != ScreenMode.APP) {
@@ -978,7 +1099,7 @@ object GameMode {
                     val (w, h) = minOf(physical[0], physical[1]) to maxOf(physical[0], physical[1])
                     savedSize = restoredSize ?: Regex("Override size: (\\d+x\\d+)").find(state)?.groupValues?.get(1) ?: ""
                     prefs.edit().putString(KEY_RESTORE_SIZE, savedSize).apply()
-                    sideways = scaled(sidewaysSize(w, h, cutoutTop(context)), size)
+                    sideways = stream ?: scaled(sidewaysSize(w, h, cutoutTop(context)), size)
                     physicalSize = w to h
                     commands += "wm size ${sideways.first}x${sideways.second}"
                     // The density in step with the size, so the game's screen holds as much as the
@@ -998,7 +1119,13 @@ object GameMode {
         // Taps follow the screen's shape
         val shape = sideways
         gameShape = shape
-        edges = if (shape != null) physicalSize?.let { bars(shape, it) } ?: (0f to 0f) else 0f to 0f
+        val own = extra
+        edges = if (own == null && shape != null) physicalSize?.let { bars(shape, it) } ?: (0f to 0f) else 0f to 0f
+        if (own != null) {
+            screenW = own.width.toFloat(); screenH = own.height.toFloat()
+            send("S ${own.width} ${own.height}")
+            return
+        }
         if (shape != null) {
             screenW = shape.first.toFloat(); screenH = shape.second.toFloat()
         } else if (restoredSize != null) {

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -101,15 +102,18 @@ private fun NeedRow(module: FluxModule, need: Need, onDone: () -> Unit) {
         Need.SHELL -> R.string.root_title
         Need.OVERLAY -> R.string.readiness_overlay
         Need.NOTIFICATIONS -> R.string.readiness_notifications
+        Need.PAIRED -> R.string.readiness_paired
     })
     val description = when (need) {
         Need.KEYBOARD_ON -> stringResource(R.string.readiness_keyboard_on_description)
         Need.KEYBOARD_CHOSEN -> stringResource(R.string.readiness_keyboard_chosen_description)
         Need.ACCESSIBILITY -> stringResource(R.string.readiness_accessibility_description)
-        Need.SHELL -> stringResource(R.string.shell_access_for_gaming) +
+        Need.SHELL -> stringResource(if (module == FluxModule.STREAMING) R.string.shell_access_for_streaming else R.string.shell_access_for_gaming) +
             " " + stringResource(if (shellPaired) R.string.shell_access_paired else R.string.shell_access_off)
         Need.OVERLAY -> stringResource(R.string.readiness_overlay_description)
-        Need.NOTIFICATIONS -> stringResource(R.string.readiness_notifications_gaming)
+        Need.NOTIFICATIONS -> stringResource(if (module == FluxModule.STREAMING) R.string.readiness_notifications_streaming else R.string.readiness_notifications_gaming)
+        Need.PAIRED -> stringResource(R.string.readiness_paired_description) +
+            if (!it.palsoftware.pastiera.streaming.StreamHostService.enabled(context)) " " + stringResource(R.string.readiness_paired_start) else ""
     }
     Row(
         modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).clickable { fix(context, need); onDone() }
@@ -138,5 +142,12 @@ private fun fix(context: Context, need: Need) {
         Need.SHELL -> openSettingsPage(context, SettingsPage(SettingsDestination.Root))
         Need.OVERLAY -> open(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:${context.packageName}")))
         Need.NOTIFICATIONS -> open(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName))
+        // Pairing starts from Moonlight: the phone answering it first
+        Need.PAIRED -> {
+            if (!it.palsoftware.pastiera.streaming.StreamHostService.enabled(context)) {
+                runCatching { it.palsoftware.pastiera.streaming.StreamHostService.setEnabled(context, true) }
+            }
+            Toast.makeText(context, R.string.readiness_paired_description, Toast.LENGTH_LONG).show()
+        }
     }
 }

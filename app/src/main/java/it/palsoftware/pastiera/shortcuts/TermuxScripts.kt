@@ -71,9 +71,12 @@ object TermuxScripts {
             arguments = arrayOf("-c", "cd ~/.shortcuts 2>/dev/null && find . -type f")
         ).putExtra("com.termux.RUN_COMMAND_PENDING_INTENT", reply)
 
-    /** Asks Termux for the scripts again, when on (in the quick launcher), allowed and not asked in the last minute. */
-    fun refresh(context: Context) {
-        if (!enabled(context) || !available(context)) return
+    /**
+     * Asks Termux for the scripts again, when on (in the quick launcher, or [forStreaming] for
+     * Moonlight's list), allowed and not asked in the last minute.
+     */
+    fun refresh(context: Context, forStreaming: Boolean = false) {
+        if (!(enabled(context) || forStreaming) || !available(context)) return
         val now = System.currentTimeMillis()
         if (now - lastRefresh < REFRESH_EVERY_MS) return
         lastRefresh = now

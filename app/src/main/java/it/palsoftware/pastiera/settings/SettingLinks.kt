@@ -1172,6 +1172,7 @@ object SettingLinkRegistry {
         SettingsDestination.TerminalMode to R.string.terminal_mode_title,
         SettingsDestination.ExactTyping to R.string.exact_typing_title,
         SettingsDestination.KeyboardHome to R.string.module_keyboard_title,
+        SettingsDestination.Streaming to R.string.module_streaming_title,
         SettingsDestination.QuickSettings to R.string.quick_settings_title,
         SettingsDestination.ShellExtras to R.string.shell_extras_title,
         SettingsDestination.ScreenSize to R.string.density_section
@@ -1197,14 +1198,14 @@ object SettingLinkRegistry {
     ) + customizationSettingSubtitles()
 
     /**
-     * The headings search results are grouped under: the keyboard's sections, gaming mode, then
-     * Shell access and Settings (the gear), shared by every module.
+     * The headings search results are grouped under: the keyboard's sections, the other modules,
+     * then Shell access and Settings (the gear), shared by every module.
      */
     val categories: List<SettingsDestination> = listOf(
         SettingsDestination.KeyboardHome, SettingsDestination.Typing, SettingsDestination.KeyboardsLayouts,
         SettingsDestination.Modifiers, SettingsDestination.FluxEmojiGifs, SettingsDestination.Apps,
         SettingsDestination.LookSound, SettingsDestination.Advanced, SettingsDestination.ShellExtras,
-        SettingsDestination.GameMode, SettingsDestination.Root, SettingsDestination.Main
+        SettingsDestination.GameMode, SettingsDestination.Streaming, SettingsDestination.Root, SettingsDestination.Main
     )
 
     /** The keyboard's headings: what its page's search covers. */
@@ -1236,6 +1237,7 @@ object SettingLinkRegistry {
         // Modules of their own: their settings under their own heading
         SettingsDestination.GameMode, SettingsDestination.GameControls, SettingsDestination.GameSources,
         SettingsDestination.GamesApp, SettingsDestination.GamePhone -> SettingsDestination.GameMode
+        SettingsDestination.Streaming -> SettingsDestination.Streaming
         SettingsDestination.Root -> SettingsDestination.Root
         // Settings (the gear): what every module shares
         else -> SettingsDestination.Main

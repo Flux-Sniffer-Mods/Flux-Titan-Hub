@@ -32,7 +32,7 @@ import it.palsoftware.pastiera.resolveShizukuStatus
 
 /**
  * Shell access: the built-in shell (paired once through wireless debugging), root or Shizuku,
- * which gaming mode and the shell extras run their commands through.
+ * which gaming mode, streaming and the shell extras run their commands through.
  */
 @Composable
 fun AdbSettingsScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
@@ -180,6 +180,11 @@ fun AdbSettingsScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
             title = stringResource(R.string.game_mode_title),
             description = stringResource(R.string.shell_access_for_gaming)
         ) { openSettingsPage(context, SettingsPage(SettingsDestination.GameMode)) }
+        if (FluxModules.on(context, FluxModule.STREAMING)) FluxActionRow(
+            linkId = null,
+            title = stringResource(R.string.module_streaming_title),
+            description = stringResource(R.string.shell_access_for_streaming)
+        ) { openSettingsPage(context, SettingsPage(SettingsDestination.Streaming)) }
         FluxActionRow(
             linkId = null,
             title = stringResource(R.string.trackpad_provider_title),

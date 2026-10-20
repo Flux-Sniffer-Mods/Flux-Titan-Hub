@@ -89,8 +89,18 @@ data class GameProfile(
     val pending: Boolean = false,
     /** A game's own screen choice, kept even while it plays with its app's other settings. */
     val ownScreen: Boolean = false,
+    /**
+     * Sticks and keys placed for streaming (the screen in the Moonlight client's shape), apart
+     * from the phone's own; empty: the phone's are used.
+     */
+    val streamStickZones: Map<Int, Triple<Float, Float, Float>> = emptyMap(),
+    val streamTaps: Map<Int, Pair<Float, Float>> = emptyMap(),
+    /** The shape (width over height) of the stream's screen the stream's keys were placed on; null: not known. */
+    val streamShape: Float? = null,
     /** The height to draw at on the phone, kept upright (its shape kept); null: the screen's own. */
     val phoneHeight: Int? = null,
+    /** The height to draw at while streaming; null: streaming's own choice. */
+    val streamHeight: Int? = null,
     /** A Dolphin Wii game's controller ([FluxLayout.WiiPad]'s name; null: Wii Remote and Nunchuk). */
     val wiiPad: String? = null,
     /** Dolphin's two app profiles: "wii" or "gamecube", each game getting the one it is. */
@@ -153,6 +163,11 @@ data class GameProfile(
     /** A game of its app (it starts one game), rather than the app's own settings. */
     val isGame: Boolean get() = launch != null
 
+    /** The sticks and keys placed for the screen in use: streaming's when streaming and placed. */
+    fun forScreen(streaming: Boolean): GameProfile =
+        if (streaming && (streamStickZones.isNotEmpty() || streamTaps.isNotEmpty())) copy(stickZones = streamStickZones, taps = streamTaps)
+        else this
+
     fun toJson(): JSONObject = JSONObject().apply {
         put("id", id)
         launch?.let { put("launch", it) }
@@ -172,12 +187,16 @@ data class GameProfile(
         if (pending) put("pending", true)
         if (ownScreen) put("ownScreen", true)
         phoneHeight?.let { put("phoneHeight", it) }
+        streamHeight?.let { put("streamHeight", it) }
         put("name", name)
         put("packages", JSONArray(packages.toList()))
         put("left", leftHalf.name)
         put("right", rightHalf.name)
         put("stickZones", zonesJson(stickZones))
         put("taps", tapsJson(taps))
+        if (streamStickZones.isNotEmpty()) put("streamStickZones", zonesJson(streamStickZones))
+        if (streamTaps.isNotEmpty()) put("streamTaps", tapsJson(streamTaps))
+        streamShape?.let { put("streamShape", it.toDouble()) }
         touchArea?.let { put("touchArea", JSONArray(it.map { v -> v.toDouble() })) }
         swapFace?.let { put("swapFace", it) }
         if (stickTuning.isNotEmpty()) put("stickTuning", JSONObject().apply {
@@ -222,6 +241,9 @@ data class GameProfile(
                 rightHalf = TrackpadRole.entries.firstOrNull { it.name == json.optString("right") } ?: TrackpadRole.NONE,
                 stickZones = zonesFrom(json.optJSONObject("stickZones")),
                 taps = tapsFrom(json.optJSONObject("taps")),
+                streamStickZones = zonesFrom(json.optJSONObject("streamStickZones")),
+                streamTaps = tapsFrom(json.optJSONObject("streamTaps")),
+                streamShape = json.optDouble("streamShape", Double.NaN).takeIf { !it.isNaN() }?.toFloat(),
                 stickTuning = tapsFrom(json.optJSONObject("stickTuning")),
                 swapFace = if (json.has("swapFace")) json.optBoolean("swapFace") else null,
                 touchArea = json.optJSONArray("touchArea")?.let { array -> (0 until array.length()).map { array.optDouble(it).toFloat() } }
@@ -247,7 +269,8 @@ data class GameProfile(
                     ?.filterValues { it.isNotEmpty() }.orEmpty(),
                 pending = json.optBoolean("pending", false),
                 ownScreen = json.optBoolean("ownScreen", false),
-                phoneHeight = json.optInt("phoneHeight", 0).takeIf { it > 0 }
+                phoneHeight = json.optInt("phoneHeight", 0).takeIf { it > 0 },
+                streamHeight = json.optInt("streamHeight", 0).takeIf { it > 0 }
             )
         }.getOrNull()
     }
@@ -405,9 +428,9 @@ object GameProfiles {
         if (!profile.isGame || profile.own) return profile
         // The game's own screen choice, whatever else comes from its app
         return appSettings(context, profile).let { app ->
-            // The game's own screen and resolution, whatever else comes from its app
+            // The game's own screen and resolutions, whatever else comes from its app
             (if (profile.ownScreen) app.copy(screen = profile.screen) else app)
-                .copy(phoneHeight = profile.phoneHeight ?: app.phoneHeight,
+                .copy(phoneHeight = profile.phoneHeight ?: app.phoneHeight, streamHeight = profile.streamHeight ?: app.streamHeight,
                     // The game's own keys, whatever else comes from its app
                     keyOverrides = profile.keyOverrides ?: app.keyOverrides, screens = profile.screens ?: app.screens)
         }

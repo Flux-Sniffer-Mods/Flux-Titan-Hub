@@ -130,13 +130,15 @@ class XboxPlayActivity : Activity() {
         // The cloud game this page plays: by its game ID, in the profile's link and the page's
         val id = intent.dataString?.let { XboxCloud.idOf(it) }
         var playing = id?.let { GameProfiles.all(this).firstOrNull { p -> p.launch?.let { l -> XboxCloud.idOf(l) }.equals(it, ignoreCase = true) } }
-        // A cloud game opened from the catalogue and played: added to the games (the Games app),
-        // to remove from there if it's not wanted
+        // A cloud game opened from the catalogue and played: added to the games (the Games app
+        // and Moonlight), to remove from there if it's not wanted
         if (playing == null && id != null) XboxCloud.kept(this, id)?.let { cloud ->
             val profile = GameProfiles.profileFor(this, XboxCloud.asGame(cloud, XboxCloud.app(this)))
             GameProfiles.save(this, profile)
             playing = profile
         }
+        // Played here once: listed in Moonlight from now on
+        playing?.let { markPlayed(this, it) }
         val screen = playing?.screen ?: ScreenMode.SIDEWAYS
         GameMode.attachPlayer(this, screen) { sticks ->
             sticks.copyInto(trackpad)
@@ -335,6 +337,16 @@ class XboxPlayActivity : Activity() {
         @Volatile
         var inFront = false
             private set
+
+        private const val KEY_PLAYED = "xbox_played_"
+
+        /** A cloud game played in the player at least once. */
+        fun played(context: android.content.Context, profile: GameProfile): Boolean =
+            it.palsoftware.pastiera.SettingsManager.getPreferences(context).getBoolean(KEY_PLAYED + profile.id, false)
+
+        private fun markPlayed(context: android.content.Context, profile: GameProfile) {
+            if (!played(context, profile)) it.palsoftware.pastiera.SettingsManager.getPreferences(context).edit().putBoolean(KEY_PLAYED + profile.id, true).apply()
+        }
 
         const val HOME = "https://www.xbox.com/play"
         /** Xbox's own sign-in (a Microsoft account), back to cloud gaming after. */

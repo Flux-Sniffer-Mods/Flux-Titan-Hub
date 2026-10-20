@@ -18,6 +18,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import it.palsoftware.pastiera.R
+import it.palsoftware.pastiera.display.ExtraScreen
+import it.palsoftware.pastiera.display.ScreenPreview
 
 /**
  * Placing keys and the trackpad's sticks on a game's own on-screen controls (games that only take
@@ -34,7 +36,7 @@ object GameTouchEditor {
     fun show(context: Context, profile: GameProfile) {
         if (open) return
         // A picture of the game first (before the placer covers it), to find its sticks on
-        if (it.palsoftware.pastiera.adb.AdbShell.available()) {
+        if (GameMode.extraScreen() == null && it.palsoftware.pastiera.adb.AdbShell.available()) {
             Thread {
                 val shot = runCatching {
                     // Opened from the notification: the shade gone first
@@ -70,14 +72,21 @@ object GameTouchEditor {
             @Suppress("DEPRECATION")
             windows.defaultDisplay.getRealSize(it)
         }
-        val width = real.x.toFloat().takeIf { it > 0 } ?: metrics.widthPixels.toFloat()
-        val height = real.y.toFloat().takeIf { it > 0 } ?: metrics.heightPixels.toFloat()
-        val left = 0f
-        val top = 0f
+        val fullW = real.x.toFloat().takeIf { it > 0 } ?: metrics.widthPixels.toFloat()
+        val fullH = real.y.toFloat().takeIf { it > 0 } ?: metrics.heightPixels.toFloat()
+        // The game on a screen of its own: placed on a live picture of it, fitted on the phone's
+        val screen = GameMode.extraScreen()?.takeIf { own -> own.id == ExtraScreen.current?.id }
+        val scale = screen?.let { minOf(fullW / it.width, fullH / it.height) }
+        val width = if (screen != null && scale != null) screen.width * scale else fullW
+        val height = if (screen != null && scale != null) screen.height * scale else fullH
+        val left = (fullW - width) / 2
+        val top = (fullH - height) / 2
         val chips = mutableListOf<View>()
         val zones = profile.stickZones.toMutableMap()
         val taps = profile.taps.toMutableMap()
-        val frame = FrameLayout(context).apply { setBackgroundColor(0x55000000) }
+        val frame = FrameLayout(context).apply { setBackgroundColor(if (screen != null) Color.BLACK else 0x55000000) }
+        if (screen != null) frame.addView(ScreenPreview(context).apply { alpha = 0.85f },
+            FrameLayout.LayoutParams(width.toInt(), height.toInt()).apply { leftMargin = left.toInt(); topMargin = top.toInt() })
         root = frame
         open = true
 
@@ -151,7 +160,9 @@ object GameTouchEditor {
 
         // A DS or 3DS's bottom screen, where the trackpad touches: a box to drag, and size below
         val usesArea = profile.leftHalf == TrackpadRole.BOTTOM_SCREEN || profile.rightHalf == TrackpadRole.BOTTOM_SCREEN
-        var area: List<Float>? = if (usesArea) GameMode.touchArea(profile, width, height) else null
+        val screenW = if (screen != null) screen.width.toFloat() else fullW
+        val screenH = if (screen != null) screen.height.toFloat() else fullH
+        var area: List<Float>? = if (usesArea) GameMode.touchArea(profile, screenW, screenH) else null
         var areaBox: View? = null
         fun drawArea() {
             val a = area ?: return
@@ -184,8 +195,8 @@ object GameTouchEditor {
                     true
                 }
             }
-            // Under the keys and sticks
-            frame.addView(box, 0)
+            // Under the keys and sticks (over the live picture, where there is one)
+            frame.addView(box, if (screen != null) 1 else 0)
             areaBox = box
         }
         fun resizeArea(by: Float) {

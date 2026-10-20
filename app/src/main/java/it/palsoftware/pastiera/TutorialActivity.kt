@@ -144,6 +144,7 @@ sealed class TutorialPageType {
     // The first run's choice of modules, then a page for each module chosen beyond the keyboard
     object FluxModules : TutorialPageType()
     object FluxGaming : TutorialPageType()
+    object FluxStreaming : TutorialPageType()
     
     data class Standard(
         val title: String,
@@ -264,6 +265,7 @@ fun TutorialScreen(
     }
     val keyboard = it.palsoftware.pastiera.modules.FluxModule.KEYBOARD in modules
     val gaming = it.palsoftware.pastiera.modules.FluxModule.GAMING in modules
+    val streaming = it.palsoftware.pastiera.modules.FluxModule.STREAMING in modules
 
     val pages = buildList {
         if (configureOnly) {
@@ -351,10 +353,11 @@ fun TutorialScreen(
             add(TutorialPageType.FluxChoices)
             add(TutorialPageType.FluxPersonalise)
         }
-        // The shell, which gaming mode and the keyboard's extras run through
-        if (keyboard || gaming) add(TutorialPageType.FluxShizuku)
+        // The shell, which gaming mode, streaming and the keyboard's extras run through
+        if (keyboard || gaming || streaming) add(TutorialPageType.FluxShizuku)
         if (keyboard) add(TutorialPageType.FluxExtras)
         if (gaming) add(TutorialPageType.FluxGaming)
+        if (streaming) add(TutorialPageType.FluxStreaming)
         add(
             TutorialPageType.Standard(
                 title = stringResource(R.string.tutorial_page_ready_title),
@@ -475,6 +478,7 @@ fun TutorialScreen(
                             modifier = Modifier.fillMaxSize()
                         )
                         TutorialPageType.FluxGaming -> it.palsoftware.pastiera.tutorial.FluxTutorialGamingPageContent(modifier = Modifier.fillMaxSize())
+                        TutorialPageType.FluxStreaming -> it.palsoftware.pastiera.tutorial.FluxTutorialStreamingPageContent(modifier = Modifier.fillMaxSize())
                         TutorialPageType.FeatureStatuses -> {
                             TutorialFeatureStatusesPageContent(modifier = Modifier.fillMaxSize())
                         }

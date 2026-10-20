@@ -37,6 +37,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -561,7 +562,7 @@ internal fun GameProfileEditor(profile: GameProfile, onDone: (GameProfile?) -> U
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
-            // Its art: a game's list entry, an app's tile in the Games app
+            // Its art: a game's list entry and Moonlight's, an app's tile in the Games app
             GameArtworkRow(current)
         }
         val pinScope = androidx.compose.runtime.rememberCoroutineScope()
@@ -1030,7 +1031,7 @@ internal fun XboxCloudDialog(
     onAdded: () -> Unit = {}
 ) {
     val context = LocalContext.current
-    // A game long-pressed: added to the games (the Games app), or its settings
+    // A game long-pressed: added to the games (the Games app and Moonlight), or its settings
     var menuFor by remember { mutableStateOf<it.palsoftware.pastiera.gaming.XboxCloud.CloudGame?>(null) }
     menuFor?.let { cloud ->
         val game = it.palsoftware.pastiera.gaming.XboxCloud.asGame(cloud, pkg)
@@ -1208,7 +1209,7 @@ private fun ScreenChoice(profile: GameProfile, onChange: (GameProfile) -> Unit) 
     }
 }
 
-/** A game's size on the phone (kept upright, its shape kept). */
+/** A game's sizes: on the phone (kept upright, its shape kept) and while streaming. */
 @Composable
 private fun ResolutionChoices(profile: GameProfile, onChange: (GameProfile) -> Unit) {
     val heights = listOf(null, 1080, 900, 720, 540)
@@ -1218,10 +1219,15 @@ private fun ResolutionChoices(profile: GameProfile, onChange: (GameProfile) -> U
             onChange(profile.copy(phoneHeight = heights[index]))
         }
         Text(stringResource(R.string.game_mode_resolution_phone_description), style = MaterialTheme.typography.bodySmall)
+        val streamHeights = listOf(null, 720, 1080, 1440)
+        val streamNames = listOf(stringResource(R.string.game_mode_resolution_stream_default)) + streamHeights.drop(1).map { "${it}p" }
+        ChoiceRow(stringResource(R.string.game_mode_resolution_stream), streamNames[streamHeights.indexOf(profile.streamHeight).coerceAtLeast(0)], streamNames) { index ->
+            onChange(profile.copy(streamHeight = streamHeights[index]))
+        }
     }
 }
 
-/** A game's art, picked from the phone's pictures for its list entry, or the art found for it. */
+/** A game's art, picked from the phone's pictures for its list entry and Moonlight, or the art found for it. */
 @OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
 internal fun GameArtworkRow(profile: GameProfile) {
@@ -1276,7 +1282,7 @@ internal fun GameArtworkRow(profile: GameProfile) {
 
 /**
  * Every art the sources have for a game, to pick from: icons (its list entry and shortcut) and
- * upright covers (the Games app). Each tap keeps that one; the dialog stays open to pick the other.
+ * upright covers (Moonlight). Each tap keeps that one; the dialog stays open to pick the other.
  */
 @Composable
 private fun ArtChoicesDialog(profile: GameProfile, onDismiss: () -> Unit, onPicked: (String, Boolean) -> Unit) {
@@ -1504,6 +1510,273 @@ internal fun PhoneGameModeRow() {
 }
 
 private const val PHONE_GAME_MODE = "com.agui.game"
+
+/**
+ * Streaming to Moonlight's settings, grouped: the connection (on, always available, pairings),
+ * what Moonlight lists, the picture and sound, and the TV. On streaming's one settings page,
+ * opened from its tile and the Streaming app's ⚙.
+ */
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+@Composable
+internal fun StreamingSettings(onStreamingChanged: (Boolean) -> Unit = {}) {
+    val context = LocalContext.current
+    val host = it.palsoftware.pastiera.streaming.StreamHostService
+    var streaming by remember { mutableStateOf(host.enabled(context)) }
+    var paired by remember { mutableIntStateOf(it.palsoftware.pastiera.streaming.StreamHost.pairedCount(context)) }
+    // Read again on coming back: the Streaming app or a Quick Settings tile may switch it
+    val lifecycle = androidx.lifecycle.compose.LocalLifecycleOwner.current.lifecycle
+    androidx.compose.runtime.DisposableEffect(lifecycle) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                streaming = host.enabled(context)
+                paired = it.palsoftware.pastiera.streaming.StreamHost.pairedCount(context)
+            }
+        }
+        lifecycle.addObserver(observer)
+        onDispose { lifecycle.removeObserver(observer) }
+    }
+
+    // The connection: the phone answering Moonlight, and the devices paired with it
+    SettingsSectionDivider(stringResource(R.string.stream_connection_section))
+    FluxSwitchRow(
+        linkId = "streaming.host",
+        title = stringResource(R.string.stream_switch),
+        description = stringResource(R.string.stream_switch_description),
+        checked = streaming
+    ) { on ->
+        streaming = on
+        host.setEnabled(context, on)
+        onStreamingChanged(on)
+    }
+    // Listed in Moonlight with streaming off, for clients whose Wake can't reach the phone
+    var always by remember { mutableStateOf(host.alwaysAvailable(context)) }
+    FluxSwitchRow(
+        linkId = "streaming.always",
+        title = stringResource(R.string.stream_always),
+        description = stringResource(R.string.stream_always_description),
+        checked = always
+    ) { on ->
+        always = on
+        host.setAlwaysAvailable(context, on)
+    }
+    if (paired > 0) FluxActionRow(
+        linkId = "streaming.unpair",
+        icon = "\u2715",
+        title = stringResource(R.string.stream_unpair),
+        description = stringResource(R.string.stream_unpair_description, paired)
+    ) {
+        it.palsoftware.pastiera.streaming.StreamHost.unpairAll(context)
+        paired = 0
+    }
+
+    // What Moonlight lists besides the games: the phone's screen, apps, Termux's scripts
+    SettingsSectionDivider(stringResource(R.string.stream_lists_section))
+    var phoneScreen by remember { mutableStateOf(host.phoneScreen(context)) }
+    FluxSwitchRow(
+        linkId = "streaming.phone_screen",
+        title = stringResource(R.string.stream_phone_screen_switch),
+        description = stringResource(R.string.stream_phone_screen_description),
+        checked = phoneScreen
+    ) { on ->
+        phoneScreen = on
+        host.setPhoneScreen(context, on)
+    }
+    // Every app, or the ones long-pressed in the Streaming app
+    var allApps by remember { mutableStateOf(it.palsoftware.pastiera.streaming.StreamApps.allApps(context)) }
+    FluxSwitchRow(
+        linkId = "streaming.all_apps",
+        title = stringResource(R.string.stream_all_apps),
+        description = stringResource(R.string.stream_all_apps_description),
+        checked = allApps
+    ) { on ->
+        allApps = on
+        it.palsoftware.pastiera.streaming.StreamApps.setAllApps(context, on)
+    }
+    // Termux:Widget's scripts too, each opening Termux on the TV as it runs
+    var termux by remember { mutableStateOf(it.palsoftware.pastiera.streaming.StreamApps.termux(context)) }
+    FluxSwitchRow(
+        linkId = "streaming.termux",
+        title = stringResource(R.string.stream_termux),
+        description = stringResource(R.string.stream_termux_description),
+        checked = termux
+    ) { on ->
+        termux = on
+        it.palsoftware.pastiera.streaming.StreamApps.setTermux(context, on)
+        if (on) it.palsoftware.pastiera.shortcuts.TermuxScripts.refresh(context, forStreaming = true)
+    }
+
+    // The picture and sound: the stream's size, where the game plays, the phone's sound
+    SettingsSectionDivider(stringResource(R.string.stream_picture_section))
+    // The game's size for the Moonlight client: the phone's screen takes its shape while streaming
+    val resolutions = host.RESOLUTIONS
+    val resolutionNames = listOf(stringResource(R.string.stream_resolution_client), "720p", "1080p", "1440p")
+    var resolution by remember { mutableStateOf(host.resolution(context)) }
+    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        ChoiceRow(stringResource(R.string.stream_resolution), resolutionNames[resolutions.indexOf(resolution).coerceAtLeast(0)], resolutionNames) { index ->
+            resolution = resolutions[index]
+            host.setResolution(context, resolution)
+        }
+        Text(stringResource(R.string.stream_resolution_description), style = MaterialTheme.typography.bodySmall)
+    }
+    // Where the game plays while it streams: the phone's screen mirrored, or one of its own
+    val modes = host.SCREEN_MODES
+    val modeNames = listOf(
+        stringResource(R.string.stream_screen_mirror),
+        stringResource(R.string.stream_screen_separate),
+        stringResource(R.string.stream_screen_desktop)
+    )
+    var mode by remember { mutableStateOf(host.screenMode(context)) }
+    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        ChoiceRow(stringResource(R.string.stream_screen), modeNames[modes.indexOf(mode).coerceAtLeast(0)], modeNames) { index ->
+            mode = modes[index]
+            host.setScreenMode(context, mode)
+        }
+        Text(stringResource(R.string.stream_screen_description), style = MaterialTheme.typography.bodySmall)
+    }
+    // Keyboards, mice and controllers plugged into the phone, for the game's own screen
+    if (mode != host.SCREEN_MIRROR) {
+        var passThrough by remember { mutableStateOf(host.passThrough(context)) }
+        FluxSwitchRow(
+            linkId = "streaming.pass_through",
+            title = stringResource(R.string.stream_pass_through),
+            description = stringResource(R.string.stream_pass_through_description),
+            checked = passThrough
+        ) { on ->
+            passThrough = on
+            host.setPassThrough(context, on)
+        }
+    }
+    // The phone quiet while the TV plays: the game's sound, or every sound of the phone's
+    val quietModes = it.palsoftware.pastiera.streaming.StreamQuiet.Mode.entries
+    val quietNames = listOf(
+        stringResource(R.string.stream_quiet_off),
+        stringResource(R.string.stream_quiet_game),
+        stringResource(R.string.stream_quiet_all)
+    )
+    var quiet by remember { mutableStateOf(it.palsoftware.pastiera.streaming.StreamQuiet.mode(context)) }
+    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        ChoiceRow(stringResource(R.string.stream_quiet), quietNames[quietModes.indexOf(quiet)], quietNames) { index ->
+            quiet = quietModes[index]
+            it.palsoftware.pastiera.streaming.StreamQuiet.setMode(context, quiet)
+        }
+        Text(stringResource(R.string.stream_quiet_description), style = MaterialTheme.typography.bodySmall)
+    }
+
+    // A TV the phone turns on and opens Moonlight on, straight into a game picked on the phone
+    SettingsSectionDivider(stringResource(R.string.stream_tv_section))
+    TvRows()
+}
+
+/**
+ * The TV games picked on the phone start on: found on the Wi-Fi (LG's webOS TVs), set up once
+ * (the TV asks), then woken and opened at Moonlight straight into the game.
+ */
+@Composable
+private fun TvRows() {
+    val context = LocalContext.current
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
+    var tv by remember { mutableStateOf(it.palsoftware.pastiera.streaming.TvRemote.tv(context)) }
+    var ready by remember { mutableStateOf(it.palsoftware.pastiera.streaming.TvRemote.ready(context)) }
+    var finding by remember { mutableStateOf(false) }
+    var found by remember { mutableStateOf<List<it.palsoftware.pastiera.streaming.TvRemote.Tv>?>(null) }
+    var status by remember { mutableStateOf<String?>(null) }
+    var menu by remember { mutableStateOf(false) }
+
+    fun find() {
+        finding = true; found = null; status = context.getString(R.string.tv_finding)
+        scope.launch {
+            found = withContext(Dispatchers.IO) { it.palsoftware.pastiera.streaming.TvRemote.discover(context) }
+            status = if (found.isNullOrEmpty()) context.getString(R.string.tv_none_found) else null
+        }
+    }
+
+    fun setUp(picked: it.palsoftware.pastiera.streaming.TvRemote.Tv) {
+        found = null
+        status = context.getString(R.string.tv_connecting, picked.name)
+        scope.launch {
+            val ok = withContext(Dispatchers.IO) {
+                it.palsoftware.pastiera.streaming.TvRemote.pair(context, picked) {
+                    scope.launch { status = context.getString(R.string.tv_accept, picked.name) }
+                }
+            }
+            tv = it.palsoftware.pastiera.streaming.TvRemote.tv(context)
+            ready = it.palsoftware.pastiera.streaming.TvRemote.ready(context)
+            status = context.getString(if (ok) R.string.tv_set_up else R.string.tv_setup_failed, picked.name)
+            finding = false
+        }
+    }
+
+    FluxActionRow(
+        linkId = "streaming.tv",
+        icon = "\u25AD",
+        title = stringResource(R.string.tv_title),
+        description = status ?: if (ready && tv != null) stringResource(R.string.tv_description_set, tv!!.name) else stringResource(R.string.tv_description_none)
+    ) { if (ready) menu = true else find() }
+    if (ready) {
+        // A game opened while streaming: asked each time, or always on the TV or the phone
+        var games by remember { mutableStateOf(it.palsoftware.pastiera.streaming.TvRemote.games(context)) }
+        val choices = it.palsoftware.pastiera.streaming.TvRemote.Games.entries
+        val labels = listOf(stringResource(R.string.tv_games_ask), stringResource(R.string.tv_play_on_tv), stringResource(R.string.tv_play_on_phone))
+        ChoiceRow(stringResource(R.string.tv_games_on_tv), labels[choices.indexOf(games)], labels) { index ->
+            games = choices[index]
+            it.palsoftware.pastiera.streaming.TvRemote.setGames(context, choices[index])
+        }
+        Text(stringResource(R.string.tv_games_on_tv_description), style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant)
+        // The TV turned off when a stream to it ends
+        var offAfter by remember { mutableStateOf(it.palsoftware.pastiera.streaming.TvRemote.offAfter(context)) }
+        FluxSwitchRow(
+            linkId = "streaming.tv_off",
+            title = stringResource(R.string.tv_off_after),
+            description = stringResource(R.string.tv_off_after_description),
+            checked = offAfter
+        ) { on ->
+            offAfter = on
+            it.palsoftware.pastiera.streaming.TvRemote.setOffAfter(context, on)
+        }
+        // The phone's volume keys turning the TV up and down while streaming to it
+        var volumeKeys by remember { mutableStateOf(it.palsoftware.pastiera.streaming.TvRemote.volumeKeys(context)) }
+        FluxSwitchRow(
+            linkId = "streaming.tv_volume",
+            title = stringResource(R.string.tv_volume_keys),
+            description = stringResource(R.string.tv_volume_keys_description),
+            checked = volumeKeys
+        ) { on ->
+            volumeKeys = on
+            it.palsoftware.pastiera.streaming.TvRemote.setVolumeKeys(context, on)
+        }
+    }
+    if (menu) AlertDialog(
+        onDismissRequest = { menu = false },
+        title = { Text(tv?.name.orEmpty()) },
+        text = { Text(stringResource(R.string.tv_menu_description)) },
+        confirmButton = { TextButton(onClick = { menu = false; find() }) { Text(stringResource(R.string.tv_find_again)) } },
+        dismissButton = {
+            TextButton(onClick = {
+                menu = false
+                it.palsoftware.pastiera.streaming.TvRemote.forget(context)
+                tv = null; ready = false; status = null
+            }) { Text(stringResource(R.string.tv_forget)) }
+        }
+    )
+    found?.takeIf { it.isNotEmpty() }?.let { list ->
+        AlertDialog(
+            onDismissRequest = { found = null; finding = false; status = null },
+            title = { Text(stringResource(R.string.tv_pick)) },
+            text = {
+                androidx.compose.foundation.layout.Column {
+                    list.forEach { each ->
+                        Text(
+                            "${each.name}  (${each.host})",
+                            modifier = Modifier.fillMaxWidth().clickable { setUp(each) }.padding(vertical = 12.dp)
+                        )
+                    }
+                }
+            },
+            confirmButton = { TextButton(onClick = { found = null; finding = false; status = null }) { Text(stringResource(R.string.cancel)) } }
+        )
+    }
+}
 
 /** The Game Pass plan: the XCloud catalogue lists only the cloud games it plays. */
 @Composable

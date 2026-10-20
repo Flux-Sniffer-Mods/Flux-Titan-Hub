@@ -2072,6 +2072,13 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
     override fun onCreate() {
         super.onCreate()
         ClicksAccessibilityKeyBridge.register(this)
+        // Moonlight's Wake starts streaming when it isn't running
+        it.palsoftware.pastiera.streaming.StreamWake.start(this)
+        // A stream that ended with the app (a crash): the phone's screen put back, now and once the shell answers
+        Thread { runCatching { it.palsoftware.pastiera.streaming.StreamHost.recover(this) } }.start()
+        it.palsoftware.pastiera.adb.shell.BuiltInShell.addStartListener {
+            runCatching { it.palsoftware.pastiera.streaming.StreamHost.recover(this) }
+        }
         // The Games app's entry in the app list as its setting says
         Thread { runCatching { it.palsoftware.pastiera.gaming.GamesActivity.syncLauncher(this) } }.start()
         // Root: the keyboard backlight follows the screen, when set (the Root page)
@@ -5968,8 +5975,9 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
             // In a game (nothing being typed): its keys are gaming mode's, the typing leaves them alone
             it.palsoftware.pastiera.gaming.GameMode.passesKeys()
 
-    /** Flux Keyboard's own player is in front. */
-    private fun playerInFront(): Boolean = it.palsoftware.pastiera.gaming.XboxPlayActivity.inFront
+    /** Flux Keyboard's own player, or its page for a game's own screen, is in front. */
+    private fun playerInFront(): Boolean =
+        it.palsoftware.pastiera.gaming.XboxPlayActivity.inFront || it.palsoftware.pastiera.gaming.ExtraScreenActivity.inFront
 
     override fun onKeyDown(keyCode_: Int, event_: KeyEvent?): Boolean {
         // Keycode 0 types nothing: the keyboard light's wake-up key, passed straight on

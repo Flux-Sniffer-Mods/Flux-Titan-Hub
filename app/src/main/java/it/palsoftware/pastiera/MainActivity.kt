@@ -362,7 +362,7 @@ private fun debugReportLineColor(line: String, colors: ColorScheme): Color {
 
 /**
  * The home screen: a tile per module under the header. The keyboard's tile opens its page here
- * (turning it on, its settings, and testing it); gaming mode's opens its settings.
+ * (turning it on, its settings, and testing it); gaming mode's and streaming's open their settings.
  */
 @Composable
 fun FluxHomeScreen(
@@ -441,6 +441,7 @@ fun FluxHomeScreen(
                     when (module) {
                         FluxModule.KEYBOARD -> keyboardOpen = true
                         FluxModule.GAMING -> openSettingsPage(context, SettingsPage(SettingsDestination.GameMode))
+                        FluxModule.STREAMING -> openSettingsPage(context, SettingsPage(SettingsDestination.Streaming))
                         FluxModule.DESKTOP -> Unit
                     }
                 }
@@ -449,6 +450,7 @@ fun FluxHomeScreen(
                 when (module) {
                     FluxModule.KEYBOARD -> keyboardOpen = true
                     FluxModule.GAMING -> context.startActivity(Intent(context, it.palsoftware.pastiera.gaming.GamesActivity::class.java))
+                    FluxModule.STREAMING -> context.startActivity(Intent(context, it.palsoftware.pastiera.streaming.StreamingActivity::class.java))
                     FluxModule.DESKTOP -> Unit
                 }
             }

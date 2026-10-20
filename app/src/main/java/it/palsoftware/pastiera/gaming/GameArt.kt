@@ -40,7 +40,7 @@ object GameArt {
     }
 
     /**
-     * [profile]'s art upright, as the Games app shows it (2:3): its own upright art
+     * [profile]'s art upright, as Moonlight's game picker shows it (2:3): its own upright art
      * where there is some, else its art over a dimmed, filled copy of itself.
      */
     fun loadPortrait(context: Context, profile: GameProfile): Bitmap? {
@@ -247,7 +247,16 @@ object GameArt {
     fun version(context: Context, profile: GameProfile): Long =
         maxOf(customFile(context, profile).lastModified(), uprightFile(context, profile).lastModified())
 
-    /** Upright art picked for the Games app, apart from the list's. */
+    /**
+     * Changes only when the cover Moonlight shows changes: the upright art picked for it, else
+     * (when there's none) the picture it's made from. Picking a square icon leaves it alone.
+     */
+    fun coverVersion(context: Context, profile: GameProfile): Long {
+        val upright = uprightFile(context, profile)
+        return if (upright.length() > 0) upright.lastModified() else customFile(context, profile).lastModified()
+    }
+
+    /** Upright art picked for Moonlight, apart from the list's. */
     private fun uprightFile(context: Context, profile: GameProfile) = File(dir(context), profile.id + "-upright-custom.img")
 
     // ---- Every art found, to pick from ----
@@ -257,7 +266,7 @@ object GameArt {
 
     /**
      * Every art found for [profile] (blocking): icon-shaped ones for its list entry and shortcut,
-     * and upright ones for the Games app. SteamGridDB's many, then Steam's, Xbox's, GameTDB's and
+     * and upright ones for Moonlight. SteamGridDB's many, then Steam's, Xbox's, GameTDB's and
      * libretro's.
      */
     fun choices(context: Context, profile: GameProfile, search: String? = null): Pair<List<Choice>, List<Choice>> {
@@ -308,7 +317,7 @@ object GameArt {
             ?.also { thumbnails.put(url, it) }
     }
 
-    /** Keeps the art at [url] as [profile]'s icon or, [uprightArt], its upright art for the Games app. */
+    /** Keeps the art at [url] as [profile]'s icon or, [uprightArt], its upright art for Moonlight. */
     fun choose(context: Context, profile: GameProfile, url: String, uprightArt: Boolean): Boolean = runCatching {
         val bytes = fetch(url) ?: return false
         val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size) ?: return false

@@ -57,7 +57,7 @@ internal fun CrashLogRow() {
                         "echo '== why it stopped =='; dumpsys activity exit-info $app | head -n 120; " +
                         "echo '== crashes =='; logcat -d -b crash -t 400; " +
                         "echo '== warnings and errors =='; logcat -d -b main,system '*:W' 'ActivityTaskManager:I' | " +
-                        "grep -i -E '$app|gamehub|egggame|Permission Denial|quickstep|launcher3|Recents|OverviewProxy|FluxGameMode|FluxGameLaunch|AndroidRuntime|chromium|cr_|webview|lowmemorykiller|has died|Killing' | grep -v 'Changing focus' | tail -n 400; " +
+                        "grep -i -E '$app|gamehub|egggame|Permission Denial|quickstep|launcher3|Recents|OverviewProxy|FluxGameMode|FluxGameLaunch|FluxExtraScreen|Stream(Wake|Host|Session|Input|Audio|Control)|AndroidRuntime|chromium|cr_|webview|lowmemorykiller|has died|Killing' | grep -v 'Changing focus' | tail -n 400; " +
                         // The screen and window settings gaming mode and the desktop change
                         // (through a pipe: Android's services can't write into a file in Download)
                         // The input devices (the keyboard, the side buttons): which one each key comes from
@@ -86,8 +86,8 @@ internal fun CrashLogRow() {
                         "*) [ -n \"\$k\" ] && echo \"\$l\";; esac; done | head -n 80; " +
                         // Gaming mode reads keys through Flux Keyboard's accessibility service: whether it's on
                         "echo '== accessibility services =='; settings get secure enabled_accessibility_services | tr ':' '\\n'; " +
-                        // Flux Keyboard's own record of gaming mode and game launches (the phone's turns over in seconds)
-                        "echo '== gaming mode =='; tail -c 120000 '${context.getExternalFilesDir(null)?.path}/${it.palsoftware.pastiera.FluxLog.FILE_NAME}'; " +
+                        // Flux Keyboard's own record of gaming mode, streaming and game launches (the phone's turns over in seconds)
+                        "echo '== gaming and streaming =='; tail -c 120000 '${context.getExternalFilesDir(null)?.path}/${it.palsoftware.pastiera.FluxLog.FILE_NAME}'; " +
                         (if (traces != null) "echo '== not responding: threads =='; cat '${traces.path}'; " else "") +
                         // Everything through a pipe: Android's services can't write into a file in Download
                         "} 2>&1 | cat > \"\$f\"; echo ok",

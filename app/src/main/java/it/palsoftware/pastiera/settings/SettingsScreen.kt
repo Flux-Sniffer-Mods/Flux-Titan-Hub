@@ -75,6 +75,7 @@ enum class SettingsDestination {
     TerminalMode,
     ExactTyping,
     KeyboardHome,
+    Streaming,
     QuickSettings,
     ShellExtras,
     ScreenSize,
@@ -360,6 +361,9 @@ fun SettingsScreen(
             // The keyboard's page, as its tile and its entry in the app list open it
             SettingsDestination.KeyboardHome -> {
                 KeyboardPage(modifier = modifier, onBack = { navigateBack() })
+            }
+            SettingsDestination.Streaming -> {
+                StreamingHomeScreen(modifier = modifier, onBack = { navigateBack() })
             }
             SettingsDestination.Root -> {
                 AdbSettingsScreen(modifier = modifier, onBack = { navigateBack() })
