@@ -37,6 +37,8 @@ internal fun KeyboardPage(modifier: Modifier, onBack: () -> Unit) {
             scope = SettingLinkRegistry.keyboardCategories,
             hint = stringResource(R.string.keyboard_search)
         ) {
+            // The keyboard as it's tuned for this phone, a tap away (it only changes the keyboard)
+            RecommendedSettingsRow()
             KeyboardSettingsRows { destination -> openSettingsPage(context, SettingsPage(destination)) }
             Spacer(modifier = Modifier.height(16.dp))
         }

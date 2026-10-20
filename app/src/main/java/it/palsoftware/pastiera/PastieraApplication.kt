@@ -11,12 +11,14 @@ import it.palsoftware.pastiera.inputmethod.subtype.AdditionalSubtypeUtils
 import it.palsoftware.pastiera.apps.AppEnterStandards
 import it.palsoftware.pastiera.apps.AppPackageChangeMonitor
 import it.palsoftware.pastiera.clicks.ClicksPowerKeyboardController
+import it.palsoftware.pastiera.settings.RecommendedSettings
 
 class PastieraApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         FluxLog.init(this)
         // A fresh install starts from the default configuration, before anything writes settings
+        RecommendedSettings.applyIfFreshInstall(this)
         OfflineMode.load(this)
         AppEnterStandards.installSystemCategoryLookup(this)
         SettingsManager.initializeAltShiftLayoutSwitchDefault(this)

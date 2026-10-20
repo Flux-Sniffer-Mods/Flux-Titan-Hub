@@ -61,6 +61,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+import it.palsoftware.pastiera.settings.RecommendedSettingsUpdatePrompt
 import it.palsoftware.pastiera.settings.SettingsSearchArea
 import it.palsoftware.pastiera.settings.SettingsDestination
 import it.palsoftware.pastiera.settings.SettingsPage
@@ -238,6 +239,9 @@ open class MainActivity : LocalizedComponentActivity() {
                             .height(statusBarHeight)
                             .background(overlayColor)
                     )
+
+                    // After an update: recommended settings that differ, from X to Y
+                    RecommendedSettingsUpdatePrompt(BuildConfig.VERSION_NAME)
                 }
             }
         }
@@ -416,6 +420,8 @@ fun FluxHomeScreen(
             hint = stringResource(R.string.home_search_hint)
         ) {
             Column {
+                // The keyboard as it's tuned for this phone, a tap away (it only changes the keyboard)
+                it.palsoftware.pastiera.settings.RecommendedSettingsRow()
                 it.palsoftware.pastiera.settings.KeyboardSettingsRows { destination -> openSettingsPage(context, SettingsPage(destination)) }
                 Spacer(modifier = Modifier.height(16.dp))
             }

@@ -619,6 +619,27 @@ class PhysicalKeyboardInputMethodServiceDeviceBehaviorTest {
     }
 
     @Test
+    fun autoCap_recommendedSettings_startEveryTextBoxWithShift() {
+        val context = RuntimeEnvironment.getApplication()
+        assertTrue(it.palsoftware.pastiera.settings.RecommendedSettings.apply(context))
+        val kinds = mapOf(
+            "plain" to InputType.TYPE_CLASS_TEXT,
+            "sentences" to (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES),
+            "multiline" to (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES),
+            "message" to (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
+        )
+        var time = 20_000L
+        val failed = kinds.filter { (_, type) ->
+            focusNewField(newRecorder = RecordingInputConnection(), inputType = type, packageName = "com.example.notes")
+            service.onStartInputView(editorInfo, false)
+            time += 1_000L
+            pressKey(KeyEvent.KEYCODE_H, time)
+            !recorder.committedTexts.joinToString("").startsWith("H")
+        }.keys.associateWith { recorder.committedTexts }
+        assertEquals(emptyMap<String, Any>(), failed)
+    }
+
+    @Test
     fun exactTyping_onlyForFieldsTheAppAsksForNoSuggestions() {
         val context = RuntimeEnvironment.getApplication()
         SettingsManager.setExactTypingForNoSuggestionFields(context, true)

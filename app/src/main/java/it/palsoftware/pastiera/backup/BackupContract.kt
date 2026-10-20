@@ -363,6 +363,7 @@ internal object BackupPreferenceContract {
             "custom_device_sym_profiles" to PreferenceValueType.STRING,
             "device_sym_profile_choice" to PreferenceValueType.STRING,
             "default_config_applied" to PreferenceValueType.BOOLEAN,
+            "recommended_settings_applied" to PreferenceValueType.BOOLEAN,
             "terminal_mode_enabled" to PreferenceValueType.BOOLEAN,
             "terminal_mode_apps" to PreferenceValueType.STRING,
             "terminal_mode_show_leds" to PreferenceValueType.BOOLEAN,

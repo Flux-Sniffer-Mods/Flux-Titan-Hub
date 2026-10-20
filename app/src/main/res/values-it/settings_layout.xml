@@ -202,4 +202,13 @@
     <string name="suggestion_keys_off">Disattivato</string>
     <string name="speech_keep_listening_title">La dettatura continua ad ascoltare</string>
     <string name="speech_keep_listening_description">Le pause non chiudono la dettatura: continua frase per frase finché non tocchi il microfono o resti in silenzio</string>
+    <string name="recommended_settings_title">Impostazioni consigliate</string>
+    <string name="recommended_settings_description">Imposta Pastiera come consigliato, calibrata su un Titan 2 Elite: tema, LED, modificatori, SYM, varianti, app e altro. Mostra prima quanto cambierebbe.</string>
+    <string name="recommended_settings_nothing">Le tue impostazioni corrispondono già a quelle consigliate. Applicando di nuovo si ripristinano anche mappature e varianti consigliate.</string>
+    <string name="recommended_settings_apply">Applica</string>
+    <string name="recommended_settings_failed">Impossibile applicare le impostazioni consigliate</string>
+    <plurals name="recommended_settings_differ">
+        <item quantity="one">%d impostazione è diversa da quelle consigliate. Applicando la sostituisci, insieme a mappature e varianti consigliate. Fai prima un backup se potresti volerla recuperare.</item>
+        <item quantity="other">%d impostazioni sono diverse da quelle consigliate. Applicando le sostituisci, insieme a mappature e varianti consigliate. Fai prima un backup se potresti volerle recuperare.</item>
+    </plurals>
 </resources>

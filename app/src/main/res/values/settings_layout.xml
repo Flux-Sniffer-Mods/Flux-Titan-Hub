@@ -270,6 +270,15 @@
     <string name="speech_pause_timeout_title">Pause before voice input stops</string>
     <string name="speech_pause_timeout_value">%1$d s of silence</string>
     <string name="speech_keep_listening_description">Pauses don\'t end dictation: it carries on sentence by sentence until you tap the mic or stay silent</string>
+    <string name="recommended_settings_title">Recommended settings</string>
+    <string name="recommended_settings_description">A few settings that suit nearly everyone: modifiers, suggestions, LEDs and, on the Titan 2 Elite, its trackpad and compact bar. Matters of taste stay yours.</string>
+    <string name="recommended_settings_nothing">Your settings already match the recommended ones.</string>
+    <string name="recommended_settings_apply">Apply</string>
+    <string name="recommended_settings_failed">Couldn\'t apply the recommended settings</string>
+    <plurals name="recommended_settings_differ">
+        <item quantity="one">%d of your settings differs from the recommended ones. Applying replaces it, along with the recommended mappings and variations. Back up first if you might want yours back.</item>
+        <item quantity="other">%d of your settings differ from the recommended ones. Applying replaces them, along with the recommended mappings and variations. Back up first if you might want yours back.</item>
+    </plurals>
     <string name="crash_log">Save crash log</string>
     <string name="crash_log_description">Android\'s record of Pastiera\'s last crashes, saved to Download/Pastiera/crash-log.txt to share.</string>
     <string name="crash_log_saved">Saved to Download/Pastiera/crash-log.txt</string>

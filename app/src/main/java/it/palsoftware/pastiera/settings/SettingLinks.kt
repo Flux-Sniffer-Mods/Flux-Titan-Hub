@@ -107,6 +107,7 @@ object SettingLinkIds {
     const val AUTO_CORRECTION_SUGGESTION_KEYS = "auto_correction.suggestion_keys"
     const val MAIN_LED_COLORS = "main.led_colors"
     const val MAIN_EMOJI_PROFILES = "main.emoji_profiles"
+    const val RECOMMENDED_SETTINGS = "system.recommended_settings"
     const val TERMINAL_MODE_HIDE_KEYBOARD = "terminal_mode.hide_keyboard"
     const val LOOK_MINIMAL_MODE = "look.minimal_mode"
     const val LOOK_MINIMAL_MODE_LEDS = "look.minimal_mode_leds"
