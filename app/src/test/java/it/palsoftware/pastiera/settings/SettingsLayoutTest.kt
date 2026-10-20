@@ -42,7 +42,7 @@ class SettingsLayoutTest {
             SettingLinkIds.TEXT_INPUT_AUTO_CAPITALIZE to SettingsDestination.TextInput,
             SettingLinkIds.ADVANCED_TRACKPAD_GESTURES to SettingsDestination.TrackpadGestures,
             SettingLinkIds.ADVANCED_SWIPE_INCREMENTAL_THRESHOLD to SettingsDestination.TrackpadGestures,
-            // Settings (the gear) holds what isn't the keyboard's own; the shell's extras have a page of their own
+            // Settings (the gear) holds what every module shares; the shell's extras have a page of their own
             SettingLinkIds.ADVANCED_BACKUP to SettingsDestination.Main,
             SettingLinkIds.ADVANCED_SHOW_TUTORIAL to SettingsDestination.Main,
             SettingLinkIds.DEVELOPER_OPTIONS_ENABLED to SettingsDestination.Main,
@@ -76,7 +76,7 @@ class SettingsLayoutTest {
         val apps = body("SettingsHubScreens.kt", "AppsHubScreen")
         val privacy = read("AdvancedSettingsScreen.kt")
         val general = read("GeneralSettingsScreen.kt")
-        val keyboard = body("KeyboardPage.kt", "KeyboardSettingsRows")
+        val keyboard = body("ModulesHome.kt", "KeyboardSettingsRows")
         val trackpad = read("TrackpadGestureSettingsScreen.kt")
 
         assertTrue(keyboards.contains("SettingLinkIds.TEXT_INPUT_AUTO_SHOW_KEYBOARD"))

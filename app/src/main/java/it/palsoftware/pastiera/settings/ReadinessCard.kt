@@ -27,43 +27,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import it.palsoftware.pastiera.ImeIdentity
 import it.palsoftware.pastiera.R
+import it.palsoftware.pastiera.modules.FluxModule
+import it.palsoftware.pastiera.modules.ModuleReadiness
+import it.palsoftware.pastiera.modules.ModuleReadiness.Need
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
-/** What the keyboard still needs before it works, each with its fix on the ready checklist. */
-private enum class Need {
-    /** The keyboard switched on in Android's keyboards. */
-    KEYBOARD_ON,
-    /** The keyboard chosen as the one in use. */
-    KEYBOARD_CHOSEN
-}
-
-/** What the keyboard needs that isn't there yet, most important first. */
-private fun needs(context: Context): List<Need> = runCatching {
-    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    val enabledMethods = imm.enabledInputMethodList
-    val enabled = enabledMethods.any { it.packageName == ImeIdentity.packageName || ImeIdentity.matchesImeId(it.id) }
-    if (!enabled) return@runCatching listOf(Need.KEYBOARD_ON)
-    val selected = runCatching {
-        ImeIdentity.matchesImeId(Settings.Secure.getString(context.contentResolver, Settings.Secure.DEFAULT_INPUT_METHOD).orEmpty())
-    }.getOrElse {
-        // Android 14 and later may refuse to say which keyboard is in use: the only one switched on is
-        enabledMethods.size == 1
-    }
-    listOfNotNull(Need.KEYBOARD_CHOSEN.takeIf { !selected })
-}.getOrDefault(listOf(Need.KEYBOARD_ON))
-
 /**
- * The keyboard's ready checklist, at the top of its page: only what it still needs, each a tap
- * from its fix; nothing at all once it's ready. Checked again on coming back and every few seconds.
+ * A module's ready checklist, at the top of its pages: only what it still needs, each a tap from
+ * its fix; nothing at all once it's ready. Checked again on coming back and every few seconds
+ * (the shell starts by itself, a pairing comes from the TV).
  */
 @Composable
-internal fun ReadinessCard(modifier: Modifier = Modifier, readyText: String? = null) {
+internal fun ReadinessCard(module: FluxModule, modifier: Modifier = Modifier, readyText: String? = null) {
     val context = LocalContext.current
-    var needs by remember { mutableStateOf(needs(context)) }
+    var needs by remember(module) { mutableStateOf(ModuleReadiness.needs(context, module)) }
     var check by remember { mutableStateOf(0) }
     val lifecycle = androidx.lifecycle.compose.LocalLifecycleOwner.current.lifecycle
     androidx.compose.runtime.DisposableEffect(lifecycle) {
@@ -73,9 +53,9 @@ internal fun ReadinessCard(modifier: Modifier = Modifier, readyText: String? = n
         lifecycle.addObserver(observer)
         onDispose { lifecycle.removeObserver(observer) }
     }
-    LaunchedEffect(check) {
+    LaunchedEffect(module, check) {
         while (true) {
-            needs = withContext(Dispatchers.IO) { needs(context) }
+            needs = withContext(Dispatchers.IO) { ModuleReadiness.needs(context, module) }
             delay(3_000)
         }
     }
@@ -103,14 +83,14 @@ internal fun ReadinessCard(modifier: Modifier = Modifier, readyText: String? = n
                 color = MaterialTheme.colorScheme.onTertiaryContainer,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
             )
-            needs.forEach { need -> NeedRow(need) { check++ } }
+            needs.forEach { need -> NeedRow(module, need) { check++ } }
         }
     }
 }
 
 /** One thing still needed: what it is, why, and a tap to fix it. */
 @Composable
-private fun NeedRow(need: Need, onDone: () -> Unit) {
+private fun NeedRow(module: FluxModule, need: Need, onDone: () -> Unit) {
     val context = LocalContext.current
     val title = stringResource(when (need) {
         Need.KEYBOARD_ON -> R.string.enable_pastiera

@@ -12,7 +12,7 @@ class SettingsSearchCategoriesTest {
         }
         assertEquals(SettingsDestination.Typing, SettingLinkRegistry.categoryOf(SettingsDestination.AutoCorrection))
         assertEquals(SettingsDestination.Apps, SettingLinkRegistry.categoryOf(SettingsDestination.Customization))
-        // What isn't the keyboard's own is under Settings; the keyboard's privacy page under its own heading
+        // What every module shares is under Settings; the keyboard's privacy page under its own heading
         assertEquals(SettingsDestination.Main, SettingLinkRegistry.categoryOf(SettingsDestination.FluxOffline))
         assertEquals(SettingsDestination.Main, SettingLinkRegistry.categoryOf(SettingsDestination.AppLanguage))
         assertEquals(SettingsDestination.Advanced, SettingLinkRegistry.categoryOf(SettingsDestination.Advanced))

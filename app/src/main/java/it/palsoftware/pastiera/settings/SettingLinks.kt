@@ -1193,7 +1193,7 @@ object SettingLinkRegistry {
 
     /**
      * The headings search results are grouped under: the keyboard's sections, then Shell
-     * access and Settings (the gear), what isn't the keyboard's own.
+     * access and Settings (the gear), shared by every module.
      */
     val categories: List<SettingsDestination> = listOf(
         SettingsDestination.KeyboardHome, SettingsDestination.Typing, SettingsDestination.KeyboardsLayouts,
@@ -1209,7 +1209,7 @@ object SettingLinkRegistry {
         SettingsDestination.LookSound, SettingsDestination.Advanced, SettingsDestination.ShellExtras
     )
 
-    /** Settings' (the gear's) own headings: what isn't the keyboard's own. */
+    /** Settings' (the gear's) own headings: what every module shares. */
     val sharedCategories: Set<SettingsDestination> = setOf(SettingsDestination.Root, SettingsDestination.Main)
 
     /** Which main category a settings page belongs to. */
@@ -1229,7 +1229,7 @@ object SettingLinkRegistry {
         SettingsDestination.Advanced -> SettingsDestination.Advanced
         SettingsDestination.ShellExtras -> SettingsDestination.ShellExtras
         SettingsDestination.Root -> SettingsDestination.Root
-        // Settings (the gear): what isn't the keyboard's own
+        // Settings (the gear): what every module shares
         else -> SettingsDestination.Main
     }
 

@@ -53,7 +53,7 @@ import kotlin.math.hypot
 /**
  * The lattice's colours: Flux Titan Hub's own purple, leaning to magenta (as its app-list icons
  * are), in two dark shades behind and two light ones for the moving stripes, so the white title
- * reads on it.
+ * reads on it. The module tiles below take the wallpaper's colours.
  */
 private class LatticeColors(val base: Color, val baseDark: Color, val stripe: Color, val stripeLight: Color)
 

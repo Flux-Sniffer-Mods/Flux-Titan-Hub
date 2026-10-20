@@ -64,8 +64,8 @@ import java.util.Locale
 import kotlinx.coroutines.launch
 
 /**
- * Settings (the gear on the home screen): what isn't the keyboard's own. The keyboard's settings
- * are on the home screen.
+ * Settings (the gear on the home screen): only what every module shares. A module's own settings
+ * are on its page, opened from its tile.
  */
 @Composable
 internal fun GeneralSettingsScreen(
@@ -165,7 +165,7 @@ internal fun GeneralSettingsScreen(
     ) { paddingValues ->
         Column(modifier = modifier.fillMaxWidth().padding(paddingValues).verticalScroll(rememberScrollState())) {
             FluxNote(stringResource(R.string.settings_general_note))
-            // Settings' own search: what's on this page (the home screen's searches everything)
+            // Settings' own search: what every module shares (the home screen's searches every module)
             SettingsSearchArea(
                 fieldModifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
                 scope = SettingLinkRegistry.sharedCategories,
@@ -183,7 +183,7 @@ internal fun GeneralSettingsScreen(
                 onClick = { onNavigate(SettingsDestination.FluxOffline) }
             )
 
-            // The shell the extras work through, then the whole phone's density, as a whole and
+            // The shell every module works through, then the whole phone's density, as a whole and
             // per app
             SettingsSectionDivider(stringResource(R.string.settings_section_phone))
             val shell = rememberShellState()
@@ -246,7 +246,7 @@ internal fun GeneralSettingsScreen(
                     context.startActivity(Intent(context, TutorialActivity::class.java))
                 }
             )
-            // The crash log, for reporting a problem
+            // The crash log, for reporting a problem with any module
             CrashLogRow()
             SettingsUpdateRows(context)
             SettingsCategoryRow(

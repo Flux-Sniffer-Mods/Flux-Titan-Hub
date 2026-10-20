@@ -8,9 +8,9 @@ import java.util.Date
 import java.util.Locale
 
 /**
- * Warnings worth keeping (the shell's), in a file of the app's own as well as Android's log: the
- * phone's log turns over in seconds, so by the time a crash log is saved they'd be gone. The
- * crash log adds the file.
+ * Warnings worth keeping (the shell, modules switched on and off), in a file of the app's own as
+ * well as Android's log: the phone's log turns over in seconds, so by the time a crash log is
+ * saved they'd be gone. The crash log adds the file.
  */
 object FluxLog {
     private const val MAX_BYTES = 256 * 1024

@@ -413,13 +413,13 @@ fun SettingSearchResultRow(
 }
 
 /**
- * The settings search: the field, then [content], or while something's typed the matching
- * settings in its place, under the section each lives in. Back clears the search.
+ * The settings search: the field, then [content], or while something's typed every module's
+ * matching settings in its place, under the section each lives in. Back clears the search.
  */
 @Composable
 internal fun SettingsSearchArea(
     fieldModifier: Modifier,
-    /** The headings searched (the keyboard's, or Settings'): every setting when not given. */
+    /** The headings searched (one module's, or Settings'): every setting when not given. */
     scope: Set<SettingsDestination>? = null,
     hint: String? = null,
     content: @Composable () -> Unit

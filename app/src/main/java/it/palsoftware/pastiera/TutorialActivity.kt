@@ -141,6 +141,8 @@ sealed class TutorialPageType {
     object FluxPermissions : TutorialPageType()
     object FluxBar : TutorialPageType()
     object FluxShizuku : TutorialPageType()
+    // The first run's choice of modules
+    object FluxModules : TutorialPageType()
     
     data class Standard(
         val title: String,
@@ -253,6 +255,14 @@ fun TutorialScreen(
         }
     }
 
+    // The modules picked on the first run: only their pages follow
+    var modules by remember {
+        mutableStateOf(it.palsoftware.pastiera.modules.FluxModule.entries.filter { module ->
+            it.palsoftware.pastiera.modules.FluxModules.on(context, module)
+        }.toSet())
+    }
+    val keyboard = it.palsoftware.pastiera.modules.FluxModule.KEYBOARD in modules
+
     val pages = buildList {
         if (configureOnly) {
             add(TutorialPageType.FluxBar)
@@ -279,7 +289,8 @@ fun TutorialScreen(
                 icon = Icons.Filled.Keyboard
             )
         )
-        if (showEnablePage) {
+        add(TutorialPageType.FluxModules)
+        if (keyboard && showEnablePage) {
             add(
                 TutorialPageType.EnablePastiera(
                     title = stringResource(R.string.tutorial_page_enable_title),
@@ -287,7 +298,7 @@ fun TutorialScreen(
                 )
             )
         }
-        if (showSelectPage) {
+        if (keyboard && showSelectPage) {
             add(
                 TutorialPageType.SelectPastiera(
                     title = stringResource(R.string.tutorial_page_select_title),
@@ -299,45 +310,49 @@ fun TutorialScreen(
         // and symbols, moving around), your apps (shortcuts, the quick launcher), make it yours
         // (choices, the look), then the extras that need a permission or another app
         // Android's restricted settings first: everything after can then be switched on
-        add(TutorialPageType.FluxPermissions)
-        add(TutorialPageType.FluxSetup)
-        add(TutorialPageType.FluxBar)
-        if (DeviceSpecific.isTitan2Device()) {
+        if (keyboard) {
+            add(TutorialPageType.FluxPermissions)
+            add(TutorialPageType.FluxSetup)
+            add(TutorialPageType.FluxBar)
+            if (DeviceSpecific.isTitan2Device()) {
+                add(
+                    TutorialPageType.ImeCaptionBar(
+                        title = stringResource(R.string.tutorial_android16_ime_caption_title),
+                        description = stringResource(R.string.tutorial_android16_ime_caption_description)
+                    )
+                )
+            }
+            // The on-screen keyboard mode matters only on phones without a keyboard
+            if (!DeviceSpecific.isPhysicalKeyboardDevice()) {
+                add(
+                    TutorialPageType.SoftwareKeyboard(
+                        title = stringResource(R.string.tutorial_page_software_keyboard_title),
+                        description = stringResource(R.string.tutorial_page_software_keyboard_description),
+                        icon = Icons.Filled.Keyboard,
+                        iconTint = MaterialTheme.colorScheme.primary
+                    )
+                )
+            }
+            add(TutorialPageType.FluxTyping)
+            add(TutorialPageType.FluxEmoji)
             add(
-                TutorialPageType.ImeCaptionBar(
-                    title = stringResource(R.string.tutorial_android16_ime_caption_title),
-                    description = stringResource(R.string.tutorial_android16_ime_caption_description)
+                TutorialPageType.NavMode(
+                    title = stringResource(R.string.tutorial_page_nav_mode_title),
+                    description = stringResource(R.string.tutorial_page_nav_mode_description),
+                    icon = Icons.Filled.Navigation,
+                    iconTint = MaterialTheme.colorScheme.tertiary
                 )
             )
+            add(TutorialPageType.FluxApps)
+            add(TutorialPageType.QuickLauncher)
+            add(TutorialPageType.FluxChoices)
+            add(TutorialPageType.FluxPersonalise)
         }
-        // The on-screen keyboard mode matters only on phones without a keyboard
-        if (!DeviceSpecific.isPhysicalKeyboardDevice()) {
-            add(
-                TutorialPageType.SoftwareKeyboard(
-                    title = stringResource(R.string.tutorial_page_software_keyboard_title),
-                    description = stringResource(R.string.tutorial_page_software_keyboard_description),
-                    icon = Icons.Filled.Keyboard,
-                    iconTint = MaterialTheme.colorScheme.primary
-                )
-            )
-        }
-        add(TutorialPageType.FluxTyping)
-        add(TutorialPageType.FluxEmoji)
-        add(
-            TutorialPageType.NavMode(
-                title = stringResource(R.string.tutorial_page_nav_mode_title),
-                description = stringResource(R.string.tutorial_page_nav_mode_description),
-                icon = Icons.Filled.Navigation,
-                iconTint = MaterialTheme.colorScheme.tertiary
-            )
-        )
-        add(TutorialPageType.FluxApps)
-        add(TutorialPageType.QuickLauncher)
-        add(TutorialPageType.FluxChoices)
-        add(TutorialPageType.FluxPersonalise)
         // The shell, which the keyboard's extras run through
-        add(TutorialPageType.FluxShizuku)
-        add(TutorialPageType.FluxExtras)
+        if (keyboard) {
+            add(TutorialPageType.FluxShizuku)
+            add(TutorialPageType.FluxExtras)
+        }
         add(
             TutorialPageType.Standard(
                 title = stringResource(R.string.tutorial_page_ready_title),
@@ -449,6 +464,14 @@ fun TutorialScreen(
                         TutorialPageType.FluxPermissions -> it.palsoftware.pastiera.tutorial.FluxTutorialPermissionsPageContent(modifier = Modifier.fillMaxSize())
                         TutorialPageType.FluxBar -> it.palsoftware.pastiera.tutorial.FluxTutorialBarPageContent(modifier = Modifier.fillMaxSize())
                         TutorialPageType.FluxShizuku -> it.palsoftware.pastiera.tutorial.FluxTutorialShizukuPageContent(modifier = Modifier.fillMaxSize())
+                        TutorialPageType.FluxModules -> it.palsoftware.pastiera.tutorial.FluxTutorialModulesPageContent(
+                            chosen = modules,
+                            onChange = { module, on ->
+                                it.palsoftware.pastiera.modules.FluxModules.setOn(context, module, on)
+                                modules = if (on) modules + module else modules - module
+                            },
+                            modifier = Modifier.fillMaxSize()
+                        )
                         TutorialPageType.FeatureStatuses -> {
                             TutorialFeatureStatusesPageContent(modifier = Modifier.fillMaxSize())
                         }

@@ -342,7 +342,7 @@ internal fun ShellExtrasScreen(modifier: Modifier = Modifier, onBack: () -> Unit
 
 /**
  * Screen size: the phone's density as a whole (Default, Tablet, Desktop) and per app, through
- * the shell. The whole phone's, so it sits in Settings rather than with the keyboard.
+ * the shell. The whole phone's, so it sits in Settings rather than with a module.
  */
 @Composable
 internal fun ScreenSizeScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
@@ -422,7 +422,7 @@ internal fun rememberShellState(): ShellState {
 }
 
 /**
- * Shell access where a page needs it: [why] it's needed there, whether it's running, and a tap
+ * Shell access where a module needs it: [why] it's needed there, whether it's running, and a tap
  * to its page to set it up or start it.
  */
 @Composable

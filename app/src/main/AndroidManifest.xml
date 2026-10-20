@@ -92,6 +92,30 @@
             </intent-filter>
         </activity>
 
+        <!-- The keyboard's page as an app of its own in the app list (Keyboard in the app list) -->
+        <activity
+            android:name=".KeyboardActivity"
+            android:configChanges="keyboard|keyboardHidden|navigation"
+            android:exported="false"
+            android:label="@string/module_keyboard_title"
+            android:icon="@mipmap/ic_keyboard_entry"
+            android:roundIcon="@mipmap/ic_keyboard_entry"
+            android:taskAffinity="it.palsoftware.pastiera.keyboard"
+            android:theme="@style/Theme.Pastiera" />
+        <activity-alias
+            android:name=".KeyboardLauncher"
+            android:targetActivity=".KeyboardActivity"
+            android:exported="true"
+            android:enabled="false"
+            android:label="@string/module_keyboard_title"
+            android:icon="@mipmap/ic_keyboard_entry"
+            android:roundIcon="@mipmap/ic_keyboard_entry">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
         <activity
             android:name=".SoftwareKeyboardModeActionActivity"
             android:exported="true"
