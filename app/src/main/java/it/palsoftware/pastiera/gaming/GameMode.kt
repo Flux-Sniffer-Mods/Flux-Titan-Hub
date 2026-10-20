@@ -198,11 +198,12 @@ object GameMode {
         val app = context.applicationContext
         if (packageName == "com.android.systemui") return
         if (packageName == app.packageName) {
-            // Flux Keyboard's own screens (Games, settings) aren't games: gaming mode ends there, as
-            // in any other app, rather than staying on until the game closes
+            // Flux Keyboard's own player is a game; its other screens (Games, settings) aren't:
+            // gaming mode ends there, as in any other app, rather than staying on until the game closes
+            val player = stickSink != null || window?.let { it.first == app.packageName && it.second?.contains("XboxPlayActivity") == true } == true
             // A game being started from Games: its screen already made for it, kept until it's in front
             if (launchingNow() != null) return
-            if (profile != null) {
+            if (!player && profile != null) {
                 frontPackage = packageName
                 worker.execute { stop(app); recover(app) }
             }
@@ -228,6 +229,45 @@ object GameMode {
         // once whether to set it up
         if (GameProfiles.forPackage(app, packageName).isEmpty()) worker.execute { GameDetect.offer(app, packageName) }
         worker.execute { followGame(app, packageName) }
+    }
+
+    // ---- Flux Keyboard's own player (Xbox Cloud Gaming in a web page) ----
+
+    /** The player in front, taking the sticks (left x y, right x y) as they move. */
+    @Volatile private var stickSink: ((FloatArray) -> Unit)? = null
+
+    /**
+     * The player in front: the trackpad's left half its left stick, given to [sink], and the
+     * screen as [screenMode]. Keys reach the player itself.
+     */
+    fun attachPlayer(context: Context, screenMode: ScreenMode, sink: (FloatArray) -> Unit) {
+        val app = context.applicationContext
+        appContext = app
+        FluxLayout.loadOverrides(app)
+        worker.execute {
+            stickSink = sink
+            val player = GameProfile(
+                id = "player", name = "player", packages = setOf(app.packageName),
+                leftHalf = TrackpadRole.NONE, rightHalf = TrackpadRole.NONE, screen = screenMode
+            )
+            // Its keys sent through the input helper like any game's (started if it isn't)
+            if (input == null && AdbShell.available()) startInput(app)
+            releaseControls()
+            profile = player
+            activeId = null
+            screen(app, screenMode)
+            startTrackpad(player)
+        }
+    }
+
+    /** The player gone from the front: the trackpad let go, the screen put back. */
+    fun detachPlayer(context: Context) {
+        val app = context.applicationContext
+        worker.execute {
+            if (stickSink == null) return@execute
+            stickSink = null
+            stop(app)
+        }
     }
 
     /** The app gaming mode is playing a game in, if it is. */
@@ -318,7 +358,7 @@ object GameMode {
          * ([FluxLayout.DOLPHIN_MARKERS]), as it can miss the keyboard's own.
          */
         NATIVE,
-        /** It reads keys from any keyboard (PPSSPP, the other emulators): each of the layout's keys is taken and its control's own key sent. */
+        /** It reads keys from any keyboard (PPSSPP, the other emulators, Flux Keyboard's own player): each of the layout's keys is taken and its control's own key sent. */
         KEYS,
         /** It takes a controller: the layout's keys are taken and a controller's buttons and sticks sent. */
         PAD,
@@ -327,6 +367,8 @@ object GameMode {
     }
 
     internal fun route(): Route {
+        // Flux Keyboard's own player (which isn't followed as the app in front)
+        if (stickSink != null || profile?.id == "player") return Route.KEYS
         val front = frontPackage ?: return Route.PAD
         val emulator = GameApps.emulator(front)
         return when {
@@ -615,13 +657,13 @@ object GameMode {
         val (pkg, className) = window ?: return true
         if (profile?.packages?.contains(pkg) != true) return false
         if (GameApps.appFor(pkg) == null) return true
-        // An emulator's or launcher's play screen
+        // Flux Keyboard's own player (Xbox Cloud Gaming), or an emulator's or launcher's play screen
         val name = className ?: return true
         return PLAY_SCREENS.any { name.contains(it, ignoreCase = true) }
     }
 
     /** Names of emulators' and launchers' play screens (their other screens are menus). */
-    private val PLAY_SCREENS = listOf("Emulation", "XServer", "PpssppActivity", "Wine", "Display", "Stream")
+    private val PLAY_SCREENS = listOf("Emulation", "XServer", "PpssppActivity", "XboxPlay", "Wine", "Display", "Stream")
 
     /** When Back was last pressed in a game (the first press of two). */
     @Volatile private var backPressedAt = 0L
@@ -641,8 +683,8 @@ object GameMode {
             backPressedAt = 0L
             hideBackToast()
             // A game that is its whole app often ignores Back (Unreal's, such as Infinity Nikki):
-            // the second press leaves it for the home screen. An emulator's or a launcher's Back
-            // opens its own menu or ends the game, so it gets that
+            // the second press leaves it for the home screen. An emulator's, a launcher's or the
+            // Xbox player's Back opens its own menu or ends the game, so it gets that
             val pkg = frontPackage
             val home = goHome
             if (home != null && pkg != null && GameApps.appFor(pkg) == null) {
@@ -1183,6 +1225,8 @@ object GameMode {
     }
 
     private fun sendSticks() {
+        // Flux Keyboard's own player (Xbox Cloud Gaming) takes them itself
+        stickSink?.let { sink -> val now = sticks.copyOf(); sink(now); return }
         // The real controller's sticks, with root; else stick events from the keyboard
         val line = "J ${sticks[0]} ${sticks[1]} ${sticks[2]} ${sticks[3]}"
         keys.execute { send(line) }
@@ -1360,7 +1404,7 @@ object GameMode {
 
         /** A stick for a game taking keys, with no on-screen stick placed: its direction keys. */
         private fun byKeys(at: Int): Boolean =
-            profile?.stickZones?.containsKey(at / 2) != true && route() == Route.KEYS
+            stickSink == null && profile?.stickZones?.containsKey(at / 2) != true && route() == Route.KEYS
 
         private fun move(slot: Int, reportedX: Int, reportedY: Int) {
             keyStats?.let { k -> k.moves++; "$slot@$reportedX,$reportedY".let { if (k.firstMove.isEmpty()) k.firstMove = it; k.lastMove = it } }

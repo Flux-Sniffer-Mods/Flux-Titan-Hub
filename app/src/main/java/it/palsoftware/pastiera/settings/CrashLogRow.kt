@@ -53,11 +53,11 @@ internal fun CrashLogRow() {
                 val traces = anrTraces(context)
                 it.palsoftware.pastiera.adb.AdbShell.run(
                     "f='$file'; mkdir -p \"\${f%/*}\"; { " +
-                        // Why Android last ended the app: a crash or memory running low
+                        // Why Android last ended the app: a crash, its web page's renderer dying, memory running low
                         "echo '== why it stopped =='; dumpsys activity exit-info $app | head -n 120; " +
                         "echo '== crashes =='; logcat -d -b crash -t 400; " +
                         "echo '== warnings and errors =='; logcat -d -b main,system '*:W' 'ActivityTaskManager:I' | " +
-                        "grep -i -E '$app|gamehub|egggame|Permission Denial|quickstep|launcher3|Recents|OverviewProxy|FluxGameMode|FluxGameLaunch|AndroidRuntime|lowmemorykiller|has died|Killing' | grep -v 'Changing focus' | tail -n 400; " +
+                        "grep -i -E '$app|gamehub|egggame|Permission Denial|quickstep|launcher3|Recents|OverviewProxy|FluxGameMode|FluxGameLaunch|AndroidRuntime|chromium|cr_|webview|lowmemorykiller|has died|Killing' | grep -v 'Changing focus' | tail -n 400; " +
                         // The screen and window settings gaming mode and the desktop change
                         // (through a pipe: Android's services can't write into a file in Download)
                         // The input devices (the keyboard, the side buttons): which one each key comes from

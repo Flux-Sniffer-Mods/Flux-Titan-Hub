@@ -26,7 +26,9 @@ class GameCommandSource : CommandSource {
             Triple(profile.name, profile.packages.firstOrNull().orEmpty(), intent)
         }
         return entries(context, gaming) + games.map { (name, pkg, intent) ->
-            val appName = context.appLabel(pkg)
+            // An Xbox cloud game plays in Flux Keyboard's player: XCloud Games, not Flux Keyboard
+            val appName = if (pkg == context.packageName) context.getString(it.palsoftware.pastiera.R.string.games_app_xbox)
+                else context.appLabel(pkg)
             CommandTarget(
                 id = "game:$pkg:$name",
                 source = id,
@@ -46,7 +48,7 @@ class GameCommandSource : CommandSource {
         }
     }
 
-    /** The Games app (with gaming mode's module on), as a command of its own. */
+    /** The Games app and XCloud Games (with gaming mode's module on), as commands of their own. */
     private fun entries(context: Context, gaming: Boolean): List<CommandTarget> {
         val games = context.getString(it.palsoftware.pastiera.R.string.games_app_title)
         val icon = CommandIcon.DrawableIcon(runCatching { context.packageManager.getApplicationIcon(context.packageName) }.getOrNull())
@@ -66,9 +68,13 @@ class GameCommandSource : CommandSource {
             defaultSurfaces = setOf(CommandSurface.QuickLauncher, CommandSurface.AssignedKey),
             searchTokens = tokens
         )
+        val xcloud = Intent(context, it.palsoftware.pastiera.gaming.XboxPlayActivity::class.java)
+            .setData(android.net.Uri.parse(it.palsoftware.pastiera.gaming.XboxPlayActivity.HOME))
         return listOfNotNull(
             entry("games", context.getString(it.palsoftware.pastiera.R.string.stream_flux_games), games,
-                Intent(context, GamesActivity::class.java), listOf("Flux Games", "Games", "launcher")).takeIf { gaming }
+                Intent(context, GamesActivity::class.java), listOf("Flux Games", "Games", "launcher")).takeIf { gaming },
+            entry("xcloud", context.getString(it.palsoftware.pastiera.R.string.games_app_xbox), "Xbox Cloud Gaming",
+                xcloud, listOf("XCloud", "Xbox", "Cloud", "Game Pass")).takeIf { gaming }
         )
     }
 

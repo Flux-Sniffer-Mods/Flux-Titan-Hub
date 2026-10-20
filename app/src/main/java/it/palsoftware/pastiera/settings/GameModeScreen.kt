@@ -3,6 +3,7 @@ package it.palsoftware.pastiera.settings
 import it.palsoftware.pastiera.apps.appLabel
 import it.palsoftware.pastiera.modules.FluxModule
 import it.palsoftware.pastiera.modules.FluxModules
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.border
 import androidx.compose.foundation.verticalScroll
@@ -15,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -141,7 +143,7 @@ internal fun GameControlsScreen(modifier: Modifier = Modifier, onBack: () -> Uni
     }
 }
 
-/** Where games come from: launchers and folders, or added by hand. */
+/** Where games come from: launchers and folders, Xbox's cloud, or added by hand. */
 @Composable
 internal fun GameSourcesScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
     val context = LocalContext.current
@@ -150,6 +152,8 @@ internal fun GameSourcesScreen(modifier: Modifier = Modifier, onBack: () -> Unit
     var importing by remember { mutableStateOf(false) }
     var gameNativeSetup by remember { mutableStateOf(false) }
     var addingOwn by remember { mutableStateOf(false) }
+    var addingXbox by remember { mutableStateOf(false) }
+    val xboxApp: String? = remember { it.palsoftware.pastiera.gaming.XboxCloud.app(context) }
     val scope = androidx.compose.runtime.rememberCoroutineScope()
     fun refresh() { profiles = GameProfiles.all(context) }
     // The game folders read again (games found join the list, not set up yet), and games named
@@ -245,6 +249,23 @@ internal fun GameSourcesScreen(modifier: Modifier = Modifier, onBack: () -> Unit
                 gameHubScope.launch(Dispatchers.IO) { it.palsoftware.pastiera.gaming.GameFolders.setGameHubInLite(app, index == 0) }
             }
         }
+        // Xbox Cloud Gaming's games, from its catalogue, each a game of its own
+        if (xboxApp != null) FluxActionRow(
+            linkId = "game_mode.xbox_add",
+            icon = "+",
+            title = stringResource(R.string.game_mode_xbox_add),
+            description = stringResource(R.string.game_mode_xbox_add_description)
+        ) { addingXbox = true }
+        // Signing in to Xbox (a plain browser page, keys typing), or out once signed in
+        val xbox = rememberXboxAccount()
+        FluxActionRow(
+            linkId = null,
+            icon = "\u2192",
+            title = stringResource(if (xbox.signedIn) R.string.game_mode_xbox_sign_out else R.string.game_mode_xbox_sign_in),
+            description = stringResource(if (xbox.signedIn) R.string.game_mode_xbox_sign_out_description else R.string.game_mode_xbox_sign_in_description)
+        ) { xbox.click() }
+        // Which cloud games the catalogue lists: the ones the Game Pass plan plays
+        XboxPlanRow()
         Spacer(modifier = Modifier.height(16.dp))
     }
 
@@ -258,6 +279,7 @@ internal fun GameSourcesScreen(modifier: Modifier = Modifier, onBack: () -> Unit
     }
     if (importing) GameImportDialog(onPicked = pickGame, onByHand = { importing = false; addingOwn = true }, onDismiss = { importing = false })
     if (addingOwn) OwnGameDialog(onAdded = pickGame, onDismiss = { addingOwn = false })
+    if (addingXbox && xboxApp != null) XboxCloudDialog(xboxApp, onPicked = { game -> addingXbox = false; pickGame(game) }, onDismiss = { addingXbox = false })
     if (gameNativeSetup) {
         AlertDialog(
             onDismissRequest = { gameNativeSetup = false },
@@ -997,6 +1019,141 @@ private fun GameKeysRow(profile: GameProfile, onChanged: (GameProfile) -> Unit) 
     }
 }
 
+/** Xbox Cloud Gaming's games, searched by name: one picked becomes a game of its own. */
+@Composable
+internal fun XboxCloudDialog(
+    pkg: String,
+    onPicked: (GameLibrary.Game) -> Unit,
+    onDismiss: () -> Unit,
+    /** A tap plays the game straight away (the Games app); else a tap picks it, as [onPicked]. */
+    onPlay: ((GameLibrary.Game) -> Unit)? = null,
+    onAdded: () -> Unit = {}
+) {
+    val context = LocalContext.current
+    // A game long-pressed: added to the games (the Games app), or its settings
+    var menuFor by remember { mutableStateOf<it.palsoftware.pastiera.gaming.XboxCloud.CloudGame?>(null) }
+    menuFor?.let { cloud ->
+        val game = it.palsoftware.pastiera.gaming.XboxCloud.asGame(cloud, pkg)
+        val profile = remember(cloud.id) { GameProfiles.profileFor(context, game) }
+        val added = remember(cloud.id) { GameProfiles.all(context).any { p -> p.id == profile.id } }
+        AlertDialog(
+            onDismissRequest = { menuFor = null },
+            title = { Text(cloud.name) },
+            text = { Text(stringResource(if (added) R.string.game_mode_xbox_in_games else R.string.game_mode_xbox_add_to_games_description)) },
+            confirmButton = {
+                if (added) TextButton(onClick = {
+                    GameProfiles.delete(context, profile.id)
+                    menuFor = null
+                    onAdded()
+                }) { Text(stringResource(R.string.game_mode_xbox_remove_from_games)) }
+                if (!added) androidx.compose.material3.Button(onClick = {
+                    GameProfiles.save(context, profile)
+                    android.widget.Toast.makeText(context, context.getString(R.string.game_mode_xbox_added, cloud.name), android.widget.Toast.LENGTH_SHORT).show()
+                    menuFor = null
+                    onAdded()
+                }) { Text(stringResource(R.string.game_mode_xbox_add_to_games)) }
+            },
+            dismissButton = {
+                Row {
+                    if (onPlay != null) TextButton(onClick = { menuFor = null; onPicked(game) }) { Text(stringResource(R.string.games_app_settings_short)) }
+                    TextButton(onClick = { menuFor = null }) { Text(stringResource(R.string.cancel)) }
+                }
+            }
+        )
+    }
+    var games by remember { mutableStateOf<List<it.palsoftware.pastiera.gaming.XboxCloud.CloudGame>?>(null) }
+    var query by remember { mutableStateOf("") }
+    // Signed in first: the games only play once Xbox knows who's playing
+    val signedIn = remember { it.palsoftware.pastiera.gaming.XboxCloud.signedIn() }
+    if (!signedIn) {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            title = { Text(stringResource(R.string.game_mode_xbox_add)) },
+            text = { Text(stringResource(R.string.game_mode_xbox_sign_in_first)) },
+            confirmButton = {
+                androidx.compose.material3.Button(onClick = {
+                    runCatching { context.startActivity(it.palsoftware.pastiera.gaming.XboxPlayActivity.signIn(context)) }
+                    onDismiss()
+                }) { Text(stringResource(R.string.game_mode_xbox_sign_in)) }
+            },
+            dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } }
+        )
+        return
+    }
+    LaunchedEffect(Unit) { games = withContext(Dispatchers.IO) { it.palsoftware.pastiera.gaming.XboxCloud.games(context) } }
+    // A grid of the games' covers, a search above: nothing else
+    androidx.compose.ui.window.Dialog(
+        onDismissRequest = onDismiss,
+        properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        androidx.compose.material3.Surface(
+            modifier = Modifier.fillMaxSize().padding(12.dp),
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
+        ) {
+            Column(modifier = Modifier.padding(12.dp)) {
+                OutlinedTextField(
+                    value = query, onValueChange = { query = it }, singleLine = true,
+                    label = { Text(stringResource(R.string.game_mode_xbox_search)) }, modifier = Modifier.fillMaxWidth()
+                )
+                val list = games
+                when {
+                    list == null -> Text(stringResource(R.string.game_mode_import_reading), modifier = Modifier.padding(top = 12.dp))
+                    list.isEmpty() -> Text(stringResource(R.string.game_mode_xbox_none), modifier = Modifier.padding(top = 12.dp))
+                    else -> {
+                        // Xbox Cloud Gaming itself first, for every game
+                        val shown = (listOf(it.palsoftware.pastiera.gaming.XboxCloud.HOME) + list)
+                            .filter { game -> query.isBlank() || game.name.contains(query.trim(), ignoreCase = true) }
+                        androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
+                            columns = androidx.compose.foundation.lazy.grid.GridCells.Adaptive(96.dp),
+                            modifier = Modifier.fillMaxSize().padding(top = 12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            verticalArrangement = Arrangement.spacedBy(14.dp)
+                        ) {
+                            items(shown.size, key = { shown[it].id.ifEmpty { "home" } }) { i ->
+                                val game = shown[i]
+                                CloudGameTile(game, onLongClick = { if (game.id.isNotEmpty()) menuFor = game }) {
+                                    val picked = it.palsoftware.pastiera.gaming.XboxCloud.asGame(game, pkg)
+                                    onPlay?.invoke(picked) ?: onPicked(picked)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/** A cloud game's cover and name. */
+@Composable
+@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
+private fun CloudGameTile(game: it.palsoftware.pastiera.gaming.XboxCloud.CloudGame, onLongClick: () -> Unit = {}, onClick: () -> Unit) {
+    val context = LocalContext.current
+    val image by androidx.compose.runtime.produceState<androidx.compose.ui.graphics.ImageBitmap?>(null, game.art) {
+        value = withContext(Dispatchers.IO) {
+            // Xbox Cloud Gaming itself: the XCloud Games tile's art, as in the Games app
+            if (game.id.isEmpty()) runCatching { it.palsoftware.pastiera.gaming.GameArt.xboxTile(context)?.asImageBitmap() }.getOrNull()
+            else game.art?.takeIf { it.isNotEmpty() }?.let { url -> it.palsoftware.pastiera.gaming.GameArt.thumbnail(url)?.asImageBitmap() }
+        }
+    }
+    val shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp)
+    Column(modifier = Modifier.fillMaxWidth().combinedClickable(onClick = onClick, onLongClick = onLongClick), horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(
+            modifier = Modifier.fillMaxWidth().aspectRatio(2f / 3f).clip(shape)
+                .then(Modifier.border(1.dp, MaterialTheme.colorScheme.outlineVariant, shape)),
+            contentAlignment = Alignment.Center
+        ) {
+            image?.let {
+                androidx.compose.foundation.Image(bitmap = it, contentDescription = null,
+                    contentScale = androidx.compose.ui.layout.ContentScale.Crop, modifier = Modifier.matchParentSize())
+            } ?: Text("\u2601", style = MaterialTheme.typography.headlineMedium)
+        }
+        Text(game.name, style = MaterialTheme.typography.bodySmall, maxLines = 2,
+            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center, modifier = Modifier.padding(top = 4.dp))
+    }
+}
+
 @Composable
 private fun ChoiceRow(title: String, value: String, options: List<String>, onPick: (Int) -> Unit) {
     var open by remember { mutableStateOf(false) }
@@ -1200,6 +1357,46 @@ private fun ArtThumbnail(choice: it.palsoftware.pastiera.gaming.GameArt.Choice, 
     }
 }
 
+/** Signed in to Xbox in Flux Keyboard's player, checked again whenever the screen comes back. */
+internal class XboxAccount(private val context: android.content.Context) {
+    var signedIn by mutableStateOf(it.palsoftware.pastiera.gaming.XboxCloud.signedIn())
+    var confirming by mutableStateOf(false)
+
+    /** Signs in, or asks before signing out. */
+    fun click() {
+        if (signedIn) confirming = true
+        else runCatching { context.startActivity(it.palsoftware.pastiera.gaming.XboxPlayActivity.signIn(context)) }
+    }
+}
+
+@Composable
+internal fun rememberXboxAccount(): XboxAccount {
+    val context = LocalContext.current
+    val account = remember { XboxAccount(context) }
+    val owner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    androidx.compose.runtime.DisposableEffect(owner) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) account.signedIn = it.palsoftware.pastiera.gaming.XboxCloud.signedIn()
+        }
+        owner.lifecycle.addObserver(observer)
+        onDispose { owner.lifecycle.removeObserver(observer) }
+    }
+    if (account.confirming) AlertDialog(
+        onDismissRequest = { account.confirming = false },
+        title = { Text(stringResource(R.string.game_mode_xbox_sign_out)) },
+        text = { Text(stringResource(R.string.game_mode_xbox_sign_out_confirm)) },
+        confirmButton = {
+            TextButton(onClick = {
+                it.palsoftware.pastiera.gaming.XboxCloud.signOut()
+                account.signedIn = false
+                account.confirming = false
+            }) { Text(stringResource(R.string.game_mode_xbox_sign_out)) }
+        },
+        dismissButton = { TextButton(onClick = { account.confirming = false }) { Text(stringResource(R.string.cancel)) } }
+    )
+    return account
+}
+
 /** A profile's game art, cropped square; its app's icon while there's none. */
 @Composable
 internal fun GameArtIcon(profile: GameProfile, version: Long = 0) {
@@ -1307,3 +1504,23 @@ internal fun PhoneGameModeRow() {
 }
 
 private const val PHONE_GAME_MODE = "com.agui.game"
+
+/** The Game Pass plan: the XCloud catalogue lists only the cloud games it plays. */
+@Composable
+internal fun XboxPlanRow() {
+    val context = LocalContext.current
+    val plans = it.palsoftware.pastiera.gaming.XboxCloud.Plan.entries
+    val names = listOf(
+        stringResource(R.string.game_mode_xbox_plan_ultimate),
+        stringResource(R.string.game_mode_xbox_plan_premium),
+        stringResource(R.string.game_mode_xbox_plan_essential)
+    )
+    var plan by remember { mutableStateOf(it.palsoftware.pastiera.gaming.XboxCloud.plan(context)) }
+    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        ChoiceRow(stringResource(R.string.game_mode_xbox_plan), names[plans.indexOf(plan)], names) { index ->
+            plan = plans[index]
+            it.palsoftware.pastiera.gaming.XboxCloud.setPlan(context, plan)
+        }
+        Text(stringResource(R.string.game_mode_xbox_plan_description), style = MaterialTheme.typography.bodySmall)
+    }
+}

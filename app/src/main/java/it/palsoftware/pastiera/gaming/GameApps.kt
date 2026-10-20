@@ -72,7 +72,7 @@ object GameApps {
         packageName.contains("gamehub", true) || packageName == "com.xiaoji.egggame" ||
             // GameHub Lite named as a benchmark app (not com.tencent.ig, the real PUBG Mobile's name too)
             packageName in GAMEHUB_BENCHMARK_NAMES -> "GameHub"
-        packageName in XBOX -> XBOX_NAME
+        packageName in XBOX || packageName == it.palsoftware.pastiera.BuildConfig.APPLICATION_ID -> XBOX_NAME
         else -> emulator(packageName)
     }
 

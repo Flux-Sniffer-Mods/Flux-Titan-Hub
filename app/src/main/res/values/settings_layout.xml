@@ -500,6 +500,25 @@
     <string name="game_detect_text">Set up gaming mode for it: controller, screen and sticks.</string>
     <string name="game_detect_not_game">Not now</string>
     <string name="game_mode_xbox_note">Plays in Flux Titan Hub\'s own player. Sign in once, then your keys work as a controller in every game.</string>
+    <string name="game_mode_xbox_add">Add an Xbox cloud game</string>
+    <string name="game_mode_xbox_add_description">Play Xbox Cloud Gaming in Flux Titan Hub\'s own player (the Xbox apps don\'t stream on phones). Pick a game from the catalogue: it gets its own settings and opens straight into the game.</string>
+    <string name="game_mode_xbox_search">Search</string>
+    <string name="game_mode_xbox_none">Couldn\'t load the catalogue. Check the phone is online and offline mode is off.</string>
+    <string name="game_mode_xbox_sign_in">Sign in to Xbox</string>
+    <string name="game_mode_xbox_sign_in_description">Sign in to Xbox in Flux Titan Hub\'s player. Once signed in, every cloud game plays.</string>
+    <string name="game_mode_xbox_add_to_games">Add to Games</string>
+    <string name="game_mode_xbox_add_to_games_description">Adds it to the Games app and Moonlight\'s list without playing it. Games you play are added by themselves.</string>
+    <string name="game_mode_xbox_in_games">In your games: in the Games app and Moonlight.</string>
+    <string name="game_mode_xbox_plan">Game Pass plan</string>
+    <string name="game_mode_xbox_plan_ultimate" translatable="false">Ultimate</string>
+    <string name="game_mode_xbox_plan_premium" translatable="false">Premium</string>
+    <string name="game_mode_xbox_plan_essential" translatable="false">Essential</string>
+    <string name="game_mode_xbox_plan_description">The XCloud catalogue lists only the cloud games your plan includes, from Microsoft\'s own Game Pass lists.</string>
+    <string name="game_mode_xbox_remove_from_games">Remove from Games</string>
+    <string name="game_mode_xbox_added">%1$s added to Games</string>
+    <string name="games_app_settings_short">Settings</string>
+    <string name="games_app_xbox">XCloud Games</string>
+    <string name="game_mode_xbox_sign_in_first">Sign in to Xbox first.</string>
     <string name="crash_log">Save crash log</string>
     <string name="crash_log_description">Android\'s record of Flux Titan Hub\'s last crashes, saved to Download/Flux Keyboard/crash-log.txt to share.</string>
     <string name="crash_log_saved">Saved to Download/Flux Keyboard/crash-log.txt</string>
@@ -527,6 +546,10 @@
     <string name="game_mode_advice_driver_system">System (Turnip is only for Adreno)</string>
     <string name="game_mode_advice_game" formatted="false">In the game\'s own settings: graphics quality Medium or Low, a 60 fps limit only if it stays steady (else 30), and render scale or resolution below 100% if it offers one.</string>
     <string name="stream_flux_games">Flux Games</string>
+    <string name="game_mode_xbox_signed_in">Signed in to Xbox</string>
+    <string name="game_mode_xbox_sign_out">Log out of Xbox</string>
+    <string name="game_mode_xbox_sign_out_description">Signed in to Xbox in Flux Titan Hub\'s player.</string>
+    <string name="game_mode_xbox_sign_out_confirm">Cloud games won\'t play until you sign in again.</string>
     <string name="game_mode_reset">Reset</string>
     <string name="game_mode_reset_emulator">Reset %1$s\'s settings</string>
     <string name="game_mode_reset_emulator_confirm">Puts everything Flux Titan Hub changed in %1$s (controls, graphics, per-game controllers) back how it was. Changes made by older versions of Flux Titan Hub can\'t be undone.</string>

@@ -16,6 +16,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.border
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.ui.semantics.contentDescription
@@ -79,11 +80,12 @@ class GamesActivity : ComponentActivity() {
         var reload by remember { mutableIntStateOf(0) }
         // Its settings, as in Flux Keyboard's Gaming mode (opened straight away when asked to)
         var editing by remember { mutableStateOf(editId?.let { id -> GameProfiles.all(this).firstOrNull { it.id == id } }) }
-        // Adding a game, as in Gaming mode: a launcher's or folder's, or one by hand
+        // Adding a game, as in Gaming mode: a launcher's or folder's, one by hand, or an Xbox cloud game
         var importing by remember { mutableStateOf(false) }
         var addingOwn by remember { mutableStateOf(false) }
+        var addingXbox by remember { mutableStateOf(false) }
         val pick: (GameLibrary.Game) -> Unit = { game ->
-            importing = false; addingOwn = false
+            importing = false; addingOwn = false; addingXbox = false
             editing = GameProfiles.profileFor(this, game)
         }
         // Gaming mode's settings: the same page its tile's ⚙ opens
@@ -111,6 +113,13 @@ class GamesActivity : ComponentActivity() {
             },
             onDismiss = { pickingApp = false }
         )
+        if (addingXbox) it.palsoftware.pastiera.settings.XboxCloudDialog(XboxCloud.app(this), onPicked = pick, onDismiss = { addingXbox = false },
+            // A tap plays it; long-press to add it to the games
+            onPlay = { game ->
+                game.launch?.let { uri -> runCatching { Intent.parseUri(uri, Intent.URI_INTENT_SCHEME) }.getOrNull() }
+                    ?.let { launch -> runCatching { startActivity(launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) } }
+            },
+            onAdded = { reload++ })
         LaunchedEffect(reload) {
             val (found, gone) = withContext(Dispatchers.IO) {
                 val context = this@GamesActivity
@@ -147,6 +156,26 @@ class GamesActivity : ComponentActivity() {
         androidx.activity.compose.BackHandler(enabled = searching || query.isNotEmpty()) { query = ""; focus.clearFocus() }
         fun matches(name: String) = query.isBlank() || name.contains(query.trim(), ignoreCase = true)
         val gamingOn = it.palsoftware.pastiera.settings.rememberModuleOn(FluxModule.GAMING)
+        val xbox = it.palsoftware.pastiera.settings.rememberXboxAccount()
+        var xboxMenu by remember { mutableStateOf(false) }
+        if (xboxMenu) androidx.compose.material3.AlertDialog(
+            onDismissRequest = { xboxMenu = false },
+            title = { Text(stringResource(R.string.games_app_xbox)) },
+            text = {
+                androidx.compose.foundation.layout.Column(Modifier.verticalScroll(androidx.compose.foundation.rememberScrollState())) {
+                    Text(stringResource(if (xbox.signedIn) R.string.game_mode_xbox_sign_out_description else R.string.game_mode_xbox_sign_in_description))
+                    // The tile's own art
+                    it.palsoftware.pastiera.settings.XboxPlanRow()
+                    it.palsoftware.pastiera.settings.GameArtworkRow(GameArt.XBOX_TILE)
+                }
+            },
+            confirmButton = {
+                androidx.compose.material3.TextButton(onClick = { xboxMenu = false; xbox.click() }) {
+                    Text(stringResource(if (xbox.signedIn) R.string.game_mode_xbox_sign_out else R.string.game_mode_xbox_sign_in))
+                }
+            },
+            dismissButton = { androidx.compose.material3.TextButton(onClick = { xboxMenu = false }) { Text(stringResource(R.string.cancel)) } }
+        )
         Scaffold(
             topBar = {
                 Row(
@@ -190,6 +219,9 @@ class GamesActivity : ComponentActivity() {
                         { editing = profile }, { editing = profile }, faded = true)
                 }
                 if (query.isBlank()) {
+                    // Xbox cloud games: signed in first, then picked; long-press to sign out
+                    tiles += TileSpec("xbox", stringResource(R.string.games_app_xbox), null, { XboxCover() },
+                        { if (xbox.signedIn) addingXbox = true else xbox.click() }, { xboxMenu = true })
                     tiles += TileSpec("add", stringResource(R.string.game_mode_import), null, { Symbol("+") }, { importing = true }, { importing = true })
                     tiles += TileSpec("apps", stringResource(R.string.games_app_launchers), null, { Symbol("\u25A6") }, { page = Page.APPS }, { page = Page.APPS })
                 }
@@ -378,6 +410,16 @@ class GamesActivity : ComponentActivity() {
             value = withContext(Dispatchers.IO) { runCatching { GameArt.appPortrait(this@GamesActivity, profile, pkg)?.asImageBitmap() }.getOrNull() }
         }
         Cover(art) { it.palsoftware.pastiera.settings.FluxAppIcon(pkg, 64.dp) }
+    }
+
+    /** Xbox Cloud Gaming's tile: Game Pass art, a cloud while there's none. */
+    @Composable
+    private fun XboxCover() {
+        val version = GameArt.version(this, GameArt.XBOX_TILE)
+        val art by androidx.compose.runtime.produceState<androidx.compose.ui.graphics.ImageBitmap?>(null, version) {
+            value = withContext(Dispatchers.IO) { runCatching { GameArt.xboxTile(this@GamesActivity)?.asImageBitmap() }.getOrNull() }
+        }
+        Cover(art) { Symbol("\u2601") }
     }
 
     @Composable

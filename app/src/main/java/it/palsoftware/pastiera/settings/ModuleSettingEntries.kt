@@ -7,6 +7,7 @@ internal fun moduleSettingEntries(): List<SettingEntry> = listOf(
     SettingEntry("game_mode.layout", R.string.game_mode_layout_title, summaryRes = R.string.game_remap_row_description, route = SettingRoute(SettingsDestination.GameControls)),
     SettingEntry("game_mode.open_games", R.string.games_app_open, summaryRes = R.string.games_app_open_description, route = SettingRoute(SettingsDestination.GamesApp)),
     SettingEntry("game_mode.add_game", R.string.game_mode_import, summaryRes = R.string.game_mode_import_description, route = SettingRoute(SettingsDestination.GameSources)),
+    SettingEntry("game_mode.xbox_add", R.string.game_mode_xbox_add, summaryRes = R.string.game_mode_xbox_add_description, route = SettingRoute(SettingsDestination.GameSources)),
     SettingEntry("game_mode.folders", R.string.game_mode_folders, summaryRes = R.string.game_mode_folders_description, route = SettingRoute(SettingsDestination.GameSources)),
     SettingEntry("game_mode.quick_launcher", R.string.game_mode_quick_launcher, summaryRes = R.string.game_mode_quick_launcher_description, route = SettingRoute(SettingsDestination.GamesApp)),
     SettingEntry("game_mode.games_app", R.string.games_app_switch, summaryRes = R.string.games_app_switch_description, route = SettingRoute(SettingsDestination.GamesApp)),

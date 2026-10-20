@@ -46,6 +46,9 @@ object GameArt {
     fun loadPortrait(context: Context, profile: GameProfile): Bitmap? {
         uprightFile(context, profile).takeIf { it.length() > 0 }?.let { file -> BitmapFactory.decodeFile(file.path)?.let { return it } }
         custom(context, profile)?.let { return portrait(it) }
+        // Xbox Cloud Gaming itself (its library, no one game): the XCloud Games tile's art
+        val launch = profile.launch
+        if (launch != null && launch.contains("xbox.com/play") && XboxCloud.idOf(launch) == null) xboxTile(context)?.let { return it }
         val file = File(dir(context), profile.id + "-portrait" + (if (key.isEmpty()) "" else "-sgdb") + ".img")
         if (file.exists()) return if (file.length() > 0) BitmapFactory.decodeFile(file.path) else load(context, profile)?.let(::portrait)
         if (!SettingsManager.isOfflineMode(context)) {
@@ -178,6 +181,30 @@ object GameArt {
         }.getOrNull()
     }
 
+    /** Xbox Cloud Gaming's tile in the Games app, for art picked for it. */
+    val XBOX_TILE: GameProfile get() = GameProfiles.newProfile("Xbox Game Pass", emptySet()).copy(id = "xbox-cloud-tile")
+
+    /**
+     * Xbox Cloud Gaming's tile: art picked for it, else Game Pass's upright art from SteamGridDB
+     * (the first without a white frame; fetched once, blocking).
+     */
+    fun xboxTile(context: Context): Bitmap? {
+        val profile = XBOX_TILE
+        uprightFile(context, profile).takeIf { it.length() > 0 }?.let { file -> BitmapFactory.decodeFile(file.path)?.let { return it } }
+        custom(context, profile)?.let { return portrait(it) }
+        val file = File(dir(context), "xbox-cloud-tile-2" + (if (key.isEmpty()) "" else "-sgdb") + ".img")
+        if (file.exists()) return if (file.length() > 0) BitmapFactory.decodeFile(file.path) else null
+        if (SettingsManager.isOfflineMode(context)) return null
+        dir(context).mkdirs()
+        val upright = sgdbApp(listOf("Xbox Game Pass", "Xbox Cloud Gaming"))?.let { firstUnframed(sgdbUpright(it)) }
+        if (upright != null) {
+            file.outputStream().use { upright.compress(Bitmap.CompressFormat.JPEG, 90, it) }
+            return upright
+        }
+        file.writeBytes(ByteArray(0))
+        return null
+    }
+
     /** [art] at 600×900: cropped when it's nearly that shape, else fitted over a dimmed fill of itself. */
     internal fun portrait(art: Bitmap): Bitmap {
         val out = Bitmap.createBitmap(PORTRAIT_W, PORTRAIT_H, Bitmap.Config.ARGB_8888)
@@ -230,7 +257,7 @@ object GameArt {
 
     /**
      * Every art found for [profile] (blocking): icon-shaped ones for its list entry and shortcut,
-     * and upright ones for the Games app. SteamGridDB's many, then Steam's, GameTDB's and
+     * and upright ones for the Games app. SteamGridDB's many, then Steam's, Xbox's, GameTDB's and
      * libretro's.
      */
     fun choices(context: Context, profile: GameProfile, search: String? = null): Pair<List<Choice>, List<Choice>> {
@@ -239,7 +266,7 @@ object GameArt {
         val upright = mutableListOf<Choice>()
         if (key.isNotEmpty()) {
             val launch = profile.launch?.let { runCatching { Intent.parseUri(it, Intent.URI_INTENT_SCHEME) }.getOrNull() }
-            // A launcher or emulator: its own entry, not a game of its name
+            // A launcher or emulator (or the Xbox tile): its own entry, not a game of its name
             // Or whatever title was searched for, its closest match
             val entry = when {
                 query.isNotEmpty() -> api("search/autocomplete/" + java.net.URLEncoder.encode(query, "UTF-8").replace("+", "%20"))
@@ -315,6 +342,8 @@ object GameArt {
     internal fun urls(context: Context, profile: GameProfile): List<String> {
         val launch = profile.launch?.let { runCatching { Intent.parseUri(it, Intent.URI_INTENT_SCHEME) }.getOrNull() }
             ?: return emptyList()
+        // An Xbox cloud game: its box art from Microsoft's catalogue
+        profile.launch?.let { XboxCloud.artFor(context, it) }?.let { return listOf(it) }
         steamId(launch)?.let { id ->
             return listOf("library_600x900.jpg", "header.jpg").map { "https://cdn.cloudflare.steamstatic.com/steam/apps/$id/$it" }
         }
