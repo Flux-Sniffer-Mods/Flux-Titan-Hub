@@ -1464,6 +1464,4 @@ QWERTZ σε φυσικό QWERTY
     <string name="tutorial_page_led_description">Για να αξιοποιήσετε καλύτερα το Pastiera, ορίστε το πλήκτρο Fn να λειτουργεί ως Ctrl από τις ρυθμίσεις συστήματος Android. Το Pastiera μπορεί να δείχνει την κατάσταση τροποποιητών στην κάτω λωρίδα, στη γραμμή μενού ή στη statusbar Pastiera: οι ενεργές one-shot καταστάσεις χρησιμοποιούν το ενεργό χρώμα, οι κλειδωμένες καταστάσεις χρησιμοποιούν το κλειδωμένο χρώμα.</string>
     <string name="tutorial_feature_status_construction_title">Υπό κατασκευή</string>
     <string name="tutorial_feature_status_construction_description">Αυτή η λειτουργία είναι σε εξέλιξη ή προγραμματισμένη. Μπορεί να είναι ημιτελής, μη διαθέσιμη ή να αλλάξει ακόμη.</string>
-    <string name="keyboard_layout_editor_title">Επεξεργαστής διάταξης πληκτρολογίου</string>
-    <string name="keyboard_layout_viewer_empty">Δεν βρέθηκαν αντιστοιχίσεις πλήκτρων για αυτήν τη διάταξη.</string>
 </resources>

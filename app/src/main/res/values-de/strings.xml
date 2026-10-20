@@ -1215,6 +1215,4 @@ Jede Taste kann als Keycode, Aktion, Native Ctrl oder Keine konfiguriert werden.
     <string name="tutorial_t2e_trackpad_note">Die Trackpad-Steuerung braucht noch Feinschliff und wird in Plektra weiter verbessert.</string>
     <string name="tutorial_feature_status_construction_title">In Entwicklung</string>
     <string name="tutorial_feature_status_construction_description">An dieser Funktion wird noch gearbeitet. Sie wird in einem der nächsten Plektra-Builds verbessert.</string>
-    <string name="keyboard_layout_editor_title">Tastaturlayout-Editor</string>
-    <string name="keyboard_layout_viewer_empty">Für dieses Layout wurden keine Tastenzuordnungen gefunden.</string>
 </resources>

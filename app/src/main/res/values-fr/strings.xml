@@ -715,6 +715,4 @@ Chaque touche peut être configurée comme Keycode, Action, Native Ctrl ou Aucun
     <string name="tutorial_page_customization_description">Pastiera offre de nombreuses options de personnalisation:\n• Dispositions de clavier personnalisables\n• Raccourcis du lanceur et Power Shortcuts\n• La barre IME peut servir de barre de swipe pour déplacer le curseur\n• Mappages personnalisés pour le mode Nav\nExplorez les paramètres pour trouver la configuration parfaite pour vous!</string>
     <string name="tutorial_page_led_title">Indicateur LED</string>
     <string name="tutorial_page_led_description">Pour tirer le meilleur parti de Pastiera, définissez la touche Fn comme Ctrl dans les paramètres système. La barre IME affiche quatre LED: elles deviennent bleues quand le modificateur est actif one-shot et orangées quand il est verrouillé. La LED du layout SYM est bleue sur la page emoji et orange sur la page symbols.</string>
-    <string name="keyboard_layout_editor_title">Éditeur de disposition du clavier</string>
-    <string name="keyboard_layout_viewer_empty">Aucun mappage de touches trouvé pour cette disposition.</string>
 </resources>

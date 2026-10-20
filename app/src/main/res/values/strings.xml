@@ -1662,6 +1662,4 @@ Each key can be configured as Keycode, Action, Native Ctrl, or None. Use overrid
     <string name="tutorial_t2e_trackpad_note">Trackpad control still needs refinement and will continue to improve in Plektra.</string>
     <string name="tutorial_feature_status_construction_title">Under construction</string>
     <string name="tutorial_feature_status_construction_description">This feature is still being developed. It will improve in an upcoming Plektra build.</string>
-    <string name="keyboard_layout_editor_title">Keyboard Layout Editor</string>
-    <string name="keyboard_layout_viewer_empty">No key mappings found for this layout.</string>
 </resources>

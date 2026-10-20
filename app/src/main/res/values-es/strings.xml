@@ -715,6 +715,4 @@ Cada tecla puede configurarse como Keycode, Acción, Native Ctrl o Ninguno. Usa 
     <string name="tutorial_page_customization_description">Pastiera ofrece muchas opciones de personalización:\n• Diseños de teclado personalizables\n• Accesos rápidos del lanzador y Power Shortcuts\n• La barra IME puede usarse como barra de deslizamiento para mover el cursor\n• Asignaciones personalizadas para el modo Nav\n¡Explora la configuración para encontrar la configuración perfecta para ti!</string>
     <string name="tutorial_page_led_title">Indicador LED</string>
     <string name="tutorial_page_led_description">Para aprovechar al máximo Pastiera, configura la tecla Fn como Ctrl desde los ajustes del sistema. La barra IME muestra cuatro LED: se ponen azules cuando el modificador está activo one-shot y naranjas cuando está bloqueado. El LED del diseño SYM es azul en la página de emojis y naranja en la página de símbolos.</string>
-    <string name="keyboard_layout_editor_title">Editor de diseño de teclado</string>
-    <string name="keyboard_layout_viewer_empty">No se encontraron asignaciones de teclas para este diseño.</string>
 </resources>

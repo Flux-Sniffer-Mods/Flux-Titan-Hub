@@ -715,6 +715,4 @@ Każdy klawisz można skonfigurować jako Keycode, Akcja, Native Ctrl lub Brak. 
     <string name="tutorial_page_customization_description">Pastiera oferuje wiele opcji dostosowania:\n• Niestandardowe układy klawiatury\n• Skróty launchera i Power Shortcuts\n• Pasek IME może działać jako pasek przesuwania do przesuwania kursora\n• Niestandardowe mapowania dla trybu Nav\nPrzeglądaj ustawienia, aby znaleźć idealną konfigurację dla siebie!</string>
     <string name="tutorial_page_led_title">Wskaźnik LED</string>
     <string name="tutorial_page_led_description">Aby w pełni wykorzystać Pastierę, ustaw w systemie klawisz Fn jako Ctrl. Pasek IME pokazuje cztery diody LED: świecą na niebiesko, gdy modyfikator jest aktywny one-shot, oraz na pomarańczowo, gdy jest zablokowany. Dioda LED układu SYM jest niebieska na stronie emoji i pomarańczowa na stronie symboli.</string>
-    <string name="keyboard_layout_editor_title">Edytor układu klawiatury</string>
-    <string name="keyboard_layout_viewer_empty">Nie znaleziono mapowań klawiszy dla tego układu.</string>
 </resources>

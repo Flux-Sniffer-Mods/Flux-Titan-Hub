@@ -2,7 +2,6 @@ package it.palsoftware.pastiera.layout
 import android.content.Context
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -275,32 +274,24 @@ fun KeyboardLayoutSettingsScreen(
                     .verticalScroll(rememberScrollState())
             ) {
 
-                // Online Layout Editor link
+                // Layouts are edited in the app: each row's pencil opens its editor
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable {
-                            try {
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://pastierakeyedit.vercel.app/"))
-                                context.startActivity(intent)
-                            } catch (e: Exception) {
-                                // Handle error silently or show snackbar
-                            }
-                        }
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.Link,
+                        imageVector = Icons.Filled.Edit,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(20.dp)
                     )
                     Text(
-                        text = stringResource(R.string.keyboard_layout_editor_title),
+                        text = stringResource(R.string.layout_editor_link),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
 
@@ -348,7 +339,7 @@ fun KeyboardLayoutSettingsScreen(
                                 onClick = { openSettingsChild(context, "layout_preview", "qwerty") }
                             ) {
                                 Icon(
-                                    imageVector = Icons.Filled.Visibility,
+                                    imageVector = Icons.Filled.Edit,
                                     contentDescription = stringResource(R.string.keyboard_layout_viewer_open),
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -443,7 +434,7 @@ fun KeyboardLayoutSettingsScreen(
                                     onClick = { openSettingsChild(context, "layout_preview", layout) }
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Filled.Visibility,
+                                        imageVector = Icons.Filled.Edit,
                                         contentDescription = stringResource(R.string.keyboard_layout_viewer_open),
                                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                                     )

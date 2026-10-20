@@ -715,6 +715,4 @@ Mỗi phím có thể cấu hình là Keycode, Action, Native Ctrl hoặc None. 
     <string name="tutorial_page_customization_description">Pastiera cung cấp nhiều tùy chọn tùy chỉnh:\n• Bố cục bàn phím tùy chỉnh\n• Launcher shortcuts &amp; Power Shortcuts\n• Thanh IME có thể dùng như thanh vuốt để di chuyển con trỏ\n• Ánh xạ tùy chỉnh cho Nav Mode\nHãy khám phá phần cài đặt để tìm cấu hình phù hợp nhất với bạn!</string>
     <string name="tutorial_page_led_title">Đèn LED</string>
     <string name="tutorial_page_led_description">Để tận dụng Pastiera tốt hơn, hãy đặt phím Fn hoạt động như Ctrl trong cài đặt hệ thống Android. Thanh IME hiển thị bốn đèn LED: màu xanh khi modifier đang bật một lần, màu cam khi bị khóa. LED của bố cục SYM màu xanh ở trang emoji và màu cam ở trang ký hiệu.</string>
-    <string name="keyboard_layout_editor_title">Trình chỉnh sửa bố cục bàn phím</string>
-    <string name="keyboard_layout_viewer_empty">Không tìm thấy ánh xạ phím cho bố cục này.</string>
 </resources>
