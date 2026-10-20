@@ -21,7 +21,9 @@ import it.palsoftware.pastiera.core.suggestions.DictionaryIndex
 private val manifestJson = Json { ignoreUnknownKeys = true }
 
 private const val TAG = "DictionaryRepositoryManager"
-private const val MANIFEST_URL = "https://palsoftware.github.io/pastiera-dict/dicts-manifest.json"
+// The keyboard's own dictionaries release (.github/dictionaries.txt names it)
+private const val MANIFEST_URL =
+    "https://github.com/Flux-Sniffer-Mods/Flux-Titan-Hub/releases/download/dictionaries-1/dicts-manifest.json"
 private val client = OkHttpClient()
 
 @Serializable
