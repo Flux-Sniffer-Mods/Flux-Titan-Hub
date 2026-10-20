@@ -18,6 +18,15 @@ import it.palsoftware.pastiera.data.variation.VariationRepository
 import it.palsoftware.pastiera.core.AutoSpaceTracker
 import it.palsoftware.pastiera.core.DeferredPunctuationSpaceTracker
 import java.util.concurrent.ConcurrentHashMap
+import it.palsoftware.pastiera.getAutoSpacePunctuation
+import it.palsoftware.pastiera.getEmojiLayerRecentsKey
+import it.palsoftware.pastiera.getLongPressModifier
+import it.palsoftware.pastiera.getSymMappings
+import it.palsoftware.pastiera.getSymMappingsPage2
+import it.palsoftware.pastiera.personaliseSymbolsDefaults
+import it.palsoftware.pastiera.resolveLongPressSymPage
+import it.palsoftware.pastiera.saveSymMappingsPage2
+import it.palsoftware.pastiera.shouldApplyFrenchPunctuationSpacing
 
 /**
  * Coordinates modifier-bound and SYM character mappings, long presses, and character insertion.
@@ -80,7 +89,7 @@ class AlternateCharacterManager(
             deviceSymMappings.putAll(DeviceSymMappingRepository.load(assets, it))
         }
         symKeyMap.putAll(KeyMappingLoader.loadSymKeyMappings(assets))
-        symKeyMap2.putAll(KeyMappingLoader.loadSymKeyMappingsPage2(assets))
+        symKeyMap2.putAll(symbolsDefaults())
         symKeyMapUppercase.putAll(KeyMappingLoader.loadSymKeyMappingsUppercase(assets))
         symKeyMap2Uppercase.putAll(KeyMappingLoader.loadSymKeyMappingsPage2Uppercase(assets))
         reloadLongPressThreshold()
@@ -110,9 +119,24 @@ class AlternateCharacterManager(
     fun getSymMappings2Uppercase(): Map<Int, String> = symKeyMap2Uppercase
     
     /**
-     * Ricarica le mappature SYM, controllando prima le personalizzazioni.
+     * Reloads the SYM mappings, customisations first.
      */
+    // The emoji layer for the app in use (emoji layer profiles, "switch by app"); null: your own
+    private var emojiLayerOverride: Map<Int, String>? = null
+
+    fun setEmojiLayerOverride(mappings: Map<Int, String>?) {
+        if (mappings == emojiLayerOverride) return
+        emojiLayerOverride = mappings
+        reloadSymMappings()
+    }
+
     fun reloadSymMappings() {
+        emojiLayerOverride?.let { override ->
+            symKeyMap.clear()
+            symKeyMap.putAll(override)
+            symKeyMapUppercase.clear()
+            return
+        }
         if (context != null) {
             val customMappings = it.palsoftware.pastiera.SettingsManager.getSymMappings(context)
             if (customMappings.isNotEmpty()) {
@@ -134,9 +158,30 @@ class AlternateCharacterManager(
     /**
      * Reloads SYM mappings for page 2, checking for custom mappings first.
      */
+    /**
+     * The symbols page's Recents key (A) holds no symbol: one mapped there before moves to K when
+     * K still has its old default („), so it stays on the page. Saved, so it happens once.
+     */
+    private fun movedOffRecentsKey(custom: Map<Int, String>): Map<Int, String> {
+        val ctx = context ?: return custom
+        val recentsKey = it.palsoftware.pastiera.SettingsManager.getEmojiLayerRecentsKey(ctx)
+        val onRecents = custom[recentsKey] ?: return custom
+        val moved = custom.toMutableMap()
+        moved.remove(recentsKey)
+        if (moved[KeyEvent.KEYCODE_K] == "\u201E") moved[KeyEvent.KEYCODE_K] = onRecents
+        it.palsoftware.pastiera.SettingsManager.saveSymMappingsPage2(ctx, moved)
+        return moved
+    }
+
+    /** The symbols page's own defaults, with your currency on them. */
+    private fun symbolsDefaults(): Map<Int, String> {
+        val defaults = KeyMappingLoader.loadSymKeyMappingsPage2(assets)
+        return context?.let { ctx -> it.palsoftware.pastiera.SettingsManager.personaliseSymbolsDefaults(ctx, defaults) } ?: defaults
+    }
+
     fun reloadSymMappings2() {
         if (context != null) {
-            val customMappings = it.palsoftware.pastiera.SettingsManager.getSymMappingsPage2(context)
+            val customMappings = movedOffRecentsKey(it.palsoftware.pastiera.SettingsManager.getSymMappingsPage2(context))
             if (customMappings.isNotEmpty()) {
                 symKeyMap2.clear()
                 symKeyMap2.putAll(customMappings)
@@ -145,7 +190,7 @@ class AlternateCharacterManager(
             } else {
                 // Use default mappings from JSON
                 symKeyMap2.clear()
-                symKeyMap2.putAll(KeyMappingLoader.loadSymKeyMappingsPage2(assets))
+                symKeyMap2.putAll(symbolsDefaults())
                 symKeyMap2Uppercase.clear()
                 symKeyMap2Uppercase.putAll(KeyMappingLoader.loadSymKeyMappingsPage2Uppercase(assets))
                 Log.d(TAG, "Loaded default SYM page 2 mappings")
@@ -256,7 +301,7 @@ class AlternateCharacterManager(
 
         // For unmapped keys, apply case conversion if needed (fallback only)
         if (normalChar.isNotEmpty() && !LayoutMappingRepository.isMapped(keyCode)) {
-            // Gestisci shiftOneShot: se è attivo e il carattere è una lettera, rendilo maiuscolo
+            // One-shot Shift: uppercase a letter while it's on
             if (shiftOneShot && normalChar.isNotEmpty() && normalChar[0].isLetter()) {
                 normalChar = normalChar.uppercase()
             } else if (capsLockEnabled && event?.isShiftPressed != true) {
@@ -338,7 +383,7 @@ class AlternateCharacterManager(
                 onAltCharInserted?.invoke(altChar[0])
                 return true
             }
-            val punctuationSet = autoSpacePunctuation()
+            val punctuationSet = autoSpacePunctuation() + it.palsoftware.pastiera.core.Punctuation.NEXT_TO_PICKED_WORD
             if (altChar.isNotEmpty() && altChar[0] in punctuationSet) {
                 val applied = AutoSpaceTracker.replaceAutoSpaceWithPunctuation(inputConnection, altChar)
                 if (applied) {
@@ -448,7 +493,7 @@ class AlternateCharacterManager(
                                     insertedNormalChars.remove(keyCode)
                                     insertedTextAnchors.remove(keyCode)
                                     keyPressWasShifted.remove(keyCode)
-                                    Log.d(TAG, "Long press Variations per keyCode $keyCode -> $firstVariation")
+                                    Log.d(TAG, "Long press variations for keyCode $keyCode -> $firstVariation")
                                     firstVariation.firstOrNull()?.let { onAltCharInserted?.invoke(it) }
                                 } else {
                                     Log.d(TAG, "Skipped Variations long press for keyCode $keyCode: original text changed")
@@ -501,7 +546,7 @@ class AlternateCharacterManager(
                                 return@Runnable
                             }
 
-                            val punctuationSet = autoSpacePunctuation()
+                            val punctuationSet = autoSpacePunctuation() + it.palsoftware.pastiera.core.Punctuation.NEXT_TO_PICKED_WORD
                             if (symChar[0] in punctuationSet) {
                                 val applied = AutoSpaceTracker.replaceAutoSpaceWithPunctuation(inputConnection, symChar)
                                 if (applied) {
@@ -519,7 +564,7 @@ class AlternateCharacterManager(
                             insertedNormalChars.remove(keyCode)
                             keyPressWasShifted.remove(keyCode)
                             longPressRunnables.remove(keyCode)
-                            Log.d(TAG, "Long press Sym per keyCode $keyCode -> $symChar")
+                            Log.d(TAG, "Long press SYM for keyCode $keyCode -> $symChar")
                             onAltCharInserted?.invoke(symChar[0])
                         }
                     }
@@ -540,7 +585,7 @@ class AlternateCharacterManager(
                                 insertedNormalChars.remove(keyCode)
                                 keyPressWasShifted.remove(keyCode)
                                 longPressRunnables.remove(keyCode)
-                                Log.d(TAG, "Long press Shift per keyCode $keyCode -> $upperCharString")
+                                Log.d(TAG, "Long press Shift for keyCode $keyCode -> $upperCharString")
                                 upperChar.firstOrNull()?.let { onAltCharInserted?.invoke(it) }
                             }
                         } else if (insertedChar != null && insertedChar.isNotEmpty() && insertedChar[0].isLetter()) {
@@ -554,7 +599,7 @@ class AlternateCharacterManager(
                             insertedNormalChars.remove(keyCode)
                             keyPressWasShifted.remove(keyCode)
                             longPressRunnables.remove(keyCode)
-                            Log.d(TAG, "Long press Shift per keyCode $keyCode -> $upperChar (fallback)")
+                            Log.d(TAG, "Long press Shift for keyCode $keyCode -> $upperChar (fallback)")
                             if (upperChar.isNotEmpty()) {
                                 onAltCharInserted?.invoke(upperChar[0])
                             }
@@ -592,7 +637,7 @@ class AlternateCharacterManager(
                                 return@Runnable
                             }
 
-                            val punctuationSet = autoSpacePunctuation()
+                            val punctuationSet = autoSpacePunctuation() + it.palsoftware.pastiera.core.Punctuation.NEXT_TO_PICKED_WORD
                             if (altChar.isNotEmpty() && altChar[0] in punctuationSet) {
                                 val applied = AutoSpaceTracker.replaceAutoSpaceWithPunctuation(inputConnection, altChar)
                                 if (applied) {
@@ -610,7 +655,7 @@ class AlternateCharacterManager(
                             insertedNormalChars.remove(keyCode)
                             keyPressWasShifted.remove(keyCode)
                             longPressRunnables.remove(keyCode)
-                            Log.d(TAG, "Long press Alt per keyCode $keyCode -> $altChar")
+                            Log.d(TAG, "Long press Alt for keyCode $keyCode -> $altChar")
                             if (altChar.isNotEmpty()) {
                                 onAltCharInserted?.invoke(altChar[0])
                             }

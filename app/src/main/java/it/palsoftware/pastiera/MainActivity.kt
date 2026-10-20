@@ -1,27 +1,20 @@
 package it.palsoftware.pastiera
 
-import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
-import android.provider.Settings
 import android.view.KeyEvent
 import android.view.InputDevice
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.*
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.horizontalScroll
@@ -42,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.background
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.text.KeyboardOptions
@@ -54,29 +46,32 @@ import it.palsoftware.pastiera.inputmethod.NotificationHelper
 import it.palsoftware.pastiera.ui.CustomTopBar
 import it.palsoftware.pastiera.ui.theme.PastieraTheme
 import it.palsoftware.pastiera.BuildConfig
-import it.palsoftware.pastiera.update.checkForUpdate
-import it.palsoftware.pastiera.update.showUpdateDialog
 import it.palsoftware.pastiera.update.UpdateCheckWorker
 import it.palsoftware.pastiera.update.shouldUseGithubUpdateChecks
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Keyboard
-import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.FileProvider
 import it.palsoftware.pastiera.inputmethod.DeviceSpecific
-import kotlinx.coroutines.delay
 import java.io.File
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+import it.palsoftware.pastiera.settings.SettingsSearchArea
+import it.palsoftware.pastiera.settings.SettingsDestination
+import it.palsoftware.pastiera.settings.SettingsPage
+import it.palsoftware.pastiera.settings.openSettingsPage
 
-class MainActivity : LocalizedComponentActivity() {
+open class MainActivity : LocalizedComponentActivity() {
+    companion object {
+        /** Opens the key event tester (from Developer options) instead of the home screen. */
+        const val EXTRA_KEY_TESTER = "key_tester"
+    }
+
 
     data class KeyEventInfo(
         val keyCode: Int,
@@ -115,7 +110,7 @@ class MainActivity : LocalizedComponentActivity() {
             )
             val hasModifiers = event.isAltPressed || event.isShiftPressed || event.isCtrlPressed
 
-            // Ignora i keycode di output senza modificatori (sono generati dal servizio)
+            // Ignore output keycodes without modifiers (the service generates them)
             if (!isOutputKeyCode || hasModifiers) {
                 KeyboardEventTracker.notifyKeyEvent(keyCode, event, "KEY_DOWN", origin = "activity")
             }
@@ -206,7 +201,7 @@ class MainActivity : LocalizedComponentActivity() {
         }
 
         if (shouldUseGithubUpdateChecks(this)) {
-            // Schedule periodic background update checks (every 24 hours).
+            // Background update checks, every 15 minutes
             UpdateCheckWorker.schedule(applicationContext)
         }
 
@@ -218,7 +213,7 @@ class MainActivity : LocalizedComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         contentWindowInsets = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
                     ) { innerPadding ->
-                        KeyboardSetupScreen(
+                        FluxHomeScreen(
                             modifier = Modifier
                                 .padding(innerPadding)
                                 .fillMaxSize(),
@@ -349,52 +344,22 @@ private fun debugReportLineColor(line: String, colors: ColorScheme): Color {
     }
 }
 
+/**
+ * The home screen: the keyboard's page under the header (what it still needs, its settings with
+ * a search), the gear opening the settings shared by everything.
+ */
 @Composable
-fun KeyboardSetupScreen(
+fun FluxHomeScreen(
     modifier: Modifier = Modifier,
     activity: MainActivity
 ) {
     val context = LocalContext.current
-
-    var testText by remember { mutableStateOf("") }
-    val rawLastKeyEventState = remember { mutableStateOf<KeyboardEventTracker.KeyEventInfo?>(null) }
-    val rawLastKeyEvent by rawLastKeyEventState
-    var displayedLastKeyEvent by remember { mutableStateOf<KeyboardEventTracker.KeyEventInfo?>(null) }
-    var lastNonBackKeyEvent by remember { mutableStateOf<KeyboardEventTracker.KeyEventInfo?>(null) }
-    var ignoreKeyboardCloseBackEvent by rememberSaveable { mutableStateOf(true) }
-    var isRecording by rememberSaveable { mutableStateOf(false) }
-    var recordStartedAtMs by rememberSaveable { mutableStateOf<Long?>(null) }
-    var lastRecordedAtMs by rememberSaveable { mutableStateOf<Long?>(null) }
-    var includeSuggestionsInExport by rememberSaveable { mutableStateOf(false) }
-    var includeRawTrackpadInExport by rememberSaveable { mutableStateOf(false) }
-    var showDebugReportViewer by rememberSaveable { mutableStateOf(false) }
-    var latestDebugReport by rememberSaveable { mutableStateOf("") }
-    val recordedEvents = remember { mutableStateListOf<RecordedKeyboardEvent>() }
-
-    // State for IME status
-    var isPastieraEnabled by remember { mutableStateOf(false) }
-    var isPastieraSelected by remember { mutableStateOf(false) }
-
-    // Check IME status
-    LaunchedEffect(Unit) {
-        checkImeStatus(context) { enabled, selected ->
-            isPastieraEnabled = enabled
-            isPastieraSelected = selected
-        }
+    // The key event tester, opened from Developer options (it reads the keys this screen gets)
+    if (activity.intent.getBooleanExtra(MainActivity.EXTRA_KEY_TESTER, false)) {
+        androidx.activity.compose.BackHandler { activity.finish() }
+        KeyTesterScreen(modifier = modifier, activity = activity, onBack = { activity.finish() })
+        return
     }
-
-    // Refresh IME status periodically and when activity resumes
-    LaunchedEffect(Unit) {
-        // Check status every 2 seconds when screen is visible
-        while (true) {
-            kotlinx.coroutines.delay(2000)
-            checkImeStatus(context) { enabled, selected ->
-                isPastieraEnabled = enabled
-                isPastieraSelected = selected
-            }
-        }
-    }
-
     // Request notification permission (Android 13+)
     val requestPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -414,6 +379,76 @@ fun KeyboardSetupScreen(
             }
         }
     }
+
+    // Automatic update check on screen open (only once, respecting dismissed releases)
+    if (shouldUseGithubUpdateChecks(context)) {
+        LaunchedEffect(Unit) {
+            it.palsoftware.pastiera.update.checkForUpdateNotices(
+                context = context,
+                releaseChannel = BuildConfig.RELEASE_CHANNEL,
+                ignoreDismissedReleases = true
+            ) { result ->
+                if (result.hasAnnouncement && result.releaseTag != null && result.displayName != null) {
+                    it.palsoftware.pastiera.update.showReleaseNotice(context, result)
+                }
+            }
+        }
+    }
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // The gear: what everything shares
+        CustomTopBar(
+            onSettingsClick = { openSettingsPage(context, SettingsPage(SettingsDestination.Main)) },
+            modifier = Modifier.fillMaxWidth()
+        )
+        it.palsoftware.pastiera.settings.ReadinessCard(
+            modifier = Modifier.padding(top = 4.dp),
+            readyText = stringResource(R.string.keyboard_ready)
+        )
+        // Every setting searched from here, the matches in place of the rows
+        SettingsSearchArea(
+            fieldModifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+            hint = stringResource(R.string.home_search_hint)
+        ) {
+            Column {
+                it.palsoftware.pastiera.settings.KeyboardSettingsRows { destination -> openSettingsPage(context, SettingsPage(destination)) }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+    }
+}
+
+/**
+ * The key event tester (Developer options): a field to type in, each key's event as the keyboard
+ * and this screen see it, and a recorder to share what happened.
+ */
+@Composable
+fun KeyTesterScreen(
+    modifier: Modifier = Modifier,
+    activity: MainActivity,
+    onBack: () -> Unit
+) {
+    val context = LocalContext.current
+
+    var testText by remember { mutableStateOf("") }
+    val rawLastKeyEventState = remember { mutableStateOf<KeyboardEventTracker.KeyEventInfo?>(null) }
+    val rawLastKeyEvent by rawLastKeyEventState
+    var displayedLastKeyEvent by remember { mutableStateOf<KeyboardEventTracker.KeyEventInfo?>(null) }
+    var lastNonBackKeyEvent by remember { mutableStateOf<KeyboardEventTracker.KeyEventInfo?>(null) }
+    var ignoreKeyboardCloseBackEvent by rememberSaveable { mutableStateOf(true) }
+    var isRecording by rememberSaveable { mutableStateOf(false) }
+    var recordStartedAtMs by rememberSaveable { mutableStateOf<Long?>(null) }
+    var lastRecordedAtMs by rememberSaveable { mutableStateOf<Long?>(null) }
+    var includeSuggestionsInExport by rememberSaveable { mutableStateOf(false) }
+    var includeRawTrackpadInExport by rememberSaveable { mutableStateOf(false) }
+    var showDebugReportViewer by rememberSaveable { mutableStateOf(false) }
+    var latestDebugReport by rememberSaveable { mutableStateOf("") }
+    val recordedEvents = remember { mutableStateListOf<RecordedKeyboardEvent>() }
 
     // Connect state to the global tracker
     LaunchedEffect(Unit) {
@@ -461,21 +496,6 @@ fun KeyboardSetupScreen(
         }
     }
 
-    // Automatic update check on screen open (only once, respecting dismissed releases)
-    if (shouldUseGithubUpdateChecks(context)) {
-        LaunchedEffect(Unit) {
-            it.palsoftware.pastiera.update.checkForUpdateNotices(
-                context = context,
-                releaseChannel = BuildConfig.RELEASE_CHANNEL,
-                ignoreDismissedReleases = true
-            ) { result ->
-                if (result.hasAnnouncement && result.releaseTag != null && result.displayName != null) {
-                    it.palsoftware.pastiera.update.showReleaseNotice(context, result)
-                }
-            }
-        }
-    }
-
     // Main screen
     val buildCurrentReport: () -> String = {
         buildKeyboardDebugReport(
@@ -506,7 +526,7 @@ fun KeyboardSetupScreen(
         } else {
             Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
-                putExtra(Intent.EXTRA_SUBJECT, "Pastiera Keyboard Debug Export")
+                putExtra(Intent.EXTRA_SUBJECT, "${BuildConfig.APP_NAME} Debug Export")
                 putExtra(Intent.EXTRA_TEXT, report)
             }
         }
@@ -515,108 +535,42 @@ fun KeyboardSetupScreen(
         )
     }
 
+    // Tighter rows and buttons on the Titan 2 Elite's short screen
+    val compact = remember { DeviceSpecific.isTitan2EliteDevice() }
     Column(
         modifier = modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        verticalArrangement = Arrangement.spacedBy(if (compact) 10.dp else 4.dp)
     ) {
-        // Custom top bar with personalized graphics
-        CustomTopBar(
-            onSettingsClick = {
-                val settingsIntent = Intent(context, SettingsActivity::class.java)
-                context.startActivity(settingsIntent)
-
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        // Enable/select IME actions
+        // Back to the tiles
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                .windowInsetsPadding(WindowInsets.statusBars)
+                .padding(horizontal = 4.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Surface(
-                modifier = Modifier
-                    .weight(1f)
-                    .heightIn(min = 44.dp)
-                    .clickable {
-                        val intent = Intent(Settings.ACTION_INPUT_METHOD_SETTINGS)
-                        context.startActivity(intent)
-                    }
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Keyboard,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Text(
-                        text = stringResource(R.string.enable_pastiera),
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Medium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f)
-                    )
-                    Icon(
-                        imageVector = if (!isPastieraEnabled) Icons.Filled.Warning else Icons.AutoMirrored.Filled.ArrowForward,
-                        contentDescription = null,
-                        tint = if (!isPastieraEnabled) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
+            IconButton(onClick = onBack) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.settings_back_content_description)
+                )
             }
-
-            Surface(
-                modifier = Modifier
-                    .weight(1f)
-                    .heightIn(min = 44.dp)
-                    .clickable {
-                        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.showInputMethodPicker()
-                    }
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Keyboard,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Text(
-                        text = stringResource(R.string.choose_input_method),
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Medium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f)
-                    )
-                    Icon(
-                        imageVector = if (isPastieraEnabled && !isPastieraSelected) Icons.Filled.Warning else Icons.AutoMirrored.Filled.ArrowForward,
-                        contentDescription = null,
-                        tint = if (isPastieraEnabled && !isPastieraSelected) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
-            }
+            Text(
+                text = stringResource(R.string.key_tester_title),
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(start = 4.dp)
+            )
         }
+
+        Text(
+            text = stringResource(R.string.key_tester_note),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+        )
 
         // Test field
         OutlinedTextField(
@@ -626,6 +580,15 @@ fun KeyboardSetupScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             placeholder = { Text(stringResource(R.string.test_field_placeholder)) },
+            // The same pill as the settings search above it
+            shape = MaterialTheme.shapes.extraLarge,
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.Keyboard,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            },
             minLines = 1,
             maxLines = 2,
             keyboardOptions = KeyboardOptions(
@@ -652,11 +615,16 @@ fun KeyboardSetupScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .horizontalScroll(rememberScrollState()),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            .then(if (compact) Modifier else Modifier.horizontalScroll(rememberScrollState())),
+                        horizontalArrangement = Arrangement.spacedBy(if (compact) 6.dp else 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        // On the Elite the four buttons share the width evenly
+                        val recorderButton = if (compact) Modifier.weight(1f).height(40.dp) else Modifier
+                        val recorderPadding = if (compact) PaddingValues(horizontal = 4.dp) else ButtonDefaults.ContentPadding
                         OutlinedButton(
+                            modifier = recorderButton,
+                            contentPadding = recorderPadding,
                             onClick = {
                                 if (isRecording) {
                                     isRecording = false
@@ -678,6 +646,8 @@ fun KeyboardSetupScreen(
                             )
                         }
                         OutlinedButton(
+                            modifier = recorderButton,
+                            contentPadding = recorderPadding,
                             onClick = {
                                 recordedEvents.clear()
                                 DebugCaptureStore.clearAll()
@@ -692,6 +662,8 @@ fun KeyboardSetupScreen(
                             Text(stringResource(R.string.debug_recorder_clear))
                         }
                         OutlinedButton(
+                            modifier = recorderButton,
+                            contentPadding = recorderPadding,
                             onClick = {
                                 latestDebugReport = buildCurrentReport()
                                 showDebugReportViewer = true
@@ -700,6 +672,8 @@ fun KeyboardSetupScreen(
                             Text(stringResource(R.string.debug_recorder_view))
                         }
                         OutlinedButton(
+                            modifier = recorderButton,
+                            contentPadding = recorderPadding,
                             onClick = {
                                 val report = buildCurrentReport()
                                 shareReport(report)
@@ -708,70 +682,73 @@ fun KeyboardSetupScreen(
                             Text(stringResource(R.string.debug_recorder_share))
                         }
                     }
+                    val recorderStatus = context.getString(
+                        R.string.debug_recorder_status,
+                        if (isRecording) context.getString(R.string.debug_recorder_status_recording)
+                        else context.getString(R.string.debug_recorder_status_stopped),
+                        recordedEvents.size
+                    )
+                    val recorderStarted = "${stringResource(R.string.debug_recorder_started_at)}${
+                        recordStartedAtMs?.let { formatDebugTimestamp(it) } ?: "n/a"
+                    }"
                     Column(
                         verticalArrangement = Arrangement.spacedBy(2.dp)
                     ) {
-                        Text(
-                            text = context.getString(
-                                R.string.debug_recorder_status,
-                                if (isRecording) context.getString(R.string.debug_recorder_status_recording)
-                                else context.getString(R.string.debug_recorder_status_stopped),
-                                recordedEvents.size
-                            ),
-                            style = MaterialTheme.typography.bodySmall,
-                            fontFamily = FontFamily.Monospace,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Text(
-                            text = "${stringResource(R.string.debug_recorder_started_at)}${
-                                recordStartedAtMs?.let { formatDebugTimestamp(it) } ?: "n/a"
-                            }",
-                            style = MaterialTheme.typography.bodySmall,
-                            fontFamily = FontFamily.Monospace,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                        // One line on the Elite
+                        (if (compact) listOf("$recorderStatus · $recorderStarted") else listOf(recorderStatus, recorderStarted)).forEach { line ->
+                            Text(
+                                text = line,
+                                style = MaterialTheme.typography.bodySmall,
+                                fontFamily = FontFamily.Monospace,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
                     }
                 }
-                Column(
-                    modifier = Modifier.width(140.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    FilterChip(
-                        selected = includeSuggestionsInExport,
-                        onClick = {
-                            includeSuggestionsInExport = !includeSuggestionsInExport
-                        },
-                        label = {
-                            Text(
-                                text = stringResource(R.string.debug_recorder_include_suggestions),
-                                style = MaterialTheme.typography.labelSmall,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    FilterChip(
-                        selected = includeRawTrackpadInExport,
-                        onClick = {
-                            includeRawTrackpadInExport = !includeRawTrackpadInExport
-                        },
-                        label = {
-                            Text(
-                                text = stringResource(R.string.debug_recorder_include_raw_trackpad),
-                                style = MaterialTheme.typography.labelSmall,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
+            }
+            // Export options side by side on one line each, below the recorder status
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                FilterChip(
+                    selected = includeSuggestionsInExport,
+                    onClick = {
+                        includeSuggestionsInExport = !includeSuggestionsInExport
+                    },
+                    label = {
+                        Text(
+                            text = stringResource(R.string.debug_recorder_include_suggestions),
+                            style = MaterialTheme.typography.labelSmall,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    },
+                    modifier = Modifier.weight(1f)
+                )
+                FilterChip(
+                    selected = includeRawTrackpadInExport,
+                    onClick = {
+                        includeRawTrackpadInExport = !includeRawTrackpadInExport
+                    },
+                    label = {
+                        Text(
+                            text = stringResource(R.string.debug_recorder_include_raw_trackpad),
+                            style = MaterialTheme.typography.labelSmall,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    },
+                    modifier = Modifier.weight(1f)
+                )
             }
         }
 
         // Last keyboard event (always visible)
         val event = displayedLastKeyEvent
+        val eventTextStyle = if (compact) MaterialTheme.typography.bodySmall else MaterialTheme.typography.bodyMedium
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
@@ -780,7 +757,7 @@ fun KeyboardSetupScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(12.dp),
+                    .padding(if (compact) PaddingValues(horizontal = 4.dp, vertical = 8.dp) else PaddingValues(12.dp)),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Row(
@@ -793,27 +770,27 @@ fun KeyboardSetupScreen(
                     ) {
                         Text(
                             text = event?.keyCodeName ?: "n/a",
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = eventTextStyle,
                             fontFamily = FontFamily.Monospace
                         )
                         Text(
                             text = "${stringResource(R.string.event_action_label)}${event?.action ?: "n/a"}",
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = eventTextStyle,
                             fontFamily = FontFamily.Monospace
                         )
                         Text(
                             text = "${stringResource(R.string.event_keycode_label)}${event?.keyCode?.toString() ?: "n/a"}",
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = eventTextStyle,
                             fontFamily = FontFamily.Monospace
                         )
                         Text(
                             text = "Origin: ${event?.origin ?: "n/a"}",
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = eventTextStyle,
                             fontFamily = FontFamily.Monospace
                         )
                         Text(
                             text = "Layout: ${event?.resolvedLayout ?: "n/a"}",
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = eventTextStyle,
                             fontFamily = FontFamily.Monospace
                         )
                     }
@@ -824,7 +801,7 @@ fun KeyboardSetupScreen(
                     ) {
                         Text(
                             text = "${stringResource(R.string.event_scancode_label)}${event?.scanCode?.toString() ?: "n/a"}",
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = eventTextStyle,
                             fontFamily = FontFamily.Monospace
                         )
                         Text(
@@ -833,7 +810,7 @@ fun KeyboardSetupScreen(
                                     "raw=${formatUnicodeForDebug(it.rawUnicodeChar)} effective=${formatUnicodeForDebug(it.effectiveUnicodeChar)}"
                                 } ?: "n/a"
                             }",
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = eventTextStyle,
                             fontFamily = FontFamily.Monospace
                         )
                         Text(
@@ -842,7 +819,7 @@ fun KeyboardSetupScreen(
                                     "$it${event.outputKeyCode?.let { code -> " ($code)" } ?: ""}"
                                 } ?: "n/a"
                             }",
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = eventTextStyle,
                             fontFamily = FontFamily.Monospace,
                             color = if (event?.outputKeyCodeName != null) MaterialTheme.colorScheme.primary
                             else MaterialTheme.colorScheme.onSurface
@@ -953,9 +930,9 @@ private fun createDebugReportFileShareIntent(context: Context, report: String): 
     )
     return Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"
-        putExtra(Intent.EXTRA_SUBJECT, "Pastiera Keyboard Debug Export")
+        putExtra(Intent.EXTRA_SUBJECT, "${BuildConfig.APP_NAME} Debug Export")
         putExtra(Intent.EXTRA_STREAM, uri)
-        clipData = ClipData.newUri(context.contentResolver, "Pastiera Keyboard Debug Export", uri)
+        clipData = ClipData.newUri(context.contentResolver, "${BuildConfig.APP_NAME} Debug Export", uri)
         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
 }
@@ -1082,7 +1059,7 @@ private fun buildKeyboardDebugReport(
         .joinToString("\n") { (key, value) -> "$key=${flattenPreferenceValue(value)}" }
 
     val header = buildString {
-        appendLine("=== Pastiera Keyboard Debug Export ===")
+        appendLine("=== ${BuildConfig.APP_NAME} Debug Export ===")
         appendLine("exported_at=${formatDebugTimestamp(nowMs)}")
         appendLine("timezone_id=${tz.id}")
         appendLine("timezone_offset=${tz.getOffset(nowMs) / 1000}s")
@@ -1091,9 +1068,7 @@ private fun buildKeyboardDebugReport(
         appendLine("android_release=${Build.VERSION.RELEASE ?: "unknown"}")
         appendLine("android_sdk=${Build.VERSION.SDK_INT}")
         appendLine("android_incremental=${Build.VERSION.INCREMENTAL ?: "unknown"}")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            appendLine("android_security_patch=${Build.VERSION.SECURITY_PATCH}")
-        }
+        appendLine("android_security_patch=${Build.VERSION.SECURITY_PATCH}")
         appendLine()
         appendLine("[app]")
         appendLine("package=${context.packageName}")
@@ -1165,6 +1140,35 @@ private fun buildKeyboardDebugReport(
         appendLine("resolved_layout=${imeContext?.resolvedLayout ?: "n/a"}")
         appendLine("profile_override_snapshot=${imeContext?.physicalProfileOverride ?: "n/a"}")
         appendLine("resolved_physical_profile_snapshot=$resolvedPhysicalProfile")
+        appendLine()
+        appendLine("[recent_fields]")
+        val recentFields = DebugCaptureStore.fieldsSnapshot()
+        if (recentFields.isEmpty()) appendLine("(none)")
+        recentFields.forEach { field ->
+            appendLine(
+                "${formatDebugTimestamp(field.timestampMs)} pkg=${field.packageName} " +
+                    "inputType=0x${Integer.toHexString(field.inputType)} imeOptions=0x${Integer.toHexString(field.imeOptions)} " +
+                    "fieldId=${field.fieldId} hint=${field.hasHint} sel=${field.initialSelStart},${field.initialSelEnd} " +
+                    "shiftType=${field.shiftFieldType ?: "none"} restarting=${field.restarting}"
+            )
+        }
+        appendLine()
+        appendLine("candidates_view_backend=${SettingsManager.getExperimentalCandidatesViewEnabled(context)}")
+        appendLine()
+        appendLine("[keyboard_swipes_per_app]")
+        val trackpadClaim = DebugCaptureStore.trackpadClaimSnapshot()
+        if (trackpadClaim.isEmpty()) appendLine("(none)")
+        trackpadClaim.forEach { (time, message) -> appendLine("${formatDebugTimestamp(time)} $message") }
+        appendLine()
+        appendLine("[automatic_shift]")
+        val autoCap = DebugCaptureStore.autoCapSnapshot()
+        if (autoCap.isEmpty()) appendLine("(none)")
+        autoCap.forEach { trace ->
+            appendLine(
+                "${formatDebugTimestamp(trace.timestampMs)} pkg=${trace.packageName} ${trace.result} · ${trace.reason}" +
+                    (trace.before?.let { " before=$it" } ?: "") + (trace.after?.let { " after=$it" } ?: "")
+            )
+        }
         appendLine()
         appendLine("[settings_snapshot]")
         appendLine(settingsDump.ifBlank { "(empty)" })
@@ -1262,78 +1266,4 @@ private fun buildKeyboardDebugReport(
     val payload = "$header$eventLines\n"
     val hash = sha256Hex(payload)
     return payload + "\nsha256=$hash\n"
-}
-
-/**
- * Checks if Pastiera IME is enabled and selected.
- * Uses InputMethodManager for Android 14+ compatibility.
- */
-private fun checkImeStatus(
-    context: Context,
-    callback: (enabled: Boolean, selected: Boolean) -> Unit
-) {
-    try {
-        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        val pastieraPackageName = ImeIdentity.packageName
-        val pastieraImeId = ImeIdentity.imeId
-
-        // Check if Pastiera is enabled using InputMethodManager
-        val enabledInputMethods = imm.enabledInputMethodList
-        val isEnabled = enabledInputMethods.any { inputMethodInfo ->
-            inputMethodInfo.packageName == pastieraPackageName ||
-            ImeIdentity.matchesImeId(inputMethodInfo.id)
-        }
-
-        // Check if Pastiera is selected
-        var isSelected = false
-        if (isEnabled) {
-            // Try to read DEFAULT_INPUT_METHOD
-            // On Android 13 (API 33) it might still work even with targetSdk 36
-            // On Android 14+ (API 34+) it will throw SecurityException
-            try {
-                val defaultInputMethod = android.provider.Settings.Secure.getString(
-                    context.contentResolver,
-                    android.provider.Settings.Secure.DEFAULT_INPUT_METHOD
-                ) ?: ""
-                isSelected = ImeIdentity.matchesImeId(defaultInputMethod)
-            } catch (e: SecurityException) {
-                // On Android 14+ (API 34+) with targetSdk 36, we can't read this setting
-                // Try alternative method: check if we can get current input method info
-                try {
-                    // Alternative: check if our IME is in the list and try to infer selection
-                    // This is not 100% reliable, but it's the best we can do
-                    val currentSubtype = imm.currentInputMethodSubtype
-                    if (currentSubtype != null) {
-                        // If we have a subtype, check if it matches our package
-                        // Note: This is a heuristic and may not be 100% accurate
-                        val allInputMethods = imm.inputMethodList
-                        val pastieraInputMethod = allInputMethods.find {
-                            it.packageName == pastieraPackageName || ImeIdentity.matchesImeId(it.id)
-                        }
-                        // If Pastiera is the only enabled IME, assume it's selected
-                        if (pastieraInputMethod != null && enabledInputMethods.size == 1) {
-                            isSelected = true
-                        } else {
-                            // We can't reliably determine, so assume not selected to show warning
-                            isSelected = false
-                        }
-                    } else {
-                        // Can't determine, assume not selected
-                        isSelected = false
-                    }
-                } catch (e2: Exception) {
-                    // If all methods fail, assume not selected
-                    isSelected = false
-                }
-            } catch (e: Exception) {
-                // Other exceptions, assume not selected
-                isSelected = false
-            }
-        }
-
-        callback(isEnabled, isSelected)
-    } catch (e: Exception) {
-        android.util.Log.e("MainActivity", "Error checking IME status", e)
-        callback(false, false)
-    }
 }

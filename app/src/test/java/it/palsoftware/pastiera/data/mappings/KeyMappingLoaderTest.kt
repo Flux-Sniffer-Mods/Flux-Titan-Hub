@@ -3,7 +3,7 @@ package it.palsoftware.pastiera.data.mappings
 import android.view.KeyEvent
 import it.palsoftware.pastiera.AltModifierBinding
 import it.palsoftware.pastiera.SettingsManager
-import it.palsoftware.pastiera.SymPagesConfig
+import it.palsoftware.pastiera.sym.SymPagesConfig
 import it.palsoftware.pastiera.inputmethod.DeviceSpecific
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -13,6 +13,9 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
+import it.palsoftware.pastiera.setAltModifierBinding
+import it.palsoftware.pastiera.setPhysicalKeyboardProfileOverride
+import it.palsoftware.pastiera.setSymPagesConfig
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [33])
@@ -117,7 +120,8 @@ class KeyMappingLoaderTest {
 
         val mappings = AltModifierMappingResolver.resolve(context.assets, context)
 
-        assertEquals(";", mappings[KeyEvent.KEYCODE_S])
+        // The symbols page moved along one key off the search key (A)
+        assertEquals("=", mappings[KeyEvent.KEYCODE_S])
         assertEquals("°", mappings[KeyEvent.KEYCODE_O])
     }
 
@@ -127,15 +131,21 @@ class KeyMappingLoaderTest {
 
         val mappings = KeyMappingLoader.loadSymKeyMappingsPage2(context.assets)
 
-        assertEquals(";", mappings[KeyEvent.KEYCODE_S])
-        assertEquals("–", mappings[KeyEvent.KEYCODE_F])
-        assertEquals("„", mappings[KeyEvent.KEYCODE_J])
-        assertEquals("“", mappings[KeyEvent.KEYCODE_K])
-        assertEquals("&", mappings[KeyEvent.KEYCODE_C])
+        // Off the search key (Q) and the Recents key (A): ~ on K, your currency on N, $ on M
+        assertEquals(null, mappings[KeyEvent.KEYCODE_Q])
+        assertEquals(null, mappings[KeyEvent.KEYCODE_A])
+        assertEquals("\u00A4", mappings[KeyEvent.KEYCODE_N])
+        assertEquals("$", mappings[KeyEvent.KEYCODE_M])
+        assertEquals("=", mappings[KeyEvent.KEYCODE_S])
+        assertEquals(";", mappings[KeyEvent.KEYCODE_D])
+        assertEquals("–", mappings[KeyEvent.KEYCODE_G])
+        assertEquals("~", mappings[KeyEvent.KEYCODE_K])
+        assertEquals("“", mappings[KeyEvent.KEYCODE_L])
+        assertEquals("&", mappings[KeyEvent.KEYCODE_V])
         assertEquals("°", mappings[KeyEvent.KEYCODE_O])
-        assertEquals("^", mappings[KeyEvent.KEYCODE_V])
-        assertEquals("»", mappings[KeyEvent.KEYCODE_Z])
-        assertEquals("«", mappings[KeyEvent.KEYCODE_X])
+        assertEquals("^", mappings[KeyEvent.KEYCODE_B])
+        assertEquals("»", mappings[KeyEvent.KEYCODE_X])
+        assertEquals("«", mappings[KeyEvent.KEYCODE_C])
     }
 
     @Test

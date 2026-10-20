@@ -17,7 +17,7 @@ data class CommandTarget(
 
 enum class CommandSourceId(val storageValue: String, val displayLabel: String) {
     Apps("apps", "Apps"),
-    Pastiera("pastiera", "Pastiera"),
+    Pastiera("pastiera", it.palsoftware.pastiera.BuildConfig.APP_NAME),
     AppActions("app_actions", "App actions"),
     DeviceControl("device_control", "Device control"),
     NavActions("nav_actions", "Navigation");
@@ -79,13 +79,6 @@ sealed class CommandLaunchSpec {
     data class InternalAction(val actionId: String) : CommandLaunchSpec()
     data class NavAction(val mappingType: String, val value: String) : CommandLaunchSpec()
 }
-
-data class CommandReference(
-    val id: String,
-    val source: String,
-    val kind: String,
-    val launch: CommandLaunchSpec
-)
 
 sealed class CommandExecutionResult {
     data object Success : CommandExecutionResult()

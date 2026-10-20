@@ -3,7 +3,8 @@ package it.palsoftware.pastiera.inputmethod
 import android.os.Build
 import android.view.InputDevice
 import android.view.KeyEvent
-import it.palsoftware.pastiera.DeviceIdentitySnapshot
+import it.palsoftware.pastiera.device.DeviceIdentitySnapshot
+import it.palsoftware.pastiera.inputmethod.keys.PhysicalKeyPositionNormalizer
 
 object DeviceSpecific {
     enum class InputDeviceKind {
@@ -125,19 +126,6 @@ object DeviceSpecific {
             .canonicalAlphabeticKeyCode(event?.scanCode ?: -1)
             ?: keyCode
         return patchKeyCodeIfNeeded(keyCode, event, canonicalKeyCode)
-    }
-
-    // Backward-compatible API used by existing callers.
-    fun remapKeyEvent(
-        keyCode: Int,
-        event: KeyEvent?,
-        physicalProfileOverride: String? = null
-    ): Pair<Int, KeyEvent?>? {
-        val remapped = remapHardwareKeyEvent(keyCode, event, physicalProfileOverride)
-        if (remapped.keyCode == keyCode && remapped.event === event) {
-            return null
-        }
-        return remapped.keyCode to remapped.event
     }
 
     private fun remapQ25KeyEvent(keyCode: Int, event: KeyEvent?): RemappedHardwareEvent {

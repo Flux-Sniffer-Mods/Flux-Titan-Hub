@@ -69,6 +69,95 @@ object DebugCaptureStore {
     private val rawTrackpadEvents = ArrayDeque<RawTrackpadEvent>()
     private var imeContextSnapshot: ImeContextSnapshot? = null
 
+    /** A field the keyboard was given (the debug export lists the last few, whatever app they're in). */
+    data class FieldInfo(
+        val timestampMs: Long,
+        val packageName: String?,
+        val inputType: Int,
+        val imeOptions: Int,
+        val fieldId: Int,
+        val hasHint: Boolean,
+        val initialSelStart: Int,
+        val initialSelEnd: Int,
+        val shiftFieldType: String?,
+        val restarting: Boolean
+    )
+
+    /** One Automatic Shift decision, with the text around the cursor masked (no real text). */
+    data class AutoCapTrace(
+        val timestampMs: Long,
+        val packageName: String?,
+        val result: String,
+        val reason: String,
+        val before: String?,
+        val after: String?
+    )
+
+    private const val MAX_TRACKPAD_CLAIM = 60
+    private val trackpadClaimEvents = ArrayDeque<Pair<Long, String>>()
+
+    /**
+     * Keyboard swipes per app: the app in front, whether swipes are taken from it, and the swipes
+     * the accessibility service received (one line per swipe), for the debug export.
+     */
+    @Synchronized
+    fun recordTrackpadClaim(message: String) {
+        trackpadClaimEvents.addLast(System.currentTimeMillis() to message)
+        while (trackpadClaimEvents.size > MAX_TRACKPAD_CLAIM) trackpadClaimEvents.removeFirst()
+    }
+
+    @Synchronized
+    fun trackpadClaimSnapshot(): List<Pair<Long, String>> = trackpadClaimEvents.toList()
+
+    private const val MAX_FIELDS = 10
+    private const val MAX_AUTO_CAP = 60
+    private val fields = ArrayDeque<FieldInfo>()
+    private val autoCapTraces = ArrayDeque<AutoCapTrace>()
+
+    @Synchronized
+    fun recordField(info: FieldInfo) {
+        fields.addLast(info)
+        while (fields.size > MAX_FIELDS) fields.removeFirst()
+    }
+
+    @Synchronized
+    fun recordAutoCap(packageName: String?, result: String, reason: String, before: CharSequence?, after: CharSequence?) {
+        autoCapTraces.addLast(
+            AutoCapTrace(System.currentTimeMillis(), packageName, result, reason, mask(before, tail = true), mask(after, tail = false))
+        )
+        while (autoCapTraces.size > MAX_AUTO_CAP) autoCapTraces.removeFirst()
+    }
+
+    @Synchronized
+    fun fieldsSnapshot(): List<FieldInfo> = fields.toList()
+
+    @Synchronized
+    fun autoCapSnapshot(): List<AutoCapTrace> = autoCapTraces.toList()
+
+    /**
+     * Text shape only: letters a, digits 0, spaces _, newlines \\n, punctuation as it is, anything
+     * invisible or unusual as <U+XXXX>; the last (or first) 6 characters and the length.
+     */
+    internal fun mask(text: CharSequence?, tail: Boolean): String? {
+        text ?: return null
+        val part = if (tail) text.takeLast(6) else text.take(6)
+        val shape = buildString {
+            part.forEach { c ->
+                append(
+                    when {
+                        c.isLetter() -> "a"
+                        c.isDigit() -> "0"
+                        c == ' ' -> "_"
+                        c == '\n' -> "\\n"
+                        c.code in 0x21..0x7e -> c.toString()
+                        else -> "<U+%04X>".format(c.code)
+                    }
+                )
+            }
+        }
+        return "len=${text.length} \"$shape\""
+    }
+
     @Synchronized
     fun recordAutoCorrectionAttempt(
         before: String,
@@ -250,5 +339,7 @@ object DebugCaptureStore {
         suggestions.clear()
         rawTrackpadEvents.clear()
         imeContextSnapshot = null
+        fields.clear()
+        autoCapTraces.clear()
     }
 }

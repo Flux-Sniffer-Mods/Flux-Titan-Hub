@@ -4,17 +4,33 @@ import android.accessibilityservice.AccessibilityService
 import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
 import it.palsoftware.pastiera.SettingsManager
+import it.palsoftware.pastiera.clicks.ClicksAccessibilityKeyBridge
+import it.palsoftware.pastiera.clicks.ClicksButtonDirectActionExecutor
+import it.palsoftware.pastiera.clicks.ClicksLauncherAccessibilityKeyMapper
+import it.palsoftware.pastiera.getClicksAltButtonMode
+import it.palsoftware.pastiera.getClicksButtonMode
+import it.palsoftware.pastiera.getClicksMetaButtonMode
+import it.palsoftware.pastiera.getClicksMicrophoneButtonMode
+import it.palsoftware.pastiera.trackpadBlockedIn
 
 /**
- * Filters only explicitly configured buttons of a supported Clicks Power Keyboard.
- *
- * Android handles Left Meta before an input method receives it. This service is therefore optional
- * and remains inert for other keyboards, other keys, and native button assignments.
+ * The keyboard's optional helper, for what an input method can't do alone:
+ * - the buttons of a supported Clicks Power Keyboard you assigned (Android handles Left Meta
+ *   before an input method receives it);
+ * - in apps where the keyboard is hidden, the keys for the status LEDs, the emoji key and Sym;
+ * - the app in front, for screen size per app (window changes only, never window content).
+ * Each part stays inert unless its option is on.
  */
 class ClicksLauncherButtonAccessibilityService : AccessibilityService() {
     private val mapper = ClicksLauncherAccessibilityKeyMapper()
 
     override fun onKeyEvent(event: KeyEvent): Boolean {
+        // Hidden apps: keys for Pastiera's emoji/symbols panels go to Pastiera, not the app
+        val taken = HiddenAppKeyObserver.intercept(event)
+        HiddenAppKeyObserver.logKey(event, if (taken) "accessibility, to the keyboard" else "accessibility, to the app")
+        if (taken) return true
+        // Hidden apps with status LEDs: let the LEDs follow keys the app reads before any IME
+        HiddenAppKeyObserver.observe(event)
         val device = event.device
         val result = mapper.map(
             event = event,
@@ -27,7 +43,7 @@ class ClicksLauncherButtonAccessibilityService : AccessibilityService() {
         result.directAction?.let { ClicksButtonDirectActionExecutor.execute(this, it) }
         val forwardedEvent = result.forwardedEvent
         if (forwardedEvent != null && !ClicksAccessibilityKeyBridge.dispatch(forwardedEvent)) {
-            // Fail open when Pastiera has no active editor. Keeping the mapper's held-modifier
+            // Fail open when the keyboard has no active editor. Keeping the mapper's held-modifier
             // state would otherwise consume the following native key events as well.
             mapper.resetDevice(event.deviceId)
             return false
@@ -35,11 +51,106 @@ class ClicksLauncherButtonAccessibilityService : AccessibilityService() {
         return result.consume
     }
 
-    override fun onAccessibilityEvent(event: AccessibilityEvent?) = Unit
+    override fun onAccessibilityEvent(event: AccessibilityEvent?) {
+        // An app's window in front: screen size per app follows it, keyboard or not
+        if (event?.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            val pkg = event.packageName?.toString() ?: return
+            // A window that isn't an app's own screen (a widget updating on the home screen, or
+            // the app coming back from recents) only counts once Android confirms what's in front
+            val confirmed = isActivity(pkg, event.className?.toString())
+            // The quick launcher opens over the app you're in: that app keeps its screen size
+            val overlay = pkg == packageName && event.className?.toString()?.contains("QuickLauncher") == true
+            // Another app's window floating over the one in front (a widget, a picker, a
+            // dialog-style screen) keeps the screen size of the app beneath: switching would
+            // flicker the app between the two
+            val floating = confirmed && isFloating(pkg, event.className?.toString())
+            // Keyboard swipes per app follow the app's own screens (the quick launcher, over
+            // another app, keeps that app's choice)
+            if (!confirmed && !overlay && pkg != frontPackage && pkg != packageName) {
+                DebugCaptureStore.recordTrackpadClaim("window from $pkg (${event.className}) isn't an app screen: ignored")
+            }
+            if (confirmed && !overlay && pkg != frontPackage) {
+                frontPackage = pkg
+                DebugCaptureStore.recordTrackpadClaim("in front: $pkg, swipes kept from it: ${blockedHere()}")
+                claimTrackpad(ClicksAccessibilityKeyBridge.trackpadCaptured)
+            }
+        }
+    }
+
+    private val activities = HashMap<String, Boolean>()
+
+    private val floatingActivities = HashMap<String, Boolean>()
+
+    /** An activity drawn as a floating or see-through window, the app beneath still showing. */
+    private fun isFloating(pkg: String, className: String?): Boolean {
+        if (className.isNullOrEmpty()) return false
+        return floatingActivities.getOrPut("$pkg/$className") {
+            runCatching {
+                val info = packageManager.getActivityInfo(android.content.ComponentName(pkg, className), 0)
+                val theme = createPackageContext(pkg, 0).resources.newTheme().apply { applyStyle(info.themeResource, true) }
+                val attrs = theme.obtainStyledAttributes(intArrayOf(android.R.attr.windowIsFloating, android.R.attr.windowIsTranslucent))
+                try { attrs.getBoolean(0, false) || attrs.getBoolean(1, false) } finally { attrs.recycle() }
+            }.getOrDefault(false)
+        }
+    }
+
+    private fun isActivity(pkg: String, className: String?): Boolean {
+        if (className.isNullOrEmpty()) return false
+        val key = "$pkg/$className"
+        return activities.getOrPut(key) {
+            runCatching { packageManager.getActivityInfo(android.content.ComponentName(pkg, className), 0) }.isSuccess
+        }
+    }
+
+    override fun onServiceConnected() {
+        super.onServiceConnected()
+        // Keyboard swipes: taken from apps while a field is typed in, handed to the keyboard
+        ClicksAccessibilityKeyBridge.onTrackpadCaptureChanged = { captured -> claimTrackpad(captured) }
+        claimTrackpad(ClicksAccessibilityKeyBridge.trackpadCaptured)
+    }
+
+    /** The app whose screen is in front, for keyboard swipes per app. */
+    private var frontPackage: String? = null
+
+    /** Swipes kept from the app in front (Settings > Trackpad: keyboard swipes per app). */
+    private fun blockedHere(): Boolean = frontPackage?.let { pkg ->
+        SettingsManager.trackpadBlockedIn(this, pkg)
+    } == true
+
+    private fun claimTrackpad(typing: Boolean) {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) return
+        val captured = typing || blockedHere()
+        android.os.Handler(mainLooper).post {
+            runCatching {
+                // Android 14: the service's info names the sources it takes before apps
+                val info = serviceInfo ?: return@runCatching
+                info.motionEventSources = if (captured) android.view.InputDevice.SOURCE_TOUCHPAD else 0
+                serviceInfo = info
+                DebugCaptureStore.recordTrackpadClaim(
+                    "claim: typing=$typing app=$frontPackage kept=${captured && !typing} " +
+                        "sources=0x${Integer.toHexString(serviceInfo?.motionEventSources ?: -1)}"
+                )
+            }.onFailure { DebugCaptureStore.recordTrackpadClaim("claim failed: ${it.javaClass.simpleName}: ${it.message}") }
+        }
+    }
+
+    override fun onMotionEvent(event: android.view.MotionEvent) {
+        val typing = ClicksAccessibilityKeyBridge.trackpadCaptured
+        if (event.actionMasked == android.view.MotionEvent.ACTION_DOWN) {
+            DebugCaptureStore.recordTrackpadClaim(
+                "swipe taken from $frontPackage: source=0x${Integer.toHexString(event.source)} " +
+                    if (typing) "to the keyboard" else "dropped"
+            )
+        }
+        // Taken only to keep them from the app (not typing): dropped
+        if (!typing) return
+        ClicksAccessibilityKeyBridge.dispatch(event)
+    }
 
     override fun onInterrupt() = Unit
 
     override fun onDestroy() {
+        ClicksAccessibilityKeyBridge.onTrackpadCaptureChanged = null
         mapper.reset()
         super.onDestroy()
     }

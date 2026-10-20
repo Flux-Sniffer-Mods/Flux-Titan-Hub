@@ -12,9 +12,15 @@ import it.palsoftware.pastiera.R
 import it.palsoftware.pastiera.SettingsManager
 import it.palsoftware.pastiera.data.layout.LayoutFileStore
 import it.palsoftware.pastiera.data.layout.LayoutMappingRepository
+import it.palsoftware.pastiera.ImeIdentity
 import it.palsoftware.pastiera.inputmethod.PhysicalKeyboardInputMethodService
 import org.json.JSONObject
 import java.util.Locale
+import it.palsoftware.pastiera.getCustomInputStyles
+import it.palsoftware.pastiera.getKeyboardLayout
+import it.palsoftware.pastiera.isKeyboardLayoutAutoByLocale
+import it.palsoftware.pastiera.isSystemInputStyleHidden
+import it.palsoftware.pastiera.setCustomInputStyles
 
 /**
  * Utility class for managing additional IME subtypes (custom input styles).
@@ -137,26 +143,7 @@ object AdditionalSubtypeUtils {
         
         return subtypes.toTypedArray()
     }
-    
-    /**
-     * Creates a preference string from an array of subtypes.
-     * Format: "locale:layout[:extra];locale:layout[:extra];..."
-     */
-    fun createPrefSubtypes(subtypeArray: Array<InputMethodSubtype>): String {
-        return subtypeArray.joinToString(";") { subtype ->
-            val locale = subtype.localeString()
-            val extraValue = subtype.extraValue ?: ""
-            val layoutName = extractLayoutFromExtraValue(extraValue) ?: ""
-            val otherExtras = extractOtherExtras(extraValue)
-            
-            if (otherExtras.isNotEmpty()) {
-                "$locale:$layoutName:$otherExtras"
-            } else {
-                "$locale:$layoutName"
-            }
-        }
-    }
-    
+
     /**
      * Checks if a subtype is an additional (custom) subtype.
      */
@@ -310,45 +297,7 @@ object AdditionalSubtypeUtils {
         }
         return null
     }
-    
-    /**
-     * Extracts other extras (excluding layout, ascii, emoji, isAdditionalSubtype).
-     */
-    private fun extractOtherExtras(extraValue: String): String {
-        val parts = extraValue.split(",")
-        val filtered = parts.filter { part ->
-            !part.startsWith("$EXTRA_KEY_KEYBOARD_LAYOUT_SET=") &&
-            part != EXTRA_KEY_ASCII_CAPABLE &&
-            part != EXTRA_KEY_EMOJI_CAPABLE &&
-            part != EXTRA_KEY_IS_ADDITIONAL_SUBTYPE
-        }
-        return filtered.joinToString(",")
-    }
-    
-    /**
-     * Finds a subtype by locale.
-     */
-    fun findSubtypeByLocale(
-        subtypes: Array<InputMethodSubtype>,
-        locale: String
-    ): InputMethodSubtype? {
-        return subtypes.firstOrNull { localesMatch(it.localeString(), locale) }
-    }
-    
-    /**
-     * Finds a subtype by locale and keyboard layout set.
-     */
-    fun findSubtypeByLocaleAndKeyboardLayoutSet(
-        subtypes: Array<InputMethodSubtype>,
-        locale: String,
-        layoutName: String
-    ): InputMethodSubtype? {
-        return subtypes.firstOrNull { subtype ->
-            localesMatch(subtype.localeString(), locale) &&
-            extractLayoutFromExtraValue(subtype.extraValue ?: "") == layoutName
-        }
-    }
-    
+
     /**
      * Gets the keyboard layout name from a subtype's extraValue.
      */
@@ -639,24 +588,16 @@ object AdditionalSubtypeUtils {
      * Gets the list of system-enabled locales.
      * Returns locales in format "en_US", "it_IT", etc.
      */
-    private fun getSystemEnabledLocales(context: Context): List<String> {
+    /** The system languages, as "en_US", "it_IT"… */
+    internal fun getSystemEnabledLocales(context: Context): List<String> {
         val locales = mutableListOf<String>()
         try {
             val config = context.applicationContext.resources.configuration
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                val localeList = config.locales
-                for (i in 0 until localeList.size()) {
-                    val locale = localeList[i]
-                    val localeStr = formatLocaleStringForSystem(locale)
-                    if (localeStr.isNotEmpty() && !locales.contains(localeStr)) {
-                        locales.add(localeStr)
-                    }
-                }
-            } else {
-                @Suppress("DEPRECATION")
-                val locale = config.locale
+            val localeList = config.locales
+            for (i in 0 until localeList.size()) {
+                val locale = localeList[i]
                 val localeStr = formatLocaleStringForSystem(locale)
-                if (localeStr.isNotEmpty()) {
+                if (localeStr.isNotEmpty() && !locales.contains(localeStr)) {
                     locales.add(localeStr)
                 }
             }
@@ -767,10 +708,7 @@ object AdditionalSubtypeUtils {
             )
             
             // Find the actual IME in the system list to get the correct ID format
-            val inputMethodInfo = imm.inputMethodList.firstOrNull { info ->
-                info.packageName == context.packageName && 
-                info.serviceName == PhysicalKeyboardInputMethodService::class.java.name
-            }
+            val inputMethodInfo = ImeIdentity.findIn(imm.inputMethodList, context.packageName)
             
             if (inputMethodInfo == null) {
                 Log.d(TAG, "IME not found in system list, will retry when IME is enabled")
@@ -798,10 +736,7 @@ object AdditionalSubtypeUtils {
                 Handler(Looper.getMainLooper()).postDelayed({
                     try {
                         // Re-fetch InputMethodInfo to get updated subtype list
-                        val updatedInfo = imm.inputMethodList.firstOrNull { 
-                            it.packageName == context.packageName && 
-                            it.serviceName == PhysicalKeyboardInputMethodService::class.java.name
-                        }
+                        val updatedInfo = ImeIdentity.findIn(imm.inputMethodList, context.packageName)
                         
                         if (updatedInfo != null) {
                             // Get all subtypes from InputMethodInfo (including the newly added ones)
@@ -870,10 +805,7 @@ object AdditionalSubtypeUtils {
                 // When removing all subtypes, also clean up enabled subtypes list
                 Handler(Looper.getMainLooper()).postDelayed({
                     try {
-                        val updatedInfo = imm.inputMethodList.firstOrNull { 
-                            it.packageName == context.packageName && 
-                            it.serviceName == PhysicalKeyboardInputMethodService::class.java.name
-                        }
+                        val updatedInfo = ImeIdentity.findIn(imm.inputMethodList, context.packageName)
                         
                         if (updatedInfo != null) {
                             // Get currently enabled subtypes (include implicit ones from method.xml)

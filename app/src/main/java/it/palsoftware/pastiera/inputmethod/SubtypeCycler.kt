@@ -14,6 +14,10 @@ import it.palsoftware.pastiera.inputmethod.subtype.AdditionalSubtypeUtils.setInp
 import it.palsoftware.pastiera.data.layout.LayoutFileStore
 import it.palsoftware.pastiera.SettingsManager
 import java.util.Locale
+import it.palsoftware.pastiera.getAdditionalSuggestionLocalesForInputStyle
+import it.palsoftware.pastiera.getKeyboardLayout
+import it.palsoftware.pastiera.isSystemInputStyleHidden
+import it.palsoftware.pastiera.setKeyboardLayout
 
 /**
  * Utility class for cycling between IME subtypes.
@@ -36,7 +40,8 @@ object SubtypeCycler {
         context: Context,
         imeServiceClass: Class<*>,
         assets: AssetManager,
-        showToast: Boolean = true
+        showToast: Boolean = true,
+        backwards: Boolean = false
     ): Boolean {
         return try {
             val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -82,12 +87,8 @@ object SubtypeCycler {
                 subtype.extraValue == currentSubtype?.extraValue
             }
             
-            // Get next subtype (cycle to first if at end)
-            val nextIndex = if (currentIndex >= 0 && currentIndex < enabledSubtypes.size - 1) {
-                currentIndex + 1
-            } else {
-                0 // Cycle back to first
-            }
+            // Next subtype, or the previous one going backwards; wraps round either way
+            val nextIndex = cycleIndex(currentIndex, enabledSubtypes.size, backwards)
             
             val nextSubtype = enabledSubtypes[nextIndex]
             val nextLayout = resolveSubtypeCycleLayout(assets, context, nextSubtype)
@@ -116,6 +117,42 @@ object SubtypeCycler {
         }
     }
     
+    /** A language as remembered per app: its locale and input style. */
+    fun subtypeKey(subtype: InputMethodSubtype): String = subtypeKey(subtype.localeString(), subtype.extraValue)
+
+    internal fun subtypeKey(locale: String, extraValue: String?): String = "$locale|${extraValue.orEmpty()}"
+
+    /**
+     * Switches to the enabled language whose [subtypeKey] is [key], if it isn't the current one.
+     * Returns whether it switched.
+     */
+    fun switchToSubtypeKey(context: Context, imeServiceClass: Class<*>, assets: AssetManager, key: String): Boolean {
+        return try {
+            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager ?: return false
+            val current = imm.currentInputMethodSubtype
+            if (current != null && subtypeKey(current) == key) return false
+            val info = imm.getInputMethodList().firstOrNull {
+                it.packageName == context.packageName && it.serviceName == imeServiceClass.name
+            } ?: return false
+            val target = imm.getEnabledInputMethodSubtypeList(info, true).firstOrNull { subtypeKey(it) == key }
+                ?: return false
+            val switched = trySwitchSubtype(imm, info.id, target, context)
+            if (switched) SettingsManager.setKeyboardLayout(context, resolveSubtypeCycleLayout(assets, context, target))
+            switched
+        } catch (e: Exception) {
+            Log.w(TAG, "Couldn't restore the app's language", e)
+            false
+        }
+    }
+
+    /** Where cycling goes from [current] (-1: unknown) among [count] subtypes, forwards or backwards. */
+    internal fun cycleIndex(current: Int, count: Int, backwards: Boolean): Int = when {
+        count <= 0 -> 0
+        current !in 0 until count -> if (backwards) count - 1 else 0
+        backwards -> (current - 1 + count) % count
+        else -> (current + 1) % count
+    }
+
     /**
      * Attempts to switch to the specified subtype using setInputMethodAndSubtype.
      * This method requires the IME window token, which may not always be available.
@@ -243,50 +280,5 @@ object SubtypeCycler {
 
         return SettingsManager.getKeyboardLayout(context)
     }
-    
-    /**
-     * Gets the current subtype display name.
-     */
-    fun getCurrentSubtypeName(context: Context): String? {
-        return try {
-            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            val currentSubtype = imm?.currentInputMethodSubtype ?: return null
-            
-            val appInfo = context.packageManager.getApplicationInfo(context.packageName, 0)
-            currentSubtype.getDisplayName(
-                context,
-                context.packageName,
-                appInfo
-            )?.toString()
-        } catch (e: Exception) {
-            Log.e(TAG, "Error getting current subtype name", e)
-            null
-        }
-    }
-    
-    /**
-     * Gets all available subtypes for the IME.
-     */
-    fun getAvailableSubtypes(
-        context: Context,
-        imeServiceClass: Class<*>
-    ): List<InputMethodSubtype> {
-        return try {
-            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-                ?: return emptyList()
-            
-            val packageName = context.packageName
-            val serviceName = imeServiceClass.name
-            
-            val inputMethodInfo = imm.getInputMethodList().firstOrNull { info ->
-                info.packageName == packageName && 
-                info.serviceName == serviceName
-            } ?: return emptyList()
-            
-            imm.getEnabledInputMethodSubtypeList(inputMethodInfo, true)
-        } catch (e: Exception) {
-            Log.e(TAG, "Error getting available subtypes", e)
-            emptyList()
-        }
-    }
+
 }

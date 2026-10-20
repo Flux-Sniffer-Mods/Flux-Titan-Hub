@@ -1,5 +1,5 @@
 /*
- * Pastiera modifications for full virtual keyboard mode.
+ * Changes for full virtual keyboard mode.
  *
  * This file derives keyboard geometry behavior from Android Open Source Project LatinIME
  * (`platform/packages/inputmethods/LatinIME`) at commit
@@ -42,11 +42,13 @@ import it.palsoftware.pastiera.SettingsManager
 import it.palsoftware.pastiera.inputmethod.NotificationHelper
 import java.util.Locale
 import kotlin.math.abs
+import it.palsoftware.pastiera.getSoftwareKeyboardLeftModifierKey
+import it.palsoftware.pastiera.getSoftwareKeyboardRightModifierKey
 
 /**
- * AOSP LatinIME alphabet key plane embedded in Pastiera.
+ * AOSP LatinIME alphabet key plane embedded in the keyboard.
  *
- * This intentionally keeps Pastiera's IME lifecycle/suggestions/status bars, but mirrors the
+ * This intentionally keeps the keyboard's IME lifecycle/suggestions/status bars, but mirrors the
  * AOSP qwerty/qwertz/azerty key geometry from rows_*.xml and row_qwerty4.xml.
  */
 class AospKeyboardView @JvmOverloads constructor(
@@ -532,10 +534,13 @@ class AospKeyboardView @JvmOverloads constructor(
         rebuildKeys(w, h)
     }
 
+    /** The whole view, for its background (kept, not made each frame). */
+    private val viewRect = RectF()
+
     override fun onDraw(canvas: Canvas) {
         themeOverride?.let {
             canvas.drawColor(it.background)
-        } ?: drawDrawable(canvas, keyboardBackground, RectF(0f, 0f, width.toFloat(), height.toFloat()))
+        } ?: drawDrawable(canvas, keyboardBackground, viewRect.apply { set(0f, 0f, width.toFloat(), height.toFloat()) })
         keys.forEach { key ->
             drawDrawable(canvas, backgroundFor(key), key.visualRect)
             val previewIcon = previewIconFor(key)

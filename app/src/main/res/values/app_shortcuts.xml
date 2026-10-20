@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Universal app shortcuts (Settings > Apps > App shortcuts) -->
+<resources>
+
+
+
+    <string name="app_shortcut_new">New (message, note, event, tab)</string>
+    <string name="app_shortcut_search">Search or find</string>
+    <string name="app_shortcut_open">Open or go to</string>
+    <string name="app_shortcut_refresh">Refresh</string>
+    <string name="app_shortcut_send">Send</string>
+    <string name="app_shortcut_close">Close or finish</string>
+    <string name="app_shortcut_reply">Reply</string>
+    <string name="app_shortcut_reply_all">Reply all</string>
+    <string name="app_shortcut_forward">Forward</string>
+    <string name="app_shortcut_archive">Archive</string>
+    <string name="app_shortcut_delete">Delete</string>
+    <string name="app_shortcut_mark_unread">Mark unread</string>
+    <string name="app_shortcut_star">Star, flag, pin or bookmark</string>
+    <string name="app_shortcut_undo">Undo the last action</string>
+    <string name="app_shortcut_next">Next item (message, tab, sheet, session)</string>
+    <string name="app_shortcut_previous">Previous item</string>
+    <string name="app_shortcut_menu">Menu or side panel</string>
+    <string name="app_shortcut_help">Keyboard shortcut help</string>
+
+    <string name="app_shortcuts_category_social">Social</string>
+    <string name="app_shortcuts_category_communication">Communication</string>
+    <string name="app_shortcuts_category_browsers">Browsers</string>
+    <string name="app_shortcuts_category_productivity">Productivity</string>
+    <string name="app_shortcuts_category_entertainment">Entertainment</string>
+    <string name="app_shortcuts_category_video_players">Video players</string>
+    <string name="app_shortcuts_category_music">Music &amp; audio</string>
+    <string name="app_shortcuts_category_shopping">Shopping</string>
+    <string name="app_shortcuts_category_maps">Maps &amp; navigation</string>
+    <string name="app_shortcuts_category_travel">Travel &amp; local</string>
+    <string name="app_shortcuts_category_news">News &amp; magazines</string>
+    <string name="app_shortcuts_category_books">Books &amp; reference</string>
+    <string name="app_shortcuts_category_photography">Photography</string>
+    <string name="app_shortcuts_category_finance">Finance</string>
+    <string name="app_shortcuts_category_education">Education</string>
+    <string name="app_shortcuts_category_health">Health &amp; fitness</string>
+    <string name="app_shortcuts_category_food">Food &amp; drink</string>
+    <string name="app_shortcuts_category_lifestyle">Lifestyle</string>
+    <string name="app_shortcuts_category_business">Business</string>
+    <string name="app_shortcuts_category_tools">Tools</string>
+    <string name="app_shortcuts_category_dating">Dating</string>
+    <string name="app_shortcuts_category_sports">Sports</string>
+    <string name="app_shortcuts_category_weather">Weather</string>
+    <string name="app_shortcuts_category_terminal">Terminal</string>
+    <string name="app_shortcuts_category_other">Added by you</string>
+    <string name="enter_standards_title">Following their category</string>
+    <string name="enter_standards_description">Every app follows the preset unless you set it above: by default Enter sends and Shift+Enter is a new line. Email and note-taking apps keep Enter for a new line: Ctrl+Enter sends an email. Tap an app to set it yourself.</string>
+    <string name="enter_standard_chat">Chat · %1$s</string>
+    <string name="enter_standard_email">Email · Enter newline, Ctrl+Enter sends</string>
+    <string name="app_shortcut_settings">App settings</string>
+    <string name="app_shortcut_app_action_1">App\'s shortcut 1</string>
+    <string name="app_shortcut_app_action_2">App\'s shortcut 2</string>
+    <string name="app_shortcut_app_action_3">App\'s shortcut 3</string>
+    <string name="app_shortcut_app_action_4">App\'s shortcut 4</string>
+    <string name="app_enter_behaviour_preset_newline_shift_send">Enter new line, Shift+Enter sends</string>
+    <string name="app_enter_behaviour_option_newline_shift_send">Enter new line, Shift+Enter sends</string>
+    <string name="enter_standard_notes">Notes · Enter new line, Ctrl+Enter for the app\'s own action</string>
+</resources>

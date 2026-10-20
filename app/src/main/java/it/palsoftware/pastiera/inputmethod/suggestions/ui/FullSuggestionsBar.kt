@@ -37,6 +37,8 @@ import it.palsoftware.pastiera.inputmethod.statusbar.StatusBarButtonPosition
 import it.palsoftware.pastiera.inputmethod.statusbar.StatusBarButtonStyles
 import android.view.inputmethod.InputMethodManager
 import it.palsoftware.pastiera.inputmethod.subtype.AdditionalSubtypeUtils.languageCode
+import it.palsoftware.pastiera.getSuggestionsBold
+import it.palsoftware.pastiera.getTitan2EliteRoundedCornerInsetsEnabled
 
 /**
  * Renders the full-width suggestion bar with up to 3 items. Always occupies
@@ -61,8 +63,12 @@ class FullSuggestionsBar(
     private var frameContainer: FrameLayout? = null
     private var minimalLeftButtonsContainer: LinearLayout? = null
     private var minimalRightButtonsContainer: LinearLayout? = null
+    // Middle of the bar (between the left and right buttons) for a hosted view, e.g. emoji search
+    private var centerAccessoryHost: FrameLayout? = null
+    private var centerAccessoryActive = false
     private var modifierIndicatorsContainer: LinearLayout? = null
     private var hamburgerMenuView: HamburgerMenuView? = null
+    private var extraKeysView: it.palsoftware.pastiera.inputmethod.ui.ExtraKeysView? = null
     private var modifierIndicatorView: ModifierIndicatorView? = null
     private var lastMinimalUiActive: Boolean? = null
     private var lastSlots: List<String?> = emptyList()
@@ -87,6 +93,7 @@ class FullSuggestionsBar(
             }
             field = value
             hamburgerMenuView?.themeOverride = value
+            extraKeysView?.themeOverride = value
             modifierIndicatorView?.themeOverride = value
             buttonHost?.themeOverride = value?.let {
                 StatusBarButtonStyles.ThemeOverride(
@@ -190,7 +197,16 @@ class FullSuggestionsBar(
                 }
             }
             
+            centerAccessoryHost = FrameLayout(context).apply {
+                visibility = View.GONE
+                layoutParams = FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    targetHeightPx
+                )
+            }
+
             frameContainer?.addView(container)
+            centerAccessoryHost?.let { frameContainer?.addView(it) }
             modifierIndicatorsContainer?.let { frameContainer?.addView(it) }
             minimalLeftButtonsContainer?.let { frameContainer?.addView(it) }
             minimalRightButtonsContainer?.let { frameContainer?.addView(it) }
@@ -199,13 +215,14 @@ class FullSuggestionsBar(
             frameContainer?.let { frame ->
                 if (buttonRegistry != null && callbacksProvider != null) {
                     if (hamburgerMenuView == null) {
-                        hamburgerMenuView = HamburgerMenuView(context, buttonRegistry).apply {
+                        hamburgerMenuView = HamburgerMenuView(context, buttonRegistry) { sideButtonWidthPx() }.apply {
                             themeOverride = this@FullSuggestionsBar.themeOverride
                         }
                     }
                 }
                 hamburgerMenuView?.attachTo(frame)
                 lastMinimalUiActive?.let { hamburgerMenuView?.setMinimalUiActive(it) }
+                extraKeysView?.attachTo(frame)
             }
             // Ensure the outer layout (when attached to parent LinearLayout) keeps the target height
             frameContainer?.layoutParams = (frameContainer?.layoutParams as? LinearLayout.LayoutParams)
@@ -299,6 +316,22 @@ class FullSuggestionsBar(
         buttonHost?.refreshLanguageText()
     }
 
+    /** Container between the left and right buttons for hosting another view. */
+    fun centerAccessoryHost(): FrameLayout? = centerAccessoryHost
+
+    /** Shows the hosted view in place of the suggestions (the host's content is the caller's). */
+    fun setCenterAccessoryActive(active: Boolean) {
+        if (centerAccessoryActive == active) return
+        centerAccessoryActive = active
+        centerAccessoryHost?.visibility = if (active) View.VISIBLE else View.GONE
+        if (active) {
+            container?.visibility = View.GONE
+            applyContainerInsetsForMinimalButtons()
+        } else {
+            lastSlots = emptyList() // re-render suggestions on the next update
+        }
+    }
+
     fun setMinimalUiActive(isActive: Boolean) {
         lastMinimalUiActive = isActive
         showMinimalUiButtons = isActive
@@ -320,6 +353,22 @@ class FullSuggestionsBar(
         modifierIndicatorsContainer?.visibility = if (visible) View.VISIBLE else View.GONE
         applyContainerInsetsForMinimalButtons()
         frameContainer?.requestLayout()
+    }
+
+    /** The extra keys row in the bar's place, or null to put the bar back. */
+    fun setExtraKeys(row: it.palsoftware.pastiera.inputmethod.extrakeys.ExtraKeysRow?) {
+        if (row == null) {
+            extraKeysView?.hide()
+            return
+        }
+        val frame = frameContainer ?: return
+        val view = extraKeysView ?: it.palsoftware.pastiera.inputmethod.ui.ExtraKeysView(context) { sideButtonWidthPx() }.also {
+            it.themeOverride = themeOverride
+            extraKeysView = it
+        }
+        hamburgerMenuView?.hide()
+        view.attachTo(frame)
+        view.show(row)
     }
 
     fun isHamburgerMenuVisible(): Boolean = hamburgerMenuView?.isVisible() == true
@@ -389,6 +438,12 @@ class FullSuggestionsBar(
         bar.alpha = 1f
         renderMinimalUiButtons()
         applyContainerInsetsForMinimalButtons()
+
+        if (centerAccessoryActive) {
+            // A hosted view (emoji search) owns the middle of the bar
+            bar.visibility = View.GONE
+            return
+        }
 
         if (!canShowSuggestions) {
             cancelPendingSuggestionsAccessibilityEnable()
@@ -478,6 +533,9 @@ class FullSuggestionsBar(
 
     private fun outerButtonExtraPx(): Int =
         if (it.palsoftware.pastiera.SettingsManager.getTitan2EliteRoundedCornerInsetsEnabled(context)) dpToPx(8f) else 0
+
+    /** How wide the bar's side buttons are: the panels' corner buttons match it. */
+    fun sideButtonWidthPx(): Int = minimalButtonWidthPx() + outerButtonExtraPx()
 
     private fun minimalButtonWidthPx(): Int {
         val size = (targetHeightPx - dpToPx(4f)).coerceAtLeast(dpToPx(24f))
@@ -582,6 +640,18 @@ class FullSuggestionsBar(
             } ?: 0
         } else {
             0
+        }
+        centerAccessoryHost?.let { host ->
+            val hostParams = (host.layoutParams as? FrameLayout.LayoutParams)
+                ?: FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, targetHeightPx)
+            if (hostParams.marginStart != leftInset || hostParams.marginEnd != rightInset ||
+                hostParams.height != targetHeightPx || host.layoutParams !is FrameLayout.LayoutParams
+            ) {
+                hostParams.marginStart = leftInset
+                hostParams.marginEnd = rightInset
+                hostParams.height = targetHeightPx
+                host.layoutParams = hostParams
+            }
         }
         val params = (bar.layoutParams as? FrameLayout.LayoutParams)
             ?: FrameLayout.LayoutParams(
@@ -704,7 +774,11 @@ class FullSuggestionsBar(
                 includeFontPadding = false
                 minHeight = 0
                 setTextColor(themeOverride?.textAndIcons ?: Color.WHITE)
-                setTypeface(null, android.graphics.Typeface.NORMAL)
+                setTypeface(
+                    null,
+                    if (it.palsoftware.pastiera.SettingsManager.getSuggestionsBold(context)) android.graphics.Typeface.BOLD
+                    else android.graphics.Typeface.NORMAL
+                )
                 maxLines = 1
                 ellipsize = TextUtils.TruncateAt.END
                 setPadding(padH, padV, padH, padV)

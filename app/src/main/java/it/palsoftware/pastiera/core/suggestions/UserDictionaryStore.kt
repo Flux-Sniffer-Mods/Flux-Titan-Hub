@@ -6,7 +6,6 @@ import android.util.Log
 import it.palsoftware.pastiera.SettingsManager
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.Locale
 
 class UserDictionaryStore {
 
@@ -22,6 +21,9 @@ class UserDictionaryStore {
         return try {
             val json = prefs(context).getString(KEY_USER_DICTIONARY, "[]") ?: "[]"
             val array = JSONArray(json)
+            // What's stored is the whole dictionary: words no longer there (a restored backup)
+            // mustn't linger here and be saved back
+            val loaded = HashMap<String, UserEntry>()
             buildList {
                 for (i in 0 until array.length()) {
                     val obj = array.getJSONObject(i)
@@ -37,8 +39,11 @@ class UserDictionaryStore {
                     )
                     // Store in cache using lowercase for case-insensitive lookup
                     // The actual normalization (with locale and accent stripping) is done by DictionaryRepository
-                    cache[word.lowercase()] = UserEntry(word, frequency, lastUsed)
+                    loaded[word.lowercase()] = UserEntry(word, frequency, lastUsed)
                 }
+            }.also {
+                cache.keys.retainAll(loaded.keys)
+                cache.putAll(loaded)
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error loading user dictionary", e)
@@ -76,6 +81,8 @@ class UserDictionaryStore {
     }
 
     fun markUsed(context: Context, word: String) {
+        // Incognito: how often words are used isn't recorded
+        if (it.palsoftware.pastiera.core.IncognitoTyping.active) return
         val cacheKey = word.lowercase()
         cache[cacheKey]?.let {
             cache[cacheKey] = it.copy(lastUsed = System.currentTimeMillis(), frequency = it.frequency + 1)
@@ -107,6 +114,7 @@ class UserDictionaryStore {
         private const val KEY_WORD = "w"
         private const val KEY_FREQ = "f"
         private const val KEY_LAST_USED = "u"
-        private val cache: MutableMap<String, UserEntry> = mutableMapOf()
+        // Shared by the keyboard (main thread) and dictionary loading (background): safe to use from both
+        private val cache: MutableMap<String, UserEntry> = java.util.concurrent.ConcurrentHashMap()
     }
 }

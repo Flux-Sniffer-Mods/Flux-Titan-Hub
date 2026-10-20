@@ -12,8 +12,9 @@ import kotlinx.serialization.decodeFromString
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
-import java.io.InputStream
 import java.security.MessageDigest
+
+private val manifestJson = Json { ignoreUnknownKeys = true }
 
 private const val TAG = "LayoutRepositoryManager"
 private const val MANIFEST_URL = "https://palsoftware.github.io/pastiera-dict/layouts-manifest.json"
@@ -50,6 +51,9 @@ sealed class LayoutDownloadResult {
 
 object LayoutRepositoryManager {
     suspend fun fetchManifest(): Result<LayoutManifest> = withContext(Dispatchers.IO) {
+        if (it.palsoftware.pastiera.OfflineMode.enabled) {
+            return@withContext Result.failure(java.io.IOException("Offline mode is on"))
+        }
         try {
             val request = Request.Builder()
                 .url(MANIFEST_URL)
@@ -69,7 +73,7 @@ object LayoutRepositoryManager {
                 return@withContext Result.failure(Exception("Empty response"))
             }
 
-            val manifest = Json { ignoreUnknownKeys = true }.decodeFromString<LayoutManifest>(body)
+            val manifest = manifestJson.decodeFromString<LayoutManifest>(body)
             Log.d(TAG, "Parsed ${manifest.items.size} layout entries")
             Result.success(manifest)
         } catch (e: SerializationException) {
@@ -86,6 +90,7 @@ object LayoutRepositoryManager {
         item: LayoutItem,
         onProgress: ((Long, Long) -> Unit)? = null
     ): LayoutDownloadResult = withContext(Dispatchers.IO) {
+        if (it.palsoftware.pastiera.OfflineMode.enabled) return@withContext LayoutDownloadResult.NetworkError
         try {
             val request = Request.Builder()
                 .url(item.url)

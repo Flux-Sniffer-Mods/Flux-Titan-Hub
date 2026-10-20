@@ -6,6 +6,13 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputConnection
 import it.palsoftware.pastiera.SettingsManager
 import it.palsoftware.pastiera.core.SymLayoutController
+import it.palsoftware.pastiera.inputmethod.aospkeyboard.SoftwareKeyboardAutoDetector
+import it.palsoftware.pastiera.getExperimentalCandidatesViewEnabled
+import it.palsoftware.pastiera.getStatusBarPresentationMode
+import it.palsoftware.pastiera.resolveEffectiveSoftwareKeyboardMode
+import it.palsoftware.pastiera.setPastierinaModeActive
+import it.palsoftware.pastiera.getMinimalMode
+import it.palsoftware.pastiera.setMinimalMode
 
 /** Owns explicit show requests; framework callbacks alone never prove that a child was drawn. */
 class KeyboardVisibilityController(
@@ -31,7 +38,9 @@ class KeyboardVisibilityController(
     private val requestHideInputView: () -> Unit,
     private val requestShowInputView: () -> Unit,
     private val refreshStatusBar: () -> Unit,
-    private val trace: (String) -> Unit = {}
+    private val trace: (String) -> Unit = {},
+    // Apps where the keyboard stays hidden (Settings > Advanced > Hide keyboard in these apps)
+    private val isHiddenForApp: () -> Boolean = { false }
 ) {
     enum class RenderedSurface { HIDDEN, FULL_INPUT_VIEW, CANDIDATES_VIEW }
 
@@ -75,7 +84,8 @@ class KeyboardVisibilityController(
         return !usesCandidatesView()
     }
 
-    private fun canShow() = isInputViewActive() && currentInputConnection() != null && !isNavModeLatched()
+    private fun canShow() = isInputViewActive() && currentInputConnection() != null && !isNavModeLatched() &&
+        !isHiddenForApp()
 
     fun ensureImeSurfaceVisible() {
         if (!canShow() || waitingForBackendHide) return
@@ -201,6 +211,24 @@ class KeyboardVisibilityController(
         if (!restarting) dismissed = false
     }
 
+    /** For apps where the keyboard stays hidden: drop any pending show and close the surface. */
+    fun hideForApp() {
+        cancelPendingSurfaceTransition()
+        changingSurface = true
+        try {
+            setCandidatesSurfaceActive(false)
+            setCandidatesViewShown(false)
+            setRequestedInputViewShown(false)
+            hideInputWindow()
+            requestHideInputView()
+        } catch (error: RuntimeException) {
+            trace("hide_for_app_rejected error=${error.javaClass.simpleName}")
+        } finally {
+            changingSurface = false
+        }
+        trace("hidden_for_app")
+    }
+
     fun onExplicitShowRequested() = ensureImeSurfaceVisible()
     fun onHardwareInputRequested() = ensureImeSurfaceVisible()
 
@@ -241,20 +269,19 @@ class KeyboardVisibilityController(
         waitingForBackendHide = false
     }
 
-    fun isCandidatesOnlySurface() = usesCandidatesView()
     fun isExpectedSurfaceRequestedOrShown(): Boolean = windowShown && renderedSurface() == expectedSurface() &&
         (usesCandidatesView() || isInputViewShown())
     fun shouldRecoverSurfaceOnHardwareKey() = !isExpectedSurfaceRequestedOrShown()
     internal fun isCandidatesSurfaceExplicitlyDismissedForTests() = dismissed
 
+    /** Between Solderina and minimal mode (the minimal UI button and its shortcut). */
     fun togglePastierinaMode() {
-        val next = when (SettingsManager.getStatusBarPresentationMode(context)) {
-            SettingsManager.StatusBarPresentationMode.PASTIERINA -> SettingsManager.StatusBarPresentationMode.FULL_STATUS_BAR
-            SettingsManager.StatusBarPresentationMode.FULL_STATUS_BAR -> SettingsManager.StatusBarPresentationMode.PASTIERINA
-        }
-        SettingsManager.setStatusBarPresentationMode(context, next)
-        syncStatusBarPresentationModeFromSettings()
+        SettingsManager.setMinimalMode(context, !SettingsManager.getMinimalMode(context))
+        onMinimalModeToggled?.invoke()
     }
+
+    /** The keyboard applies minimal mode to the field in front at once. */
+    var onMinimalModeToggled: (() -> Unit)? = null
 
     fun syncStatusBarPresentationModeFromSettings() {
         val minimal = SettingsManager.getStatusBarPresentationMode(context) == SettingsManager.StatusBarPresentationMode.PASTIERINA

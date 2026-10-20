@@ -26,6 +26,11 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
+import it.palsoftware.pastiera.inputmethod.aospkeyboard.SoftwareKeyboardTextInputHandler
+import it.palsoftware.pastiera.setAutoCorrectEnabled
+import it.palsoftware.pastiera.setAutoReplaceOnSpaceEnter
+import it.palsoftware.pastiera.setExperimentalSuggestionsEnabled
+import it.palsoftware.pastiera.setSuggestionsEnabled
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [33])

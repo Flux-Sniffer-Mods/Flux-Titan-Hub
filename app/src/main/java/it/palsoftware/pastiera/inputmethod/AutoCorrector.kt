@@ -5,7 +5,8 @@ import android.content.res.AssetManager
 import android.util.Log
 import it.palsoftware.pastiera.inputmethod.subtype.AdditionalSubtypeUtils.localeString
 import org.json.JSONObject
-import java.text.Normalizer
+import it.palsoftware.pastiera.getAutoCorrectEnabledLanguages
+import it.palsoftware.pastiera.getCustomAutoCorrections
 
 /**
  * Handles auto-correction of accents, apostrophes, and contractions.
@@ -228,14 +229,6 @@ object AutoCorrector {
     }
 
     /**
-     * Gets current locale based on device language.
-     */
-    private fun getCurrentLocale(context: Context): String {
-        val locale = context.resources.configuration.locales[0]
-        return locale.language.lowercase()
-    }
-
-    /**
      * Gets the current IME subtype language code (e.g., "it" from "it_IT").
      * Returns null if the IME or subtype is not available.
      */
@@ -252,13 +245,6 @@ object AutoCorrector {
     }
 
     /**
-     * Gets all supported locales.
-     */
-    fun getSupportedLocales(): Set<String> {
-        return corrections.keys.toSet()
-    }
-
-    /**
      * Applies original capitalization to corrected word.
      * Correctly handles special characters at the beginning (apostrophes, etc.).
      *
@@ -270,9 +256,6 @@ object AutoCorrector {
         if (originalWord.isEmpty() || correctedWord.isEmpty()) {
             return correctedWord
         }
-
-        val originalLower = originalWord.lowercase()
-        val correctedLower = correctedWord.lowercase()
 
         // If original word was all uppercase, apply uppercase to entire correction
         if (originalWord == originalWord.uppercase() && originalWord.any { it.isLetter() }) {
@@ -330,7 +313,7 @@ object AutoCorrector {
         // Try specific locale first
         corrections[targetLocale]?.let { localeCorrections ->
             localeCorrections[wordLower]?.let { correction ->
-                // Applica la capitalizzazione originale alla correzione
+                // Apply the original capitalisation to the correction
                 return applyCapitalization(word, correction)
             }
         }
@@ -346,11 +329,8 @@ object AutoCorrector {
     }
 
     private fun isOrthographicReplacement(original: String, replacement: String): Boolean {
-        fun normalize(text: String): String {
-            return Normalizer.normalize(text.lowercase(), Normalizer.Form.NFD)
-                .replace("\\p{Mn}".toRegex(), "")
-                .filter { it.isLetterOrDigit() }
-        }
+        fun normalize(text: String): String =
+            it.palsoftware.pastiera.core.suggestions.WordNormalization.stripAccents(text.lowercase()).filter { it.isLetterOrDigit() }
         return normalize(original) == normalize(replacement)
     }
 
@@ -506,49 +486,49 @@ object AutoCorrector {
                         Log.d(TAG, "Sequence '$sequence' has been rejected, don't correct")
                         continue // Try with fewer words
                     }
-		                    for (lang in languagesToSearch) {
-		                        val customCorrection = getCustomCorrection(sequence, lang, context)
-		                        if (customCorrection != null) {
-		                            if (
-		                                maxWords > 1 ||
-		                                shouldApplyExactReplacement(
-		                                    sequence,
-		                                    customCorrection,
-		                                    isKnownWord,
-		                                    explicitSubstitutionLanguagesEnabled
-		                                )
-		                            ) {
-		                                Log.d(TAG, "Found custom correction for sequence: '$sequence' → '$customCorrection' (language: $lang)")
-		                                return Pair(sequence, customCorrection)
-		                            }
-		                        }
-		                    }
+                    for (lang in languagesToSearch) {
+                        val customCorrection = getCustomCorrection(sequence, lang, context)
+                        if (customCorrection != null) {
+                            if (
+                                maxWords > 1 ||
+                                shouldApplyExactReplacement(
+                                    sequence,
+                                    customCorrection,
+                                    isKnownWord,
+                                    explicitSubstitutionLanguagesEnabled
+                                )
+                            ) {
+                                Log.d(TAG, "Found custom correction for sequence: '$sequence' → '$customCorrection' (language: $lang)")
+                                return Pair(sequence, customCorrection)
+                            }
+                        }
+                    }
 
-	                    // Check if there's a correction for this sequence in one of the enabled languages
-		                    for (lang in languagesToSearch) {
-		                        val correction = getCorrection(sequence, lang, context)
-		                        if (correction != null) {
-		                            if (
-		                                maxWords > 1 ||
-		                                shouldApplyExactReplacement(
-		                                    sequence,
-		                                    correction,
-		                                    isKnownWord,
-		                                    explicitSubstitutionLanguagesEnabled
-		                                )
-		                            ) {
-		                                Log.d(TAG, "Found correction for multi-word sequence: '$sequence' → '$correction' (language: $lang)")
-		                                return Pair(sequence, correction)
-		                            }
-		                        }
-		                    }
-	                    if (maxWords == 1 && isKnownWord?.invoke(sequence) == true) {
-	                        Log.d(TAG, "Word '$sequence' is known in an active dictionary, don't auto-substitute")
-	                        continue
-	                    }
-	                }
-	            }
-	        }
+                    // Check if there's a correction for this sequence in one of the enabled languages
+                    for (lang in languagesToSearch) {
+                        val correction = getCorrection(sequence, lang, context)
+                        if (correction != null) {
+                            if (
+                                maxWords > 1 ||
+                                shouldApplyExactReplacement(
+                                    sequence,
+                                    correction,
+                                    isKnownWord,
+                                    explicitSubstitutionLanguagesEnabled
+                                )
+                            ) {
+                                Log.d(TAG, "Found correction for multi-word sequence: '$sequence' → '$correction' (language: $lang)")
+                                return Pair(sequence, correction)
+                            }
+                        }
+                    }
+                    if (maxWords == 1 && isKnownWord?.invoke(sequence) == true) {
+                        Log.d(TAG, "Word '$sequence' is known in an active dictionary, don't auto-substitute")
+                        continue
+                    }
+                }
+            }
+        }
 
         // If we didn't find patterns with spaces, search for a single word
         var startIndex = endIndex
@@ -572,34 +552,34 @@ object AutoCorrector {
             return null
         }
 
-	        for (lang in languagesToSearch) {
-	            val customCorrection = getCustomCorrection(word, lang, context)
-	            if (customCorrection != null) {
-	                if (shouldApplyExactReplacement(word, customCorrection, isKnownWord, explicitSubstitutionLanguagesEnabled)) {
-	                    Log.d(TAG, "Found custom correction for word: '$word' → '$customCorrection' (language: $lang)")
-	                    return Pair(word, customCorrection)
-	                }
-	            }
-	        }
+        for (lang in languagesToSearch) {
+            val customCorrection = getCustomCorrection(word, lang, context)
+            if (customCorrection != null) {
+                if (shouldApplyExactReplacement(word, customCorrection, isKnownWord, explicitSubstitutionLanguagesEnabled)) {
+                    Log.d(TAG, "Found custom correction for word: '$word' → '$customCorrection' (language: $lang)")
+                    return Pair(word, customCorrection)
+                }
+            }
+        }
 
-	        // Check if there's a correction for the single word in one of the enabled languages
-	        for (lang in languagesToSearch) {
-	            val correction = getCorrection(word, lang, context)
-	            if (correction != null) {
-	                if (shouldApplyExactReplacement(word, correction, isKnownWord, explicitSubstitutionLanguagesEnabled)) {
-	                    Log.d(TAG, "Found correction for word: '$word' → '$correction' (language: $lang)")
-	                    return Pair(word, correction)
-	                }
-	            }
-	        }
+        // Check if there's a correction for the single word in one of the enabled languages
+        for (lang in languagesToSearch) {
+            val correction = getCorrection(word, lang, context)
+            if (correction != null) {
+                if (shouldApplyExactReplacement(word, correction, isKnownWord, explicitSubstitutionLanguagesEnabled)) {
+                    Log.d(TAG, "Found correction for word: '$word' → '$correction' (language: $lang)")
+                    return Pair(word, correction)
+                }
+            }
+        }
 
-	        if (isKnownWord?.invoke(word) == true) {
-	            Log.d(TAG, "Word '$word' is known in an active dictionary, don't auto-substitute")
-	            return null
-	        }
+        if (isKnownWord?.invoke(word) == true) {
+            Log.d(TAG, "Word '$word' is known in an active dictionary, don't auto-substitute")
+            return null
+        }
 
-	        return null
-	    }
+        return null
+    }
 
     /**
      * Records an applied correction.

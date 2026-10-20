@@ -11,6 +11,7 @@ import it.palsoftware.pastiera.inputmethod.DebugCaptureStore
 import it.palsoftware.pastiera.inputmethod.VariationButtonHandler
 import it.palsoftware.pastiera.core.AutoSpaceTracker
 import it.palsoftware.pastiera.core.Punctuation
+import it.palsoftware.pastiera.getAutoCapitalizeFirstLetter
 
 /**
  * Handles clicks on suggestion buttons (full word replacements).
@@ -40,7 +41,11 @@ object SuggestionButtonHandler {
                 shouldDisableAutoCapitalize = shouldDisableAutoCapitalize
             ) && SettingsManager.getAutoCapitalizeFirstLetter(context)
 
-            val committed = replaceCurrentWord(inputConnection, suggestion, forceLeadingCapital)
+            val committed = if (EmojiSuggestion.isEmoji(suggestion)) {
+                EmojiSuggestion.commitAfterWord(inputConnection, suggestion)
+            } else {
+                replaceCurrentWord(inputConnection, suggestion, forceLeadingCapital)
+            }
             if (committed) {
                 onSuggestionCommitted?.invoke()
             }
@@ -106,6 +111,9 @@ object SuggestionButtonHandler {
         }
 
         val wordBeforeCursor = before.substring(start)
+        // Typing in front of a word: a new word keeps the word after the cursor
+        val keepAfter = it.palsoftware.pastiera.core.suggestions.WordInFront.keepsWordAfter(suggestion, wordBeforeCursor, after.substring(0, end))
+        if (keepAfter) end = 0
         val wordAfterCursor = after.substring(0, end)
         val currentWord = wordBeforeCursor + wordAfterCursor
 
@@ -116,8 +124,11 @@ object SuggestionButtonHandler {
         val nextChar = after.getOrNull(end)
         val normalizedNextChar = nextChar?.let { Punctuation.normalizeApostrophe(it) }
         val nextIsWhitespace = normalizedNextChar?.isWhitespace() == true
+        // An email address or link: its space waits for a word after it (a sign-in field would
+        // keep a trailing space as part of the address)
+        val addressLike = '@' in replacement || "://" in replacement || replacement.startsWith("www.", ignoreCase = true)
         val shouldAppendSpace = !replacement.endsWith("'") &&
-            !nextIsWhitespace
+            !nextIsWhitespace && !addressLike
 
         val deleted = inputConnection.deleteSurroundingText(deleteBefore, deleteAfter)
         if (deleted) {
@@ -141,6 +152,9 @@ object SuggestionButtonHandler {
             } else {
                 Log.w(TAG, "Suggestion space could not be enforced")
             }
+        }
+        if (committed && addressLike && !nextIsWhitespace) {
+            it.palsoftware.pastiera.core.DeferredPunctuationSpaceTracker.deferSpace()
         }
         val textToCommit = if (shouldAppendSpace) "$replacement " else replacement
         Log.d(TAG, "Suggestion inserted as '$textToCommit' (committed=$committed)")

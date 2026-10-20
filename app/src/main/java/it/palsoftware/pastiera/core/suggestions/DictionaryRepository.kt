@@ -1,5 +1,6 @@
 package it.palsoftware.pastiera.core.suggestions
 
+import it.palsoftware.pastiera.legacy.LegacyMigrations
 import android.content.Context
 import android.content.res.AssetManager
 import android.util.Log
@@ -9,7 +10,6 @@ import java.util.concurrent.CancellationException
 import kotlin.coroutines.coroutineContext
 import java.util.Locale
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -39,6 +39,21 @@ interface DictionaryRepository {
     fun topCommonEntries(limit: Int = 16): List<DictionaryEntry>
     fun isKnownWord(word: String): Boolean
     fun ensureLoadScheduled(background: () -> Unit)
+
+    /**
+     * How the dictionary always writes [word] when it's only ever capitalised (I, I'm, names,
+     * places, days): that form; null for a word also written in lowercase, or an unknown one.
+     */
+    fun properCasing(word: String): String? {
+        if (!isReady) return null
+        val forms = topByNormalized(normalizeForCasing(word), 8).map { it.word }
+            .filter { it.equals(word, ignoreCase = true) }
+        if (forms.isEmpty() || forms.any { form -> form.firstOrNull { it.isLetter() }?.isLowerCase() == true }) return null
+        return forms.first()
+    }
+
+    /** The key [topByNormalized] looks words up by. */
+    fun normalizeForCasing(word: String): String = word
 }
 
 /**
@@ -138,7 +153,7 @@ class AndroidDictionaryRepository(
                 val startTime = System.currentTimeMillis()
 
                 // Move legacy local dictionaries into the custom folder to isolate imports.
-                migrateLegacyLocalDictionaries()
+                LegacyMigrations.localDictionariesToCustomFolder(context)
 
                 // Determine paths for custom and bundled dictionaries
                 val customDir = File(context.filesDir, "dictionaries_serialized/custom").apply { mkdirs() }
@@ -229,10 +244,6 @@ class AndroidDictionaryRepository(
         buildSymSpell()
     }
 
-    fun addUserEntry(word: String) {
-        addUserEntryQuick(word)
-    }
-
     /**
      * Lightweight add: updates persistent store, then merges a single USER entry
      * into the in-memory indices and SymSpell without rebuilding everything.
@@ -269,6 +280,7 @@ class AndroidDictionaryRepository(
     override fun isKnownWord(word: String): Boolean {
         if (!isReady) return false
         val normalized = normalize(word)
+        if (normalized.isEmpty()) return false
         return normalizedIndex[normalized]?.isNotEmpty() == true
     }
 
@@ -323,20 +335,6 @@ class AndroidDictionaryRepository(
             .maxOfOrNull { it.frequency } ?: 0
     }
 
-    fun lookupByPrefix(prefix: String): List<DictionaryEntry> {
-        if (!isReady || prefix.isBlank()) return emptyList()
-        val normalizedPrefix = normalize(prefix)
-        val maxPrefixLength = normalizedPrefix.length.coerceAtMost(cachePrefixLength)
-
-        for (length in maxPrefixLength downTo 1) {
-            val bucket = prefixCache[normalizedPrefix.take(length)]
-            if (!bucket.isNullOrEmpty()) {
-                return bucket
-            }
-        }
-        return emptyList()
-    }
-
     /**
      * Returns a merged list of candidates from the most specific prefix bucket down to the
      * single-letter bucket, stopping when maxSize is reached. This helps capture common
@@ -372,11 +370,6 @@ class AndroidDictionaryRepository(
 
     override fun bestEntryForNormalized(normalized: String): DictionaryEntry? {
         return normalizedIndex[normalized]?.maxByOrNull { effectiveFrequency(it) }
-    }
-
-    fun allCandidates(): List<DictionaryEntry> {
-        if (!isReady) return emptyList()
-        return normalizedIndex.values.flatten()
     }
 
     /**
@@ -562,6 +555,8 @@ class AndroidDictionaryRepository(
 
         entries.forEach { entry ->
             val normalized = normalize(entry.word)
+            // No letters (a phone number): kept in the user dictionary, never matched as a word
+            if (normalized.isEmpty()) return@forEach
             val bucket = normalizedIndex.getOrPut(normalized) { mutableListOf() }
             bucket.removeAll { it.word.equals(entry.word, ignoreCase = true) && it.source == entry.source }
             bucket.add(entry)
@@ -619,34 +614,6 @@ class AndroidDictionaryRepository(
         symSpellBuilt = true
     }
 
-    /**
-     * Move legacy dictionaries from the root local directory into the custom folder.
-     * This isolates user-imported dictionaries from bundled assets.
-     */
-    private fun migrateLegacyLocalDictionaries() {
-        val rootDir = File(context.filesDir, "dictionaries_serialized")
-        val customDir = File(rootDir, "custom").apply { mkdirs() }
-        if (!rootDir.exists() || rootDir == customDir) return
-
-        rootDir.listFiles()?.forEach { file ->
-            if (file.isDirectory && file.name == "custom") return@forEach
-            if (file.isFile && file.extension == "dict") {
-                val dest = File(customDir, file.name)
-                if (!dest.exists()) {
-                    val moved = file.renameTo(dest)
-                    Log.i(tag, "Migrating legacy dictionary ${file.name} to custom folder: success=$moved")
-                    if (!moved) {
-                        file.copyTo(dest, overwrite = false)
-                        file.delete()
-                    }
-                } else {
-                    Log.i(tag, "Removing duplicate legacy dictionary ${file.name}")
-                    file.delete()
-                }
-            }
-        }
-    }
-
     private fun addToSymSpell(entries: List<DictionaryEntry>) {
         val engine = symSpell ?: run {
             buildSymSpell()
@@ -654,9 +621,12 @@ class AndroidDictionaryRepository(
         }
         entries.forEach { entry ->
             val normalized = normalize(entry.word)
+            if (normalized.isEmpty()) return@forEach
             engine.addWord(normalized, effectiveFrequency(entry))
         }
     }
+
+    override fun normalizeForCasing(word: String): String = normalize(word)
 
     internal fun normalize(word: String): String {
         return WordNormalization.normalizeForDictionary(word, baseLocale)

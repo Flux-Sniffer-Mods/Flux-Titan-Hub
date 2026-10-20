@@ -66,6 +66,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -77,7 +78,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import it.palsoftware.pastiera.AppListHelper
+import it.palsoftware.pastiera.apps.AppListHelper
 import it.palsoftware.pastiera.LocalizedComponentActivity
 import it.palsoftware.pastiera.R
 import it.palsoftware.pastiera.SettingsManager
@@ -98,37 +99,61 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import it.palsoftware.pastiera.getEffectiveKeyboardTheme
+import it.palsoftware.pastiera.getKeyboardLayout
+import it.palsoftware.pastiera.getQuickLauncherAnimationDurationMs
+import it.palsoftware.pastiera.getQuickLauncherAutoStartSingle
+import it.palsoftware.pastiera.getQuickLauncherCommandCustomizations
+import it.palsoftware.pastiera.getQuickLauncherFavoriteColor
+import it.palsoftware.pastiera.getQuickLauncherHighlightFavorites
+import it.palsoftware.pastiera.getQuickLauncherIconColors
+import it.palsoftware.pastiera.getQuickLauncherLimitResults
+import it.palsoftware.pastiera.getQuickLauncherPillMode
+import it.palsoftware.pastiera.getQuickLauncherRespectKeyboardLayout
+import it.palsoftware.pastiera.getQuickLauncherShowAliasFirst
+import it.palsoftware.pastiera.getQuickLauncherStaticTopHighlight
+import it.palsoftware.pastiera.getQuickLauncherStaticTopHighlightColor
+import it.palsoftware.pastiera.getQuickLauncherTypoTolerantRanking
+import it.palsoftware.pastiera.getQuickLauncherWidthPercent
+import it.palsoftware.pastiera.isCommandSourceEnabled
+import it.palsoftware.pastiera.isQuickLauncherShortcut
+import it.palsoftware.pastiera.setQuickLauncherCommandCustomization
 
 class QuickLauncherActivity : LocalizedComponentActivity() {
     private var commands: List<CommandTarget> = emptyList()
     private var query by mutableStateOf("")
     private var autoStartSingle by mutableStateOf(false)
     private var limitResults by mutableStateOf(false)
-    private var widthPercent by mutableStateOf(100)
+    private var widthPercent by mutableIntStateOf(100)
     private var pillMode by mutableStateOf(false)
     private var respectKeyboardLayout by mutableStateOf(true)
     private var typoTolerantRanking by mutableStateOf(false)
     private var filteredCommands by mutableStateOf(emptyList<CommandTarget>())
     private var commandCustomizations: Map<String, SettingsManager.QuickLauncherCommandCustomization> = emptyMap()
-    private var commandCustomizationRevision by mutableStateOf(0)
+    private var commandCustomizationRevision by mutableIntStateOf(0)
     private var highlightFavorites by mutableStateOf(true)
-    private var favoriteColor by mutableStateOf(SettingsManager.QUICK_LAUNCHER_DYNAMIC_FAVORITE_COLOR)
+    private var favoriteColor by mutableIntStateOf(SettingsManager.QUICK_LAUNCHER_DYNAMIC_FAVORITE_COLOR)
     private var iconColors by mutableStateOf(false)
     private var showAliasFirst by mutableStateOf(true)
     private var staticTopHighlight by mutableStateOf(false)
-    private var staticTopHighlightColor by mutableStateOf(0x7A4285F4)
-    private var animationDurationMs by mutableStateOf(120)
+    private var staticTopHighlightColor by mutableIntStateOf(0x7A4285F4)
+    private var animationDurationMs by mutableIntStateOf(120)
     private var loadingApps by mutableStateOf(false)
     private var launchedAutomatically = false
     private var keyboardLayout: Map<Int, LayoutMapping> = emptyMap()
     private var enterHandledOnKeyDown = false
     private var pendingDismissKeyCode: Int? = null
-    private var dismissRequestId by mutableStateOf(0)
+    private var dismissRequestId by mutableIntStateOf(0)
     private var dismissInProgress = false
     private var quickLauncherPrefsListener: SharedPreferences.OnSharedPreferenceChangeListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Android 16 delivers Back (the gesture, and the key once apps target it) as a back
+        // callback rather than a key press: close the same way the Back key does
+        onBackPressedDispatcher.addCallback(this, object : androidx.activity.OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() = requestAnimatedDismiss()
+        })
         disableActivityAnimations()
         window.requestFeature(android.view.Window.FEATURE_NO_TITLE)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
@@ -161,6 +186,8 @@ class QuickLauncherActivity : LocalizedComponentActivity() {
 
         setContent {
             PastieraTheme {
+              // Flux Keyboard: the keyboard's own theme colours, so the two look like one app
+              MaterialTheme(colorScheme = quickLauncherColors(this), typography = MaterialTheme.typography, shapes = MaterialTheme.shapes) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -192,6 +219,7 @@ class QuickLauncherActivity : LocalizedComponentActivity() {
                         onDismissAnimationFinished = { finish() }
                     )
                 }
+              }
             }
         }
 
@@ -204,6 +232,16 @@ class QuickLauncherActivity : LocalizedComponentActivity() {
         if (intent.getBooleanExtra(EXTRA_TOGGLE_REQUEST, false)) {
             requestAnimatedDismiss()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        frontSince = android.os.SystemClock.uptimeMillis()
+    }
+
+    override fun onPause() {
+        frontSince = 0L
+        super.onPause()
     }
 
     override fun onDestroy() {
@@ -249,8 +287,11 @@ class QuickLauncherActivity : LocalizedComponentActivity() {
 
         when (keyCode) {
             KeyEvent.KEYCODE_ENTER -> {
-                enterHandledOnKeyDown = true
-                launchTopMatch()
+                // Holding Enter repeats it: launch once
+                if (event == null || event.repeatCount == 0) {
+                    enterHandledOnKeyDown = true
+                    launchTopMatch()
+                }
                 return true
             }
             KeyEvent.KEYCODE_BACK,
@@ -335,6 +376,11 @@ class QuickLauncherActivity : LocalizedComponentActivity() {
             finish()
         } else {
             Log.w(TAG, "Command failed: ${command.id}")
+            android.widget.Toast.makeText(
+                this,
+                getString(it.palsoftware.pastiera.R.string.quick_launcher_open_failed, command.label),
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -483,6 +529,19 @@ class QuickLauncherActivity : LocalizedComponentActivity() {
     }
 
     companion object {
+        /**
+         * When the quick launcher came to the front (uptime), 0 when it isn't. Keys pressed since
+         * are its own: the keyboard, still attached to the app beneath, lets them through, or
+         * typing into the search would sometimes go nowhere.
+         */
+        @Volatile
+        var frontSince: Long = 0L
+
+        fun ownsKey(event: KeyEvent?): Boolean {
+            val since = frontSince
+            return since != 0L && event != null && event.downTime >= since
+        }
+
         const val EXTRA_TOGGLE_REQUEST = "it.palsoftware.pastiera.inputmethod.extra.TOGGLE_QUICK_LAUNCHER"
         private const val TAG = "QuickLauncher"
         private const val PREF_COMMAND_SURFACE_SOURCES = "command_surface_sources"
@@ -508,6 +567,29 @@ class QuickLauncherActivity : LocalizedComponentActivity() {
             }
         }
     }
+}
+
+/** The quick launcher in the keyboard's theme: its background, keys, text and accent. */
+internal fun quickLauncherColors(context: Context): androidx.compose.material3.ColorScheme {
+    val theme = SettingsManager.getEffectiveKeyboardTheme(context, SettingsManager.KeyboardThemeTarget.HARDWARE)
+    val background = Color(theme.background).copy(alpha = 1f)
+    val text = Color(theme.textAndIcons)
+    val accent = Color(theme.accent)
+    val dark = androidx.core.graphics.ColorUtils.calculateLuminance(theme.background) < 0.5
+    val base = if (dark) androidx.compose.material3.darkColorScheme() else androidx.compose.material3.lightColorScheme()
+    return base.copy(
+        primary = accent,
+        onPrimary = background,
+        primaryContainer = accent.copy(alpha = 0.35f),
+        onPrimaryContainer = text,
+        surface = background,
+        onSurface = text,
+        surfaceVariant = Color(theme.normalKey),
+        onSurfaceVariant = text.copy(alpha = 0.78f),
+        background = background,
+        onBackground = text,
+        outline = Color(theme.divider)
+    )
 }
 
 @Composable

@@ -9,7 +9,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 import okhttp3.OkHttpClient
@@ -18,6 +17,8 @@ import java.io.File
 import java.io.InputStream
 import java.security.MessageDigest
 import it.palsoftware.pastiera.core.suggestions.DictionaryIndex
+
+private val manifestJson = Json { ignoreUnknownKeys = true }
 
 private const val TAG = "DictionaryRepositoryManager"
 private const val MANIFEST_URL = "https://palsoftware.github.io/pastiera-dict/dicts-manifest.json"
@@ -58,6 +59,9 @@ object DictionaryRepositoryManager {
      * Fetches the dictionary manifest from the online repository.
      */
     suspend fun fetchManifest(): Result<DictionaryManifest> = withContext(Dispatchers.IO) {
+        if (it.palsoftware.pastiera.OfflineMode.enabled) {
+            return@withContext Result.failure(java.io.IOException("Offline mode is on"))
+        }
         try {
             Log.d(TAG, "Fetching manifest from: $MANIFEST_URL")
             val request = Request.Builder()
@@ -79,7 +83,7 @@ object DictionaryRepositoryManager {
             }
             
             Log.d(TAG, "Manifest response received, size: ${body.length} bytes")
-            val manifest = Json { ignoreUnknownKeys = true }.decodeFromString<DictionaryManifest>(body)
+            val manifest = manifestJson.decodeFromString<DictionaryManifest>(body)
             Log.d(TAG, "Manifest parsed successfully. Found ${manifest.items.size} dictionaries: ${manifest.items.map { it.filename }.joinToString(", ")}")
             Result.success(manifest)
         } catch (e: SerializationException) {
@@ -100,6 +104,7 @@ object DictionaryRepositoryManager {
         item: DictionaryItem,
         onProgress: ((Long, Long) -> Unit)? = null
     ): DownloadResult = withContext(Dispatchers.IO) {
+        if (it.palsoftware.pastiera.OfflineMode.enabled) return@withContext DownloadResult.NetworkError
         try {
             val request = Request.Builder()
                 .url(item.url)

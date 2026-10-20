@@ -27,11 +27,6 @@ class ClipboardButtonFactory : StatusBarButtonFactory {
     
     companion object {
         private const val FLASH_DURATION_MS = 350L
-        
-        // Tag keys for storing auxiliary views
-        private const val TAG_BADGE = "clipboard_badge"
-        private const val TAG_FLASH_OVERLAY = "clipboard_flash"
-        private const val TAG_ANIMATOR = "clipboard_animator"
     }
     
     override fun create(context: Context, size: Int, callbacks: StatusBarCallbacks): ButtonCreationResult {
@@ -67,7 +62,10 @@ class ClipboardButtonFactory : StatusBarButtonFactory {
         val flashOverlay = view.getTag(R.id.tag_flash_overlay) as? View
         val previousCount = view.getTag(R.id.tag_previous_count) as? Int
         
+        // The count floats on its own layer in the button's corner: the button itself never
+        // moves or resizes, so the bar's spacing stays even
         updateBadge(badge, state.itemCount)
+        view.translationX = 0f
         setStateDescriptionIfChanged(
             view,
             if (state.itemCount <= 0) {
@@ -105,17 +103,24 @@ class ClipboardButtonFactory : StatusBarButtonFactory {
         }
     }
     
+    // A small pill in the button's top corner, clear of the icon (the theme recolours it)
     private fun createBadge(context: Context): TextView {
-        val padding = dpToPx(context, 2f)
+        val padH = dpToPx(context, 3.5f)
+        val size = dpToPx(context, 13f)
         return TextView(context).apply {
-            background = null
+            background = android.graphics.drawable.GradientDrawable().apply {
+                shape = android.graphics.drawable.GradientDrawable.RECTANGLE
+                cornerRadius = size / 2f
+                setColor(Color.parseColor("#1E88E5"))
+            }
             setTextColor(Color.WHITE)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 8.5f)
             typeface = android.graphics.Typeface.DEFAULT_BOLD
+            includeFontPadding = false
             gravity = Gravity.CENTER
-            setPadding(padding, padding, padding, padding)
-            minWidth = 0
-            minHeight = 0
+            setPadding(padH, 0, padH, 0)
+            minWidth = size
+            minHeight = size
             visibility = View.GONE
         }
     }

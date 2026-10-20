@@ -5,7 +5,6 @@ import android.view.inputmethod.InputConnection
 import it.palsoftware.pastiera.core.AutoSpaceTracker
 import it.palsoftware.pastiera.core.Punctuation
 import android.util.Log
-import java.text.Normalizer
 import java.util.Locale
 import it.palsoftware.pastiera.inputmethod.DebugCaptureStore
 
@@ -46,10 +45,7 @@ class AutoReplaceController(
             return WordNormalization.normalizeApostrophes(input)
         }
 
-        internal fun stripAccents(input: String): String {
-            return Normalizer.normalize(input, Normalizer.Form.NFD)
-                .replace("\\p{Mn}".toRegex(), "")
-        }
+        internal fun stripAccents(input: String): String = WordNormalization.stripAccents(input)
 
         /**
          * Split a word with a single apostrophe into prefix (with apostrophe) and root.
@@ -449,24 +445,24 @@ class AutoReplaceController(
             && (top.candidate.length <= (word.length * maxLengthRatio).toInt() ||
                 hasSingleRepeatedCharInsertion(word, top.candidate)) // Max length ratio check on full text
 
-	        if (shouldReplace) {
-	            val replacement = applyCasing(top!!.candidate, word)
-	            if (replacement == word) {
-	                DebugCaptureStore.recordAutoCorrectionAttempt(
-	                    before = word,
-	                    trigger = trigger,
-	                    source = top.source.name,
-	                    after = top.candidate,
-	                    outcome = DebugCaptureStore.AutoCorrectionOutcome.SKIPPED,
-	                    reason = "same_replacement",
-	                    distance = top.distance,
-	                    kind = top.kind.name
-	                )
-	                val boundaryCommitted = commitBoundaryAndReset(tracker, inputConnection, boundaryChar, settings)
-	                return ReplaceResult(false, boundaryCommitted)
-	            }
-	            val source = top.source.name
-	            inputConnection.beginBatchEdit()
+        if (shouldReplace) {
+            val replacement = applyCasing(top!!.candidate, word)
+            if (replacement == word) {
+                DebugCaptureStore.recordAutoCorrectionAttempt(
+                    before = word,
+                    trigger = trigger,
+                    source = top.source.name,
+                    after = top.candidate,
+                    outcome = DebugCaptureStore.AutoCorrectionOutcome.SKIPPED,
+                    reason = "same_replacement",
+                    distance = top.distance,
+                    kind = top.kind.name
+                )
+                val boundaryCommitted = commitBoundaryAndReset(tracker, inputConnection, boundaryChar, settings)
+                return ReplaceResult(false, boundaryCommitted)
+            }
+            val source = top.source.name
+            inputConnection.beginBatchEdit()
             inputConnection.deleteSurroundingText(word.length, 0)
             val shouldAppendBoundary = boundaryChar != null &&
                 !(boundaryChar == ' ' && replacement.endsWith("'"))
@@ -533,8 +529,9 @@ class AutoReplaceController(
         keyCode: Int,
         inputConnection: InputConnection?
     ): Boolean {
-        val settings = settingsProvider()
-        if (!settings.autoReplaceOnSpaceEnter || keyCode != KeyEvent.KEYCODE_DEL || inputConnection == null) {
+        // Any replacement can be undone: auto-replace and text replacements (which apply even with
+        // auto-replace off), so no settings check here
+        if (keyCode != KeyEvent.KEYCODE_DEL || inputConnection == null) {
             return false
         }
 
@@ -581,9 +578,12 @@ class AutoReplaceController(
             deleteCount
         }
 
+        // Keep the space (or punctuation) typed after the word: undo brings the word back, and
+        // typing carries on where it was (palsoftware/pastiera#316)
+        val trailing = textBeforeCursor.takeLast(charsToDelete - replacement.replacedWord.length)
         inputConnection.beginBatchEdit()
         inputConnection.deleteSurroundingText(charsToDelete, 0)
-        inputConnection.commitText(replacement.originalWord, 1)
+        inputConnection.commitText(replacement.originalWord + trailing, 1)
         inputConnection.endBatchEdit()
         
         // Mark word as rejected so it won't be auto-corrected again

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+
+    <string name="app_shortcut_new">Nuovo (messaggio, nota, evento, scheda)</string>
+    <string name="app_shortcut_search">Cerca o trova</string>
+    <string name="app_shortcut_open">Apri o vai a</string>
+    <string name="app_shortcut_refresh">Aggiorna</string>
+    <string name="app_shortcut_send">Invia</string>
+    <string name="app_shortcut_close">Chiudi o termina</string>
+    <string name="app_shortcut_reply">Rispondi</string>
+    <string name="app_shortcut_reply_all">Rispondi a tutti</string>
+    <string name="app_shortcut_forward">Inoltra</string>
+    <string name="app_shortcut_archive">Archivia</string>
+    <string name="app_shortcut_delete">Elimina</string>
+    <string name="app_shortcut_mark_unread">Segna come da leggere</string>
+    <string name="app_shortcut_star">Speciale, contrassegna, fissa o aggiungi ai preferiti</string>
+    <string name="app_shortcut_undo">Annulla l’ultima azione</string>
+    <string name="app_shortcut_next">Elemento successivo (messaggio, scheda, foglio, sessione)</string>
+    <string name="app_shortcut_previous">Elemento precedente</string>
+    <string name="app_shortcut_menu">Menu o pannello laterale</string>
+    <string name="app_shortcut_help">Guida alle scorciatoie</string>
+
+    <string name="app_shortcuts_category_social">Social</string>
+    <string name="app_shortcuts_category_communication">Comunicazione</string>
+    <string name="app_shortcuts_category_browsers">Browser</string>
+    <string name="app_shortcuts_category_productivity">Produttività</string>
+    <string name="app_shortcuts_category_entertainment">Intrattenimento</string>
+    <string name="app_shortcuts_category_video_players">Lettori video</string>
+    <string name="app_shortcuts_category_music">Musica e audio</string>
+    <string name="app_shortcuts_category_shopping">Shopping</string>
+    <string name="app_shortcuts_category_maps">Mappe e navigazione</string>
+    <string name="app_shortcuts_category_travel">Viaggi</string>
+    <string name="app_shortcuts_category_news">Notizie e riviste</string>
+    <string name="app_shortcuts_category_books">Libri e consultazione</string>
+    <string name="app_shortcuts_category_photography">Fotografia</string>
+    <string name="app_shortcuts_category_finance">Finanza</string>
+    <string name="app_shortcuts_category_education">Istruzione</string>
+    <string name="app_shortcuts_category_health">Salute e fitness</string>
+    <string name="app_shortcuts_category_food">Cibo e bevande</string>
+    <string name="app_shortcuts_category_lifestyle">Stile di vita</string>
+    <string name="app_shortcuts_category_business">Lavoro</string>
+    <string name="app_shortcuts_category_tools">Strumenti</string>
+    <string name="app_shortcuts_category_dating">Incontri</string>
+    <string name="app_shortcuts_category_sports">Sport</string>
+    <string name="app_shortcuts_category_weather">Meteo</string>
+    <string name="app_shortcuts_category_terminal">Terminale</string>
+    <string name="app_shortcuts_category_other">Aggiunte da te</string>
+    <string name="enter_standards_title">Standard per categoria</string>
+    <string name="enter_standards_description">Le app installate della lista delle scorciatoie seguono la loro categoria: le app di chat e social usano il tuo preset di messaggistica nei campi messaggio (i campi per post e note tengono Invio come a capo), le app email usano Ctrl+Invio per inviare, le altre app tengono il loro Invio. Tocca un\'app per regolarla.</string>
+    <string name="enter_standard_chat">Chat · %1$s</string>
+    <string name="enter_standard_email">Email · Invio a capo, Ctrl+Invio invia</string>
+    <string name="app_shortcut_settings">Impostazioni dell\'app</string>
+    <string name="app_shortcut_app_action_1">Scorciatoia dell\'app 1</string>
+    <string name="app_shortcut_app_action_2">Scorciatoia dell\'app 2</string>
+    <string name="app_shortcut_app_action_3">Scorciatoia dell\'app 3</string>
+    <string name="app_shortcut_app_action_4">Scorciatoia dell\'app 4</string>
+</resources>

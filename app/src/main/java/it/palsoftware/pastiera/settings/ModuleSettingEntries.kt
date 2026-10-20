@@ -1,0 +1,15 @@
+package it.palsoftware.pastiera.settings
+
+import it.palsoftware.pastiera.R
+
+/** The rows of the smaller pages, so the search finds them too. */
+internal fun moduleSettingEntries(): List<SettingEntry> = listOf(
+    SettingEntry("system.crash_log", R.string.crash_log, summaryRes = R.string.crash_log_description, route = SettingRoute(SettingsDestination.Main)),
+    SettingEntry("system.clear_logs", R.string.crash_log_clear, summaryRes = R.string.crash_log_clear_description, route = SettingRoute(SettingsDestination.Main)),
+    SettingEntry("main.shell_access", R.string.root_title, summaryRes = R.string.settings_shell_access_description, route = SettingRoute(SettingsDestination.Main)),
+    SettingEntry("terminal_mode.add_app", R.string.terminal_mode_add_app, summaryRes = R.string.terminal_mode_add_app_description, route = SettingRoute(SettingsDestination.TerminalMode)),
+    SettingEntry("exact_typing.add_app", R.string.exact_typing_add_app, summaryRes = R.string.exact_typing_add_app_description, route = SettingRoute(SettingsDestination.ExactTyping)),
+    SettingEntry("trackpad.apps_choose", R.string.trackpad_apps_choose_title, summaryRes = R.string.trackpad_apps_choose_description, route = SettingRoute(SettingsDestination.TrackpadGestures)),
+    SettingEntry("led_colors.reset", R.string.led_colors_reset_title, summaryRes = R.string.led_colors_reset_description, route = SettingRoute(SettingsDestination.LedColors)),
+    SettingEntry("emoji_profiles.import", R.string.emoji_profiles_import_title, summaryRes = R.string.emoji_profiles_import_description, route = SettingRoute(SettingsDestination.EmojiProfiles)),
+)

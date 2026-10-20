@@ -14,6 +14,10 @@ import it.palsoftware.pastiera.inputmethod.statusbar.button.SoftwareKeyboardMode
 import it.palsoftware.pastiera.inputmethod.statusbar.button.SymbolsButtonFactory
 import it.palsoftware.pastiera.inputmethod.statusbar.button.StatusBarButtonFactory
 import it.palsoftware.pastiera.inputmethod.statusbar.button.UndoButtonFactory
+import it.palsoftware.pastiera.getPastierinaStatusBarSlotsLeft
+import it.palsoftware.pastiera.getPastierinaStatusBarSlotsRight
+import it.palsoftware.pastiera.getStatusBarSlotsLeft
+import it.palsoftware.pastiera.getStatusBarSlotsRight
 
 /**
  * Central registry for status bar button factories.
@@ -49,6 +53,7 @@ class StatusBarButtonRegistry {
     private val symbolsFactory = SymbolsButtonFactory()
     private val undoFactory = UndoButtonFactory(isRedo = false)
     private val redoFactory = UndoButtonFactory(isRedo = true)
+    private val extraKeysFactory = it.palsoftware.pastiera.inputmethod.statusbar.button.ExtraKeysButtonFactory()
     
     init {
         // Register built-in button factories
@@ -63,6 +68,7 @@ class StatusBarButtonRegistry {
         factories[StatusBarButtonId.Symbols] = symbolsFactory
         factories[StatusBarButtonId.Undo] = undoFactory
         factories[StatusBarButtonId.Redo] = redoFactory
+        factories[StatusBarButtonId.ExtraKeys] = extraKeysFactory
     }
     
     /**
@@ -156,14 +162,24 @@ class StatusBarButtonRegistry {
         return getEnabledButtons(
             leftSlots = SettingsManager.getStatusBarSlotsLeft(context),
             rightSlots = SettingsManager.getStatusBarSlotsRight(context)
-        )
+        ).filterNot { it.id in hiddenForApp }
     }
 
     fun getEnabledPastierinaButtons(context: Context): List<StatusBarButtonConfig> {
         return getEnabledButtons(
             leftSlots = SettingsManager.getPastierinaStatusBarSlotsLeft(context),
             rightSlots = SettingsManager.getPastierinaStatusBarSlotsRight(context)
-        )
+        ).filterNot { it.id in hiddenForApp }
+    }
+
+    companion object {
+        /** Buttons the current app has no use for: the microphone in terminal apps. */
+        @Volatile
+        var hiddenForApp: Set<StatusBarButtonId> = emptySet()
+
+        fun setTerminalApp(terminal: Boolean) {
+            hiddenForApp = if (terminal) setOf(StatusBarButtonId.Microphone) else emptySet()
+        }
     }
 
     fun getEnabledButtons(
@@ -214,39 +230,12 @@ class StatusBarButtonRegistry {
             SettingsManager.STATUS_BAR_BUTTON_SYMBOLS -> StatusBarButtonId.Symbols
             SettingsManager.STATUS_BAR_BUTTON_UNDO -> StatusBarButtonId.Undo
             SettingsManager.STATUS_BAR_BUTTON_REDO -> StatusBarButtonId.Redo
+            SettingsManager.STATUS_BAR_BUTTON_EXTRA_KEYS -> StatusBarButtonId.ExtraKeys
             SettingsManager.STATUS_BAR_BUTTON_NONE -> null
             else -> null
         }
     }
-    
-    /**
-     * Gets the default button configuration.
-     * 
-     * Default layout: [Clipboard] [---variations---] [Emoji] [Language]
-     */
-    fun getDefaultConfiguration(): List<StatusBarButtonConfig> {
-        return listOf(
-            StatusBarButtonConfig(
-                id = StatusBarButtonId.Clipboard,
-                position = StatusBarButtonPosition.LEFT,
-                enabled = true,
-                order = 0
-            ),
-            StatusBarButtonConfig(
-                id = StatusBarButtonId.Emoji,
-                position = StatusBarButtonPosition.RIGHT,
-                enabled = true,
-                order = 0
-            ),
-            StatusBarButtonConfig(
-                id = StatusBarButtonId.Language,
-                position = StatusBarButtonPosition.RIGHT,
-                enabled = true,
-                order = 1
-            )
-        )
-    }
-    
+
     /**
      * Direct access to the microphone factory for audio level updates.
      * This is needed because audio level updates happen frequently and
@@ -258,14 +247,5 @@ class StatusBarButtonRegistry {
      * Direct access to the language factory for text updates.
      */
     fun getLanguageFactory(): LanguageButtonFactory = languageFactory
-    
-    /**
-     * Direct access to the clipboard factory for badge updates.
-     */
-    fun getClipboardFactory(): ClipboardButtonFactory = clipboardFactory
-    
-    /**
-     * Direct access to the emoji factory.
-     */
-    fun getEmojiFactory(): EmojiButtonFactory = emojiFactory
+
 }

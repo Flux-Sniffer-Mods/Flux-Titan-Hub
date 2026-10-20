@@ -2,7 +2,6 @@ package it.palsoftware.pastiera
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +9,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import it.palsoftware.pastiera.ui.theme.PastieraTheme
+import it.palsoftware.pastiera.settings.SettingLinkRegistry
+import it.palsoftware.pastiera.settings.SettingsScreen
+import it.palsoftware.pastiera.settings.putSettingsPage
+import it.palsoftware.pastiera.settings.settingsPage
 
 data class SettingLinkRequest(
     val id: String,
@@ -25,6 +28,7 @@ class SettingsActivity : LocalizedComponentActivity() {
         const val EXTRA_CUSTOMIZATION_DESTINATION = "it.palsoftware.pastiera.CUSTOMIZATION_DESTINATION"
         const val CUSTOMIZATION_DESTINATION_VARIATIONS = "variations"
         const val CUSTOMIZATION_DESTINATION_LAUNCHER_SHORTCUTS = "launcher_shortcuts"
+        const val CUSTOMIZATION_DESTINATION_KEY_SHORTCUTS = "key_shortcuts"
         const val CUSTOMIZATION_DESTINATION_APP_ENTER_BEHAVIOR = "app_enter_behavior"
         const val CUSTOMIZATION_DESTINATION_STATUS_BAR_BUTTONS = "status_bar_buttons"
         const val CUSTOMIZATION_DESTINATION_KEYBOARD_THEME = "keyboard_theme"

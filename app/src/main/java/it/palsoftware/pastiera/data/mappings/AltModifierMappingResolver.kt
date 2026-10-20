@@ -4,7 +4,11 @@ import android.content.Context
 import android.content.res.AssetManager
 import it.palsoftware.pastiera.AltModifierBinding
 import it.palsoftware.pastiera.SettingsManager
-import it.palsoftware.pastiera.SymPagesConfig
+import it.palsoftware.pastiera.sym.SymPagesConfig
+import it.palsoftware.pastiera.getAltModifierBinding
+import it.palsoftware.pastiera.getSymMappings
+import it.palsoftware.pastiera.getSymMappingsPage2
+import it.palsoftware.pastiera.getSymPagesConfig
 
 object AltModifierMappingResolver {
     fun resolve(assets: AssetManager, context: Context): Map<Int, String> {

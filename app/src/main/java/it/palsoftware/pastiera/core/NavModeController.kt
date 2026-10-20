@@ -14,6 +14,7 @@ import it.palsoftware.pastiera.commands.CommandSurface
 import it.palsoftware.pastiera.data.mappings.KeyMappingLoader
 import it.palsoftware.pastiera.inputmethod.NavModeHandler
 import it.palsoftware.pastiera.inputmethod.NotificationHelper
+import it.palsoftware.pastiera.getNavModeEnabled
 
 /**
  * Encapsulates nav-mode specific state and routing logic (Ctrl latch double-tap,
@@ -26,6 +27,12 @@ class NavModeController(
 
     companion object {
         private const val TAG = "NavModeController"
+        /** Moves that extend the selection while selecting from the cursor */
+        private val SELECTION_KEYS = setOf(
+            KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_DPAD_RIGHT, KeyEvent.KEYCODE_DPAD_UP,
+            KeyEvent.KEYCODE_DPAD_DOWN, KeyEvent.KEYCODE_MOVE_HOME, KeyEvent.KEYCODE_MOVE_END,
+            KeyEvent.KEYCODE_PAGE_UP, KeyEvent.KEYCODE_PAGE_DOWN
+        )
     }
 
     private var navModeChangedListener: ((Boolean) -> Unit)? = null
@@ -34,8 +41,6 @@ class NavModeController(
     fun isNavModeActive(): Boolean {
         return modifierStateController.ctrlLatchActive && modifierStateController.ctrlLatchFromNavMode
     }
-
-    fun hasCtrlLatchFromNavMode(): Boolean = modifierStateController.ctrlLatchFromNavMode
 
     fun setOnNavModeChangedListener(listener: ((Boolean) -> Unit)?) {
         navModeChangedListener = listener
@@ -160,7 +165,17 @@ class NavModeController(
         hideNavModeStatusIcon()
     }
 
+    /** Starts selecting from the cursor: Nav Mode on, and its moves extend the selection. */
+    fun startSelectingFromCursor() {
+        if (!isNavModeActive()) {
+            applyNavModeResult(NavModeHandler.NavModeResult(ctrlLatchActive = true))
+        }
+        SelectFromCursor.active = true
+        notifyNavModeChanged()
+    }
+
     fun exitNavMode() {
+        SelectFromCursor.active = false
         if (modifierStateController.ctrlLatchFromNavMode || modifierStateController.ctrlLatchActive) {
             modifierStateController.ctrlLatchFromNavMode = false
             modifierStateController.ctrlLatchActive = false
@@ -171,13 +186,13 @@ class NavModeController(
     }
     
     /**
-     * Riattiva nav mode (usato quando power shortcut termina e nav mode era attivo prima).
-     * Riutilizza applyNavModeResult per mantenere la logica consistente.
+     * Turns nav mode back on (after a Power Shortcut, when it was on before).
+     * Goes through applyNavModeResult so the logic stays the same.
      */
     fun enterNavMode() {
         val navModeEnabled = SettingsManager.getNavModeEnabled(context)
         if (navModeEnabled && !isNavModeActive()) {
-            // Riutilizza la logica esistente per attivare nav mode
+            // The usual way of turning nav mode on
             applyNavModeResult(
                 NavModeHandler.NavModeResult(
                     ctrlLatchActive = true
@@ -206,50 +221,22 @@ class NavModeController(
     }
 
     /**
-     * Mostra l'icona del nav mode nella status bar tramite la vecchia API IME (deprecata).
-     * Usa reflection per supportare sia showStatusIcon() che setStatusIcon().
-     */
-    private fun showNavModeStatusIcon() {
-        try {
-            if (context is android.inputmethodservice.InputMethodService) {
-                val imeClass = android.inputmethodservice.InputMethodService::class.java
-                val iconResId = R.drawable.ic_settings_24 // Placeholder: icona impostazioni per nav mode
-
-                // Prova prima showStatusIcon(int), poi setStatusIcon(int)
-                val methodNames = listOf("showStatusIcon", "setStatusIcon")
-                for (name in methodNames) {
-                    try {
-                        val method = imeClass.getMethod(name, Int::class.javaPrimitiveType)
-                        method.invoke(context, iconResId)
-                        Log.d(TAG, "Nav mode status icon shown using $name")
-                        return
-                    } catch (e: NoSuchMethodException) {
-                        // Prova il nome successivo
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            Log.w(TAG, "Unable to show nav mode status icon", e)
-        }
-    }
-
-    /**
-     * Nasconde l'icona del nav mode dalla status bar tramite la vecchia API IME (deprecata).
-     * Usa reflection per supportare sia hideStatusIcon() che setStatusIcon(0).
+     * Hides the nav mode icon from the status bar through the old (deprecated) IME API.
+     * Uses reflection to support both hideStatusIcon() and setStatusIcon(0).
      */
     private fun hideNavModeStatusIcon() {
         try {
             if (context is android.inputmethodservice.InputMethodService) {
                 val imeClass = android.inputmethodservice.InputMethodService::class.java
 
-                // Prova prima hideStatusIcon(), poi setStatusIcon(0)
+                // Try hideStatusIcon() first, then setStatusIcon(0)
                 try {
                     val hideMethod = imeClass.getMethod("hideStatusIcon")
                     hideMethod.invoke(context)
                     Log.d(TAG, "Nav mode status icon hidden using hideStatusIcon")
                     return
                 } catch (e: NoSuchMethodException) {
-                    // Continua con setStatusIcon(0)
+                    // Carry on with setStatusIcon(0)
                 }
 
                 try {
@@ -257,7 +244,7 @@ class NavModeController(
                     setMethod.invoke(context, 0)
                     Log.d(TAG, "Nav mode status icon hidden using setStatusIcon(0)")
                 } catch (e: NoSuchMethodException) {
-                    // Nessuna API disponibile: non fare nulla
+                    // Neither is available: do nothing
                 }
             }
         } catch (e: Exception) {
@@ -272,7 +259,10 @@ class NavModeController(
     ): Boolean {
         val downTime = event?.downTime ?: SystemClock.uptimeMillis()
         val eventTime = event?.eventTime ?: downTime
-        val metaState = event?.metaState ?: 0
+        // Selecting from the cursor: arrows, Home and End move with Shift, extending the selection
+        val selecting = SelectFromCursor.active && mappedKeyCode in SELECTION_KEYS
+        val metaState = (event?.metaState ?: 0) or
+            (if (selecting) KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON else 0)
 
         val downEvent = KeyEvent(
             downTime,
@@ -363,4 +353,5 @@ class NavModeController(
         }
         lastNavModeActive = isActiveNow
     }
+
 }

@@ -15,11 +15,13 @@ import it.palsoftware.pastiera.data.mappings.KeyMappingLoader
 import android.os.Handler
 import android.os.Looper
 import it.palsoftware.pastiera.core.SymLayoutController
+import it.palsoftware.pastiera.core.SmartModifierToggle
 import it.palsoftware.pastiera.core.SymLayoutController.SymKeyResult
 import it.palsoftware.pastiera.core.TextInputController
 import it.palsoftware.pastiera.core.AutoCorrectionManager
 import it.palsoftware.pastiera.core.ModifierStateController
 import it.palsoftware.pastiera.core.AutoSpaceTracker
+import it.palsoftware.pastiera.getAutoSpacePunctuation
 import android.view.inputmethod.ExtractedText
 import android.view.inputmethod.ExtractedTextRequest
 import it.palsoftware.pastiera.commands.CommandExecutor
@@ -28,6 +30,23 @@ import it.palsoftware.pastiera.commands.CommandSurface
 import it.palsoftware.pastiera.data.layout.LayoutMapping
 import it.palsoftware.pastiera.data.layout.LayoutMappingRepository
 import it.palsoftware.pastiera.data.layout.isRealMultiTap
+import it.palsoftware.pastiera.getAltBackspaceDelete
+import it.palsoftware.pastiera.getAltLatchStaysOnSpace
+import it.palsoftware.pastiera.getBackspaceAtStartDelete
+import it.palsoftware.pastiera.getLauncherShortcutsEnabled
+import it.palsoftware.pastiera.getLayoutAwareCtrlShortcutsEnabled
+import it.palsoftware.pastiera.getLongPressModifier
+import it.palsoftware.pastiera.getNavModeCtrlHoldEnabled
+import it.palsoftware.pastiera.getQuickLauncherAltShortcutsOutsideTextFields
+import it.palsoftware.pastiera.getQuickLauncherTextFieldShortcuts
+import it.palsoftware.pastiera.getShiftBackspaceDelete
+import it.palsoftware.pastiera.getSmartAltOffAfterOpening
+import it.palsoftware.pastiera.getSmartCtrlOffAfterShortcut
+import it.palsoftware.pastiera.getSwipeToDelete
+import it.palsoftware.pastiera.getSwipeToDeleteProvider
+import it.palsoftware.pastiera.isQuickLauncherShortcut
+import it.palsoftware.pastiera.isSuggestionDebugLoggingEnabled
+import it.palsoftware.pastiera.shouldApplyFrenchPunctuationSpacing
 
 /**
  * Routes IME key events to the appropriate handlers so that the service can
@@ -102,7 +121,7 @@ class InputEventRouter(
         val isLauncherPackage: (String?) -> Boolean,
         val handleLauncherShortcut: (Int) -> Boolean,
         val handlePowerShortcut: (Int) -> Boolean,
-        val togglePowerShortcutMode: (String, Boolean) -> Unit, // Callback per toast e stato nav mode
+        val togglePowerShortcutMode: (String, Boolean) -> Unit, // Toast and nav mode state
         val callSuper: () -> Boolean,
         val currentInputConnection: () -> InputConnection?
     )
@@ -126,12 +145,12 @@ class InputEventRouter(
             return callbacks.callSuper()
         }
 
-        // Gestisci SYM per Power Shortcuts (toggle: attiva/disattiva)
+        // SYM for Power Shortcuts (toggles on and off)
         if (keyCode == KeyEvent.KEYCODE_SYM && powerShortcutsEnabled) {
             val message = context.getString(R.string.power_shortcuts_press_key)
             val isNavModeActive = navModeController.isNavModeActive()
             callbacks.togglePowerShortcutMode(message, isNavModeActive)
-            return true // Consumiamo l'evento
+            return true // Consume the event
         }
 
         if (navModeController.isNavModeKey(keyCode)) {
@@ -168,7 +187,7 @@ class InputEventRouter(
             return true
         }
 
-        // Gestisci Power Shortcuts (SYM premuto + tasto alfabetico)
+        // Power Shortcuts (SYM pressed, then a letter key)
         if (!ctrlLatchActive && powerShortcutsEnabled) {
             if (callbacks.isShortcutKey(keyCode)) {
                 if (callbacks.handlePowerShortcut(keyCode)) {
@@ -177,7 +196,7 @@ class InputEventRouter(
             }
         }
 
-        // Launcher Shortcuts (logica esistente - mantieni per compatibilità)
+        // Launcher shortcuts
         if (!ctrlLatchActive && SettingsManager.getLauncherShortcutsEnabled(context)) {
             val packageName = editorInfo?.packageName ?: currentPackageName
             if (callbacks.isLauncherPackage(packageName) && callbacks.isShortcutKey(keyCode)) {
@@ -498,6 +517,18 @@ class InputEventRouter(
                     callSuperWithKey = callbacks.callSuperWithKey
                 )
             ) {
+                // Smart toggle: Alt lock + an opening quote or bracket means words come next
+                if (altLatchActive && SettingsManager.getSmartAltOffAfterOpening(context)) {
+                    val typed = (params.altMappingsOverride
+                        ?: controllers.alternateCharacterManager.getAltModifierMappings())[keyCode]
+                    val before = ic?.getTextBeforeCursor(2, 0)?.let { text ->
+                        if (typed != null && text.endsWith(typed)) text.dropLast(typed.length) else text
+                    }
+                    if (typed != null && SmartModifierToggle.opensQuoteOrBracket(typed, before)) {
+                        controllers.modifierStateController.clearAltState()
+                        callbacks.updateStatusBar()
+                    }
+                }
                 return EditableFieldRoutingResult.Consume
             }
         }
@@ -522,6 +553,17 @@ class InputEventRouter(
                     toggleMinimalUi = callbacks.toggleMinimalUi
                 )
             ) {
+                // Smart toggle: a tapped Ctrl latch is done after one shortcut (cursor moves keep it)
+                val ctrlMapping = params.ctrlKeyMap[keyCode]
+                if (
+                    params.ctrlLatchActive && !params.ctrlLatchFromNavMode &&
+                    event?.isCtrlPressed != true && !params.ctrlPressed && !params.ctrlPhysicallyPressed &&
+                    !SmartModifierToggle.isNavigation(ctrlMapping?.type, ctrlMapping?.value) &&
+                    SettingsManager.getSmartCtrlOffAfterShortcut(context)
+                ) {
+                    controllers.modifierStateController.clearCtrlState()
+                    callbacks.updateStatusBar()
+                }
                 return EditableFieldRoutingResult.Consume
             }
         }
@@ -851,6 +893,15 @@ class InputEventRouter(
             '’', '‘', 'ʼ' -> '\''
             else -> typedCharRaw
         }
+        // A picked suggestion's space stays only if another word follows: Enter right after
+        // it drops the space (a sent message or a new line doesn't end in one)
+        if (isEnterKey && inputConnection != null && AutoSpaceTracker.isPending()) {
+            val before = inputConnection.getTextBeforeCursor(2, 0)?.toString().orEmpty()
+            if (before.length == 2 && before[1] == ' ' && !before[0].isWhitespace()) {
+                inputConnection.deleteSurroundingText(1, 0)
+            }
+            AutoSpaceTracker.clear()
+        }
         val prevCharRaw = inputConnection?.getTextBeforeCursor(1, 0)?.lastOrNull()
         val prevChar = when (prevCharRaw) {
             '’', '‘', 'ʼ' -> '\''
@@ -874,10 +925,8 @@ class InputEventRouter(
             AutoSpaceTracker.clear()
         }
 
-        // Try new dictionary-based auto-replace undo first (if experimental suggestions enabled)
-        if (keyCode == KeyEvent.KEYCODE_DEL && 
-            SettingsManager.isExperimentalSuggestionsEnabled(context) &&
-            SettingsManager.getAutoReplaceOnSpaceEnter(context)) {
+        // Undo the last auto-replace or text replacement first (it only acts right after one)
+        if (keyCode == KeyEvent.KEYCODE_DEL) {
             
             val sc = suggestionController
             if (sc != null) {
@@ -1077,6 +1126,16 @@ class InputEventRouter(
             suggestionController?.onContextReset()
             return true
         }
+        // Punctuation straight after a picked suggestion goes next to the word (its space after)
+        if (
+            isPunctuation && inputConnection != null &&
+            !SettingsManager.shouldApplyFrenchPunctuationSpacing(context) &&
+            (typedChar in SettingsManager.getAutoSpacePunctuation(context) || typedChar in it.palsoftware.pastiera.core.Punctuation.NEXT_TO_PICKED_WORD) &&
+            AutoSpaceTracker.replaceAutoSpaceWithPunctuation(inputConnection, typedChar.toString())
+        ) {
+            suggestionController?.onContextReset()
+            return true
+        }
         if (
             isPunctuation &&
             SettingsManager.shouldApplyFrenchPunctuationSpacing(context) &&
@@ -1193,10 +1252,18 @@ class InputEventRouter(
                 val altChar = (altMappingsOverride ?: alternateCharacterManager.getAltModifierMappings())[keyCode]
                 if (altChar != null) {
                     val dpadKeyCode = deviceLayerDpadKeyCode(altChar)
-                    if (dpadKeyCode != null) {
-                        sendModifiedKeyEvent(ic, dpadKeyCode, ctrl = false, shift = false)
-                    } else {
-                        ic.commitText(altChar, 1)
+                    val numberKey = numberFieldKeyCode(altChar)
+                    when {
+                        dpadKeyCode != null -> sendModifiedKeyEvent(ic, dpadKeyCode, ctrl = false, shift = false)
+                        // A decimal point, minus or the like goes as its key, which number
+                        // fields take even where typed text is refused, in the separator the
+                        // field expects
+                        numberKey != null -> {
+                            val now = android.os.SystemClock.uptimeMillis()
+                            ic.sendKeyEvent(KeyEvent(now, now, KeyEvent.ACTION_DOWN, numberKey, 0))
+                            ic.sendKeyEvent(KeyEvent(now, now, KeyEvent.ACTION_UP, numberKey, 0))
+                        }
+                        else -> ic.commitText(altChar, 1)
                     }
                     Handler(Looper.getMainLooper()).postDelayed({
                         updateStatusBar()
@@ -1228,6 +1295,21 @@ class InputEventRouter(
         }
 
         return false
+    }
+
+    /** A number field's own key for a typed [char] ("." "," "-" "+"), with "." and "," as the phone's decimal separator. */
+    private fun numberFieldKeyCode(char: String): Int? {
+        val separator = java.text.DecimalFormatSymbols.getInstance().decimalSeparator
+        return when (char) {
+            ".", "," -> if (separator == ',') KeyEvent.KEYCODE_COMMA else KeyEvent.KEYCODE_PERIOD
+            "-" -> KeyEvent.KEYCODE_MINUS
+            "+" -> KeyEvent.KEYCODE_PLUS
+            "*" -> KeyEvent.KEYCODE_STAR
+            "#" -> KeyEvent.KEYCODE_POUND
+            "/" -> KeyEvent.KEYCODE_SLASH
+            "=" -> KeyEvent.KEYCODE_EQUALS
+            else -> null
+        }
     }
 
     /**
@@ -1324,6 +1406,23 @@ class InputEventRouter(
                 ic.sendKeyEvent(down)
             }
             return true
+        }
+
+        // Ctrl+Z, Ctrl+Shift+Z and Ctrl+Y: the keyboard's own typing history, in any app (the
+        // app's own undo when the keyboard has nothing to undo)
+        if (!ctrlLatchFromNavMode && event?.repeatCount == 0 && inputConnection != null) {
+            val shift = event?.isShiftPressed == true
+            val undoKey = shortcutKeyCode == KeyEvent.KEYCODE_Z
+            val redoKey = shortcutKeyCode == KeyEvent.KEYCODE_Y && isPhysicalCtrlCombo
+            if ((undoKey || redoKey) &&
+                (context as? PhysicalKeyboardInputMethodService)?.undoFromHistory(redo = redoKey || shift) == true
+            ) {
+                if (ctrlOneShot) {
+                    clearCtrlOneShot()
+                    updateStatusBar()
+                }
+                return true
+            }
         }
 
         // When Ctrl is physically held, prefer native app shortcuts (rich-text editors, IDEs, etc.).
@@ -1633,7 +1732,7 @@ class InputEventRouter(
                 return callSuper()
             }
 
-            // No explicit Pastiera mapping: preserve app-native Ctrl shortcuts (e.g. Ctrl+B/Ctrl+I).
+            // No explicit keyboard mapping: preserve app-native Ctrl shortcuts (e.g. Ctrl+B/Ctrl+I).
             if (isPhysicalCtrlCombo && !ctrlLatchFromNavMode) {
                 return passThroughCtrlCombo()
             }
@@ -1695,22 +1794,6 @@ class InputEventRouter(
         } else {
             keyCode
         }
-    }
-
-    private fun KeyEvent.withKeyCode(newKeyCode: Int): KeyEvent {
-        if (keyCode == newKeyCode) return this
-        return KeyEvent(
-            downTime,
-            eventTime,
-            action,
-            newKeyCode,
-            repeatCount,
-            metaState,
-            deviceId,
-            scanCode,
-            flags,
-            source
-        )
     }
 
     private fun KeyEvent.withKeyCodeAndCtrl(newKeyCode: Int): KeyEvent {

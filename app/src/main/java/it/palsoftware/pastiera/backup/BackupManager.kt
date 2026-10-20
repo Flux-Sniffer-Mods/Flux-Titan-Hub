@@ -19,6 +19,9 @@ import java.io.IOException
 import java.nio.ByteBuffer
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import it.palsoftware.pastiera.getTypingSoundMode
+import it.palsoftware.pastiera.initializeNavModeMappingsFile
+import it.palsoftware.pastiera.notifyVariationsUpdated
 
 object BackupManager {
     private const val TAG = "BackupManager"

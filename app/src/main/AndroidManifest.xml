@@ -2,39 +2,47 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Permesso per le notifiche (richiesto da Android 13+) -->
+    <!-- Notifications (asked for on Android 13+) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- The built-in shell switches wireless debugging on at boot (granted through it once) -->
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     
-    <!-- Permesso per la vibrazione (richiesto per haptic feedback) -->
+    <!-- Vibration, for haptic feedback -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
-    <!-- Riavvia il timeout dello schermo dopo un tocco sulla tastiera -->
+    <!-- Restarts the screen timeout after a key press -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     
-    <!-- Permesso per il riconoscimento vocale -->
+    <!-- Voice input -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     
-    <!-- Permesso per l'accesso a Internet (richiesto per il controllo aggiornamenti) -->
+    <!-- Internet: update checks, online layouts and dictionaries -->
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- Lettura delle informazioni del Clicks Power Keyboard tramite BLE GATT -->
+    <!-- Reads the Clicks Power Keyboard's details over Bluetooth LE -->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
-    <!-- Permesso per mostrare finestre overlay (per debug trackpad) -->
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
-    <!-- Query per vedere tutte le app installate che possono essere avviate -->
+    <!-- Apps the keyboard needs to see: launchable apps and the ones below -->
     <queries>
+        <!-- Termux: set up for the keyboard by a command pasted into it -->
+        <package android:name="com.termux" />
         <intent>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent>
         
-        <!-- Query per vedere i launcher -->
+        <!-- Home screen apps -->
         <intent>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.HOME" />
+        </intent>
+
+        <!-- Apps offering shortcuts for the home screen: Add a shortcut -->
+        <intent>
+            <action android:name="android.intent.action.CREATE_SHORTCUT" />
         </intent>
 
         <!-- Optional QuickLauncher backend: Niagara Launcher search deep link -->
@@ -42,13 +50,18 @@
         <package android:name="net.dinglisch.android.taskerm" />
         <package android:name="io.homeassistant.companion.android" />
         <package android:name="com.clicks.companionapp" />
+        <!-- Unihertz's settings app: the Titan 2 Elite's Keyboard gesture page -->
+        <package android:name="com.agui.settings" />
+        <!-- Shizuku: granting it what it needs to start at boot, then opening it -->
+        <package android:name="moe.shizuku.privileged.api" />
     </queries>
 
     <application
         android:name=".PastieraApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
+        android:localeConfig="@xml/locales_config"
         android:icon="@mipmap/ic_launcher"
         android:label="${appLabel}"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -88,7 +101,7 @@
             </intent-filter>
         </activity>
         
-        <!-- Activity per la personalizzazione SYM -->
+        <!-- SYM customisation -->
         <activity
             android:name=".SymCustomizationActivity"
             android:exported="false"
@@ -98,9 +111,9 @@
         <activity android:name=".KeyboardLayoutActivity" android:exported="false" android:theme="@style/Theme.Pastiera" />
 
         <activity android:name=".CornerCalibrationActivity" android:exported="false"
-            android:label="Displaykurve kalibrieren" android:theme="@style/Theme.Pastiera" />
+            android:label="@string/corner_calibration_title" android:theme="@style/Theme.Pastiera" />
 
-        <!-- Activity per le impostazioni -->
+        <!-- Settings -->
         <activity
             android:name=".SettingsActivity"
             android:configChanges="keyboard|keyboardHidden|navigation"
@@ -142,13 +155,6 @@
             </intent-filter>
         </activity>
         
-        <!-- Activity per gestire le lingue degli input method subtypes -->
-        <activity
-            android:name=".LanguagesActivity"
-            android:exported="false"
-            android:label="@string/languages_title"
-            android:theme="@style/Theme.Pastiera" />
-        
         <activity
             android:name=".dictionaries.InstalledDictionariesActivity"
             android:exported="false"
@@ -170,7 +176,7 @@
             android:excludeFromRecents="true"
             android:launchMode="singleInstance" />
 
-        <!-- Servizio di immissione per tastiera fisica -->
+        <!-- The keyboard (input method service) -->
         <service
             android:name=".inputmethod.PhysicalKeyboardInputMethodService"
             android:label="${imeLabel}"
@@ -197,7 +203,7 @@
                 android:resource="@xml/clicks_launcher_button_accessibility_service" />
         </service>
 
-        <!-- Attività helper per il riconoscimento vocale -->
+        <!-- Voice input helper -->
         <activity
             android:name=".inputmethod.SpeechRecognitionActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
@@ -206,7 +212,7 @@
             android:launchMode="singleTask"
             android:taskAffinity="com.google.android.inputmethod.latin" />
         
-        <!-- Attività helper per richiedere il permesso del microfono -->
+        <!-- Asks for the microphone permission -->
         <activity
             android:name=".inputmethod.PermissionRequestActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
@@ -215,7 +221,7 @@
             android:launchMode="singleTask"
             android:taskAffinity="" />
         
-        <!-- Attività per assegnare scorciatoie del launcher -->
+        <!-- Assigns launcher shortcuts to keys -->
         <activity
             android:name=".inputmethod.LauncherShortcutAssignmentActivity"
             android:theme="@style/Theme.Pastiera.OverlayDialog"
@@ -245,6 +251,19 @@
             android:taskAffinity=""
             android:noHistory="true"
             android:finishOnTaskLaunch="true" />
+
+        <!-- Opens the QuickLauncher from other apps: key mappers, side buttons, Tasker, the app
+             icon's long-press shortcut (palsoftware/pastiera#292) -->
+        <activity-alias
+            android:name=".QuickLauncherEntry"
+            android:targetActivity=".inputmethod.QuickLauncherActivity"
+            android:exported="true"
+            android:label="@string/quick_launcher_title">
+            <intent-filter>
+                <action android:name="it.palsoftware.pastiera.action.QUICK_LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity-alias>
 
         <!-- Shizuku provider -->
         <provider

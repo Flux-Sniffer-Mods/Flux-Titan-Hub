@@ -5,6 +5,12 @@ import android.view.KeyEvent
 import android.view.inputmethod.InputConnection
 import it.palsoftware.pastiera.SettingsManager
 import it.palsoftware.pastiera.inputmethod.AutoCapitalizeHelper
+import it.palsoftware.pastiera.getDoubleSpaceToPeriod
+import it.palsoftware.pastiera.getMidWordQuoteToApostrophe
+import it.palsoftware.pastiera.getSmartQuotes
+import it.palsoftware.pastiera.getSmartQuotesStyle
+import it.palsoftware.pastiera.getSpacedHyphenDashStyle
+import it.palsoftware.pastiera.getSpacedHyphenToEnDash
 
 /**
  * Orchestrates text-level helpers such as double-space-to-period and
@@ -95,6 +101,13 @@ class TextInputController(
             lastSpacePressTime = currentTime
             return false
         }
+        // Only after something typed: not at the start of the field or a line, and not after
+        // other punctuation ("Hello, " never becomes "Hello,. ")
+        val beforeSpaces = textBeforeCursor.trimEnd(' ').lastOrNull()
+        if (beforeSpaces == null || beforeSpaces.isWhitespace() || beforeSpaces in ",;:-–—([{/\\") {
+            lastSpacePressTime = currentTime
+            return false
+        }
 
         val spacesToReplace = if (endsWithDoubleSpaceAfterAutoSpace) 2 else 1
         inputConnection.deleteSurroundingText(spacesToReplace, 0)
@@ -106,7 +119,8 @@ class TextInputController(
             shouldDisableAutoCapitalize = shouldDisableAutoCapitalize,
             onEnableShift = { modifierStateController.requestShiftOneShotFromAutoCap() },
             disableShift = { modifierStateController.consumeShiftOneShot() },
-            onUpdateStatusBar = onStatusBarUpdate
+            onUpdateStatusBar = onStatusBarUpdate,
+            committed = ". "
         )
         lastSpacePressTime = 0
         return true
@@ -131,7 +145,8 @@ class TextInputController(
                 shouldDisableAutoCapitalize = shouldDisableAutoCapitalize,
                 onEnableShift = { modifierStateController.requestShiftOneShotFromAutoCap() },
                 disableShift = { modifierStateController.consumeShiftOneShot() },
-                onUpdateStatusBar = onStatusBarUpdate
+                onUpdateStatusBar = onStatusBarUpdate,
+                committed = " "
             )
         }
     }

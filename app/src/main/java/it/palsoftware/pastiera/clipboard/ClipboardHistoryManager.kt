@@ -71,6 +71,9 @@ class ClipboardHistoryManager internal constructor(
             return
         }
 
+        // Passwords and codes copied from password managers never go into the history
+        if (isSensitive(clipData)) return
+
         clipData.getItemAt(0)?.let { clipItem ->
             val timeStamp = System.currentTimeMillis() // TODO: Get actual clip timestamp if available
             val content = clipItem.coerceToText(context)
@@ -82,6 +85,9 @@ class ClipboardHistoryManager internal constructor(
         }
     }
 
+    private fun isSensitive(clipData: android.content.ClipData): Boolean =
+        clipData.description?.extras?.getBoolean(SENSITIVE_EXTRA) == true
+
     fun toggleClipPinned(id: Long) {
         if (!isHistoryAccessible()) return
         clipboardDao?.togglePinned(id)
@@ -92,9 +98,7 @@ class ClipboardHistoryManager internal constructor(
         clipboardDao?.clearNonPinned()
         try {
             // Clear system clipboard (API 28+)
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-                clipboardManager.clearPrimaryClip()
-            }
+            clipboardManager.clearPrimaryClip()
         } catch (e: Exception) {
             Log.w(TAG, "Failed to clear system clipboard", e)
         }
@@ -119,11 +123,6 @@ class ClipboardHistoryManager internal constructor(
         } else {
             clipboardDao?.deleteClipAt(index)
         }
-    }
-
-    fun sortHistoryEntries() {
-        if (!isHistoryAccessible()) return
-        clipboardDao?.sort()
     }
 
     fun prepareClipboardHistory() {
@@ -168,42 +167,6 @@ class ClipboardHistoryManager internal constructor(
         inputConnection?.commitText(text, 1)
     }
 
-    /**
-     * Shows the clipboard history popup above the keyboard.
-     * Returns the popup view that was created.
-     */
-    fun showClipboardHistoryPopup(
-        inputConnection: android.view.inputmethod.InputConnection?,
-        onDismiss: () -> Unit
-    ): ClipboardHistoryPopupView? {
-        if (!isEnabled) return null
-
-        prepareClipboardHistory()
-
-        return ClipboardHistoryPopupView(context, this).apply {
-            setOnItemClickListener { entry ->
-                pasteText(entry.text, inputConnection)
-                dismiss()
-                onDismiss()
-            }
-            setOnPinClickListener { entry ->
-                toggleClipPinned(entry.id)
-            }
-            setOnDeleteClickListener { entry ->
-                val index = getHistoryEntry(0)?.let {
-                    (0 until getHistorySize()).find { idx ->
-                        getHistoryEntry(idx)?.id == entry.id
-                    }
-                }
-                index?.let { removeEntry(it, force = true) }
-            }
-            setOnClearAllClickListener {
-                clearHistory()
-            }
-            show()
-        }
-    }
-
     private fun getClipboardHistoryEnabled(): Boolean {
         return SettingsManager.getClipboardHistoryEnabled(context)
     }
@@ -231,5 +194,7 @@ class ClipboardHistoryManager internal constructor(
 
     companion object {
         private const val TAG = "ClipboardHistoryManager"
+        // ClipDescription.EXTRA_IS_SENSITIVE (Android 13), set by password managers and read on every version
+        private const val SENSITIVE_EXTRA = "android.content.extra.IS_SENSITIVE"
     }
 }

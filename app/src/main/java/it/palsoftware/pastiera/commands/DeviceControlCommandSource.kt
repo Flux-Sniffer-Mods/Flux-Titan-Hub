@@ -3,7 +3,6 @@ package it.palsoftware.pastiera.commands
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.provider.Settings
 
 class DeviceControlCommandSource : CommandSource {
@@ -20,6 +19,10 @@ class DeviceControlCommandSource : CommandSource {
             add(deviceAction("device.volume.mute", "Mute volume", "Audio", ACTION_VOLUME_MUTE))
             add(deviceAction("device.brightness.up", "Brightness up", "Display", ACTION_BRIGHTNESS_UP))
             add(deviceAction("device.brightness.down", "Brightness down", "Display", ACTION_BRIGHTNESS_DOWN))
+            if (it.palsoftware.pastiera.inputmethod.DeviceSpecific.isTitan2EliteDevice()) {
+                // The phone's own trackpad settings: touch scrolling and cursor movement on the keys
+                add(deviceAction("settings.android.trackpad", "Trackpad scroll & cursor", "Phone settings", ACTION_PHONE_TRACKPAD_SETTINGS))
+            }
             add(settingsCommand("settings.android.main", "Settings", Settings.ACTION_SETTINGS))
             add(settingsCommand("settings.android.apps", "Apps", Settings.ACTION_APPLICATION_SETTINGS))
             add(settingsCommand("settings.android.default_apps", "Default apps", Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS))
@@ -28,25 +31,21 @@ class DeviceControlCommandSource : CommandSource {
             add(settingsCommand("settings.android.language_input", "Language & input", Settings.ACTION_LOCALE_SETTINGS))
             add(settingsCommand("settings.android.bluetooth", "Bluetooth", Settings.ACTION_BLUETOOTH_SETTINGS))
             add(settingsCommand("settings.android.wifi", "Wi-Fi", Settings.ACTION_WIFI_SETTINGS))
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                add(settingsCommand("settings.android.internet_panel", "Internet", Settings.Panel.ACTION_INTERNET_CONNECTIVITY, opensPanel = true))
-            }
+            add(settingsCommand("settings.android.internet_panel", "Internet", Settings.Panel.ACTION_INTERNET_CONNECTIVITY, opensPanel = true))
             add(settingsCommand("settings.android.display", "Display / brightness", Settings.ACTION_DISPLAY_SETTINGS))
             add(settingsCommand("settings.android.sound", "Sound & vibration", Settings.ACTION_SOUND_SETTINGS))
             add(settingsCommand("settings.android.nfc", "NFC", Settings.ACTION_NFC_SETTINGS))
             add(settingsCommand("settings.android.battery", "Battery", Settings.ACTION_BATTERY_SAVER_SETTINGS))
             add(settingsCommand("settings.android.notifications", "Notifications", ACTION_NOTIFICATION_SETTINGS))
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                add(
-                    settingsCommand(
-                        id = "settings.android.pastiera_notifications",
-                        label = "Pastiera notifications",
-                        action = Settings.ACTION_APP_NOTIFICATION_SETTINGS,
-                        data = null,
-                        extras = mapOf(Settings.EXTRA_APP_PACKAGE to context.packageName)
-                    )
+            add(
+                settingsCommand(
+                    id = "settings.android.pastiera_notifications",
+                    label = "${it.palsoftware.pastiera.BuildConfig.APP_NAME} notifications",
+                    action = Settings.ACTION_APP_NOTIFICATION_SETTINGS,
+                    data = null,
+                    extras = mapOf(Settings.EXTRA_APP_PACKAGE to context.packageName)
                 )
-            }
+            )
         }.filter { context.canResolve(it.launch) }
     }
 
@@ -124,6 +123,7 @@ class DeviceControlCommandSource : CommandSource {
         const val ACTION_VOLUME_MUTE = "device.volume.mute"
         const val ACTION_BRIGHTNESS_UP = "device.brightness.up"
         const val ACTION_BRIGHTNESS_DOWN = "device.brightness.down"
+        const val ACTION_PHONE_TRACKPAD_SETTINGS = "device.trackpad_settings"
         private const val ACTION_NOTIFICATION_SETTINGS = "android.settings.NOTIFICATION_SETTINGS"
     }
 }

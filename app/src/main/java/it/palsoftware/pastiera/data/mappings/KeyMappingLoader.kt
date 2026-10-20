@@ -7,6 +7,7 @@ import android.view.KeyEvent
 import it.palsoftware.pastiera.SettingsManager
 import org.json.JSONObject
 import java.io.InputStream
+import it.palsoftware.pastiera.getNavModeMappingsFile
 
 /**
  * Helper for loading key mappings from JSON files.
@@ -14,7 +15,7 @@ import java.io.InputStream
 object KeyMappingLoader {
     private const val TAG = "KeyMappingLoader"
 
-    private val keyCodeMap = mapOf(
+    internal val keyCodeMap = mapOf(
         "KEYCODE_Q" to KeyEvent.KEYCODE_Q,
         "KEYCODE_W" to KeyEvent.KEYCODE_W,
         "KEYCODE_E" to KeyEvent.KEYCODE_E,

@@ -8,6 +8,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -23,8 +24,8 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.asComposePath
-import it.palsoftware.pastiera.T2eCornerCalibration
-import it.palsoftware.pastiera.T2eCornerGeometry
+import it.palsoftware.pastiera.device.T2eCornerCalibration
+import it.palsoftware.pastiera.device.T2eCornerGeometry
 import it.palsoftware.pastiera.SettingsManager
 import it.palsoftware.pastiera.inputmethod.DeviceSpecific
 import androidx.compose.runtime.getValue
@@ -49,14 +50,25 @@ import androidx.compose.ui.unit.dp
 import it.palsoftware.pastiera.R
 import kotlin.math.hypot
 
-// Pastiera colors inspired by the dessert
-private val PastieraBeige = Color(0xFF6B5435)
-private val PastieraBeigeDark = Color(0xFF8B6F47)
-private val PastieraOrangeLight = Color(0xFFFFB84D)
-private val PastieraYellow = Color(0xFFF2B24C)
+/**
+ * The lattice's colours: Flux Titan Hub's own purple, leaning to magenta (as its app-list icons
+ * are), in two dark shades behind and two light ones for the moving stripes, so the white title
+ * reads on it.
+ */
+private class LatticeColors(val base: Color, val baseDark: Color, val stripe: Color, val stripeLight: Color)
+
+/** The hub's hue (between purple and magenta) and how strong it is. */
+private const val HUB_HUE = 298f
+private const val HUB_SATURATION = 0.6f
+
+@Composable
+private fun latticeColors(): LatticeColors = remember {
+    fun shade(lightness: Float) = Color.hsl(HUB_HUE, HUB_SATURATION, lightness)
+    LatticeColors(base = shade(0.29f), baseDark = shade(0.4f), stripe = shade(0.74f), stripeLight = shade(0.82f))
+}
 
 /**
- * Custom top bar with Pastiera lattice pattern.
+ * Custom top bar with the lattice pattern.
  * Features light diagonal stripes over a dark toasted gradient.
  */
 @Composable
@@ -65,6 +77,8 @@ fun CustomTopBar(
     modifier: Modifier = Modifier
 ) {
     val statusBarInset = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+    val compactHeader = DeviceSpecific.isTitan2EliteDevice()
+    val headerContentOffset = if (compactHeader) 0.dp else statusBarInset / 2
     val context = LocalContext.current
     val view = LocalView.current
     val density = LocalDensity.current
@@ -101,6 +115,7 @@ fun CustomTopBar(
             }
         }
     } else RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+    val colors = latticeColors()
     Surface(
         modifier = modifier
             .fillMaxWidth()
@@ -114,9 +129,10 @@ fun CustomTopBar(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = PastieraBeigeDark)
+                .background(color = colors.baseDark)
         ) {
             PastieraPattern(
+                colors = colors,
                 modifier = Modifier
                     .fillMaxWidth()
                     .matchParentSize()
@@ -125,27 +141,61 @@ fun CustomTopBar(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 32.dp)
+                    // On the Titan 2 Elite's short screen the text sits just below the status bar
+                    // with even space around it; elsewhere a little more lattice below the
+                    // "Based on Pastiera" credit
+                    .padding(
+                        start = 16.dp, end = 16.dp,
+                        top = if (compactHeader) statusBarInset + 2.dp else 32.dp,
+                        bottom = when {
+                            compactHeader -> 20.dp
+                            it.palsoftware.pastiera.BuildConfig.APP_NAME != "Pastiera" -> 46.dp
+                            else -> 32.dp
+                        }
+                    )
             ) {
                 // Centered title and subtitle
                 Column(
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .offset(y = statusBarInset / 2),
+                        .offset(y = headerContentOffset),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Pastiera",
-                        style = MaterialTheme.typography.headlineLarge,
+                        text = it.palsoftware.pastiera.BuildConfig.APP_NAME,
+                        style = if (compactHeader) MaterialTheme.typography.headlineMedium else MaterialTheme.typography.headlineLarge,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
                     Text(
-                        text = "La Tastiera per la tua Tastiera",
-                        style = MaterialTheme.typography.bodyMedium,
+                        text = "Go with the flux",
+                        style = if (compactHeader) MaterialTheme.typography.bodySmall else MaterialTheme.typography.bodyMedium,
                         color = Color.White.copy(alpha = 0.9f),
                         fontWeight = FontWeight.Medium
                     )
+                    // A fork under its own name says what it's built on, and links to it
+                    if (it.palsoftware.pastiera.BuildConfig.APP_NAME != "Pastiera") {
+                        Text(
+                            text = "Based on Pastiera by PalSoftware ↗",
+                            style = if (compactHeader) MaterialTheme.typography.labelSmall else MaterialTheme.typography.labelMedium,
+                            color = Color.White.copy(alpha = 0.85f),
+                            textDecoration = androidx.compose.ui.text.style.TextDecoration.Underline,
+                            modifier = Modifier
+                                .padding(top = if (compactHeader) 2.dp else 6.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .clickable {
+                                    runCatching {
+                                        context.startActivity(
+                                            android.content.Intent(
+                                                android.content.Intent.ACTION_VIEW,
+                                                android.net.Uri.parse("https://github.com/palsoftware/pastiera")
+                                            ).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        )
+                                    }
+                                }
+                                .padding(horizontal = 6.dp, vertical = 2.dp)
+                        )
+                    }
                 }
 
                 // Settings icon on the right
@@ -153,18 +203,18 @@ fun CustomTopBar(
                     onClick = onSettingsClick,
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
-                        .offset(y = statusBarInset / 2)
-                        .size(64.dp)
+                        .offset(y = headerContentOffset)
+                        .size(if (compactHeader) 48.dp else 64.dp)
                         .clip(RoundedCornerShape(24.dp))
                         .background(
-                            color = PastieraBeige.copy(alpha = 0.9f)
+                            color = colors.base.copy(alpha = 0.9f)
                         )
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Settings,
                         contentDescription = stringResource(R.string.settings_content_description),
                         tint = Color.White,
-                        modifier = Modifier.size(36.dp)
+                        modifier = Modifier.size(if (compactHeader) 28.dp else 36.dp)
                     )
                 }
             }
@@ -174,6 +224,7 @@ fun CustomTopBar(
 
 @Composable
 private fun PastieraPattern(
+    colors: LatticeColors,
     modifier: Modifier = Modifier,
     stripeWidth: Dp = 36.dp,
     stripeSpacing: Dp = 96.dp
@@ -195,6 +246,7 @@ private fun PastieraPattern(
 
     Canvas(modifier = modifier) {
         drawPastieraPattern(
+            colors = colors,
             stripeWidth = widthPx,
             stripeSpacing = spacingPx,
             phase = stripePhase
@@ -203,6 +255,7 @@ private fun PastieraPattern(
 }
 
 private fun DrawScope.drawPastieraPattern(
+    colors: LatticeColors,
     stripeWidth: Float,
     stripeSpacing: Float,
     phase: Float
@@ -211,9 +264,9 @@ private fun DrawScope.drawPastieraPattern(
     drawRect(
         brush = Brush.verticalGradient(
             colors = listOf(
-                PastieraBeigeDark.copy(alpha = 0.95f),
-                PastieraBeige.copy(alpha = 0.9f),
-                PastieraBeigeDark.copy(alpha = 0.98f)
+                colors.baseDark.copy(alpha = 0.95f),
+                colors.base.copy(alpha = 0.9f),
+                colors.baseDark.copy(alpha = 0.98f)
             ),
             startY = 0f,
             endY = size.height
@@ -249,7 +302,7 @@ private fun DrawScope.drawPastieraPattern(
     withTransform({
         scale(scaleX = 1f, scaleY = verticalStretch, pivot = center)
     }) {
-        drawStripeSet(angle = 45f, color = PastieraYellow.copy(alpha = 0.75f))
-        drawStripeSet(angle = -45f, color = PastieraOrangeLight.copy(alpha = 0.7f))
+        drawStripeSet(angle = 45f, color = colors.stripe.copy(alpha = 0.75f))
+        drawStripeSet(angle = -45f, color = colors.stripeLight.copy(alpha = 0.7f))
     }
 }

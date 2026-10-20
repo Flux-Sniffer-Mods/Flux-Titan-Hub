@@ -2,7 +2,6 @@ package it.palsoftware.pastiera.inputmethod.trackpad
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import rikka.shizuku.Shizuku
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -26,14 +25,6 @@ object ShizukuTrackpadDeviceDiscovery {
         }
     }
 
-    internal fun startProcess(command: Array<String>): Process {
-        val newProcessMethod = Shizuku::class.java.getDeclaredMethod(
-            "newProcess",
-            Array<String>::class.java,
-            Array<String>::class.java,
-            String::class.java
-        )
-        newProcessMethod.isAccessible = true
-        return newProcessMethod.invoke(null, command, null, null) as Process
-    }
+    internal fun startProcess(command: Array<String>): Process =
+        it.palsoftware.pastiera.adb.AdbShell.newProcess(command)
 }

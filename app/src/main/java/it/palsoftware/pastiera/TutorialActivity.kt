@@ -61,7 +61,7 @@ import it.palsoftware.pastiera.update.ReleaseNotesSummary
 import it.palsoftware.pastiera.update.showUpdateDialog
 import it.palsoftware.pastiera.update.shouldUseGithubUpdateChecks
 import it.palsoftware.pastiera.inputmethod.DeviceSpecific
-import it.palsoftware.pastiera.inputmethod.SoftwareKeyboardAutoDetector
+import it.palsoftware.pastiera.inputmethod.aospkeyboard.SoftwareKeyboardAutoDetector
 import it.palsoftware.pastiera.inputmethod.TypingSoundPlayer
 import it.palsoftware.pastiera.data.variation.VariationRepository
 import java.util.Locale
@@ -1305,7 +1305,7 @@ fun TutorialWhatsNewPageContent(
 }
 
 @Composable
-private fun ReleaseNoteRow(
+internal fun ReleaseNoteRow(
     text: String,
     icon: ImageVector,
     tint: Color,

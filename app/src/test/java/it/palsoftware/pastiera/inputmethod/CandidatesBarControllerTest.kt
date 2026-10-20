@@ -20,6 +20,14 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.util.ReflectionHelpers
+import it.palsoftware.pastiera.inputmethod.aospkeyboard.SoftwareKeyboardAutoDetector
+import it.palsoftware.pastiera.getDevChoiceStaticVariationBasePreset
+import it.palsoftware.pastiera.getVariationsFile
+import it.palsoftware.pastiera.saveVariations
+import it.palsoftware.pastiera.setSoftwareKeyboardMode
+import it.palsoftware.pastiera.setStaticVariationBarPreset
+import it.palsoftware.pastiera.setStatusBarVariationsVisible
+import it.palsoftware.pastiera.setSuggestionsEnabled
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [33])
@@ -56,12 +64,19 @@ class CandidatesBarControllerTest {
 
     @Test
     fun attachedAndLaidOutInputViewIsReportedAsRendered() {
-        val activityController = Robolectric.buildActivity(Activity::class.java).setup()
+        // Content first, then the window is made visible, as on a device: a view added to an
+        // already-visible Robolectric window never hears that its window is visible
+        val activityController = Robolectric.buildActivity(Activity::class.java).create().start().resume()
         val activity = activityController.get()
         val controller = CandidatesBarController(activity)
         val inputView = controller.getInputView()
         activity.setContentView(inputView)
         activityController.visible()
+        // Robolectric leaves the window's visibility at GONE for its views; the system tells a
+        // shown window's ViewRootImpl so, and the next traversal passes it on
+        val viewRoot = activity.window.decorView.parent
+        viewRoot.javaClass.getMethod("dispatchAppVisibility", Boolean::class.javaPrimitiveType).invoke(viewRoot, true)
+        org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idle()
         val decorView = activity.window.decorView
         decorView.measure(
             View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY),

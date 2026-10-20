@@ -3,7 +3,6 @@ package it.palsoftware.pastiera.commands
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.net.Uri
 import android.os.SystemClock
@@ -18,6 +17,8 @@ import it.palsoftware.pastiera.SoftwareKeyboardModeActions
 import it.palsoftware.pastiera.core.NavModeController
 import it.palsoftware.pastiera.inputmethod.QuickLauncherActivity
 import rikka.shizuku.Shizuku
+import it.palsoftware.pastiera.device.PhoneTrackpadSettings
+import it.palsoftware.pastiera.getSoftwareKeyboardModeToggleToastsEnabled
 
 class CommandExecutor(
     private val context: Context,
@@ -100,11 +101,26 @@ class CommandExecutor(
                     CommandExecutionResult.Success
                 } catch (error: Exception) {
                     Log.e(TAG, "Failed to open Pastiera", error)
-                    fail("Could not open Pastiera")
+                    fail("Could not open ${it.palsoftware.pastiera.BuildConfig.APP_NAME}")
                 }
             }
             PastieraCommandSource.ACTION_TOGGLE_SOFTWARE_KEYBOARD_MODE -> toggleSoftwareKeyboardMode()
+            PastieraCommandSource.ACTION_SELECT_FROM_CURSOR -> {
+                val controller = navModeController ?: return fail("Nav mode unavailable")
+                controller.startSelectingFromCursor()
+                CommandExecutionResult.Success
+            }
+            PastieraCommandSource.ACTION_TOGGLE_EXTRA_KEYS ->
+                if (it.palsoftware.pastiera.inputmethod.extrakeys.ExtraKeysToggle.toggle()) CommandExecutionResult.Success
+                else fail("The keyboard isn't running")
+            PastieraCommandSource.ACTION_TOGGLE_PRIVATE_MODE -> {
+                it.palsoftware.pastiera.core.PrivateMode.toggle(context)
+                CommandExecutionResult.Success
+            }
             DeviceControlCommandSource.ACTION_HOME_SCREEN -> goHome()
+            DeviceControlCommandSource.ACTION_PHONE_TRACKPAD_SETTINGS ->
+                if (it.palsoftware.pastiera.device.PhoneTrackpadSettings.open(context)) CommandExecutionResult.Success
+                else fail("Could not open the trackpad settings")
             DeviceControlCommandSource.ACTION_MEDIA_PLAY_PAUSE -> dispatchMediaKey(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE)
             DeviceControlCommandSource.ACTION_MEDIA_PREVIOUS -> dispatchMediaKey(KeyEvent.KEYCODE_MEDIA_PREVIOUS)
             DeviceControlCommandSource.ACTION_MEDIA_NEXT -> dispatchMediaKey(KeyEvent.KEYCODE_MEDIA_NEXT)
@@ -163,36 +179,33 @@ class CommandExecutor(
         return CommandExecutionResult.Success
     }
 
-    private fun sendShellKeyEvent(keyCode: Int): CommandExecutionResult {
-        return try {
-            val shizukuAvailable = Shizuku.pingBinder() &&
-                Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED
-            if (!shizukuAvailable) {
-                return fail("Shizuku required")
-            }
-            val newProcessMethod = Shizuku::class.java.getDeclaredMethod(
-                "newProcess",
-                Array<String>::class.java,
-                Array<String>::class.java,
-                String::class.java
-            )
-            newProcessMethod.isAccessible = true
-            val process = newProcessMethod.invoke(
-                null,
-                arrayOf("input", "keyevent", keyCode.toString()),
-                null,
-                null
-            ) as Process
-            val exitCode = process.waitFor()
-            if (exitCode == 0) {
-                CommandExecutionResult.Success
-            } else {
-                fail("Command failed")
-            }
-        } catch (error: Exception) {
-            Log.e(TAG, "Failed to send shell keyevent $keyCode", error)
-            fail("Command failed")
+    /** Brightness a step up or down through the system setting (Modify system settings allowed). */
+    private fun brightnessWithoutShell(keyCode: Int): CommandExecutionResult? {
+        val up = when (keyCode) {
+            KeyEvent.KEYCODE_BRIGHTNESS_UP -> true
+            KeyEvent.KEYCODE_BRIGHTNESS_DOWN -> false
+            else -> return null
         }
+        if (!android.provider.Settings.System.canWrite(context)) return null
+        val resolver = context.contentResolver
+        val now = android.provider.Settings.System.getInt(resolver, android.provider.Settings.System.SCREEN_BRIGHTNESS, 128)
+        val next = (now + if (up) 26 else -26).coerceIn(1, 255)
+        return runCatching {
+            android.provider.Settings.System.putInt(resolver, android.provider.Settings.System.SCREEN_BRIGHTNESS, next)
+            CommandExecutionResult.Success
+        }.getOrNull()
+    }
+
+    /** Sends [keyCode] through the shell in the background: callers are the UI and the keyboard. */
+    private fun sendShellKeyEvent(keyCode: Int): CommandExecutionResult {
+        if (!it.palsoftware.pastiera.adb.AdbShell.available()) {
+            // Without the shell: brightness through the system setting, when allowed
+            return brightnessWithoutShell(keyCode) ?: fail("Shizuku required")
+        }
+        it.palsoftware.pastiera.adb.AdbShell.runAsync("input keyevent $keyCode") { output ->
+            if (output == null) android.os.Handler(android.os.Looper.getMainLooper()).post { fail("Command failed") }
+        }
+        return CommandExecutionResult.Success
     }
 
     private fun executeNavAction(launch: CommandLaunchSpec.NavAction): CommandExecutionResult {

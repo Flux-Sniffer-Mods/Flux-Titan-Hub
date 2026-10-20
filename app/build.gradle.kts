@@ -10,7 +10,7 @@ import java.util.Properties
 import groovy.json.JsonOutput
 import org.gradle.api.GradleException
 
-// Config di firma letta da release/keystore.properties (non tracciato) o da env vars
+// Signing config from release/keystore.properties (not tracked) or environment variables
 val keystorePropertiesFileCandidates = listOf(
     rootProject.file("release/keystore.properties"),
     rootProject.file("keystore.properties")
@@ -100,6 +100,8 @@ android {
         versionName = ciVersionName ?: defaultVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "APP_NAME", "\"Pastiera\"")
+        buildConfigField("String", "COMPACT_MODE_NAME", "\"Pastierina\"")
         buildConfigField("String", "SUCCESSOR_GITHUB_REPOSITORY", "\"$successorGithubRepository\"")
     }
 
@@ -265,6 +267,11 @@ android {
     }
     testOptions {
         unitTests.isIncludeAndroidResources = true
+        // File names with non-ASCII characters (layout names) need a UTF-8 locale on every host
+        unitTests.all { test ->
+            test.environment("LC_ALL", "C.UTF-8")
+            test.environment("LANG", "C.UTF-8")
+        }
     }
 }
 
@@ -347,6 +354,8 @@ tasks.matching { it.name == "mergeStableReleaseAssets" }.configureEach {
 dependencies {
 
     implementation(libs.androidx.core.ktx)
+    // Inline autofill chips (passwords, one-time codes) in the suggestion bar
+    implementation(libs.androidx.autofill)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.activity.compose)
@@ -359,9 +368,9 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation("androidx.work:work-runtime-ktx:2.9.1")
-    // RecyclerView per performance ottimali nella griglia emoji
+    // RecyclerView for the emoji grid
     implementation("androidx.recyclerview:recyclerview:1.3.2")
-    // Emoji2 per supporto emoji future-proof
+    // Emoji2, so newer emoji draw on older Android versions
     implementation("androidx.emoji2:emoji2:1.4.0")
     implementation("androidx.emoji2:emoji2-views:1.4.0")
     implementation("androidx.emoji2:emoji2-views-helper:1.4.0")
@@ -371,6 +380,8 @@ dependencies {
     // Shizuku for ADB shell access
     implementation("dev.rikka.shizuku:api:13.1.5")
     implementation("dev.rikka.shizuku:provider:13.1.5")
+    // Hidden APIs: the screen's shown brightness, which the keyboard light follows
+    implementation("org.lsposed.hiddenapibypass:hiddenapibypass:6.1")
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
     testImplementation("org.mockito:mockito-core:5.11.0")

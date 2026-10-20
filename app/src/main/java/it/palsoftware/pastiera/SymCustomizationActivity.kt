@@ -6,6 +6,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
@@ -14,6 +15,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import it.palsoftware.pastiera.ui.theme.PastieraTheme
+import it.palsoftware.pastiera.settings.LocalSettingHighlightId
+import it.palsoftware.pastiera.settings.LocalSettingLinkLongPress
+import it.palsoftware.pastiera.settings.SettingEntry
+import it.palsoftware.pastiera.settings.SettingLinkRegistry
+import it.palsoftware.pastiera.settings.SettingLinkSheet
+import it.palsoftware.pastiera.sym.SymCustomizationScreen
 
 class SymCustomizationActivity : LocalizedComponentActivity() {
     companion object {
@@ -25,7 +32,7 @@ class SymCustomizationActivity : LocalizedComponentActivity() {
     }
 
     private var settingId by mutableStateOf<String?>(null)
-    private var settingRequestSerial by mutableStateOf(0)
+    private var settingRequestSerial by mutableIntStateOf(0)
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)

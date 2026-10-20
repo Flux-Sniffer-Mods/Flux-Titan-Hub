@@ -3,7 +3,6 @@ package it.palsoftware.pastiera.data.emoji
 import android.content.Context
 import android.util.Log
 import it.palsoftware.pastiera.R
-import it.palsoftware.pastiera.SettingsManager
 import org.json.JSONArray
 
 /**
@@ -23,7 +22,7 @@ object RecentEmojiManager {
      * @return true if the list changed, false otherwise
      */
     fun addRecentEmoji(context: Context, emoji: String, moveToTopWhenExists: Boolean = true): Boolean {
-        if (emoji.isBlank()) return false
+        if (emoji.isBlank() || it.palsoftware.pastiera.core.IncognitoTyping.active) return false
 
         val currentList = getRecentEmojis(context, MAX_RECENT_EMOJIS)
 
@@ -70,14 +69,6 @@ object RecentEmojiManager {
             Log.e(TAG, "Error loading recent emojis", e)
             emptyList()
         }
-    }
-
-    /**
-     * Clears all recent emojis.
-     */
-    fun clearRecentEmojis(context: Context) {
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        prefs.edit().remove(PREF_KEY_RECENT_EMOJIS).apply()
     }
 
     /**

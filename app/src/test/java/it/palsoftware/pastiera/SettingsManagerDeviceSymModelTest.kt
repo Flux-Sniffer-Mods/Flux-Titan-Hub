@@ -10,6 +10,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
+import it.palsoftware.pastiera.sym.SymPagesConfig
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [33])
@@ -23,15 +24,13 @@ class SettingsManagerDeviceSymModelTest {
     }
 
     @Test
-    fun freshConfiguration_enablesDeviceSymAsFirstKeyLayer() {
+    fun freshConfiguration_hasOnlyTheSymbolsLayer() {
         val config = SettingsManager.getSymPagesConfig(context)
 
-        assertTrue(config.deviceEnabled)
-        assertEquals(SymPagesConfig.PAGE_DEVICE, config.firstEnabledKeyLayer())
-        assertEquals(
-            listOf(SymPagesConfig.PAGE_DEVICE, SymPagesConfig.PAGE_EMOJI, SymPagesConfig.PAGE_SYMBOLS),
-            config.enabledOrderedPages()
-        )
+        assertFalse(config.deviceEnabled)
+        assertFalse(config.emojiEnabled)
+        assertEquals(SymPagesConfig.PAGE_SYMBOLS, config.firstEnabledKeyLayer())
+        assertEquals(listOf(SymPagesConfig.PAGE_SYMBOLS), config.enabledOrderedPages())
     }
 
     @Test
