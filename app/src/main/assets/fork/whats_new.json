@@ -612,6 +612,6 @@
   "introSince": "What's new in Flux Titan Hub since the version you had.",
   "releases": {
     "1.0.0": "202610050800",
-    "1.1.0": "202610051915"
+    "1.1.0": "202610051915", "2.0.0": "202610200537"
   }
 }
