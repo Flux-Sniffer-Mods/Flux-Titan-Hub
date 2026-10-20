@@ -1,4 +1,5 @@
 package it.palsoftware.pastiera.settings
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,15 +31,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import it.palsoftware.pastiera.R
+import it.palsoftware.pastiera.TutorialActivity
 
 /**
  * Settings > Backup & restore: the recommended settings ([RecommendedSettings]), with
- * an Apply button that says how many would change.
+ * an Apply button that says how many would change. Once applied, it offers to go through the
+ * rest (your choices, extras, making it yours) in the tutorial's pages for them.
  */
 @Composable
 internal fun RecommendedSettingsRow() {
     val context = LocalContext.current
     var differing by remember { mutableStateOf<List<RecommendedSettings.Change>?>(null) }
+    var offerSetup by remember { mutableStateOf(false) }
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -94,12 +98,32 @@ internal fun RecommendedSettingsRow() {
             confirmButton = {
                 TextButton(onClick = {
                     differing = null
-                    if (!RecommendedSettings.apply(context)) {
+                    if (RecommendedSettings.apply(context)) {
+                        offerSetup = true
+                    } else {
                         Toast.makeText(context, R.string.recommended_settings_failed, Toast.LENGTH_SHORT).show()
                     }
                 }) { Text(stringResource(R.string.recommended_settings_apply)) }
             },
             dismissButton = { TextButton(onClick = { differing = null }) { Text(stringResource(R.string.cancel)) } }
+        )
+    }
+    if (offerSetup) {
+        AlertDialog(
+            onDismissRequest = { offerSetup = false },
+            title = { Text(stringResource(R.string.recommended_settings_configure_title)) },
+            text = { Text(stringResource(R.string.recommended_settings_configure_text)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    offerSetup = false
+                    context.startActivity(
+                        Intent(context, TutorialActivity::class.java).putExtra(TutorialActivity.EXTRA_CONFIGURE, true)
+                    )
+                }) { Text(stringResource(R.string.recommended_settings_configure_yes)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { offerSetup = false }) { Text(stringResource(R.string.recommended_settings_configure_no)) }
+            }
         )
     }
 }

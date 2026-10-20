@@ -55,28 +55,33 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import it.palsoftware.pastiera.ui.theme.PastieraTheme
 import it.palsoftware.pastiera.BuildConfig
-import it.palsoftware.pastiera.update.checkForUpdate
 import it.palsoftware.pastiera.update.fetchReleaseNotesForVersion
 import it.palsoftware.pastiera.update.ReleaseNotesSummary
-import it.palsoftware.pastiera.update.showUpdateDialog
 import it.palsoftware.pastiera.update.shouldUseGithubUpdateChecks
 import it.palsoftware.pastiera.inputmethod.DeviceSpecific
 import it.palsoftware.pastiera.inputmethod.aospkeyboard.SoftwareKeyboardAutoDetector
 import it.palsoftware.pastiera.inputmethod.TypingSoundPlayer
 import it.palsoftware.pastiera.data.variation.VariationRepository
 import java.util.Locale
+import it.palsoftware.pastiera.tutorial.FluxTutorialAppsPageContent
+import it.palsoftware.pastiera.tutorial.FluxTutorialChoicesPageContent
+import it.palsoftware.pastiera.tutorial.FluxTutorialEmojiPageContent
+import it.palsoftware.pastiera.tutorial.FluxTutorialExtrasPageContent
+import it.palsoftware.pastiera.tutorial.FluxTutorialPersonalisePageContent
+import it.palsoftware.pastiera.tutorial.FluxTutorialSetupPageContent
+import it.palsoftware.pastiera.tutorial.FluxTutorialTypingPageContent
 
 private const val ACTION_UNIHERTZ_GESTURE_NAVIGATION_SETTINGS = "com.android.settings.GESTURE_NAVIGATION_SETTINGS"
 private const val SETTINGS_FRAGMENT_ARGS_KEY = ":settings:fragment_args_key"
 private const val UNIHERTZ_HIDE_IME_CAPTION_BAR_KEY = "agui_hide_ime_caption_bar"
-private const val T2E_ROUNDED_CORNERS_SETTINGS_URL =
-    "pastiera://setting/status_bar.rounded_corners"
 
 class TutorialActivity : LocalizedComponentActivity() {
     companion object {
         const val EXTRA_UPDATE_TUTORIAL = "it.palsoftware.pastiera.UPDATE_TUTORIAL"
         const val EXTRA_PREVIEW_UPDATE_TUTORIAL = "it.palsoftware.pastiera.PREVIEW_UPDATE_TUTORIAL"
         const val EXTRA_PREVIOUS_VERSION = "it.palsoftware.pastiera.PREVIOUS_VERSION"
+        /** Only the pages for setting things up: your choices, extras and making it yours. */
+        const val EXTRA_CONFIGURE = "it.palsoftware.pastiera.CONFIGURE"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,12 +90,18 @@ class TutorialActivity : LocalizedComponentActivity() {
         val updateTutorial = intent.getBooleanExtra(EXTRA_UPDATE_TUTORIAL, false)
         val previewUpdateTutorial = intent.getBooleanExtra(EXTRA_PREVIEW_UPDATE_TUTORIAL, false)
         val previousVersionOverride = intent.getStringExtra(EXTRA_PREVIOUS_VERSION)
+        val configureOnly = intent.getBooleanExtra(EXTRA_CONFIGURE, false)
         setContent {
             PastieraTheme {
                 TutorialScreen(
                     updateTutorial = updateTutorial,
                     previousVersionOverride = previousVersionOverride,
+                    configureOnly = configureOnly,
                     onComplete = {
+                        if (configureOnly) {
+                            finish()
+                            return@TutorialScreen
+                        }
                         SettingsManager.setTutorialCompleted(this@TutorialActivity)
                         if (updateTutorial && !previewUpdateTutorial) {
                             SettingsManager.markWhatsNewSeen(this@TutorialActivity, BuildConfig.VERSION_NAME)
@@ -115,11 +126,22 @@ sealed class TutorialPageType {
     data class Welcome(
         val title: String,
         val description: String,
-        @DrawableRes val pastieraImageRes: Int,
-        @DrawableRes val plektraImageRes: Int
+        @DrawableRes val imageRes: Int? = null,
+        // Flux Keyboard: a plain icon instead of Pastiera's mascot
+        val icon: ImageVector? = null
     ) : TutorialPageType()
 
-    object Titan2EliteRecommendations : TutorialPageType()
+    // Flux Keyboard's own pages (FluxTutorialPages.kt)
+    object FluxSetup : TutorialPageType()
+    object FluxEmoji : TutorialPageType()
+    object FluxTyping : TutorialPageType()
+    object FluxApps : TutorialPageType()
+    object FluxExtras : TutorialPageType()
+    object FluxPersonalise : TutorialPageType()
+    object FluxChoices : TutorialPageType()
+    object FluxPermissions : TutorialPageType()
+    object FluxBar : TutorialPageType()
+    object FluxShizuku : TutorialPageType()
     
     data class Standard(
         val title: String,
@@ -182,6 +204,7 @@ sealed class TutorialPageType {
 fun TutorialScreen(
     updateTutorial: Boolean = false,
     previousVersionOverride: String? = null,
+    configureOnly: Boolean = false,
     onComplete: () -> Unit
 ) {
     val context = LocalContext.current
@@ -210,11 +233,17 @@ fun TutorialScreen(
     // Check IME status
     var isPastieraEnabled by remember { mutableStateOf(false) }
     var isPastieraSelected by remember { mutableStateOf(false) }
+    // Whether the enable and select pages are part of this run, fixed by the first check: they
+    // stay (showing done) once the keyboard is enabled or picked, so you move on yourself
+    var showEnablePage by remember { mutableStateOf(true) }
+    var showSelectPage by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
         checkImeStatus(context) { enabled, selected ->
             isPastieraEnabled = enabled
             isPastieraSelected = selected
+            showEnablePage = !enabled
+            showSelectPage = !selected
         }
     }
 
@@ -229,6 +258,13 @@ fun TutorialScreen(
     }
 
     val pages = buildList {
+        if (configureOnly) {
+            add(TutorialPageType.FluxBar)
+            add(TutorialPageType.FluxChoices)
+            add(TutorialPageType.FluxExtras)
+            add(TutorialPageType.FluxPersonalise)
+            return@buildList
+        }
         if (updateTutorial) {
             add(
                 TutorialPageType.WhatsNew(
@@ -237,19 +273,17 @@ fun TutorialScreen(
                     currentVersion = BuildConfig.VERSION_NAME
                 )
             )
+            // Flux Keyboard: after an update, What's new alone (the tutorial is in Settings)
+            return@buildList
         }
         add(
             TutorialPageType.Welcome(
                 title = stringResource(R.string.tutorial_page_welcome_title),
-                description = stringResource(R.string.tutorial_page_welcome_description),
-                pastieraImageRes = R.drawable.tutorial_pastiera_logo,
-                plektraImageRes = R.drawable.tutorial_plektra_logo
+                description = stringResource(R.string.flux_tutorial_welcome_description),
+                icon = Icons.Filled.Keyboard
             )
         )
-        if (DeviceSpecific.isTitan2EliteDevice()) {
-            add(TutorialPageType.Titan2EliteRecommendations)
-        }
-        if (!isPastieraEnabled) {
+        if (showEnablePage) {
             add(
                 TutorialPageType.EnablePastiera(
                     title = stringResource(R.string.tutorial_page_enable_title),
@@ -257,7 +291,7 @@ fun TutorialScreen(
                 )
             )
         }
-        if (!isPastieraSelected) {
+        if (showSelectPage) {
             add(
                 TutorialPageType.SelectPastiera(
                     title = stringResource(R.string.tutorial_page_select_title),
@@ -265,30 +299,34 @@ fun TutorialScreen(
                 )
             )
         }
-        add(
-            TutorialPageType.Customization(
-                title = stringResource(R.string.tutorial_page_customization_title),
-                description = stringResource(R.string.tutorial_page_customization_description),
-                icon = Icons.Filled.Settings,
-                iconTint = MaterialTheme.colorScheme.primary
+        // Flux Keyboard's flow: get it working (set up, the caption bar), learn it (typing, emoji
+        // and symbols, moving around), your apps (shortcuts, the quick launcher), make it yours
+        // (choices, the look), then the extras that need a permission or another app
+        // Android's restricted settings first: everything after can then be switched on
+        add(TutorialPageType.FluxPermissions)
+        add(TutorialPageType.FluxSetup)
+        add(TutorialPageType.FluxBar)
+        if (DeviceSpecific.isTitan2Device()) {
+            add(
+                TutorialPageType.ImeCaptionBar(
+                    title = stringResource(R.string.tutorial_android16_ime_caption_title),
+                    description = stringResource(R.string.tutorial_android16_ime_caption_description)
+                )
             )
-        )
-        add(TutorialPageType.QuickLauncher)
-        add(TutorialPageType.MessengerPresets)
-        add(
-            TutorialPageType.ImeCaptionBar(
-                title = stringResource(R.string.tutorial_android16_ime_caption_title),
-                description = stringResource(R.string.tutorial_android16_ime_caption_description)
+        }
+        // The on-screen keyboard mode matters only on phones without a keyboard
+        if (!DeviceSpecific.isPhysicalKeyboardDevice()) {
+            add(
+                TutorialPageType.SoftwareKeyboard(
+                    title = stringResource(R.string.tutorial_page_software_keyboard_title),
+                    description = stringResource(R.string.tutorial_page_software_keyboard_description),
+                    icon = Icons.Filled.Keyboard,
+                    iconTint = MaterialTheme.colorScheme.primary
+                )
             )
-        )
-        add(
-            TutorialPageType.SoftwareKeyboard(
-                title = stringResource(R.string.tutorial_page_software_keyboard_title),
-                description = stringResource(R.string.tutorial_page_software_keyboard_description),
-                icon = Icons.Filled.Keyboard,
-                iconTint = MaterialTheme.colorScheme.primary
-            )
-        )
+        }
+        add(TutorialPageType.FluxTyping)
+        add(TutorialPageType.FluxEmoji)
         add(
             TutorialPageType.NavMode(
                 title = stringResource(R.string.tutorial_page_nav_mode_title),
@@ -297,14 +335,13 @@ fun TutorialScreen(
                 iconTint = MaterialTheme.colorScheme.tertiary
             )
         )
-        add(
-            TutorialPageType.LedIndicator(
-                title = stringResource(R.string.tutorial_page_led_title),
-                description = stringResource(R.string.tutorial_page_led_description),
-                iconTint = MaterialTheme.colorScheme.secondary
-            )
-        )
-        add(TutorialPageType.FeatureStatuses)
+        add(TutorialPageType.FluxApps)
+        add(TutorialPageType.QuickLauncher)
+        add(TutorialPageType.FluxChoices)
+        add(TutorialPageType.FluxPersonalise)
+        // The shell, which the keyboard's extras run through
+        add(TutorialPageType.FluxShizuku)
+        add(TutorialPageType.FluxExtras)
         add(
             TutorialPageType.Standard(
                 title = stringResource(R.string.tutorial_page_ready_title),
@@ -364,17 +401,13 @@ fun TutorialScreen(
                         is TutorialPageType.WhatsNew -> {
                             TutorialWhatsNewPageContent(
                                 page = pageType,
-                                modifier = Modifier.fillMaxSize()
+                                modifier = Modifier.fillMaxSize(),
+                                onDone = if (pages.size == 1) onComplete else null
                             )
                         }
                         is TutorialPageType.Welcome -> {
                             TutorialWelcomePageContent(
                                 page = pageType,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                        }
-                        TutorialPageType.Titan2EliteRecommendations -> {
-                            TutorialTitan2EliteRecommendationsPageContent(
                                 modifier = Modifier.fillMaxSize()
                             )
                         }
@@ -410,6 +443,16 @@ fun TutorialScreen(
                         TutorialPageType.MessengerPresets -> {
                             TutorialMessengerPresetsPageContent(modifier = Modifier.fillMaxSize())
                         }
+                        TutorialPageType.FluxSetup -> FluxTutorialSetupPageContent(modifier = Modifier.fillMaxSize())
+                        TutorialPageType.FluxEmoji -> FluxTutorialEmojiPageContent(modifier = Modifier.fillMaxSize())
+                        TutorialPageType.FluxTyping -> FluxTutorialTypingPageContent(modifier = Modifier.fillMaxSize())
+                        TutorialPageType.FluxApps -> FluxTutorialAppsPageContent(modifier = Modifier.fillMaxSize())
+                        TutorialPageType.FluxExtras -> FluxTutorialExtrasPageContent(modifier = Modifier.fillMaxSize())
+                        TutorialPageType.FluxPersonalise -> FluxTutorialPersonalisePageContent(modifier = Modifier.fillMaxSize())
+                        TutorialPageType.FluxChoices -> FluxTutorialChoicesPageContent(modifier = Modifier.fillMaxSize())
+                        TutorialPageType.FluxPermissions -> it.palsoftware.pastiera.tutorial.FluxTutorialPermissionsPageContent(modifier = Modifier.fillMaxSize())
+                        TutorialPageType.FluxBar -> it.palsoftware.pastiera.tutorial.FluxTutorialBarPageContent(modifier = Modifier.fillMaxSize())
+                        TutorialPageType.FluxShizuku -> it.palsoftware.pastiera.tutorial.FluxTutorialShizukuPageContent(modifier = Modifier.fillMaxSize())
                         TutorialPageType.FeatureStatuses -> {
                             TutorialFeatureStatusesPageContent(modifier = Modifier.fillMaxSize())
                         }
@@ -533,38 +576,39 @@ fun TutorialScreen(
                     }
                 }
 
-                Row(
-                    modifier = Modifier.weight(1f),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
+                // A dot per page, shrinking (and closer together) as the pages grow to fit them all
+                androidx.compose.foundation.layout.BoxWithConstraints(
+                    modifier = Modifier.weight(1.4f),
+                    contentAlignment = Alignment.Center
                 ) {
-                    pages.forEachIndexed { index, _ ->
-                        val isSelected = pagerState.currentPage == index
-                        Box(
-                            modifier = Modifier
-                                .size(if (isSelected) 10.dp else 6.dp)
-                                .clip(CircleShape)
-                                .background(
-                                    if (isSelected) {
-                                        MaterialTheme.colorScheme.primary
-                                    } else {
-                                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
-                                    }
-                                )
-                                .padding(if (isSelected) 0.dp else 1.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            if (isSelected) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(6.dp)
-                                        .clip(CircleShape)
-                                        .background(MaterialTheme.colorScheme.onPrimary)
-                                )
+                    val step = (maxWidth / pages.size.coerceAtLeast(1)).coerceAtMost(12.dp)
+                    val dot = (step * 0.6f).coerceAtMost(6.dp)
+                    val selectedDot = (step * 0.95f).coerceAtMost(10.dp)
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(step - dot),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        pages.forEachIndexed { index, _ ->
+                            val isSelected = pagerState.currentPage == index
+                            Box(
+                                modifier = Modifier
+                                    .size(if (isSelected) selectedDot else dot)
+                                    .clip(CircleShape)
+                                    .background(
+                                        if (isSelected) MaterialTheme.colorScheme.primary
+                                        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                if (isSelected) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(dot)
+                                            .clip(CircleShape)
+                                            .background(MaterialTheme.colorScheme.onPrimary)
+                                    )
+                                }
                             }
-                        }
-                        if (index < pages.size - 1) {
-                            Spacer(modifier = Modifier.width(6.dp))
                         }
                     }
                 }
@@ -589,6 +633,14 @@ fun TutorialScreen(
                                 contentDescription = stringResource(R.string.tutorial_next),
                                 modifier = Modifier.size(16.dp)
                             )
+                        }
+                    } else if (configureOnly) {
+                        // After applying the recommended settings: Make it yours ends the setup
+                        Button(
+                            onClick = onComplete,
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                        ) {
+                            Text(stringResource(R.string.whats_new_done), style = MaterialTheme.typography.bodyMedium)
                         }
                     }
                 }
@@ -1055,7 +1107,7 @@ private fun buildImeCaptionBarSettingsIntent(): Intent {
 
 private val TutorialIconSurfaceSize = 82.dp
 private val TutorialIconSize = 38.dp
-private val TutorialWelcomeLogoSize = 112.dp
+private val TutorialWelcomeImageSize = 240.dp
 
 @Composable
 private fun TutorialPageLayout(
@@ -1163,7 +1215,9 @@ private fun TutorialIconSurface(
 @Composable
 fun TutorialWhatsNewPageContent(
     page: TutorialPageType.WhatsNew,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    // Flux Keyboard: after an update What's new is the only page, and closes with Done
+    onDone: (() -> Unit)? = null
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -1179,6 +1233,14 @@ fun TutorialWhatsNewPageContent(
             .padding(horizontal = 20.dp, vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        if (onDone != null) {
+            androidx.activity.compose.BackHandler(onBack = onDone)
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                IconButton(onClick = onDone) {
+                    Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.whats_new_close))
+                }
+            }
+        }
         TutorialIconSurface(
             icon = Icons.Filled.AutoAwesome,
             tint = MaterialTheme.colorScheme.primary
@@ -1279,7 +1341,7 @@ fun TutorialWhatsNewPageContent(
 
         OutlinedButton(
             onClick = {
-                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(page.summary.docsUrl)))
+                runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(page.summary.docsUrl))) }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -1294,13 +1356,19 @@ fun TutorialWhatsNewPageContent(
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        Text(
-            text = stringResource(R.string.tutorial_whats_new_continue_hint),
-            style = MaterialTheme.typography.bodySmall,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Medium
-        )
+        if (onDone != null) {
+            Button(onClick = onDone, modifier = Modifier.fillMaxWidth()) {
+                Text(stringResource(R.string.whats_new_done))
+            }
+        } else {
+            Text(
+                text = stringResource(R.string.tutorial_whats_new_continue_hint),
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Medium
+            )
+        }
     }
 }
 
@@ -1373,28 +1441,31 @@ fun TutorialWelcomePageContent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Image(
-                painter = painterResource(id = page.pastieraImageRes),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(TutorialWelcomeLogoSize)
-                    .clip(RoundedCornerShape(24.dp)),
-                contentScale = ContentScale.Fit
-            )
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .padding(horizontal = 10.dp)
-                    .size(28.dp)
-            )
-            Image(
-                painter = painterResource(id = page.plektraImageRes),
-                contentDescription = null,
-                modifier = Modifier.size(TutorialWelcomeLogoSize),
-                contentScale = ContentScale.Fit
-            )
+            if (page.icon != null) {
+                Surface(
+                    modifier = Modifier.size(168.dp),
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = page.icon,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(96.dp)
+                        )
+                    }
+                }
+            } else if (page.imageRes != null) {
+                Image(
+                    painter = painterResource(id = page.imageRes),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(TutorialWelcomeImageSize)
+                        .clip(RoundedCornerShape(28.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            }
         }
         
         Spacer(modifier = Modifier.height(1.dp))
@@ -1418,43 +1489,6 @@ fun TutorialWelcomePageContent(
         )
 
     }
-}
-
-@Composable
-fun TutorialTitan2EliteRecommendationsPageContent(
-    modifier: Modifier = Modifier
-) {
-    val context = LocalContext.current
-    TutorialFeaturePageContent(
-        title = stringResource(R.string.tutorial_t2e_title),
-        description = stringResource(R.string.tutorial_t2e_description),
-        icon = Icons.Filled.PhoneAndroid,
-        tint = MaterialTheme.colorScheme.primary,
-        bullets = listOf(
-            stringResource(R.string.tutorial_t2e_bullet_rounded_corners),
-            stringResource(R.string.tutorial_t2e_bullet_fill_corners)
-        ),
-        modifier = modifier.padding(top = 36.dp),
-        buttonText = stringResource(R.string.tutorial_t2e_open_settings),
-        onButtonClick = {
-            context.startActivity(
-                Intent(context, SettingsActivity::class.java).apply {
-                    action = Intent.ACTION_VIEW
-                    data = Uri.parse(T2E_ROUNDED_CORNERS_SETTINGS_URL)
-                }
-            )
-        },
-        extraContent = {
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = stringResource(R.string.tutorial_t2e_trackpad_note),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-    )
 }
 
 @Composable
@@ -1523,20 +1557,27 @@ fun TutorialMessengerPresetsPageContent(
 }
 
 @Composable
-private fun TutorialFeaturePageContent(
+internal fun TutorialFeaturePageContent(
     title: String,
     description: String,
     icon: ImageVector,
     tint: Color,
     bullets: List<String>,
-    buttonText: String,
+    /** None for a page whose own choices are all there is to it (Next moves on). */
+    buttonText: String?,
     onButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
+    buttonEnabled: Boolean = true,
     extraContent: @Composable ColumnScope.() -> Unit = {}
 ) {
+    // Scrolls when there's more than fits; otherwise the button still sits at the bottom
+    androidx.compose.foundation.layout.BoxWithConstraints(modifier = modifier.fillMaxSize()) {
+    val pageHeight = maxHeight
     Column(
-        modifier = modifier
-            .fillMaxSize()
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+            .heightIn(min = pageHeight)
             .padding(horizontal = 20.dp, vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -1563,8 +1604,10 @@ private fun TutorialFeaturePageContent(
         }
         extraContent()
         Spacer(modifier = Modifier.weight(1f))
-        Button(
+        Spacer(modifier = Modifier.height(16.dp))
+        if (buttonText != null) Button(
             onClick = onButtonClick,
+            enabled = buttonEnabled,
             modifier = Modifier.fillMaxWidth()
         ) {
             Icon(
@@ -1575,6 +1618,7 @@ private fun TutorialFeaturePageContent(
             Spacer(modifier = Modifier.width(8.dp))
             Text(buttonText)
         }
+    }
     }
 }
 
@@ -1793,7 +1837,7 @@ fun TutorialReadyPageContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .offset(y = contentOffset)
+                .offset { androidx.compose.ui.unit.IntOffset(0, contentOffset.roundToPx()) }
                 .alpha(contentAlpha),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -1891,12 +1935,6 @@ fun TutorialFeatureStatusesPageContent(
         )
         Spacer(modifier = Modifier.height(28.dp))
         TutorialFeatureStatusCard(
-            status = FeatureStatus.Construction,
-            title = stringResource(R.string.tutorial_feature_status_construction_title),
-            description = stringResource(R.string.tutorial_feature_status_construction_description)
-        )
-        Spacer(modifier = Modifier.height(14.dp))
-        TutorialFeatureStatusCard(
             status = FeatureStatus.Experimental,
             title = stringResource(R.string.tutorial_feature_status_experimental_title),
             description = stringResource(R.string.tutorial_feature_status_experimental_description)
@@ -1965,6 +2003,9 @@ fun TutorialNavModePageContent(
     var navModeCtrlHoldEnabled by remember {
         mutableStateOf(SettingsManager.getNavModeCtrlHoldEnabled(context))
     }
+    var layoutAwareCtrl by remember {
+        mutableStateOf(SettingsManager.getLayoutAwareCtrlShortcutsEnabled(context))
+    }
 
     TutorialPageLayout(
         title = page.title,
@@ -2021,6 +2062,51 @@ fun TutorialNavModePageContent(
                     onCheckedChange = { enabled ->
                         navModeCtrlHoldEnabled = enabled
                         SettingsManager.setNavModeCtrlHoldEnabled(context, enabled)
+                    }
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        // App Ctrl shortcuts follow your layout (Ctrl+Z on QWERTZ), when held Ctrl goes to apps
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.layout_aware_ctrl_shortcuts_title),
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                    Text(
+                        text = stringResource(
+                            if (navModeCtrlHoldEnabled) R.string.layout_aware_ctrl_shortcuts_disabled_description
+                            else R.string.layout_aware_ctrl_shortcuts_description
+                        ),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                }
+                Switch(
+                    checked = layoutAwareCtrl,
+                    enabled = !navModeCtrlHoldEnabled,
+                    onCheckedChange = { enabled ->
+                        layoutAwareCtrl = enabled
+                        SettingsManager.setLayoutAwareCtrlShortcutsEnabled(context, enabled)
                     }
                 )
             }
@@ -2564,7 +2650,7 @@ private fun TutorialStatusRow(
 }
 
 /**
- * Checks if Pastiera IME is enabled and selected.
+ * Checks if the keyboard is enabled and selected.
  */
 private fun checkImeStatus(
     context: Context,
@@ -2623,12 +2709,7 @@ private fun checkImeStatus(
 private fun getTutorialLanguageOptionLabel(context: Context, languageTag: String): String {
     return try {
         val languageLocale = Locale.forLanguageTag(languageTag)
-        val uiLocale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            context.resources.configuration.locales[0]
-        } else {
-            @Suppress("DEPRECATION")
-            context.resources.configuration.locale
-        }
+        val uiLocale = context.resources.configuration.locales[0]
         val nativeName = languageLocale.getDisplayLanguage(languageLocale)
         val uiName = languageLocale.getDisplayLanguage(uiLocale)
         if (nativeName.equals(uiName, ignoreCase = true)) nativeName else "$nativeName - $uiName"
@@ -2638,12 +2719,7 @@ private fun getTutorialLanguageOptionLabel(context: Context, languageTag: String
 }
 
 private fun getTutorialSystemDefaultLanguageLabel(context: Context): String {
-    val systemLocale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        android.content.res.Resources.getSystem().configuration.locales[0]
-    } else {
-        @Suppress("DEPRECATION")
-        android.content.res.Resources.getSystem().configuration.locale
-    }
+    val systemLocale = android.content.res.Resources.getSystem().configuration.locales[0]
     val detected = getTutorialLanguageOptionLabel(context, systemLocale.toLanguageTag())
     return context.getString(R.string.app_language_system_default_with_detected, detected)
 }

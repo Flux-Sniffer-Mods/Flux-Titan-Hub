@@ -1202,17 +1202,4 @@ Jede Taste kann als Keycode, Aktion, Native Ctrl oder Keine konfiguriert werden.
     <string name="settings_stable_update_section_title">Pastiera- und Plektra-Updates</string>
     <string name="settings_stable_update_section_description">Nach Pastiera-Sicherheitsupdates und Plektra-Veröffentlichungen suchen.</string>
     <string name="settings_stable_update_up_to_date">Kein Pastiera- oder Plektra-Update gefunden.</string>
-    <string name="tutorial_page_welcome_description">Pastiera 0.86 ist die letzte geplante Pastiera-Version mit neuen Funktionen. Du kannst Pastiera weiterverwenden; sicherheitsrelevante Fehler werden weiterhin durch Updates behoben. Plektra führt das Projekt mit denselben Grundsätzen weiter und bleibt freie Open-Source-Software unter der Copyleft-Lizenz GPLv3. Sobald Plektra bereitsteht, informiert dich Pastiera und führt dich durch die einmalige Übernahme deiner Einstellungen.</string>
-    <string name="tutorial_page_customization_title">Anpassung</string>
-    <string name="tutorial_page_customization_description">Pastiera bietet viele Anpassungsmöglichkeiten:\n• Anpassbare Tastaturlayouts\n• Launcher-Verknüpfungen &amp; Power Shortcuts\n• Die IME-Leiste kann als Swipe-Bar zum Bewegen des Cursors dienen\n• Benutzerdefinierte Zuordnungen für den Nav-Modus\nDurchsuchen Sie die Einstellungen, um die perfekte Konfiguration für Sie zu finden!</string>
-    <string name="tutorial_page_led_title">Modifier-Anzeigen</string>
-    <string name="tutorial_page_led_description">Um Pastiera optimal zu nutzen, stelle in den Systemeinstellungen die Fn-Taste auf Ctrl um. Pastiera kann Modifier-Zustände im Bottom Strip, in der Menüleiste oder in der Pastiera-Statusbar anzeigen: One-Shot-Zustände nutzen die aktive Farbe, gelockte Zustände die Locked-Farbe.</string>
-    <string name="tutorial_t2e_title">Empfohlen für das Titan 2 Elite</string>
-    <string name="tutorial_t2e_description">Pastiera 0.86 passt die Statusbar an das gerundete Display des Elite an.</string>
-    <string name="tutorial_t2e_bullet_rounded_corners">Lass die abgerundeten Ecken aktiviert, damit die äußeren Bedienelemente der Displayrundung folgen.</string>
-    <string name="tutorial_t2e_bullet_fill_corners">Aktiviere das Füllen der unteren Displayecken, damit das Theme hinter den gerundeten Tasten bis zum Rand reicht.</string>
-    <string name="tutorial_t2e_open_settings">Titan 2 Elite-Einstellungen prüfen</string>
-    <string name="tutorial_t2e_trackpad_note">Die Trackpad-Steuerung braucht noch Feinschliff und wird in Plektra weiter verbessert.</string>
-    <string name="tutorial_feature_status_construction_title">In Entwicklung</string>
-    <string name="tutorial_feature_status_construction_description">An dieser Funktion wird noch gearbeitet. Sie wird in einem der nächsten Plektra-Builds verbessert.</string>
 </resources>

@@ -1457,11 +1457,4 @@ QWERTZ σε φυσικό QWERTY
     <string name="kw_indicator_bottom_strip">LED, LEDs, φώτα, λωρίδα, κάτω, strip, bottom</string>
     <string name="kw_indicator_menu_bar">LED, φώτα, εικονίδιο, γραμμή κατάστασης, ενδείξεις, icon, status bar, indicators</string>
     <string name="kw_indicator_status_bar">LED, φώτα, σύμβολα, ενδείξεις, pastiera, lights, symbols, indicators</string>
-    <string name="tutorial_page_welcome_description">Το Pastiera 0.86 είναι η τελευταία προγραμματισμένη έκδοση με νέες λειτουργίες. Μπορείτε να συνεχίσετε να χρησιμοποιείτε το Pastiera· τα ζητήματα ασφαλείας θα συνεχίσουν να λαμβάνουν ενημερώσεις. Το Plektra συνεχίζει το έργο με τις ίδιες αρχές και παραμένει ελεύθερο λογισμικό ανοικτού κώδικα με την άδεια copyleft GPLv3. Όταν το Plektra είναι έτοιμο, το Pastiera θα σας ενημερώσει και θα σας καθοδηγήσει στην εφάπαξ μεταφορά των ρυθμίσεών σας.</string>
-    <string name="tutorial_page_customization_title">Προσαρμογή</string>
-    <string name="tutorial_page_customization_description">Το Pastiera προσφέρει πολλές επιλογές προσαρμογής:\n• Προσαρμόσιμες διατάξεις πληκτρολογίου\n• Συντομεύσεις launcher &amp; Power Shortcuts\n• Η γραμμή IME μπορεί να λειτουργεί ως γραμμή σάρωσης για μετακίνηση του δρομέα\n• Προσαρμοσμένες αντιστοιχίσεις για Nav Mode\nΕξερευνήστε τις ρυθμίσεις για να βρείτε την ιδανική διαμόρφωση για εσάς!</string>
-    <string name="tutorial_page_led_title">Ενδείξεις τροποποιητών</string>
-    <string name="tutorial_page_led_description">Για να αξιοποιήσετε καλύτερα το Pastiera, ορίστε το πλήκτρο Fn να λειτουργεί ως Ctrl από τις ρυθμίσεις συστήματος Android. Το Pastiera μπορεί να δείχνει την κατάσταση τροποποιητών στην κάτω λωρίδα, στη γραμμή μενού ή στη statusbar Pastiera: οι ενεργές one-shot καταστάσεις χρησιμοποιούν το ενεργό χρώμα, οι κλειδωμένες καταστάσεις χρησιμοποιούν το κλειδωμένο χρώμα.</string>
-    <string name="tutorial_feature_status_construction_title">Υπό κατασκευή</string>
-    <string name="tutorial_feature_status_construction_description">Αυτή η λειτουργία είναι σε εξέλιξη ή προγραμματισμένη. Μπορεί να είναι ημιτελής, μη διαθέσιμη ή να αλλάξει ακόμη.</string>
 </resources>

@@ -710,9 +710,4 @@ Każdy klawisz można skonfigurować jako Keycode, Akcja, Native Ctrl lub Brak. 
     <string name="settings_link_with_description">Z opisem</string>
     <string name="settings_link_copied_toast">Link skopiowano</string>
     <string name="settings_link_unavailable_toast">To ustawienie jest niedostępne</string>
-    <string name="tutorial_page_welcome_description">Pastiera 0.86 to ostatnie planowane wydanie z nowymi funkcjami. Możesz nadal używać Pastiera; problemy istotne dla bezpieczeństwa będą nadal otrzymywać aktualizacje. Plektra kontynuuje projekt na tych samych zasadach i pozostaje wolnym oprogramowaniem open source na licencji copyleft GPLv3. Gdy Plektra będzie gotowa, Pastiera powiadomi Cię i przeprowadzi przez jednorazowe przeniesienie ustawień.</string>
-    <string name="tutorial_page_customization_title">Dostosowanie</string>
-    <string name="tutorial_page_customization_description">Pastiera oferuje wiele opcji dostosowania:\n• Niestandardowe układy klawiatury\n• Skróty launchera i Power Shortcuts\n• Pasek IME może działać jako pasek przesuwania do przesuwania kursora\n• Niestandardowe mapowania dla trybu Nav\nPrzeglądaj ustawienia, aby znaleźć idealną konfigurację dla siebie!</string>
-    <string name="tutorial_page_led_title">Wskaźnik LED</string>
-    <string name="tutorial_page_led_description">Aby w pełni wykorzystać Pastierę, ustaw w systemie klawisz Fn jako Ctrl. Pasek IME pokazuje cztery diody LED: świecą na niebiesko, gdy modyfikator jest aktywny one-shot, oraz na pomarańczowo, gdy jest zablokowany. Dioda LED układu SYM jest niebieska na stronie emoji i pomarańczowa na stronie symboli.</string>
 </resources>

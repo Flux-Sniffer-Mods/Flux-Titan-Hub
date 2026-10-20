@@ -1005,9 +1005,4 @@ Ogni tasto può essere configurato come Keycode, Azione, Native Ctrl o Nessuno. 
     <string name="flux_gifs_offline_note">La modalità offline è attiva, quindi la ricerca GIF è spenta (Impostazioni → Modalità offline).</string>
     <string name="search_key_title">Tasto ricerca</string>
     <string name="search_key_description">Nel livello emoji e nelle pagine dei simboli questo tasto apre la ricerca; nel selettore emoji e nella ricerca GIF manda la digitazione alla ricerca. A se non lo cambi; non può essere il tasto Recenti o GIF.</string>
-    <string name="tutorial_page_welcome_description">Pastiera 0.86 è l’ultima versione pianificata con nuove funzioni. Puoi continuare a usare Pastiera; i problemi rilevanti per la sicurezza continueranno a ricevere aggiornamenti. Plektra porta avanti il progetto con gli stessi principi e rimane software libero e open source con licenza copyleft GPLv3. Quando Plektra sarà pronto, Pastiera ti avviserà e ti guiderà nel trasferimento una tantum delle impostazioni.</string>
-    <string name="tutorial_page_customization_title">Personalizzazione</string>
-    <string name="tutorial_page_customization_description">Pastiera offre molte opzioni di personalizzazione:\n• Layout tastiera personalizzabili\n• Scorciatoie del launcher e Power Shortcuts\n• La barra IME può funzionare come swipe bar per spostare il cursore\n• Mappature personalizzate per Nav Mode\nEsplora le impostazioni per trovare la configurazione perfetta per te!</string>
-    <string name="tutorial_page_led_title">LED Indicator</string>
-    <string name="tutorial_page_led_description">Per sfruttare al meglio Pastiera, imposta il tasto Fn come Ctrl dalle impostazioni di sistema. La barra IME mostra quattro LED: diventano blu quando il modificatore è attivo one-shot e arancioni quando è locked. Il LED del layout SYM è blu nella pagina emoji e arancione nella pagina symbols.</string>
 </resources>

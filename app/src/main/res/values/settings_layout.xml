@@ -258,6 +258,7 @@
     <string name="phone_spell_checker_title">The phone\'s spell checker in suggestions</string>
     <string name="phone_spell_checker_description">When Android\'s spell checker is another app\'s (Gboard\'s, say), its corrections for a misspelt word join the suggestion bar.</string>
     <string name="root_title">Shell access</string>
+    <string name="root_row_description">The built-in shell, root or Shizuku, for gaming mode, streaming and the shell extras</string>
     <string name="root_note">These run as the ADB shell, through the built-in shell or Shizuku. Flux Titan Hub only runs the commands each option needs.</string>
     <string name="root_section_backlight">Keyboard light</string>
     <string name="density_apply">Apply</string>
@@ -346,6 +347,10 @@
     <string name="recommended_settings_description">A few settings that suit nearly everyone: modifiers, suggestions, LEDs and, on the Titan 2 Elite, its trackpad and compact bar. Matters of taste stay yours.</string>
     <string name="recommended_settings_nothing">Your settings already match the recommended ones.</string>
     <string name="recommended_settings_apply">Apply</string>
+    <string name="recommended_settings_configure_title">Set up the rest?</string>
+    <string name="recommended_settings_configure_text">Recommended settings applied. Go through your choices (auto-correct, GIFs, colours), the extras that need a permission, and making it yours? It takes a minute, and you can skip it.</string>
+    <string name="recommended_settings_configure_yes">Set up</string>
+    <string name="recommended_settings_configure_no">Not now</string>
     <string name="recommended_settings_failed">Couldn\'t apply the recommended settings</string>
     <plurals name="recommended_settings_differ">
         <item quantity="one">%d of your settings differs from the recommended ones. Applying replaces it, along with the recommended mappings and variations. Back up first if you might want yours back.</item>

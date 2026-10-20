@@ -710,9 +710,4 @@ Chaque touche peut être configurée comme Keycode, Action, Native Ctrl ou Aucun
     <string name="settings_link_with_description">Avec description</string>
     <string name="settings_link_copied_toast">Lien copié</string>
     <string name="settings_link_unavailable_toast">Ce paramètre n\'est pas disponible</string>
-    <string name="tutorial_page_welcome_description">Pastiera 0.86 est la dernière version prévue avec de nouvelles fonctions. Vous pouvez continuer à utiliser Pastiera ; les problèmes liés à la sécurité continueront à recevoir des mises à jour. Plektra poursuit le projet selon les mêmes principes et reste un logiciel libre et open source sous licence copyleft GPLv3. Lorsque Plektra sera prêt, Pastiera vous préviendra et vous guidera dans le transfert unique de vos réglages.</string>
-    <string name="tutorial_page_customization_title">Personnalisation</string>
-    <string name="tutorial_page_customization_description">Pastiera offre de nombreuses options de personnalisation:\n• Dispositions de clavier personnalisables\n• Raccourcis du lanceur et Power Shortcuts\n• La barre IME peut servir de barre de swipe pour déplacer le curseur\n• Mappages personnalisés pour le mode Nav\nExplorez les paramètres pour trouver la configuration parfaite pour vous!</string>
-    <string name="tutorial_page_led_title">Indicateur LED</string>
-    <string name="tutorial_page_led_description">Pour tirer le meilleur parti de Pastiera, définissez la touche Fn comme Ctrl dans les paramètres système. La barre IME affiche quatre LED: elles deviennent bleues quand le modificateur est actif one-shot et orangées quand il est verrouillé. La LED du layout SYM est bleue sur la page emoji et orange sur la page symbols.</string>
 </resources>

@@ -710,9 +710,4 @@ Mỗi phím có thể cấu hình là Keycode, Action, Native Ctrl hoặc None. 
     <string name="settings_link_with_description">Kèm mô tả</string>
     <string name="settings_link_copied_toast">Đã sao chép liên kết</string>
     <string name="settings_link_unavailable_toast">Cài đặt này không khả dụng</string>
-    <string name="tutorial_page_welcome_description">Pastiera 0.86 là bản phát hành cuối cùng được lên kế hoạch có tính năng mới. Bạn có thể tiếp tục dùng Pastiera; các vấn đề liên quan đến bảo mật sẽ tiếp tục nhận được bản cập nhật. Plektra tiếp tục dự án theo cùng các nguyên tắc và vẫn là phần mềm tự do, mã nguồn mở theo giấy phép copyleft GPLv3. Khi Plektra sẵn sàng, Pastiera sẽ thông báo và hướng dẫn bạn chuyển cài đặt một lần.</string>
-    <string name="tutorial_page_customization_title">Tùy chỉnh</string>
-    <string name="tutorial_page_customization_description">Pastiera cung cấp nhiều tùy chọn tùy chỉnh:\n• Bố cục bàn phím tùy chỉnh\n• Launcher shortcuts &amp; Power Shortcuts\n• Thanh IME có thể dùng như thanh vuốt để di chuyển con trỏ\n• Ánh xạ tùy chỉnh cho Nav Mode\nHãy khám phá phần cài đặt để tìm cấu hình phù hợp nhất với bạn!</string>
-    <string name="tutorial_page_led_title">Đèn LED</string>
-    <string name="tutorial_page_led_description">Để tận dụng Pastiera tốt hơn, hãy đặt phím Fn hoạt động như Ctrl trong cài đặt hệ thống Android. Thanh IME hiển thị bốn đèn LED: màu xanh khi modifier đang bật một lần, màu cam khi bị khóa. LED của bố cục SYM màu xanh ở trang emoji và màu cam ở trang ký hiệu.</string>
 </resources>

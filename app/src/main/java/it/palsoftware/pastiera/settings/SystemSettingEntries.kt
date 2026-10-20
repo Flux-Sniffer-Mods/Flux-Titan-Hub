@@ -47,6 +47,12 @@ internal fun systemSettingEntries(): List<SettingEntry> = listOf(
         route = SettingRoute(SettingsDestination.Accessibility)
     ),
     SettingEntry(
+        id = "main.root",
+        titleRes = R.string.root_title,
+        summaryRes = R.string.root_row_description,
+        route = SettingRoute(SettingsDestination.Root)
+    ),
+    SettingEntry(
         id = "main.shell_extras",
         titleRes = R.string.shell_extras_title,
         summaryRes = R.string.shell_extras_description,

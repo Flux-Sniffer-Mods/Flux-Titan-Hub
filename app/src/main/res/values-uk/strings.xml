@@ -710,9 +710,4 @@ Ctrl-ярлики застосунків із урахуванням розкл�
     <string name="settings_link_with_description">З описом</string>
     <string name="settings_link_copied_toast">Посилання скопійовано</string>
     <string name="settings_link_unavailable_toast">Цей параметр недоступний</string>
-    <string name="tutorial_page_welcome_description">Pastiera 0.86 — останній запланований випуск із новими функціями. Ви можете й надалі користуватися Pastiera; проблеми, пов’язані з безпекою, продовжать отримувати оновлення. Plektra продовжує проєкт на тих самих засадах і залишається вільним програмним забезпеченням із відкритим кодом за copyleft-ліцензією GPLv3. Коли Plektra буде готова, Pastiera повідомить вас і допоможе одноразово перенести налаштування.</string>
-    <string name="tutorial_page_customization_title">Персоналізація</string>
-    <string name="tutorial_page_customization_description">Pastiera пропонує багато опцій налаштування:\n• Власні розкладки клавіатури\n• Гарячі клавіші та швидкі команди\n• IME панель може діяти як свайп-бар для переміщення курсора\n• Власні призначення для режиму навігації\nДослідіть налаштування, щоб знайти ідеальну конфігурацію!</string>
-    <string name="tutorial_page_led_title">Індикатори</string>
-    <string name="tutorial_page_led_description">Щоб отримати максимум від Pastiera, встановіть клавішу Fn як Ctrl у системних налаштуваннях. Панель IME показує чотири індикатори: вони стають синіми, коли модифікатор активний одноразово, і помаранчевими, коли заблоковано. Індикатор SYM синій на сторінці емодзі і помаранчевий на сторінці символів.</string>
 </resources>

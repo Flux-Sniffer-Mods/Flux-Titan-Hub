@@ -1,16 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Flux Keyboard's own tutorial pages -->
 <resources>
+    <string name="flux_tutorial_welcome_description">A keyboard, gaming mode and streaming for phones with a real keyboard, tuned for the Unihertz Titan 2 Elite. The keyboard is built on Pastiera by PalSoftware. Next, pick what you\'ll use: only those pages follow.</string>
 
+    <string name="flux_tutorial_setup_title">Set it up in one step</string>
+    <string name="flux_tutorial_setup_description">Recommended settings are the configuration Flux Keyboard is tuned with: modifiers, suggestions, spacing and LEDs, plus the Titan 2 Elite\'s trackpad and compact bar on that phone. Matters of taste come next, under Your choices.</string>
+    <string name="flux_tutorial_setup_bullet_change">Change anything afterwards in Settings.</string>
+    <string name="flux_tutorial_setup_bullet_again">After an update, any newly recommended settings are offered once, showing each change from your value to the new one.</string>
+    <string name="flux_tutorial_setup_bullet_other_phone">On other phones, the Titan 2 Elite\'s trackpad and compact bar stay as they are.</string>
+    <string name="flux_tutorial_setup_button">Apply recommended settings (%1$d changes)</string>
+    <string name="flux_tutorial_setup_applied">Recommended settings are on</string>
+    <string name="flux_tutorial_setup_failed">Couldn\'t apply the recommended settings.</string>
 
+    <string name="flux_tutorial_emoji_title">Emoji, symbols, kaomoji and GIFs</string>
+    <string name="flux_tutorial_emoji_description">The emoji key opens emoji, SYM the symbols: pages you turn with Q and P, starting on your recents.</string>
+    <string name="flux_tutorial_emoji_bullet_key">Tap the emoji key (Right Shift by default) to open the picker. Held with Ctrl, it still works as Shift.</string>
+    <string name="flux_tutorial_emoji_bullet_gif">GIFs: L on the emoji recents page, or the picker\'s GIF tab. Keep favourites and recents.</string>
+    <string name="flux_tutorial_emoji_bullet_symbols">Kaomoji: L on the symbols recents page. Search them by mood, action or name, like lenny face or table flip.</string>
+    <string name="flux_tutorial_emoji_button">Choose the emoji key</string>
 
+    <string name="flux_tutorial_typing_title">Type faster</string>
+    <string name="flux_tutorial_typing_description">Small things that save keystrokes.</string>
+    <string name="flux_tutorial_typing_bullet_pick">Ctrl+Shift+Q, W or E picks the left, middle or right suggestion.</string>
+    <string name="flux_tutorial_typing_bullet_undo">Ctrl+Z undoes what you typed in any app, and Ctrl+Y redoes it. Backspace right after an auto-correction undoes it, and Shift+Backspace deletes forwards.</string>
+    <string name="flux_tutorial_typing_bullet_paste">Just copied something? It\'s offered as a chip in the next text field, with tracking and redirects stripped from links.</string>
+    <string name="flux_tutorial_typing_bullet_spell">The spell checker underlines typos in every app, with Gboard\'s corrections joining the suggestions when it\'s the phone\'s spell checker, and password managers show their chips in the suggestion bar.</string>
+    <string name="flux_tutorial_typing_button">Spell checker settings</string>
 
+    <string name="flux_tutorial_apps_title">Works with your apps</string>
+    <string name="flux_tutorial_apps_description">The same keys do the same things everywhere.</string>
+    <string name="flux_tutorial_apps_bullet_shortcuts">App shortcuts: Ctrl+F, Ctrl+N and friends work the same in every app.</string>
+    <string name="flux_tutorial_apps_bullet_enter">Enter sends and Shift+Enter adds a new line in every app. In email and note apps, Enter adds a new line and Ctrl+Enter sends. Your installed apps are listed so you can change any of them.</string>
+    <string name="flux_tutorial_apps_bullet_exact">Exact typing: nothing rewrites what you type in terminals, code editors or AI chats.</string>
+    <string name="flux_tutorial_apps_bullet_terminal">Terminal mode gives Termux a real Ctrl and keeps the keyboard out of the way. Nav Mode and swipes on the keys move the cursor, and the emoji key opens the extra keys: Esc, Tab, Ctrl, Alt and arrows, pressed with Q to P while open.</string>
+    <string name="flux_tutorial_apps_button">Open App shortcuts</string>
     <string name="whats_new_done">Done</string>
+    <string name="whats_new_close">Close</string>
+    <string name="flux_tutorial_choices_title">Your choices</string>
+    <string name="flux_tutorial_choices_description">Matters of taste the recommended settings leave to you. Change any of them later in Settings.</string>
+    <string name="flux_tutorial_choices_button">More typing settings</string>
+    <string name="flux_choice_auto_correct_title">Auto-correct as you type</string>
+    <string name="flux_choice_auto_correct_text">Fix typos when you press Space. Off, suggestions still show.</string>
+    <string name="flux_choice_double_space_title">Double Space types a full stop</string>
+    <string name="flux_choice_double_space_text">Two spaces end the sentence with \". \".</string>
+    <string name="flux_choice_emoji_suggestions_title">Emoji suggestions</string>
+    <string name="flux_choice_emoji_suggestions_text">An emoji for the word you\'re typing, in the suggestion bar.</string>
+    <string name="flux_choice_gifs_title">GIF search</string>
+    <string name="flux_choice_gifs_text">A GIF tab in the emoji picker and a GIF key on the emoji layer (searches online, through KLIPY).</string>
+    <string name="flux_choice_emoji_layer_title">The emoji key opens the emoji layer</string>
+    <string name="flux_choice_emoji_layer_text">Emoji on the letter keys, one key each. Off, it opens the emoji picker instead.</string>
+    <string name="flux_choice_wallpaper_title">Colours from your wallpaper</string>
+    <string name="flux_choice_wallpaper_text">The keyboard takes its colours from the wallpaper, light or dark with the system.</string>
+    <string name="flux_tutorial_extras_title">Extras to set up</string>
+    <string name="flux_tutorial_extras_description">These need a permission or another app, so they start off. Set them up now, or later in Settings. Notification access needs restricted settings allowed (the Permissions page).</string>
+    <string name="flux_tutorial_extras_on">On</string>
+    <string name="flux_tutorial_extras_codes_title">One-time codes</string>
+    <string name="flux_tutorial_extras_codes_text">Codes from your notifications, offered as a chip to fill in. Needs notification access.</string>
+    <string name="flux_tutorial_extras_codes_restricted">Codes from your notifications, offered as a chip to fill in. Android blocks notification access for apps installed from a file until you allow restricted settings: the button shows you how, step by step, and opens App info.</string>
+    <string name="flux_tutorial_extras_codes_button">Turn on</string>
+    <string name="flux_tutorial_extras_niagara_title">Niagara search as the quick launcher</string>
+    <string name="flux_tutorial_extras_niagara_text">The quick launcher opens Niagara\'s search instead of the built-in one, and Back takes you back to your app.</string>
+    <string name="flux_tutorial_extras_niagara_button">Use Niagara</string>
+    <string name="flux_tutorial_extras_niagara_off_button">Use the built-in one</string>
+    <string name="flux_tutorial_extras_hidden_apps_title">Apps that handle the keyboard themselves</string>
+    <string name="flux_tutorial_extras_hidden_apps_text">In apps like Termux:X11 and Niagara Launcher (both hidden by default), the keyboard stays out of sight and leaves every key to the app. Its status LEDs there need the accessibility service.</string>
+    <string name="flux_tutorial_extras_hidden_apps_button">Choose these apps</string>
+    <string name="flux_tutorial_emoji_bullet_sticky">Tap SYM or the emoji key once and the next key types its symbol or emoji, without opening a screen (turn them on in Modifiers &amp; SYM and in Emoji, symbols &amp; GIFs).</string>
+    <string name="flux_tutorial_typing_bullet_swipes">On the trackpad, swipe left, up or right to pick a suggestion, and down to delete a word (Trackpad gestures).</string>
+    <string name="flux_tutorial_typing_bullet_shift">Choose which kinds of text field start with a capital: messages, names and addresses by default.</string>
+    <string name="flux_tutorial_typing_bullet_language">Each app can keep the language you last typed in there. English is built in; another language\'s dictionary downloads the first time you add it.</string>
+    <string name="flux_tutorial_apps_bullet_launcher">The quick launcher (SYM + Space, from any app) opens apps, their own shortcuts (\"New message\"), Flux Keyboard\'s New and Search for the apps it knows, your Termux scripts, and whatever you add: long-press an app there to add one.</string>
+    <string name="flux_tutorial_apps_bullet_search">Apps that open with their search bar focused can keep the keyboard bar hidden until you type.</string>
+    <string name="flux_tutorial_personalise_title">Make it yours</string>
+    <string name="flux_tutorial_personalise_description">Change what keys type, and how the keyboard looks.</string>
+    <string name="flux_tutorial_personalise_bullet_layouts">Edit any layout in the app: tap a key to change what it types, then save, copy or export it.</string>
+    <string name="flux_tutorial_personalise_bullet_leds">Each status LED can have its own colour, and a fifth LED shows the emoji key.</string>
+    <string name="flux_tutorial_personalise_bullet_colours">Colours from your wallpaper or a theme of your own, or a picture behind the keyboard: drag and zoom it into place on a preview, and its colours can set the keys\'.</string>
+    <string name="flux_tutorial_personalise_bullet_menu">Choose the menu bar\'s buttons and their order.</string>
+    <string name="flux_tutorial_personalise_button">Status LED colours</string>
+    <string name="flux_tutorial_typing_bullet_punctuation">Punctuation spacing: choose which marks take a space after them, and which never have one before.</string>
+    <string name="flux_tutorial_personalise_bullet_contour">On the Titan 2 Elite, the LEDs can follow the screen\'s rounded bottom corners on two rails, the same length on every page (Titan 2 Elite settings).</string>
+    <string name="flux_tutorial_apps_bullet_updates">Updates download inside the app and install when you say so.</string>
+    <string name="flux_tutorial_extras_termux_title">Termux scripts in the quick launcher</string>
+    <string name="flux_tutorial_extras_termux_text">Your Termux:Widget scripts and tasks (~/.shortcuts) run straight from the quick launcher. Allow Flux Titan Hub to run commands in Termux, then set Termux up with the command below.</string>
     <string name="trackpad_capture_title">Swipes go to the keyboard while you type</string>
     <string name="trackpad_capture_description">While a text field is being typed in, the keyboard takes the trackpad\'s swipes before the app, so they pick suggestions and don\'t scroll the page. Scroll assistant has to be on for the app in front, or the phone passes no swipes on at all. Needs the accessibility service and Android 14 or later.</string>
     <string name="termux_setup_title">Set up Termux for the keyboard</string>
     <string name="termux_setup_description">Copies a command and opens Termux: paste it there (long press, Paste) and press Enter. It lets other apps run commands (allow-external-apps, which the quick launcher\'s scripts need) and removes the extra-keys row and its text box, which a phone with keys like the Titan 2 Elite doesn\'t need. Pasting it again changes nothing.</string>
+    <string name="termux_setup_button">Copy the command and open Termux</string>
     <string name="termux_setup_copied">Command copied: paste it into Termux and press Enter</string>
+    <string name="flux_tutorial_extras_termux_button">Allow running Termux commands</string>
+    <string name="flux_tutorial_typing_bullet_learn">It learns as you go: words you type often, and the emails and phone numbers you type yourself (never in Incognito typing).</string>
+    <string name="flux_tutorial_emoji_bullet_pages">The emoji layer and the symbols open on what you used last, with search on A. Q and P turn through every emoji by category, or common symbols, arrows, maths, currency and more. Whatever you use joins the recents.</string>
+    <string name="flux_tutorial_emoji_bullet_tones">Hold an emoji, on its key or on screen, for its skin tones. Choose a default skin tone below.</string>
+    <string name="flux_tutorial_typing_bullet_private">Key shortcuts for private mode (Incognito typing and Offline mode together) and for selecting from the cursor: set them in Customize keys.</string>
+    <string name="flux_tutorial_extras_shizuku_button">Open Shell access</string>
+    <string name="flux_tutorial_personalise_bullet_theme">Keyboard themes: the theme page shows which theme is in use in light and dark mode, and sets it with a tap.</string>
     <string name="trackpad_apps_section">Keyboard swipes per app</string>
     <string name="trackpad_apps_note">Turn Scroll assistant on for every app in the phone\'s settings (select all apps there), then choose here where keyboard swipes may scroll. Flux Keyboard keeps them from the other apps through the accessibility service (Android 14 and later). While you type, they always go to the keyboard.</string>
     <string name="trackpad_apps_note_shizuku">Flux Keyboard reads keyboard swipes through Shell access, so they work while you type in any app. Which apps they scroll is up to Scroll assistant: untick the ones you don\'t want scrolled in its app list.</string>
@@ -28,8 +113,59 @@
     <string name="app_picker_done">Done (%1$d)</string>
 
     <!-- Permissions: restricted settings, then accessibility -->
+    <string name="flux_tutorial_permissions_title">Permissions</string>
+    <string name="flux_tutorial_permissions_description">Flux Titan Hub is installed from GitHub, not the Play Store, so Android holds back its accessibility service until you allow it once. Accessibility lets Flux Titan Hub read keyboard swipes, follow the app in front for per-app screen size, and take keys that some apps read first. It can\'t read what\'s on screen.</string>
+    <string name="flux_tutorial_permissions_step1_title">1. Try to switch it on</string>
+    <string name="flux_tutorial_permissions_step1_text">Tap the button, then switch on Flux Keyboard. Android will refuse and call it a restricted setting. That\'s expected: the attempt is what makes step 2 appear.</string>
+    <string name="flux_tutorial_permissions_step2_title">2. Allow restricted settings</string>
+    <string name="flux_tutorial_permissions_step2_text">In App info, tap ⋮ at the top right, then Allow restricted settings, and confirm with your PIN or fingerprint.</string>
+    <string name="flux_tutorial_permissions_step3_title">3. Switch it on again</string>
+    <string name="flux_tutorial_permissions_step3_text">Back in accessibility, switch on Flux Keyboard. This time Android lets it.</string>
+    <string name="flux_tutorial_permissions_open_accessibility">Open accessibility</string>
+    <string name="flux_tutorial_permissions_open_app_info">Open App info</string>
+    <string name="flux_tutorial_permissions_allowed">✓ Already allowed</string>
+    <string name="flux_tutorial_permissions_on">✓ Accessibility is on</string>
+    <string name="flux_tutorial_permissions_notifications">One-time codes use notification access, which Android holds back the same way. Once restricted settings are allowed, it switches on in one go (Extras, near the end).</string>
 
     <!-- The keyboard bar: Solderina or minimal mode -->
+    <string name="flux_tutorial_bar_title">Your keyboard bar</string>
+    <string name="flux_tutorial_bar_description">Pick how much of the screen the keyboard takes. You can switch any time in Look and sound, or with a shortcut.</string>
+    <string name="flux_tutorial_bar_solderina_text">A slim bar above the keys with suggestions and your buttons. ☰ opens the menu: extra keys, undo, redo and the clipboard.</string>
+    <string name="flux_tutorial_bar_minimal_text">No bar in any app, so apps get the whole screen. Emoji and symbols still open on their keys, and the extra keys on a shortcut.</string>
+    <string name="flux_tutorial_bar_chosen">✓ Chosen</string>
 
     <!-- Shizuku -->
+    <string name="flux_tutorial_shizuku_title">Shell access</string>
+    <string name="flux_tutorial_shizuku_description">Flux Titan Hub can use Android\'s developer shell without rooting the phone, through its own built-in shell or through Shizuku. With it:</string>
+    <string name="flux_tutorial_shell_title">Built-in shell (recommended)</string>
+    <string name="flux_tutorial_shell_text">Pair it once with wireless debugging: tap Set up, then in Wireless debugging tap Pair device with pairing code, and type the code into Flux Titan Hub\'s notification. After that it starts by itself after every restart, once Wi-Fi connects. No Shizuku or Termux needed.</string>
+    <string name="flux_tutorial_shell_paired">Paired</string>
+    <string name="flux_tutorial_shell_button">Set up</string>
+    <string name="flux_tutorial_shell_or_shizuku_title">Or use Shizuku</string>
+    <string name="flux_tutorial_shell_or_shizuku_text">If you already use Shizuku, Flux Titan Hub uses it whenever the built-in shell isn\'t running.</string>
+    <string name="flux_tutorial_shizuku_bullet_swipes">Keyboard swipes work in every app, not only the ones the phone\'s Scroll assistant scrolls.</string>
+    <string name="flux_tutorial_shizuku_bullet_light">The keyboard light follows the screen and its brightness, or flashes for notifications.</string>
+    <string name="flux_tutorial_shizuku_bullet_shortcuts">Shortcuts can force-stop the app in front, toggle Battery Saver or cut an app off the network.</string>
+    <string name="flux_tutorial_shizuku_install_title">1. Install Shizuku</string>
+    <string name="flux_tutorial_shizuku_install_text">Get the latest release from Shizuku\'s GitHub page.</string>
+    <string name="flux_tutorial_shizuku_install_button">Download Shizuku</string>
+    <string name="flux_tutorial_shizuku_start_title">2. Start Shizuku</string>
+    <string name="flux_tutorial_shizuku_start_text">In Shizuku, choose Start via Wireless debugging and follow its pairing steps. It needs Wi-Fi.</string>
+    <string name="flux_tutorial_shizuku_start_button">Open Shizuku</string>
+    <string name="flux_tutorial_shizuku_allow_title">3. Allow Flux Titan Hub</string>
+    <string name="flux_tutorial_shizuku_allow_text">Shizuku asks once whether Flux Titan Hub may use it.</string>
+    <string name="flux_tutorial_shizuku_allow_button">Allow</string>
+    <string name="flux_tutorial_shizuku_installed">✓ Installed</string>
+    <string name="flux_tutorial_shizuku_running">✓ Running</string>
+    <string name="flux_tutorial_shizuku_allowed">✓ Allowed</string>
+    <string name="flux_tutorial_shizuku_boot_title">4. After a restart</string>
+    <string name="flux_tutorial_shizuku_boot_text">Android stops Shizuku whenever the phone restarts. Two ways to have it start again by itself:</string>
+    <string name="flux_tutorial_shizuku_boot_own_title">Shizuku\'s Start on boot</string>
+    <string name="flux_tutorial_shizuku_boot_own_text">The simplest. One tap here gives Shizuku the permission it needs, then switch on Start on boot in Shizuku. It only works if Wi-Fi is connected when the phone starts.</string>
+    <string name="flux_tutorial_shizuku_boot_own_button">Set up Start on boot</string>
+    <string name="flux_tutorial_shizuku_boot_termux_title">Termux:Boot</string>
+    <string name="flux_tutorial_shizuku_boot_termux_text">Waits for Wi-Fi, then starts Shizuku, so it copes with a slow connection. Needs Termux and Termux:Boot, both from GitHub: Android won\'t let a Termux:Boot from F-Droid work with a Termux from GitHub, or the other way round. Open Termux:Boot once after installing it, then copy the command here and paste it into Termux: it installs what it needs and walks you through pairing Termux with wireless debugging, once.</string>
+    <string name="flux_tutorial_shizuku_get_termux">Download Termux</string>
+    <string name="flux_tutorial_shizuku_get_termux_boot">Download Termux:Boot</string>
+    <string name="flux_tutorial_shizuku_copy_setup">Copy the Termux setup</string>
 </resources>
