@@ -49,7 +49,8 @@ class SettingsLayoutTest {
             SettingLinkIds.PRIVACY_INCOGNITO_ALWAYS to SettingsDestination.Advanced,
             "trackpad.swipe_to_delete" to SettingsDestination.TrackpadGestures,
             "sym.auto_close" to SettingsDestination.FluxEmojiGifs,
-            "sym.emoji_height" to SettingsDestination.FluxEmojiGifs
+            "sym.emoji_height" to SettingsDestination.FluxEmojiGifs,
+            SettingLinkIds.MAIN_APP_SHORTCUTS to SettingsDestination.AppShortcuts
         )
         expected.forEach { (id, destination) -> assertEquals(id, destination, route(id).destination) }
     }
@@ -139,7 +140,8 @@ class SettingsLayoutTest {
             SettingLinkIds.MAIN_KEYBOARDS_LAYOUTS to R.string.settings_keyboards_layouts_title,
             SettingLinkIds.MAIN_TYPING to R.string.settings_typing_title,
             SettingLinkIds.MAIN_LOOK_SOUND to R.string.settings_look_sound_title,
-            SettingLinkIds.MAIN_APPS to R.string.settings_apps_title
+            SettingLinkIds.MAIN_APPS to R.string.settings_apps_title,
+            SettingLinkIds.MAIN_APP_SHORTCUTS to R.string.app_shortcuts_title
         ).forEach { (id, title) ->
             assertTrue(id, SettingLinkRegistry.search(context, context.getString(title)).any { it.id == id })
         }

@@ -27,6 +27,7 @@ import kotlinx.coroutines.delay
 import it.palsoftware.pastiera.SettingLinkRequest
 import it.palsoftware.pastiera.SettingsActivity
 import it.palsoftware.pastiera.SymCustomizationActivity
+import it.palsoftware.pastiera.apps.AppShortcutsSettingsScreen
 import it.palsoftware.pastiera.autocorrect.AutoCorrectionCategoryScreen
 import it.palsoftware.pastiera.device.KeyboardsDevicesDestination
 import it.palsoftware.pastiera.device.KeyboardsDevicesSettingsScreen
@@ -68,6 +69,7 @@ enum class SettingsDestination {
     LookSound,
     TrackpadGestures,
     Apps,
+    AppShortcuts,
     Developer,
     TerminalMode,
     ExactTyping,
@@ -252,6 +254,9 @@ fun SettingsScreen(
             }
             SettingsDestination.Developer -> {
                 DeveloperOptionsScreen(modifier = modifier, onBack = { navigateBack() })
+            }
+            SettingsDestination.AppShortcuts -> {
+                AppShortcutsSettingsScreen(modifier = modifier, onBack = { navigateBack() })
             }
             SettingsDestination.KeyboardsDevices -> {
                 KeyboardsDevicesSettingsScreen(

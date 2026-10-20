@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Pastiera: strings Pastiera and the fork added, translated -->
 <resources>
+    <string name="app_shortcuts_title">Հավելվածների դյուրանցումներ</string>
+    <string name="app_shortcuts_description">Նույն ստեղնային համակցությունները յուրաքանչյուր հավելվածում</string>
+    <string name="app_shortcuts_intro">Սեղմեք նույն համակցությունը յուրաքանչյուր հավելվածում՝ Ctrl+F-ը որոնում է, Ctrl+N-ը ստեղծում է նորը, Alt+↓-ը անցնում է հաջորդ տարրին։ Pastiera-ը յուրաքանչյուր հավելվածին ուղարկում է դրա սեփական դյուրանցումը, իսկ եթե այն չկա՝ բացում է հավելվածի կիսվելու կամ որոնման էկրանը։</string>
+    <string name="app_shortcuts_enabled_title">Հավելվածների ունիվերսալ դյուրանցումներ</string>
+    <string name="app_shortcuts_enabled_description">Յուրաքանչյուր հավելվածին ուղարկել ստանդարտ համակցությունների սեփական դյուրանցումները</string>
+    <string name="app_shortcuts_section_standard">Ստանդարտ համակցություններ</string>
+    <string name="app_shortcuts_section_apps">Հավելվածներ</string>
+    <string name="app_shortcuts_section_mapping">Ինչ է ուղարկում յուրաքանչյուր համակցություն</string>
+    <string name="app_shortcuts_scope_outside_text_fields">Ոչ տեքստային դաշտում գրելիս</string>
+    <string name="app_shortcuts_not_installed">տեղադրված չէ</string>
+    <string name="app_shortcuts_add_app">Ավելացնել հավելված</string>
+    <string name="app_shortcuts_research_note">Ստեղնային դյուրանցումները վերցվում են միայն այն բանից, ինչ յուրաքանչյուր հավելված փաստաթղթավորում է Android-ի համար (կամ ներառում է իր ելակետային կոդում). շատերը ոչ մեկը չեն փաստաթղթավորում, ուստի դրանց կարգավորումները առաջարկներ են։ Հավելվածները Google Play-ի «Սոցիալական» բաժնի լավագույն 100-ն են և յուրաքանչյուր այլ հիմնական կատեգորիայի լավագույն 10-ը։</string>
+    <string name="app_shortcuts_app_source">Կարգավորում՝ հավելվածի դյուրանցումների փաստաթղթերից. %1$s</string>
+    <string name="app_shortcuts_app_custom">Ավելացված է ձեր կողմից. սահմանեք, թե ինչ է ուղարկում յուրաքանչյուր համակցություն՝ սեղմելով հավելվածի դյուրանցումը։</string>
+    <string name="app_shortcuts_app_enabled_title">Դյուրանցումներ այս հավելվածում</string>
+    <string name="app_shortcuts_app_enabled_description">%1$s-ին ուղարկել ստանդարտ համակցությունների սեփական դյուրանցումները</string>
+    <string name="app_shortcuts_not_remapped">Չվերանշանակված. հավելվածը ստանում է համակցությունը այնպես, ինչպես սեղմվել է</string>
+    <string name="app_shortcuts_same_in_app">Արդեն հավելվածի սեփական դյուրանցումն է</string>
+    <string name="app_shortcuts_sent_as">Ուղարկվում է որպես %1$s</string>
+    <string name="app_shortcuts_changed_by_you">փոխված է ձեր կողմից</string>
+    <string name="app_shortcuts_reset_app">Վերադառնալ կանխադրվածին</string>
+    <string name="app_shortcuts_reset_app_description">Մոռանալ այս հավելվածում փոխված դյուրանցումները</string>
+    <string name="app_shortcuts_remove_app">Հեռացնել այս հավելվածը</string>
+    <string name="app_shortcuts_remove_app_description">Դադարեցնել դյուրանցումների ուղարկումը և մոռանալ դրանք</string>
+    <string name="app_shortcuts_capture_instruction">Սեղմեք հավելվածի սեփական դյուրանցումը։ Pastiera-ը այն կուղարկի, երբ հավելվածում սեղմեք %1$s։</string>
+    <string name="app_shortcuts_capture_waiting">Սեղմեք ստեղների համակցություն…</string>
+    <string name="app_shortcuts_capture_preset">Կանխադրված՝ %1$s</string>
+    <string name="app_shortcuts_dont_remap">Չվերանշանակել</string>
+    <string name="app_shortcuts_use_preset">Օգտագործել կանխադրվածը</string>
+    <string name="app_shortcuts_save">Պահել</string>
     <string name="app_shortcut_new">Նոր (հաղորդագրություն, նշում, իրադարձություն, ներդիր)</string>
     <string name="app_shortcut_search">Որոնել</string>
     <string name="app_shortcut_open">Բացել կամ անցնել</string>
@@ -19,6 +49,13 @@
     <string name="app_shortcut_previous">Նախորդ տարր</string>
     <string name="app_shortcut_menu">Ընտրացանկ կամ կողային վահանակ</string>
     <string name="app_shortcut_help">Ստեղնային դյուրանցումների օգնություն</string>
+    <string name="app_shortcuts_suggestions_title">Առաջարկվող դյուրանցումներ</string>
+    <string name="app_shortcuts_suggestions_description">Եթե հավելվածը դյուրանցում չի փաստաթղթավորում, բացել դրա սեփական էկրանը՝ կիսվելու էկրանը «Նոր»-ի համար, որոնումը «Որոնել»-ի համար։ Միայն եթե այս հեռախոսի հավելվածն այն ընդունում է։</string>
+    <string name="app_shortcuts_show_not_installed">Ցույց տալ չտեղադրված հավելվածները</string>
+    <string name="app_shortcuts_app_suggested_only">Այս հավելվածը ստեղնային դյուրանցումներ չի փաստաթղթավորում։ Դրա առաջարկվող դյուրանցումները բացում են դրա սեփական էկրանները. յուրաքանչյուրն օգտագործվում է միայն, եթե հավելվածն այն ընդունում է։</string>
+    <string name="app_shortcuts_suggested_share">Առաջարկ. բացում է կիսվելու էկրանը (նոր գրառում կամ հաղորդագրություն)</string>
+    <string name="app_shortcuts_suggested_search">Առաջարկ. բացում է որոնումը</string>
+    <string name="app_shortcuts_suggested_link">Առաջարկ. բացում է %1$s-ը հավելվածում</string>
     <string name="app_shortcuts_category_social">Սոցիալական</string>
     <string name="app_shortcuts_category_communication">Հաղորդակցություն</string>
     <string name="app_shortcuts_category_browsers">Դիտարկիչներ</string>
@@ -53,6 +90,12 @@
     <string name="app_shortcut_app_action_2">Հավելվածի դյուրանցում 2</string>
     <string name="app_shortcut_app_action_3">Հավելվածի դյուրանցում 3</string>
     <string name="app_shortcut_app_action_4">Հավելվածի դյուրանցում 4</string>
+    <string name="app_shortcuts_opens_discovered">Բացում է %1$s (հավելվածից)</string>
+    <string name="app_shortcuts_opens_settings">Բացում է հավելվածի կարգավորումները</string>
+    <string name="app_shortcuts_section_discovered">Ինչ է առաջարկում հավելվածը</string>
+    <string name="app_shortcuts_discovered_note">Դյուրանցումները, որոնք այս հավելվածը ցույց է տալիս իր պատկերակը երկար սեղմելիս, և դրա կարգավորումների էկրանը՝ կարդացված այս հեռախոսի հավելվածից։ Ctrl+Alt+1-ից 4-ը բացում են առաջին չորսը (առանց թվերի շարքի ստեղնաշարի վրա պահեք Ctrl+Alt և սեղմեք 1-ից 4 մուտքագրող ստեղները), Ctrl+,-ը բացում է կարգավորումները, իսկ «Նոր» կամ «Որոնել» անունով դյուրանցումը զբաղեցնում է Ctrl+N կամ Ctrl+F, երբ ուրիշ բան չկա։</string>
+    <string name="app_shortcuts_discovered_none">Այս հավելվածը այլ հավելվածներին դյուրանցումներ կամ կարգավորումների էկրան չի առաջարկում։</string>
+    <string name="app_shortcuts_keys_note">Ցույց են տրված այնպես, ինչպես դրանք սեղմում եք ձեր ստեղնաշարին։ Եթե այն թվի կամ \"/\" ստեղն չունի, պահեք Ctrl և Alt այն մուտքագրող տառի հետ (փակագծերում)։ Դյուրանցումները, որոնք ձեր ստեղնաշարը չի կարող անել, օրինակ՝ սլաքներ առանց սլաքների ստեղների, ցուցակում չեն։</string>
     <string name="app_enter_behaviour_preset_newline_shift_send">Enter նոր տող, Shift+Enter ուղարկում է</string>
     <string name="app_enter_behaviour_option_newline_shift_send">Enter նոր տող, Shift+Enter ուղարկում է</string>
     <string name="enter_standard_notes">Նշումներ · Enter նոր տող, Ctrl+Enter հավելվածի սեփական գործողության համար</string>
@@ -126,6 +169,8 @@
     <string name="layout_editor_exported">Դասավորությունն արտահանվեց</string>
     <string name="layout_editor_export_failed">Չհաջողվեց արտահանել դասավորությունը</string>
     <string name="layout_editor_link">Խմբագրել դասավորությունը․ հպեք դրա մատիտին</string>
+    <string name="quick_launcher_app_shortcuts_title">Հավելվածների դյուրանցումներն արդյունքներում</string>
+    <string name="quick_launcher_app_shortcuts_description">Հավելվածների սեփական դյուրանցումները, որոնք ցույց է տալիս դրանց պատկերակը երկար սեղմելիս («Նոր հաղորդագրություն», «Սկանավորել QR կոդ»), արդյունքներ են, որոնք կարող եք բացել անմիջապես։</string>
     <string name="quick_launcher_niagara_back_title">«Հետ»-ը վերադարձնում է հավելված</string>
     <string name="quick_launcher_niagara_back_description">Niagara-ի որոնման մեջ «Հետ» սեղմելը, նախքան որևէ բան բացելը, վերադարձնում է այն հավելվածը, որտեղից բացել եք այն, Niagara-ի գլխավոր էկրանի փոխարեն։</string>
     <string name="quick_launcher_niagara_note">Niagara-ի որոնումն ինքն է դասավորում և բացում արդյունքները, ուստի ստորև արդյունքները փոխող կարգավորումները վերաբերում են ներկառուցված արագ գործարկիչին։ Ձեր ստեղնաշարի դասավորությունը և «Հետ»-ով հավելված վերադառնալը գործում են նաև Niagara-ում։</string>
@@ -260,7 +305,7 @@
     <string name="settings_trackpad_gestures_title">Թրեքփեդ և ժեստեր</string>
     <string name="settings_trackpad_gestures_description">Սահեցրեք ստեղների վրա՝ առաջարկներ ընտրելու, բառեր ջնջելու և ավելացնելու համար․ կարգավիճակի գոտու սահեցման վահանակը</string>
     <string name="settings_apps_title">Հավելվածներ</string>
-    <string name="settings_apps_description">Enter ըստ հավելվածի, QuickLauncher, տերմինալներ և Linux աշխատասեղան</string>
+    <string name="settings_apps_description">Հավելվածների դյուրանցումներ, Enter ըստ հավելվածի, QuickLauncher, տերմինալներ և Linux աշխատասեղան</string>
     <string name="settings_keyboards_devices_description">Ներկառուցված, էկրանային և արտաքին ստեղնաշարեր և դրանց միջև անցումը</string>
     <string name="settings_input_languages_description">Լեզուներ, դրանց դասավորությունները և դրանք փոխող ստեղները</string>
     <string name="settings_capitalisation_punctuation_title">Մեծատառեր և կետադրություն</string>
@@ -1198,13 +1243,47 @@
     <string name="settings_accessibility_bounce_keys_delay_link_title">Նույն ստեղնի նվազագույն ուշացում</string>
     <string name="emoticon_punctuation_title">Էմոտիկոնները պահում են իրենց ձևը</string>
     <string name="emoticon_punctuation_description">Կետադրական նշանը, որին անմիջապես հաջորդում է ևս մեկը, ինչպես :-) ;( :D կամ :\'(-ում, դրանից հետո բացատ չի ստանում։ Եթե հաջորդում է բառ (:Do), բացատը վերադառնում է։ Վերջակետերը միշտ պահում են իրենց բացատը։</string>
+    <string name="user_shortcuts_title">Ավելացնել դյուրանցում</string>
+    <string name="user_shortcuts_description">Տեղադրեք հավելվածի դյուրանցում, օրինակ՝ կոնտակտի ուղիղ զանգ, էջանիշ կամ կարգավորումների էջ, արագ գործարկիչի արդյունքներում։</string>
+    <string name="user_shortcuts_intro">Հիմնական էկրանի դյուրանցումները կարող է կարդալ միայն հիմնական էկրանի հավելվածը, ուստի ձեր ուզածներն այստեղ ավելացրեք մեկ անգամ։ Ներքևում ընտրեք հավելված և ընտրեք դյուրանցումը նրա էկրանում։</string>
+    <string name="user_shortcuts_yours">Ձեր դյուրանցումները</string>
+    <string name="user_shortcuts_add_from">Ավելացնել՝</string>
+    <string name="user_shortcuts_none">Այս հեռախոսում ոչ մի հավելված ավելացնելու դյուրանցումներ չի առաջարկում։</string>
+    <string name="user_shortcuts_added">%1$s-ն արագ գործարկիչում է</string>
+    <string name="user_shortcuts_unsupported">Այս հավելվածի դյուրանցումը կարելի է բացել միայն հիմնական էկրանից։</string>
+    <string name="user_shortcuts_remove">Հեռացնել %1$s</string>
     <string name="quick_launcher_open_failed">Չհաջողվեց բացել՝ %1$s</string>
     <string name="learn_contact_details_title">Հիշել էլ. հասցեներն ու հեռախոսահամարները</string>
     <string name="learn_contact_details_description">Ձեր ինքնուրույն մուտքագրած էլ. հասցեներն ու հեռախոսահամարները պահվում են ձեր բառարանում և կրկին առաջարկվում էլ. փոստի ու հեռախոսի դաշտերում։ Երբեք՝ տեղադրված տեքստը կամ գաղտնաբառի և անձնական դաշտերի պարունակությունը։</string>
     <string name="learn_frequent_words_title">Սովորել հաճախ օգտագործվող բառերը</string>
     <string name="learn_frequent_words_description">Բառարանում չեղած բառը ավելացվում է, երբ այն երեք անգամ մուտքագրեք, որպեսզի առաջարկվի և երբեք ինքնաշտկված չլինի։ Ոչ՝ ինկոգնիտո մուտքագրման ժամանակ։</string>
+    <string name="user_shortcuts_builtin">Pastiera-ի ստեղծածները</string>
+    <string name="user_shortcuts_call_title">Զանգել կոնտակտին</string>
+    <string name="user_shortcuts_message_title">Գրել կոնտակտին</string>
+    <string name="user_shortcuts_website_title">Կայք</string>
+    <string name="user_shortcuts_termux_title">Termux առաջադրանք</string>
+    <string name="user_shortcuts_termux_description">Սկրիպտ ~/.shortcuts-ից, որն աշխատում է ինչպես Termux:Widget-ում՝ tasks-ինը ֆոնում, մյուսները՝ տերմինալում։</string>
+    <string name="user_shortcuts_termux_setup">Termux-ին անհրաժեշտ է allow-external-apps = true ~/.termux/termux.properties-ում (ապա վերագործարկեք Termux-ը), իսկ Pastiera-ին՝ Termux-ում հրամաններ գործարկելու թույլտվություն։</string>
+    <string name="user_shortcuts_termux_none">~/.shortcuts-ում սկրիպտներ չեն գտնվել</string>
+    <string name="user_shortcuts_call_label">Զանգել՝ %1$s</string>
+    <string name="user_shortcuts_message_label">Գրել՝ %1$s</string>
+    <string name="user_shortcuts_website_address">Հասցե</string>
+    <string name="user_shortcuts_name">Անուն</string>
+    <string name="user_shortcuts_add">Ավելացնել</string>
+    <string name="quick_launcher_action_new_message">Նոր հաղորդագրություն</string>
+    <string name="quick_launcher_action_new_post">Նոր գրառում</string>
+    <string name="quick_launcher_action_new_note">Նոր նշում</string>
+    <string name="quick_launcher_action_compose">Գրել նամակ</string>
+    <string name="quick_launcher_action_search">Որոնում</string>
     <string name="auto_cap_after_emoticon_title">Մեծատառ էմոտիկոնից հետո</string>
     <string name="auto_cap_after_emoticon_description">Տեքստային էմոտիկոնը, օրինակ՝ :) ;D կամ &lt;3, ավարտում է նախադասությունը վերջակետի պես, ուստի հաջորդ բառը սկսվում է մեծատառով։</string>
+    <string name="quick_launcher_termux_scripts_title">Termux-ի սկրիպտներ</string>
+    <string name="quick_launcher_termux_scripts_description">Ձեր Termux:Widget սկրիպտներն ու առաջադրանքները (~/.shortcuts) արագ գործարկիչում՝ միշտ թարմ։ Պահանջում է allow-external-apps = true ~/.termux/termux.properties-ում և Termux-ում հրամաններ գործարկելու թույլտվություն։</string>
+    <string name="quick_launcher_listed_app_shortcuts_title">Դյուրանցումներ համատեղելի հավելվածների համար</string>
+    <string name="quick_launcher_listed_app_shortcuts_description">Pastiera-ը արագ գործարկիչում ավելացնում է Նոր հաղորդագրություն, Նոր նշում, Գրել նամակ և Որոնում իրեն հայտնի հավելվածների համար, եթե հավելվածն ընդունում է դրանք։</string>
+    <string name="quick_launcher_listed_app_toggle">Pastiera-ի դյուրանցումները այս հավելվածի համար</string>
+    <string name="termux_runs_background">Termux · ֆոնում</string>
+    <string name="termux_runs_terminal">Termux · տերմինալում</string>
     <string name="emoji_layer_recents_first_title">Վերջին էմոջիները շերտի սկզբում</string>
     <string name="emoji_layer_recents_first_description">Վերջին օգտագործված էմոջիները զբաղեցնում են շերտի առաջին ստեղները, իսկ շերտինները տեղափոխվում են։ Հաշվվում են նաև շերտից մուտքագրվածները։</string>
     <string name="emoji_layer_recents_count">Վերջին էմոջիներ՝ %1$d ստեղն</string>
@@ -1244,6 +1323,18 @@
     <string name="root_note">Աշխատում են Shizuku-ի միջոցով՝ որպես ADB shell։ Pastiera-ը կատարում է միայն յուրաքանչյուր ընտրանքի համար անհրաժեշտ հրամանները։</string>
     <string name="root_title">Shell-ի մուտք</string>
     <string name="shift_field_other">Այլ դաշտեր (որոնք չեն ասում, թե ինչ են)</string>
+    <plurals name="app_shortcuts_remapped_count">
+        <item quantity="one">%d համակցություն ուղարկվում է որպես հավելվածի դյուրանցում</item>
+        <item quantity="other">%d համակցություն ուղարկվում է որպես հավելվածի դյուրանցումներ</item>
+    </plurals>
+    <plurals name="app_shortcuts_suggested_count">
+        <item quantity="one">%d առաջարկվող դյուրանցում</item>
+        <item quantity="other">%d առաջարկվող դյուրանցում</item>
+    </plurals>
+    <plurals name="app_shortcuts_not_installed_count">
+        <item quantity="one">Եվս %d հավելված կարգավորումով</item>
+        <item quantity="other">Եվս %d հավելված կարգավորումներով</item>
+    </plurals>
     <plurals name="alt_key_editor_key_count">
         <item quantity="one">%d ստեղն</item>
         <item quantity="other">%d ստեղն</item>

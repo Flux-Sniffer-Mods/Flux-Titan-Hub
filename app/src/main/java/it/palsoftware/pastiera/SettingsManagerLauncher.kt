@@ -493,6 +493,33 @@ fun SettingsManager.setQuickLauncherTextFieldShortcuts(context: Context, enabled
         .apply()
 }
 
+/** Flux Keyboard's own shortcuts (New message, Search) for the apps in its shortcut and Enter lists. */
+/** Apps whose Flux Keyboard shortcuts you turned off (from their long-press menu). */
+fun SettingsManager.getQuickLauncherListedAppsOff(context: Context): Set<String> =
+    getPreferences(context).getStringSet("quick_launcher_listed_apps_off", null).orEmpty()
+
+fun SettingsManager.setQuickLauncherListedAppOff(context: Context, packageName: String, off: Boolean) {
+    val current = getQuickLauncherListedAppsOff(context)
+    getPreferences(context).edit()
+        .putStringSet("quick_launcher_listed_apps_off", if (off) current + packageName else current - packageName)
+        .apply()
+}
+
+fun SettingsManager.getQuickLauncherListedAppShortcuts(context: Context): Boolean =
+    getPreferences(context).getBoolean(KEY_QUICK_LAUNCHER_LISTED_APP_SHORTCUTS, true)
+
+fun SettingsManager.setQuickLauncherListedAppShortcuts(context: Context, enabled: Boolean) {
+    getPreferences(context).edit().putBoolean(KEY_QUICK_LAUNCHER_LISTED_APP_SHORTCUTS, enabled).apply()
+}
+
+/** Apps' own launcher shortcuts ("New message") are quick launcher results. */
+fun SettingsManager.getQuickLauncherAppShortcuts(context: Context): Boolean =
+    getPreferences(context).getBoolean(KEY_QUICK_LAUNCHER_APP_SHORTCUTS, true)
+
+fun SettingsManager.setQuickLauncherAppShortcuts(context: Context, enabled: Boolean) {
+    getPreferences(context).edit().putBoolean(KEY_QUICK_LAUNCHER_APP_SHORTCUTS, enabled).apply()
+}
+
 /** Back from Niagara's search, before opening anything, returns to the app it was opened from. */
 fun SettingsManager.getNiagaraBackReturns(context: Context): Boolean =
     getPreferences(context).getBoolean(KEY_NIAGARA_BACK_RETURNS, true)

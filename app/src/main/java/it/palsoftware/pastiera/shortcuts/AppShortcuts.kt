@@ -390,3 +390,98 @@ object AppShortcutPresets {
 
     fun forPackage(packageName: String): AppShortcutPreset? = byPackage[packageName]
 }
+
+/** What you changed for one app: off, its name when you added it, and your own shortcuts. */
+data class AppShortcutAppSettings(
+    val enabled: Boolean = true,
+    /** Set for apps you added yourself (not in the presets). */
+    val appName: String? = null,
+    /** Your shortcut for a standard combo; null means "don't remap it in this app". */
+    val overrides: Map<StandardShortcut, KeyCombo?> = emptyMap()
+)
+
+data class AppShortcutConfig(
+    val enabled: Boolean = true,
+    /** Suggested intents for apps that document no key shortcut for an action. */
+    val suggestionsEnabled: Boolean = true,
+    val apps: Map<String, AppShortcutAppSettings> = emptyMap()
+)
+
+/** What the keyboard does for a standard combo in an app. */
+sealed class ShortcutAction {
+    /** Send the app its own key shortcut. */
+    data class SendKeys(val combo: KeyCombo) : ShortcutAction()
+    /** Open one of the app's own screens: the first of [intents] the app accepts. */
+    data class OpenInApp(val intents: List<AppIntent>) : ShortcutAction()
+    /** Open a screen the app itself offers on this phone (AppActionDiscovery). */
+    data class OpenDiscovered(val action: DiscoveredAction) : ShortcutAction()
+}
+
+/** Picks what to do in an app for a combo pressed on the keyboard. */
+object AppShortcutRemapper {
+
+    /** The app's key shortcut for [shortcut]: yours if you set one, otherwise its documented one. */
+    fun effectiveShortcut(config: AppShortcutConfig, packageName: String, shortcut: StandardShortcut): KeyCombo? {
+        val app = config.apps[packageName]
+        if (app != null && app.overrides.containsKey(shortcut)) return app.overrides[shortcut]
+        return AppShortcutPresets.forPackage(packageName)?.shortcuts?.get(shortcut)
+    }
+
+    /**
+     * Suggested intents for [shortcut], used when the app has no key shortcut for it: none when
+     * suggestions are off or you set this shortcut yourself.
+     */
+    fun suggestedIntents(config: AppShortcutConfig, packageName: String, shortcut: StandardShortcut): List<AppIntent> {
+        if (!config.suggestionsEnabled) return emptyList()
+        if (config.apps[packageName]?.overrides?.containsKey(shortcut) == true) return emptyList()
+        val preset = AppShortcutPresets.forPackage(packageName) ?: return emptyList()
+        if (preset.shortcuts.containsKey(shortcut)) return emptyList()
+        return preset.suggested[shortcut].orEmpty()
+    }
+
+    /**
+     * The app's own screen for [shortcut] found on the phone, used when neither a key shortcut nor
+     * a suggestion covers it: none when suggestions are off or you set this shortcut yourself.
+     */
+    fun discoveredAction(
+        config: AppShortcutConfig,
+        packageName: String,
+        shortcut: StandardShortcut,
+        discovered: DiscoveredAppActions?
+    ): DiscoveredAction? {
+        if (discovered == null || !config.suggestionsEnabled) return null
+        if (config.apps[packageName]?.overrides?.containsKey(shortcut) == true) return null
+        return discovered.forStandard(shortcut)
+    }
+
+    fun isAppEnabled(config: AppShortcutConfig, packageName: String): Boolean =
+        config.apps[packageName]?.enabled ?: true
+
+    /**
+     * What to do instead of passing [pressed] to the app, or null to let the key through unchanged.
+     * [inTextField]: a text field has focus, so typed characters and list-only actions are left alone.
+     * [discovered]: what the app offers on this phone, looked up only when a standard combo is pressed.
+     */
+    fun resolve(
+        config: AppShortcutConfig,
+        packageName: String?,
+        pressed: KeyCombo,
+        inTextField: Boolean,
+        discovered: (() -> DiscoveredAppActions?)? = null
+    ): ShortcutAction? {
+        if (!config.enabled || packageName.isNullOrEmpty()) return null
+        if (!isAppEnabled(config, packageName)) return null
+        val shortcut = StandardShortcut.forCombo(pressed) ?: return null
+        if (inTextField && shortcut.scope == ShortcutScope.OutsideTextFields) return null
+        val target = effectiveShortcut(config, packageName, shortcut)
+        if (target != null) {
+            if (target == pressed) return null
+            if (inTextField && (target.typesCharacter || target.movesCursor)) return null
+            return ShortcutAction.SendKeys(target)
+        }
+        val intents = suggestedIntents(config, packageName, shortcut)
+        if (intents.isNotEmpty()) return ShortcutAction.OpenInApp(intents)
+        if (discovered == null || !config.suggestionsEnabled) return null
+        return discoveredAction(config, packageName, shortcut, discovered())?.let { ShortcutAction.OpenDiscovered(it) }
+    }
+}

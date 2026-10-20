@@ -45,6 +45,7 @@ object SettingLinkIds {
     const val MAIN_EDITING_KEYS = "main.editing_keys"
     const val MAIN_LOOK_SOUND = "main.look_sound"
     const val MAIN_APPS = "main.apps"
+    const val MAIN_APP_SHORTCUTS = "main.app_shortcuts"
     const val MAIN_DEVELOPER = "main.developer"
     const val MAIN_TERMINAL_MODE = "main.terminal_mode"
     const val MAIN_EXACT_TYPING = "main.exact_typing"
@@ -55,6 +56,8 @@ object SettingLinkIds {
     const val DEVELOPER_OPTIONS_ENABLED = "system.developer_options"
 
     // App shortcuts screen
+    const val APP_SHORTCUTS_ENABLED = "app_shortcuts.enabled"
+    const val APP_SHORTCUTS_SUGGESTIONS = "app_shortcuts.suggestions"
 
     // Text input screen
     const val TEXT_INPUT_TEXT_EXPANSION = "text_input.text_expansion"
@@ -1147,6 +1150,7 @@ object SettingLinkRegistry {
         SettingsDestination.LookSound to R.string.settings_look_sound_title,
         SettingsDestination.TrackpadGestures to R.string.settings_trackpad_gestures_title,
         SettingsDestination.Apps to R.string.settings_apps_title,
+        SettingsDestination.AppShortcuts to R.string.app_shortcuts_title,
         SettingsDestination.Developer to R.string.developer_options_title,
         SettingsDestination.DeviceSymLayerEditor to R.string.alt_key_editor_title,
         SettingsDestination.LedColors to R.string.led_colors_title,
@@ -1206,7 +1210,7 @@ object SettingLinkRegistry {
         SettingsDestination.KeyboardsDevices, SettingsDestination.FluxTitanScreen -> SettingsDestination.KeyboardsLayouts
         SettingsDestination.Modifiers, SettingsDestination.DeviceSymLayerEditor -> SettingsDestination.Modifiers
         SettingsDestination.FluxEmojiGifs, SettingsDestination.EmojiProfiles -> SettingsDestination.FluxEmojiGifs
-        SettingsDestination.Apps, SettingsDestination.ExactTyping,
+        SettingsDestination.Apps, SettingsDestination.AppShortcuts, SettingsDestination.ExactTyping,
         SettingsDestination.TerminalMode, SettingsDestination.FluxHiddenApps, SettingsDestination.FluxLinuxDesktop,
         SettingsDestination.Customization -> SettingsDestination.Apps
         SettingsDestination.LookSound, SettingsDestination.LedColors -> SettingsDestination.LookSound

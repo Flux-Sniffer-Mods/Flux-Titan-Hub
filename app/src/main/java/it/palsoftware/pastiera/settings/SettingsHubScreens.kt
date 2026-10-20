@@ -27,6 +27,8 @@ import androidx.compose.material.icons.filled.RoundedCorner
 import androidx.compose.material.icons.automirrored.filled.ShortText
 import androidx.compose.material.icons.filled.SmartButton
 import androidx.compose.material.icons.filled.Spellcheck
+import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material.icons.filled.Terminal
 import androidx.compose.material.icons.filled.TextFields
 import androidx.compose.material.icons.filled.TouchApp
@@ -264,6 +266,13 @@ fun AppsHubScreen(
     onOpenCustomization: (String) -> Unit
 ) {
     FluxScreenScaffold(stringResource(R.string.settings_apps_title), onBack, modifier) {
+        SettingsCategoryRow(
+            icon = Icons.Filled.SwapHoriz,
+            title = stringResource(R.string.app_shortcuts_title),
+            description = stringResource(R.string.app_shortcuts_description),
+            linkId = SettingLinkIds.MAIN_APP_SHORTCUTS,
+            onClick = { onNavigate(SettingsDestination.AppShortcuts) }
+        )
         SettingsCategoryRow(
             icon = Icons.AutoMirrored.Filled.KeyboardReturn,
             title = stringResource(R.string.app_enter_behaviour_title),

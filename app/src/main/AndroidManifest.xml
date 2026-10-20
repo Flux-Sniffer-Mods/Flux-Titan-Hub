@@ -27,7 +27,7 @@
 
     <!-- Apps the keyboard needs to see: launchable apps and the ones below -->
     <queries>
-        <!-- Termux: set up for the keyboard by a command pasted into it -->
+        <!-- Termux tasks in the quick launcher (Add a shortcut) -->
         <package android:name="com.termux" />
         <intent>
             <action android:name="android.intent.action.MAIN" />
@@ -55,6 +55,12 @@
         <!-- Shizuku: granting it what it needs to start at boot, then opening it -->
         <package android:name="moe.shizuku.privileged.api" />
     </queries>
+
+    <!-- Termux tasks in the quick launcher: run a script in ~/.shortcuts through Termux -->
+    <uses-permission android:name="com.termux.permission.RUN_COMMAND" />
+    <!-- Call a contact in the quick launcher: calls straight away when allowed, else opens the dialer -->
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-feature android:name="android.hardware.telephony" android:required="false" />
 
     <application
         android:name=".PastieraApplication"
@@ -109,6 +115,7 @@
             android:theme="@style/Theme.Pastiera" />
         
         <activity android:name=".KeyboardLayoutActivity" android:exported="false" android:theme="@style/Theme.Pastiera" />
+        <activity android:name=".UserShortcutsActivity" android:exported="false" android:theme="@style/Theme.Pastiera" />
 
         <activity android:name=".CornerCalibrationActivity" android:exported="false"
             android:label="@string/corner_calibration_title" android:theme="@style/Theme.Pastiera" />
@@ -241,6 +248,11 @@
             android:taskAffinity=""
             android:noHistory="true"
             android:finishOnTaskLaunch="true" />
+
+        <!-- Termux's answer when the quick launcher asks for Termux:Widget's scripts -->
+        <receiver
+            android:name=".shortcuts.TermuxScripts$Receiver"
+            android:exported="false" />
 
         <activity
             android:name=".inputmethod.QuickLauncherActivity"

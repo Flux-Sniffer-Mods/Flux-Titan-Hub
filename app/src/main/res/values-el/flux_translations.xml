@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Pastiera: strings Pastiera and the fork added, translated -->
 <resources>
+    <string name="app_shortcuts_title">Συντομεύσεις εφαρμογών</string>
+    <string name="app_shortcuts_description">Οι ίδιοι συνδυασμοί πλήκτρων σε κάθε εφαρμογή</string>
+    <string name="app_shortcuts_intro">Πατήστε τον ίδιο συνδυασμό σε κάθε εφαρμογή: το Ctrl+F κάνει αναζήτηση, το Ctrl+N δημιουργεί κάτι νέο, το Alt+↓ πηγαίνει στο επόμενο στοιχείο. Το Pastiera στέλνει σε κάθε εφαρμογή τη δική της συντόμευση γι’ αυτό ή, αν η εφαρμογή δεν έχει, ανοίγει τη δική της οθόνη κοινοποίησης ή αναζήτησης.</string>
+    <string name="app_shortcuts_enabled_title">Καθολικές συντομεύσεις εφαρμογών</string>
+    <string name="app_shortcuts_enabled_description">Αποστολή σε κάθε εφαρμογή της δικής της συντόμευσης για τους τυπικούς συνδυασμούς</string>
+    <string name="app_shortcuts_section_standard">Τυπικοί συνδυασμοί</string>
+    <string name="app_shortcuts_section_apps">Εφαρμογές</string>
+    <string name="app_shortcuts_section_mapping">Τι στέλνει κάθε συνδυασμός</string>
+    <string name="app_shortcuts_scope_outside_text_fields">Όχι ενώ πληκτρολογείτε σε πεδίο κειμένου</string>
+    <string name="app_shortcuts_not_installed">δεν είναι εγκατεστημένη</string>
+    <string name="app_shortcuts_add_app">Προσθήκη εφαρμογής</string>
+    <string name="app_shortcuts_research_note">Οι συντομεύσεις πλήκτρων προέρχονται μόνο από όσα τεκμηριώνει κάθε εφαρμογή για το Android (ή περιέχει στον πηγαίο κώδικά της)· οι περισσότερες δεν τεκμηριώνουν καμία, οπότε οι προεπιλογές τους είναι προτάσεις. Οι εφαρμογές είναι οι 100 κορυφαίες του Google Play στα Κοινωνικά και οι 10 κορυφαίες σε κάθε άλλη κύρια κατηγορία.</string>
+    <string name="app_shortcuts_app_source">Προεπιλογή από την τεκμηρίωση συντομεύσεων της εφαρμογής: %1$s</string>
+    <string name="app_shortcuts_app_custom">Προστέθηκε από εσάς: ορίστε τι στέλνει κάθε συνδυασμός πατώντας τη συντόμευση της εφαρμογής.</string>
+    <string name="app_shortcuts_app_enabled_title">Συντομεύσεις σε αυτή την εφαρμογή</string>
+    <string name="app_shortcuts_app_enabled_description">Αποστολή στο %1$s των δικών του συντομεύσεων για τους τυπικούς συνδυασμούς</string>
+    <string name="app_shortcuts_not_remapped">Χωρίς αντιστοίχιση: η εφαρμογή λαμβάνει τον συνδυασμό όπως πατήθηκε</string>
+    <string name="app_shortcuts_same_in_app">Ήδη η συντόμευση της εφαρμογής</string>
+    <string name="app_shortcuts_sent_as">Στέλνεται ως %1$s</string>
+    <string name="app_shortcuts_changed_by_you">αλλάχθηκε από εσάς</string>
+    <string name="app_shortcuts_reset_app">Επιστροφή στην προεπιλογή</string>
+    <string name="app_shortcuts_reset_app_description">Ξεχάστε τις συντομεύσεις που αλλάξατε σε αυτή την εφαρμογή</string>
+    <string name="app_shortcuts_remove_app">Αφαίρεση αυτής της εφαρμογής</string>
+    <string name="app_shortcuts_remove_app_description">Διακοπή αποστολής συντομεύσεων και διαγραφή τους</string>
+    <string name="app_shortcuts_capture_instruction">Πατήστε τη συντόμευση της εφαρμογής γι’ αυτό. Το Pastiera τη στέλνει όταν πατάτε %1$s στην εφαρμογή.</string>
+    <string name="app_shortcuts_capture_waiting">Πατήστε έναν συνδυασμό πλήκτρων…</string>
+    <string name="app_shortcuts_capture_preset">Προεπιλογή: %1$s</string>
+    <string name="app_shortcuts_dont_remap">Χωρίς αντιστοίχιση</string>
+    <string name="app_shortcuts_use_preset">Χρήση προεπιλογής</string>
+    <string name="app_shortcuts_save">Αποθήκευση</string>
     <string name="app_shortcut_new">Νέο (μήνυμα, σημείωση, συμβάν, καρτέλα)</string>
     <string name="app_shortcut_search">Αναζήτηση ή εύρεση</string>
     <string name="app_shortcut_open">Άνοιγμα ή μετάβαση</string>
@@ -19,6 +49,13 @@
     <string name="app_shortcut_previous">Προηγούμενο στοιχείο</string>
     <string name="app_shortcut_menu">Μενού ή πλαϊνό πλαίσιο</string>
     <string name="app_shortcut_help">Βοήθεια συντομεύσεων πληκτρολογίου</string>
+    <string name="app_shortcuts_suggestions_title">Προτεινόμενες συντομεύσεις</string>
+    <string name="app_shortcuts_suggestions_description">Όταν μια εφαρμογή δεν τεκμηριώνει συντόμευση, ανοίγει τη δική της οθόνη: την οθόνη κοινοποίησης για το Νέο, την αναζήτησή της για την Αναζήτηση. Μόνο αν η εφαρμογή σε αυτό το τηλέφωνο το δέχεται.</string>
+    <string name="app_shortcuts_show_not_installed">Εμφάνιση μη εγκατεστημένων εφαρμογών</string>
+    <string name="app_shortcuts_app_suggested_only">Αυτή η εφαρμογή δεν τεκμηριώνει συντομεύσεις πληκτρολογίου. Οι προτεινόμενες συντομεύσεις της ανοίγουν τις δικές της οθόνες· καθεμία χρησιμοποιείται μόνο αν η εφαρμογή τη δέχεται.</string>
+    <string name="app_shortcuts_suggested_share">Πρόταση: ανοίγει την οθόνη κοινοποίησης (νέα ανάρτηση ή μήνυμα)</string>
+    <string name="app_shortcuts_suggested_search">Πρόταση: ανοίγει την αναζήτησή της</string>
+    <string name="app_shortcuts_suggested_link">Πρόταση: ανοίγει το %1$s στην εφαρμογή</string>
     <string name="app_shortcuts_category_social">Κοινωνικά</string>
     <string name="app_shortcuts_category_communication">Επικοινωνία</string>
     <string name="app_shortcuts_category_browsers">Προγράμματα περιήγησης</string>
@@ -53,6 +90,12 @@
     <string name="app_shortcut_app_action_2">Συντόμευση 2 της εφαρμογής</string>
     <string name="app_shortcut_app_action_3">Συντόμευση 3 της εφαρμογής</string>
     <string name="app_shortcut_app_action_4">Συντόμευση 4 της εφαρμογής</string>
+    <string name="app_shortcuts_opens_discovered">Ανοίγει το %1$s (από την εφαρμογή)</string>
+    <string name="app_shortcuts_opens_settings">Ανοίγει τις ρυθμίσεις της εφαρμογής</string>
+    <string name="app_shortcuts_section_discovered">Τι προσφέρει η εφαρμογή</string>
+    <string name="app_shortcuts_discovered_note">Οι συντομεύσεις που δείχνει αυτή η εφαρμογή όταν πατάτε παρατεταμένα το εικονίδιό της, και η οθόνη ρυθμίσεών της, όπως διαβάζονται από την εφαρμογή σε αυτό το τηλέφωνο. Τα Ctrl+Alt+1 έως 4 ανοίγουν τις τέσσερις πρώτες (σε πληκτρολόγιο χωρίς σειρά αριθμών, κρατήστε Ctrl+Alt και πατήστε τα πλήκτρα που γράφουν 1 έως 4), το Ctrl+, ανοίγει τις ρυθμίσεις της, και μία με όνομα όπως Νέο ή Αναζήτηση καλύπτει το Ctrl+N ή Ctrl+F όταν δεν υπάρχει κάτι άλλο.</string>
+    <string name="app_shortcuts_discovered_none">Αυτή η εφαρμογή δεν προσφέρει συντομεύσεις ή οθόνη ρυθμίσεων σε άλλες εφαρμογές.</string>
+    <string name="app_shortcuts_keys_note">Εμφανίζονται όπως τις πατάτε στο πληκτρολόγιό σας. Αν δεν έχει πλήκτρο αριθμού ή \"/\", κρατήστε Ctrl και Alt με το γράμμα που το γράφει (σε αγκύλες). Οι συντομεύσεις που δεν μπορεί να κάνει το πληκτρολόγιό σας, όπως βέλη χωρίς πλήκτρα βελών, δεν εμφανίζονται.</string>
     <string name="app_enter_behaviour_preset_newline_shift_send">Enter νέα γραμμή, Shift+Enter αποστολή</string>
     <string name="app_enter_behaviour_option_newline_shift_send">Enter νέα γραμμή, Shift+Enter αποστολή</string>
     <string name="enter_standard_notes">Σημειώσεις · Enter νέα γραμμή, Ctrl+Enter για την ενέργεια της εφαρμογής</string>
@@ -126,6 +169,8 @@
     <string name="layout_editor_exported">Η διάταξη εξήχθη</string>
     <string name="layout_editor_export_failed">Δεν ήταν δυνατή η εξαγωγή της διάταξης</string>
     <string name="layout_editor_link">Επεξεργασία διάταξης: πατήστε το μολύβι της</string>
+    <string name="quick_launcher_app_shortcuts_title">Συντομεύσεις εφαρμογών στα αποτελέσματα</string>
+    <string name="quick_launcher_app_shortcuts_description">Οι δικές συντομεύσεις των εφαρμογών, αυτές που δείχνει το εικονίδιό τους με παρατεταμένο πάτημα («Νέο μήνυμα», «Σάρωση κωδικού QR»), είναι αποτελέσματα που μπορείτε να ανοίξετε απευθείας.</string>
     <string name="quick_launcher_niagara_back_title">Το Πίσω επιστρέφει στην εφαρμογή</string>
     <string name="quick_launcher_niagara_back_description">Πατώντας Πίσω στην αναζήτηση του Niagara πριν ανοίξετε κάτι, επιστρέφετε στην εφαρμογή από την οποία την ανοίξατε, αντί για την αρχική οθόνη του Niagara.</string>
     <string name="quick_launcher_niagara_note">Η αναζήτηση του Niagara ταξινομεί και ανοίγει τα αποτελέσματα μόνη της, οπότε οι παρακάτω ρυθμίσεις που αλλάζουν τα αποτελέσματα ισχύουν για τον ενσωματωμένο γρήγορο εκκινητή. Η διάταξη πληκτρολογίου σας και η επιστροφή στην εφαρμογή με το Πίσω ισχύουν και για το Niagara.</string>
@@ -260,7 +305,7 @@
     <string name="settings_trackpad_gestures_title">Trackpad &amp; χειρονομίες</string>
     <string name="settings_trackpad_gestures_description">Σαρώστε στα πλήκτρα για να επιλέξετε προτάσεις, να διαγράψετε και να προσθέσετε λέξεις· η επιφάνεια σάρωσης της γραμμής κατάστασης</string>
     <string name="settings_apps_title">Εφαρμογές</string>
-    <string name="settings_apps_description">Enter ανά εφαρμογή, QuickLauncher, τερματικά και επιφάνεια εργασίας Linux</string>
+    <string name="settings_apps_description">Συντομεύσεις εφαρμογών, Enter ανά εφαρμογή, QuickLauncher, τερματικά και επιφάνεια εργασίας Linux</string>
     <string name="settings_keyboards_devices_description">Ενσωματωμένα, οθόνης και εξωτερικά πληκτρολόγια, και η εναλλαγή μεταξύ τους</string>
     <string name="settings_input_languages_description">Γλώσσες, οι διατάξεις τους και τα πλήκτρα που τις αλλάζουν</string>
     <string name="settings_capitalisation_punctuation_title">Κεφαλαία &amp; στίξη</string>
@@ -576,13 +621,47 @@
     <string name="settings_accessibility_bounce_keys_delay_link_title">Ελάχιστη καθυστέρηση ίδιου πλήκτρου</string>
     <string name="emoticon_punctuation_title">Τα emoticon κρατούν το σχήμα τους</string>
     <string name="emoticon_punctuation_description">Τα σημεία στίξης που ακολουθούνται αμέσως από άλλα, όπως στα :-) ;( :D ή :\'(, δεν παίρνουν κενό μετά. Αν ακολουθεί λέξη (:Do), το κενό επιστρέφει. Οι τελείες κρατούν πάντα το κενό τους.</string>
+    <string name="user_shortcuts_title">Προσθήκη συντόμευσης</string>
+    <string name="user_shortcuts_description">Βάλτε μια συντόμευση από εφαρμογή, όπως την άμεση κλήση μιας επαφής, έναν σελιδοδείκτη ή μια σελίδα ρυθμίσεων, στα αποτελέσματα του γρήγορου εκκινητή.</string>
+    <string name="user_shortcuts_intro">Μόνο η εφαρμογή αρχικής οθόνης μπορεί να διαβάσει τις συντομεύσεις που υπάρχουν ήδη στην αρχική σας οθόνη, οπότε προσθέστε εδώ μία φορά όσες θέλετε. Επιλέξτε μια εφαρμογή παρακάτω και διαλέξτε τη συντόμευση στη δική της οθόνη.</string>
+    <string name="user_shortcuts_yours">Οι συντομεύσεις σας</string>
+    <string name="user_shortcuts_add_from">Προσθήκη από</string>
+    <string name="user_shortcuts_none">Καμία εφαρμογή σε αυτό το τηλέφωνο δεν προσφέρει συντομεύσεις για προσθήκη.</string>
+    <string name="user_shortcuts_added">Το %1$s είναι στον γρήγορο εκκινητή</string>
+    <string name="user_shortcuts_unsupported">Η συντόμευση αυτής της εφαρμογής ανοίγει μόνο από την αρχική οθόνη.</string>
+    <string name="user_shortcuts_remove">Αφαίρεση του %1$s</string>
     <string name="quick_launcher_open_failed">Δεν ήταν δυνατό το άνοιγμα του %1$s</string>
     <string name="learn_contact_details_title">Απομνημόνευση email και τηλεφώνων</string>
     <string name="learn_contact_details_description">Τα email και οι αριθμοί τηλεφώνου που πληκτρολογείτε μόνοι σας αποθηκεύονται στο λεξικό σας και προτείνονται ξανά σε πεδία email και τηλεφώνου. Ποτέ ό,τι επικολλάτε, ούτε από πεδία κωδικών ή ιδιωτικά πεδία.</string>
     <string name="learn_frequent_words_title">Εκμάθηση λέξεων που χρησιμοποιείτε συχνά</string>
     <string name="learn_frequent_words_description">Μια λέξη που δεν υπάρχει στο λεξικό προστίθεται μόλις την πληκτρολογήσετε τρεις φορές, ώστε να προτείνεται και να μη διορθώνεται ποτέ αυτόματα. Όχι κατά την πληκτρολόγηση σε ανώνυμη λειτουργία.</string>
+    <string name="user_shortcuts_builtin">Από το Pastiera</string>
+    <string name="user_shortcuts_call_title">Κλήση επαφής</string>
+    <string name="user_shortcuts_message_title">Μήνυμα σε επαφή</string>
+    <string name="user_shortcuts_website_title">Ιστότοπος</string>
+    <string name="user_shortcuts_termux_title">Εργασία Termux</string>
+    <string name="user_shortcuts_termux_description">Ένα script στο ~/.shortcuts, που εκτελείται όπως στο Termux:Widget: όσα είναι στο tasks στο παρασκήνιο, τα υπόλοιπα σε τερματικό.</string>
+    <string name="user_shortcuts_termux_setup">Το Termux χρειάζεται allow-external-apps = true στο ~/.termux/termux.properties (και επανεκκίνηση του Termux), και το Pastiera άδεια εκτέλεσης εντολών στο Termux.</string>
+    <string name="user_shortcuts_termux_none">Δεν βρέθηκαν scripts στο ~/.shortcuts</string>
+    <string name="user_shortcuts_call_label">Κλήση: %1$s</string>
+    <string name="user_shortcuts_message_label">Μήνυμα: %1$s</string>
+    <string name="user_shortcuts_website_address">Διεύθυνση</string>
+    <string name="user_shortcuts_name">Όνομα</string>
+    <string name="user_shortcuts_add">Προσθήκη</string>
+    <string name="quick_launcher_action_new_message">Νέο μήνυμα</string>
+    <string name="quick_launcher_action_new_post">Νέα ανάρτηση</string>
+    <string name="quick_launcher_action_new_note">Νέα σημείωση</string>
+    <string name="quick_launcher_action_compose">Σύνταξη email</string>
+    <string name="quick_launcher_action_search">Αναζήτηση</string>
     <string name="auto_cap_after_emoticon_title">Κεφαλαίο μετά από emoticon</string>
     <string name="auto_cap_after_emoticon_description">Ένα emoticon κειμένου όπως :) ;D ή &lt;3 κλείνει την πρόταση σαν τελεία, οπότε η επόμενη λέξη ξεκινά με κεφαλαίο.</string>
+    <string name="quick_launcher_termux_scripts_title">Scripts του Termux</string>
+    <string name="quick_launcher_termux_scripts_description">Τα scripts και οι εργασίες σας του Termux:Widget (~/.shortcuts) στη γρήγορη εκκίνηση, πάντα ενημερωμένα. Χρειάζεται allow-external-apps = true στο ~/.termux/termux.properties και άδεια εκτέλεσης εντολών στο Termux.</string>
+    <string name="quick_launcher_listed_app_shortcuts_title">Συντομεύσεις για συμβατές εφαρμογές</string>
+    <string name="quick_launcher_listed_app_shortcuts_description">Το Pastiera προσθέτει Νέο μήνυμα, Νέα σημείωση, Σύνταξη email και Αναζήτηση στη γρήγορη εκκίνηση για τις εφαρμογές που γνωρίζει, όπου η εφαρμογή τα δέχεται.</string>
+    <string name="quick_launcher_listed_app_toggle">Συντομεύσεις του Pastiera για αυτή την εφαρμογή</string>
+    <string name="termux_runs_background">Termux · παρασκήνιο</string>
+    <string name="termux_runs_terminal">Termux · τερματικό</string>
     <string name="emoji_layer_recents_first_title">Πρόσφατα emoji πρώτα στο επίπεδο</string>
     <string name="emoji_layer_recents_first_description">Τα emoji που χρησιμοποίησες τελευταία παίρνουν τα πρώτα πλήκτρα του επιπέδου και τα δικά του μετακινούνται. Μετράνε και όσα πληκτρολογείς από το επίπεδο.</string>
     <string name="emoji_layer_recents_count">Πρόσφατα emoji: %1$d πλήκτρα</string>
@@ -622,6 +701,18 @@
     <string name="root_note">Εκτελούνται μέσω Shizuku, ως κέλυφος ADB. Το Pastiera εκτελεί μόνο τις εντολές που χρειάζεται κάθε επιλογή.</string>
     <string name="root_title">Πρόσβαση στο shell</string>
     <string name="shift_field_other">Άλλα πεδία (που δεν λένε τι είναι)</string>
+    <plurals name="app_shortcuts_remapped_count">
+        <item quantity="one">%d συνδυασμός στέλνεται ως συντόμευση της εφαρμογής</item>
+        <item quantity="other">%d συνδυασμοί στέλνονται ως συντομεύσεις της εφαρμογής</item>
+    </plurals>
+    <plurals name="app_shortcuts_suggested_count">
+        <item quantity="one">%d προτεινόμενη συντόμευση</item>
+        <item quantity="other">%d προτεινόμενες συντομεύσεις</item>
+    </plurals>
+    <plurals name="app_shortcuts_not_installed_count">
+        <item quantity="one">%d ακόμη εφαρμογή με προεπιλογή</item>
+        <item quantity="other">%d ακόμη εφαρμογές με προεπιλογές</item>
+    </plurals>
     <plurals name="alt_key_editor_key_count">
         <item quantity="one">%d πλήκτρο</item>
         <item quantity="other">%d πλήκτρα</item>

@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Pastiera: strings Pastiera and the fork added, translated -->
 <resources>
+    <string name="app_shortcuts_title">App-Tastenkürzel</string>
+    <string name="app_shortcuts_description">Dieselben Tastenkombinationen in jeder App</string>
+    <string name="app_shortcuts_intro">Drücke in jeder App dieselbe Kombination: Strg+F sucht, Strg+N erstellt etwas Neues, Alt+↓ springt zum nächsten Element. Pastiera sendet jeder App ihr eigenes Tastenkürzel dafür oder öffnet, wenn die App keines hat, ihren eigenen Teilen- oder Suchbildschirm.</string>
+    <string name="app_shortcuts_enabled_title">Universelle App-Tastenkürzel</string>
+    <string name="app_shortcuts_enabled_description">Jeder App ihr eigenes Tastenkürzel für die Standardkombinationen senden</string>
+    <string name="app_shortcuts_section_standard">Standardkombinationen</string>
+    <string name="app_shortcuts_section_apps">Apps</string>
+    <string name="app_shortcuts_section_mapping">Was jede Kombination sendet</string>
+    <string name="app_shortcuts_scope_outside_text_fields">Nicht beim Tippen in einem Textfeld</string>
+    <string name="app_shortcuts_not_installed">nicht installiert</string>
+    <string name="app_shortcuts_add_app">App hinzufügen</string>
+    <string name="app_shortcuts_research_note">Tastenkürzel stammen nur aus dem, was jede App für Android dokumentiert (oder in ihrem Quellcode mitliefert); die meisten Apps dokumentieren keine, daher sind ihre Voreinstellungen Vorschläge. Die Apps sind die Top 100 von Google Play in „Soziale Netzwerke“ und die Top 10 jeder anderen Hauptkategorie.</string>
+    <string name="app_shortcuts_app_source">Voreinstellung aus der Tastenkürzel-Dokumentation der App: %1$s</string>
+    <string name="app_shortcuts_app_custom">Von dir hinzugefügt: Lege fest, was jede Kombination sendet, indem du das Tastenkürzel der App drückst.</string>
+    <string name="app_shortcuts_app_enabled_title">Tastenkürzel in dieser App</string>
+    <string name="app_shortcuts_app_enabled_description">%1$s die eigenen Tastenkürzel für die Standardkombinationen senden</string>
+    <string name="app_shortcuts_not_remapped">Nicht umbelegt: Die App erhält die Kombination wie gedrückt</string>
+    <string name="app_shortcuts_same_in_app">Schon das eigene Tastenkürzel der App</string>
+    <string name="app_shortcuts_sent_as">Gesendet als %1$s</string>
+    <string name="app_shortcuts_changed_by_you">von dir geändert</string>
+    <string name="app_shortcuts_reset_app">Zurück zur Voreinstellung</string>
+    <string name="app_shortcuts_reset_app_description">Die in dieser App geänderten Tastenkürzel vergessen</string>
+    <string name="app_shortcuts_remove_app">Diese App entfernen</string>
+    <string name="app_shortcuts_remove_app_description">Keine Tastenkürzel mehr senden und sie vergessen</string>
+    <string name="app_shortcuts_capture_instruction">Drücke das eigene Tastenkürzel der App dafür. Pastiera sendet es, wenn du in der App %1$s drückst.</string>
+    <string name="app_shortcuts_capture_waiting">Tastenkombination drücken…</string>
+    <string name="app_shortcuts_capture_preset">Voreinstellung: %1$s</string>
+    <string name="app_shortcuts_dont_remap">Nicht umbelegen</string>
+    <string name="app_shortcuts_use_preset">Voreinstellung verwenden</string>
+    <string name="app_shortcuts_save">Speichern</string>
     <string name="app_shortcut_new">Neu (Nachricht, Notiz, Termin, Tab)</string>
     <string name="app_shortcut_search">Suchen</string>
     <string name="app_shortcut_open">Öffnen oder gehe zu</string>
@@ -19,6 +49,13 @@
     <string name="app_shortcut_previous">Vorheriges Element</string>
     <string name="app_shortcut_menu">Menü oder Seitenleiste</string>
     <string name="app_shortcut_help">Hilfe zu Tastenkürzeln</string>
+    <string name="app_shortcuts_suggestions_title">Vorgeschlagene Tastenkürzel</string>
+    <string name="app_shortcuts_suggestions_description">Wenn eine App kein Tastenkürzel dokumentiert, stattdessen ihren eigenen Bildschirm öffnen: ihren Teilen-Bildschirm für Neu, ihre Suche für Suchen. Nur wenn die App auf diesem Telefon es annimmt.</string>
+    <string name="app_shortcuts_show_not_installed">Nicht installierte Apps anzeigen</string>
+    <string name="app_shortcuts_app_suggested_only">Diese App dokumentiert keine Tastenkürzel. Ihre vorgeschlagenen Tastenkürzel öffnen ihre eigenen Bildschirme; jedes wird nur verwendet, wenn die App es annimmt.</string>
+    <string name="app_shortcuts_suggested_share">Vorschlag: öffnet ihren Teilen-Bildschirm (neuer Beitrag oder Nachricht)</string>
+    <string name="app_shortcuts_suggested_search">Vorschlag: öffnet ihre Suche</string>
+    <string name="app_shortcuts_suggested_link">Vorschlag: öffnet %1$s in der App</string>
     <string name="app_shortcuts_category_social">Soziale Netzwerke</string>
     <string name="app_shortcuts_category_communication">Kommunikation</string>
     <string name="app_shortcuts_category_browsers">Browser</string>
@@ -53,6 +90,12 @@
     <string name="app_shortcut_app_action_2">Tastenkürzel 2 der App</string>
     <string name="app_shortcut_app_action_3">Tastenkürzel 3 der App</string>
     <string name="app_shortcut_app_action_4">Tastenkürzel 4 der App</string>
+    <string name="app_shortcuts_opens_discovered">Öffnet %1$s (aus der App)</string>
+    <string name="app_shortcuts_opens_settings">Öffnet die Einstellungen der App</string>
+    <string name="app_shortcuts_section_discovered">Was die App anbietet</string>
+    <string name="app_shortcuts_discovered_note">Die Verknüpfungen, die diese App beim langen Drücken ihres Symbols zeigt, und ihr Einstellungsbildschirm, gelesen aus der App auf diesem Telefon. Strg+Alt+1 bis 4 öffnen die ersten vier (auf einer Tastatur ohne Zahlenreihe Strg+Alt halten und die Tasten drücken, die 1 bis 4 tippen), Strg+, öffnet ihre Einstellungen, und eine Verknüpfung namens Neu oder Suchen belegt Strg+N oder Strg+F, wenn nichts anderes es tut.</string>
+    <string name="app_shortcuts_discovered_none">Diese App bietet anderen Apps weder Verknüpfungen noch einen Einstellungsbildschirm an.</string>
+    <string name="app_shortcuts_keys_note">So angezeigt, wie du sie auf deiner Tastatur drückst. Hat sie keine Zahlen- oder \"/\"-Taste, halte Strg und Alt mit dem Buchstaben, der sie tippt (in Klammern). Tastenkürzel, die deine Tastatur nicht erzeugen kann, wie Pfeile ohne Pfeiltasten, werden nicht aufgeführt.</string>
     <string name="app_enter_behaviour_preset_newline_shift_send">Enter neue Zeile, Umschalt+Enter sendet</string>
     <string name="app_enter_behaviour_option_newline_shift_send">Enter neue Zeile, Umschalt+Enter sendet</string>
     <string name="enter_standard_notes">Notizen · Enter neue Zeile, Strg+Enter für die eigene Aktion der App</string>
@@ -85,6 +128,8 @@
     <string name="layout_editor_exported">Layout exportiert</string>
     <string name="layout_editor_export_failed">Layout konnte nicht exportiert werden</string>
     <string name="layout_editor_link">Layout bearbeiten: tippe auf seinen Stift</string>
+    <string name="quick_launcher_app_shortcuts_title">App-Verknüpfungen in den Ergebnissen</string>
+    <string name="quick_launcher_app_shortcuts_description">Die eigenen Verknüpfungen von Apps, die ihr Symbol bei langem Drücken zeigt (\"Neue Nachricht\", \"QR-Code scannen\"), sind Ergebnisse, die du direkt öffnen kannst.</string>
     <string name="quick_launcher_niagara_back_title">Zurück kehrt zur App zurück</string>
     <string name="quick_launcher_niagara_back_description">Wenn du in der Niagara-Suche Zurück drückst, bevor du etwas öffnest, landest du wieder in der App, aus der du sie geöffnet hast, statt auf dem Niagara-Startbildschirm.</string>
     <string name="quick_launcher_niagara_note">Die Niagara-Suche sortiert und öffnet Ergebnisse selbst, daher gelten die Einstellungen unten, die Ergebnisse ändern, für den eingebauten Schnellstarter. Dein Tastaturlayout und die Rückkehr zu deiner App mit Zurück gelten auch für Niagara.</string>
@@ -211,7 +256,7 @@
     <string name="settings_trackpad_gestures_title">Trackpad &amp; Gesten</string>
     <string name="settings_trackpad_gestures_description">Auf den Tasten wischen, um Vorschläge zu wählen, Wörter zu löschen und hinzuzufügen; das Wischfeld der Statusleiste</string>
     <string name="settings_apps_title">Apps</string>
-    <string name="settings_apps_description">Enter pro App, QuickLauncher, Terminals und Linux-Desktop</string>
+    <string name="settings_apps_description">App-Kürzel, Enter pro App, QuickLauncher, Terminals und Linux-Desktop</string>
     <string name="settings_keyboards_devices_description">Eingebaute, Bildschirm- und Zubehörtastaturen und der Wechsel zwischen ihnen</string>
     <string name="settings_input_languages_description">Sprachen, ihre Layouts und die Tasten, die sie wechseln</string>
     <string name="settings_capitalisation_punctuation_title">Großschreibung &amp; Satzzeichen</string>
@@ -665,13 +710,47 @@
     <string name="search_key_description">Auf der Emoji-Ebene und den Symbolseiten öffnet diese Taste die Suche; in der Emoji-Auswahl leitet sie das Tippen in die Suche. A, sofern nicht geändert; sie kann nicht die Zuletzt-Taste sein.</string>
     <string name="emoticon_punctuation_title">Emoticons behalten ihre Form</string>
     <string name="emoticon_punctuation_description">Satzzeichen, auf die direkt weitere Zeichen folgen, wie bei :-) ;( :D oder :\'(, bekommen kein Leerzeichen danach. Folgt ein Wort (:Do), kommt das Leerzeichen zurück. Punkte behalten immer ihr Leerzeichen.</string>
+    <string name="user_shortcuts_title">Verknüpfung hinzufügen</string>
+    <string name="user_shortcuts_description">Eine Verknüpfung aus einer App, etwa die Direktwahl eines Kontakts, ein Lesezeichen oder eine Einstellungsseite, in die Ergebnisse des Schnellstarters aufnehmen.</string>
+    <string name="user_shortcuts_intro">Nur die Startbildschirm-App kann die Verknüpfungen lesen, die schon auf deinem Startbildschirm liegen, also füge die gewünschten hier einmal hinzu. Wähle unten eine App und dann die Verknüpfung in ihrem eigenen Bildschirm.</string>
+    <string name="user_shortcuts_yours">Deine Verknüpfungen</string>
+    <string name="user_shortcuts_add_from">Hinzufügen aus</string>
+    <string name="user_shortcuts_none">Keine App auf diesem Telefon bietet Verknüpfungen zum Hinzufügen an.</string>
+    <string name="user_shortcuts_added">%1$s ist im Schnellstarter</string>
+    <string name="user_shortcuts_unsupported">Die Verknüpfung dieser App lässt sich nur vom Startbildschirm aus öffnen.</string>
+    <string name="user_shortcuts_remove">%1$s entfernen</string>
     <string name="quick_launcher_open_failed">%1$s konnte nicht geöffnet werden</string>
     <string name="learn_contact_details_title">E-Mails und Telefonnummern merken</string>
     <string name="learn_contact_details_description">Selbst getippte E-Mail-Adressen und Telefonnummern werden in deinem Wörterbuch gespeichert und in E-Mail- und Telefonfeldern wieder angeboten. Nie Eingefügtes und nichts aus Passwort- oder privaten Feldern.</string>
     <string name="learn_frequent_words_title">Oft verwendete Wörter lernen</string>
     <string name="learn_frequent_words_description">Ein Wort, das nicht im Wörterbuch steht, wird aufgenommen, sobald du es dreimal getippt hast – dann wird es vorgeschlagen und nie automatisch korrigiert. Nicht beim Inkognito-Tippen.</string>
+    <string name="user_shortcuts_builtin">Von Pastiera erstellt</string>
+    <string name="user_shortcuts_call_title">Kontakt anrufen</string>
+    <string name="user_shortcuts_message_title">Kontakt anschreiben</string>
+    <string name="user_shortcuts_website_title">Website</string>
+    <string name="user_shortcuts_termux_title">Termux-Aufgabe</string>
+    <string name="user_shortcuts_termux_description">Ein Skript in ~/.shortcuts, ausgeführt wie von Termux:Widget: die in tasks im Hintergrund, die anderen in einem Terminal.</string>
+    <string name="user_shortcuts_termux_setup">Termux braucht allow-external-apps = true in ~/.termux/termux.properties (danach Termux neu starten), und Pastiera die Berechtigung, Befehle in Termux auszuführen.</string>
+    <string name="user_shortcuts_termux_none">Keine Skripte in ~/.shortcuts gefunden</string>
+    <string name="user_shortcuts_call_label">%1$s anrufen</string>
+    <string name="user_shortcuts_message_label">%1$s schreiben</string>
+    <string name="user_shortcuts_website_address">Adresse</string>
+    <string name="user_shortcuts_name">Name</string>
+    <string name="user_shortcuts_add">Hinzufügen</string>
+    <string name="quick_launcher_action_new_message">Neue Nachricht</string>
+    <string name="quick_launcher_action_new_post">Neuer Beitrag</string>
+    <string name="quick_launcher_action_new_note">Neue Notiz</string>
+    <string name="quick_launcher_action_compose">E-Mail schreiben</string>
+    <string name="quick_launcher_action_search">Suchen</string>
     <string name="auto_cap_after_emoticon_title">Großbuchstabe nach einem Emoticon</string>
     <string name="auto_cap_after_emoticon_description">Ein Text-Emoticon wie :) ;D oder &lt;3 beendet einen Satz wie ein Punkt, das nächste Wort beginnt also groß.</string>
+    <string name="quick_launcher_termux_scripts_title">Termux-Skripte</string>
+    <string name="quick_launcher_termux_scripts_description">Deine Termux:Widget-Skripte und -Aufgaben (~/.shortcuts) im Schnellstarter, immer aktuell. Braucht allow-external-apps = true in ~/.termux/termux.properties und die Berechtigung, Befehle in Termux auszuführen.</string>
+    <string name="quick_launcher_listed_app_shortcuts_title">Verknüpfungen für kompatible Apps</string>
+    <string name="quick_launcher_listed_app_shortcuts_description">Pastiera fügt dem Schnellstarter für die Apps, die es kennt, Neue Nachricht, Neue Notiz, E-Mail schreiben und Suche hinzu, sofern die App sie annimmt.</string>
+    <string name="quick_launcher_listed_app_toggle">Flux-Keyboard-Verknüpfungen für diese App</string>
+    <string name="termux_runs_background">Termux · Hintergrund</string>
+    <string name="termux_runs_terminal">Termux · Terminal</string>
     <string name="emoji_layer_recents_first_title">Zuletzt benutzte Emoji zuerst auf der Ebene</string>
     <string name="emoji_layer_recents_first_description">Die zuletzt benutzten Emoji belegen die ersten Tasten der Ebene, ihre eigenen rücken weiter. Auch auf der Ebene getippte zählen.</string>
     <string name="emoji_layer_recents_count">Zuletzt benutzte Emoji: %1$d Tasten</string>
@@ -711,6 +790,18 @@
     <string name="root_note">Diese laufen über Shizuku als ADB-Shell. Pastiera führt nur die Befehle aus, die jede Option braucht.</string>
     <string name="root_title">Shell-Zugriff</string>
     <string name="shift_field_other">Andere Felder (die nicht sagen, was sie sind)</string>
+    <plurals name="app_shortcuts_remapped_count">
+        <item quantity="one">%d Kombination als eigenes Tastenkürzel der App gesendet</item>
+        <item quantity="other">%d Kombinationen als eigene Tastenkürzel der App gesendet</item>
+    </plurals>
+    <plurals name="app_shortcuts_suggested_count">
+        <item quantity="one">%d vorgeschlagenes Tastenkürzel</item>
+        <item quantity="other">%d vorgeschlagene Tastenkürzel</item>
+    </plurals>
+    <plurals name="app_shortcuts_not_installed_count">
+        <item quantity="one">%d weitere App mit Voreinstellung</item>
+        <item quantity="other">%d weitere Apps mit Voreinstellungen</item>
+    </plurals>
     <plurals name="alt_key_editor_key_count">
         <item quantity="one">%d Taste</item>
         <item quantity="other">%d Tasten</item>

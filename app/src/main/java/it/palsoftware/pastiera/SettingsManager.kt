@@ -951,7 +951,9 @@ object SettingsManager {
     )
 
     // Flux Keyboard: quick launcher extras
+    internal const val KEY_QUICK_LAUNCHER_APP_SHORTCUTS = "quick_launcher_app_shortcuts"
     internal const val KEY_NIAGARA_BACK_RETURNS = "quick_launcher_niagara_back_returns"
+    internal const val KEY_QUICK_LAUNCHER_LISTED_APP_SHORTCUTS = "quick_launcher_listed_app_shortcuts"
 
     // Power Shortcuts settings
     internal const val KEY_POWER_SHORTCUTS_ENABLED = "power_shortcuts_enabled"

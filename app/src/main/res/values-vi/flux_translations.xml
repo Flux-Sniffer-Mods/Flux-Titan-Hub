@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Pastiera: strings Pastiera and the fork added, translated -->
 <resources>
+    <string name="app_shortcuts_title">Phím tắt ứng dụng</string>
+    <string name="app_shortcuts_description">Cùng tổ hợp phím trong mọi ứng dụng</string>
+    <string name="app_shortcuts_intro">Nhấn cùng một tổ hợp trong mọi ứng dụng: Ctrl+F để tìm, Ctrl+N để tạo mới, Alt+↓ để sang mục tiếp theo. Pastiera gửi cho mỗi ứng dụng phím tắt riêng của nó, hoặc nếu ứng dụng không có thì mở màn hình chia sẻ hay tìm kiếm của chính ứng dụng.</string>
+    <string name="app_shortcuts_enabled_title">Phím tắt ứng dụng chung</string>
+    <string name="app_shortcuts_enabled_description">Gửi cho mỗi ứng dụng phím tắt riêng của nó cho các tổ hợp chuẩn</string>
+    <string name="app_shortcuts_section_standard">Tổ hợp chuẩn</string>
+    <string name="app_shortcuts_section_apps">Ứng dụng</string>
+    <string name="app_shortcuts_section_mapping">Mỗi tổ hợp gửi gì</string>
+    <string name="app_shortcuts_scope_outside_text_fields">Không khi đang gõ trong ô văn bản</string>
+    <string name="app_shortcuts_not_installed">chưa cài đặt</string>
+    <string name="app_shortcuts_add_app">Thêm ứng dụng</string>
+    <string name="app_shortcuts_research_note">Phím tắt chỉ lấy từ những gì mỗi ứng dụng ghi trong tài liệu cho Android (hoặc có trong mã nguồn); phần lớn ứng dụng không ghi phím tắt nào, nên thiết lập sẵn của chúng chỉ là gợi ý. Các ứng dụng là 100 ứng dụng hàng đầu trên Google Play ở mục Mạng xã hội và 10 ứng dụng hàng đầu ở mỗi danh mục chính khác.</string>
+    <string name="app_shortcuts_app_source">Thiết lập sẵn theo tài liệu phím tắt của ứng dụng: %1$s</string>
+    <string name="app_shortcuts_app_custom">Do bạn thêm: đặt điều mỗi tổ hợp gửi bằng cách nhấn phím tắt của ứng dụng.</string>
+    <string name="app_shortcuts_app_enabled_title">Phím tắt trong ứng dụng này</string>
+    <string name="app_shortcuts_app_enabled_description">Gửi cho %1$s phím tắt riêng của nó cho các tổ hợp chuẩn</string>
+    <string name="app_shortcuts_not_remapped">Không gán lại: ứng dụng nhận tổ hợp như đã nhấn</string>
+    <string name="app_shortcuts_same_in_app">Đã là phím tắt riêng của ứng dụng</string>
+    <string name="app_shortcuts_sent_as">Gửi dưới dạng %1$s</string>
+    <string name="app_shortcuts_changed_by_you">do bạn thay đổi</string>
+    <string name="app_shortcuts_reset_app">Về thiết lập sẵn</string>
+    <string name="app_shortcuts_reset_app_description">Quên các phím tắt bạn đã đổi trong ứng dụng này</string>
+    <string name="app_shortcuts_remove_app">Xóa ứng dụng này</string>
+    <string name="app_shortcuts_remove_app_description">Ngừng gửi phím tắt và quên chúng</string>
+    <string name="app_shortcuts_capture_instruction">Nhấn phím tắt riêng của ứng dụng cho việc này. Pastiera sẽ gửi nó khi bạn nhấn %1$s trong ứng dụng.</string>
+    <string name="app_shortcuts_capture_waiting">Nhấn một tổ hợp phím…</string>
+    <string name="app_shortcuts_capture_preset">Thiết lập sẵn: %1$s</string>
+    <string name="app_shortcuts_dont_remap">Không gán lại</string>
+    <string name="app_shortcuts_use_preset">Dùng thiết lập sẵn</string>
+    <string name="app_shortcuts_save">Lưu</string>
     <string name="app_shortcut_new">Mới (tin nhắn, ghi chú, sự kiện, thẻ)</string>
     <string name="app_shortcut_search">Tìm kiếm</string>
     <string name="app_shortcut_open">Mở hoặc chuyển đến</string>
@@ -19,6 +49,13 @@
     <string name="app_shortcut_previous">Mục trước</string>
     <string name="app_shortcut_menu">Menu hoặc bảng bên</string>
     <string name="app_shortcut_help">Trợ giúp phím tắt</string>
+    <string name="app_shortcuts_suggestions_title">Phím tắt gợi ý</string>
+    <string name="app_shortcuts_suggestions_description">Khi ứng dụng không ghi phím tắt nào, mở màn hình riêng của nó thay vào đó: màn hình chia sẻ cho Mới, tìm kiếm cho Tìm kiếm. Chỉ khi ứng dụng trên điện thoại này chấp nhận.</string>
+    <string name="app_shortcuts_show_not_installed">Hiện ứng dụng chưa cài đặt</string>
+    <string name="app_shortcuts_app_suggested_only">Ứng dụng này không ghi phím tắt nào. Các phím tắt gợi ý mở màn hình riêng của nó; mỗi phím chỉ được dùng nếu ứng dụng chấp nhận.</string>
+    <string name="app_shortcuts_suggested_share">Gợi ý: mở màn hình chia sẻ (bài đăng hoặc tin nhắn mới)</string>
+    <string name="app_shortcuts_suggested_search">Gợi ý: mở tìm kiếm</string>
+    <string name="app_shortcuts_suggested_link">Gợi ý: mở %1$s trong ứng dụng</string>
     <string name="app_shortcuts_category_social">Mạng xã hội</string>
     <string name="app_shortcuts_category_communication">Liên lạc</string>
     <string name="app_shortcuts_category_browsers">Trình duyệt</string>
@@ -53,6 +90,12 @@
     <string name="app_shortcut_app_action_2">Phím tắt ứng dụng 2</string>
     <string name="app_shortcut_app_action_3">Phím tắt ứng dụng 3</string>
     <string name="app_shortcut_app_action_4">Phím tắt ứng dụng 4</string>
+    <string name="app_shortcuts_opens_discovered">Mở %1$s (từ ứng dụng)</string>
+    <string name="app_shortcuts_opens_settings">Mở cài đặt của ứng dụng</string>
+    <string name="app_shortcuts_section_discovered">Ứng dụng cung cấp gì</string>
+    <string name="app_shortcuts_discovered_note">Các lối tắt mà ứng dụng hiện khi bạn nhấn giữ biểu tượng của nó, và màn hình cài đặt của nó, đọc từ ứng dụng trên điện thoại này. Ctrl+Alt+1 đến 4 mở bốn lối tắt đầu (trên bàn phím không có hàng số, giữ Ctrl+Alt và nhấn các phím gõ ra 1 đến 4), Ctrl+, mở cài đặt, và lối tắt có tên như Mới hoặc Tìm kiếm sẽ dùng Ctrl+N hoặc Ctrl+F khi không có gì khác.</string>
+    <string name="app_shortcuts_discovered_none">Ứng dụng này không cung cấp lối tắt hay màn hình cài đặt cho ứng dụng khác.</string>
+    <string name="app_shortcuts_keys_note">Hiển thị như khi bạn nhấn trên bàn phím. Nếu không có phím số hoặc \"/\", giữ Ctrl và Alt cùng chữ cái gõ ra nó (trong ngoặc). Phím tắt mà bàn phím không làm được, như mũi tên khi không có phím mũi tên, sẽ không được liệt kê.</string>
     <string name="app_enter_behaviour_preset_newline_shift_send">Enter xuống dòng, Shift+Enter gửi</string>
     <string name="app_enter_behaviour_option_newline_shift_send">Enter xuống dòng, Shift+Enter gửi</string>
     <string name="enter_standard_notes">Ghi chú · Enter xuống dòng, Ctrl+Enter cho thao tác riêng của ứng dụng</string>
@@ -126,6 +169,8 @@
     <string name="layout_editor_exported">Đã xuất bố cục</string>
     <string name="layout_editor_export_failed">Không thể xuất bố cục</string>
     <string name="layout_editor_link">Sửa bố cục: chạm vào biểu tượng bút chì</string>
+    <string name="quick_launcher_app_shortcuts_title">Lối tắt ứng dụng trong kết quả</string>
+    <string name="quick_launcher_app_shortcuts_description">Lối tắt riêng của ứng dụng, những lối tắt hiện khi nhấn giữ biểu tượng (\"Tin nhắn mới\", \"Quét mã QR\"), là kết quả bạn có thể mở trực tiếp.</string>
     <string name="quick_launcher_niagara_back_title">Quay lại trở về ứng dụng</string>
     <string name="quick_launcher_niagara_back_description">Nhấn Quay lại trong tìm kiếm của Niagara trước khi mở bất cứ thứ gì sẽ đưa bạn về ứng dụng bạn đã mở nó, thay vì màn hình chính của Niagara.</string>
     <string name="quick_launcher_niagara_note">Tìm kiếm của Niagara tự sắp xếp và mở kết quả, nên các cài đặt bên dưới làm thay đổi kết quả chỉ áp dụng cho trình khởi chạy nhanh tích hợp. Bố cục bàn phím của bạn và việc Quay lại trở về ứng dụng cũng áp dụng cho Niagara.</string>
@@ -260,7 +305,7 @@
     <string name="settings_trackpad_gestures_title">Trackpad &amp; cử chỉ</string>
     <string name="settings_trackpad_gestures_description">Vuốt trên phím để chọn gợi ý, xóa và thêm từ; bàn vuốt của thanh trạng thái</string>
     <string name="settings_apps_title">Ứng dụng</string>
-    <string name="settings_apps_description">Enter theo ứng dụng, QuickLauncher, terminal và máy tính Linux</string>
+    <string name="settings_apps_description">Lối tắt ứng dụng, Enter theo ứng dụng, QuickLauncher, terminal và máy tính Linux</string>
     <string name="settings_keyboards_devices_description">Bàn phím tích hợp, trên màn hình và phụ kiện, và chuyển đổi giữa chúng</string>
     <string name="settings_input_languages_description">Ngôn ngữ, bố cục của chúng và phím chuyển đổi</string>
     <string name="settings_capitalisation_punctuation_title">Chữ hoa &amp; dấu câu</string>
@@ -1198,13 +1243,47 @@
     <string name="settings_accessibility_bounce_keys_delay_link_title">Độ trễ tối thiểu cho cùng một phím</string>
     <string name="emoticon_punctuation_title">Giữ nguyên hình biểu tượng cảm xúc</string>
     <string name="emoticon_punctuation_description">Dấu câu được gõ liền với dấu khác, như trong :-) ;( :D hoặc :\'(, không có khoảng trắng sau. Nếu một từ theo sau (:Do), khoảng trắng sẽ trở lại. Dấu chấm luôn giữ khoảng trắng.</string>
+    <string name="user_shortcuts_title">Thêm lối tắt</string>
+    <string name="user_shortcuts_description">Đưa lối tắt từ một ứng dụng, như quay số trực tiếp một liên hệ, dấu trang hoặc trang cài đặt, vào kết quả của trình khởi chạy nhanh.</string>
+    <string name="user_shortcuts_intro">Chỉ ứng dụng màn hình chính mới đọc được các lối tắt đã có trên màn hình chính, nên hãy thêm những lối tắt bạn muốn ở đây một lần. Chọn một ứng dụng bên dưới và chọn lối tắt trong màn hình của ứng dụng đó.</string>
+    <string name="user_shortcuts_yours">Lối tắt của bạn</string>
+    <string name="user_shortcuts_add_from">Thêm từ</string>
+    <string name="user_shortcuts_none">Không có ứng dụng nào trên điện thoại này cung cấp lối tắt để thêm.</string>
+    <string name="user_shortcuts_added">%1$s đã có trong trình khởi chạy nhanh</string>
+    <string name="user_shortcuts_unsupported">Lối tắt của ứng dụng này chỉ mở được từ màn hình chính.</string>
+    <string name="user_shortcuts_remove">Xóa %1$s</string>
     <string name="quick_launcher_open_failed">Không mở được %1$s</string>
     <string name="learn_contact_details_title">Ghi nhớ email và số điện thoại</string>
     <string name="learn_contact_details_description">Email và số điện thoại bạn tự gõ được lưu trong từ điển và gợi ý lại trong các ô email và số điện thoại. Không bao giờ lưu nội dung dán vào, hay từ ô mật khẩu và ô riêng tư.</string>
     <string name="learn_frequent_words_title">Học các từ bạn hay dùng</string>
     <string name="learn_frequent_words_description">Một từ chưa có trong từ điển sẽ được thêm vào sau khi bạn gõ nó ba lần, để được gợi ý và không bao giờ bị tự sửa. Không áp dụng khi gõ ẩn danh.</string>
+    <string name="user_shortcuts_builtin">Do Pastiera tạo</string>
+    <string name="user_shortcuts_call_title">Gọi một liên hệ</string>
+    <string name="user_shortcuts_message_title">Nhắn tin cho một liên hệ</string>
+    <string name="user_shortcuts_website_title">Trang web</string>
+    <string name="user_shortcuts_termux_title">Tác vụ Termux</string>
+    <string name="user_shortcuts_termux_description">Một script trong ~/.shortcuts, chạy như Termux:Widget: các script trong tasks chạy nền, số còn lại chạy trong terminal.</string>
+    <string name="user_shortcuts_termux_setup">Termux cần allow-external-apps = true trong ~/.termux/termux.properties (rồi khởi động lại Termux), và Pastiera cần quyền chạy lệnh trong Termux.</string>
+    <string name="user_shortcuts_termux_none">Không tìm thấy script nào trong ~/.shortcuts</string>
+    <string name="user_shortcuts_call_label">Gọi %1$s</string>
+    <string name="user_shortcuts_message_label">Nhắn tin cho %1$s</string>
+    <string name="user_shortcuts_website_address">Địa chỉ</string>
+    <string name="user_shortcuts_name">Tên</string>
+    <string name="user_shortcuts_add">Thêm</string>
+    <string name="quick_launcher_action_new_message">Tin nhắn mới</string>
+    <string name="quick_launcher_action_new_post">Bài đăng mới</string>
+    <string name="quick_launcher_action_new_note">Ghi chú mới</string>
+    <string name="quick_launcher_action_compose">Soạn email</string>
+    <string name="quick_launcher_action_search">Tìm kiếm</string>
     <string name="auto_cap_after_emoticon_title">Viết hoa sau biểu tượng cảm xúc</string>
     <string name="auto_cap_after_emoticon_description">Biểu tượng cảm xúc dạng chữ như :) ;D hay &lt;3 kết thúc câu như dấu chấm, nên từ tiếp theo được viết hoa.</string>
+    <string name="quick_launcher_termux_scripts_title">Script Termux</string>
+    <string name="quick_launcher_termux_scripts_description">Các script và tác vụ Termux:Widget (~/.shortcuts) của bạn trong trình khởi chạy nhanh, luôn được cập nhật. Cần allow-external-apps = true trong ~/.termux/termux.properties và quyền chạy lệnh trong Termux.</string>
+    <string name="quick_launcher_listed_app_shortcuts_title">Lối tắt cho ứng dụng tương thích</string>
+    <string name="quick_launcher_listed_app_shortcuts_description">Pastiera thêm Tin nhắn mới, Ghi chú mới, Soạn email và Tìm kiếm vào trình khởi chạy nhanh cho các ứng dụng nó biết, nếu ứng dụng hỗ trợ.</string>
+    <string name="quick_launcher_listed_app_toggle">Lối tắt Pastiera cho ứng dụng này</string>
+    <string name="termux_runs_background">Termux · chạy nền</string>
+    <string name="termux_runs_terminal">Termux · terminal</string>
     <string name="emoji_layer_recents_first_title">Emoji gần đây lên đầu lớp</string>
     <string name="emoji_layer_recents_first_description">Các emoji bạn dùng gần nhất chiếm các phím đầu của lớp, emoji của lớp dời sang sau. Emoji gõ từ lớp cũng được tính.</string>
     <string name="emoji_layer_recents_count">Emoji gần đây: %1$d phím</string>
@@ -1244,6 +1323,15 @@
     <string name="root_note">Chạy qua Shizuku, dưới dạng shell ADB. Pastiera chỉ chạy các lệnh mà mỗi tùy chọn cần.</string>
     <string name="root_title">Truy cập shell</string>
     <string name="shift_field_other">Trường khác (không cho biết là loại gì)</string>
+    <plurals name="app_shortcuts_remapped_count">
+        <item quantity="other">%d tổ hợp được gửi dưới dạng phím tắt riêng của ứng dụng</item>
+    </plurals>
+    <plurals name="app_shortcuts_suggested_count">
+        <item quantity="other">%d phím tắt gợi ý</item>
+    </plurals>
+    <plurals name="app_shortcuts_not_installed_count">
+        <item quantity="other">Thêm %d ứng dụng có thiết lập sẵn</item>
+    </plurals>
     <plurals name="alt_key_editor_key_count">
         <item quantity="other">%d phím</item>
     </plurals>

@@ -73,7 +73,9 @@ sealed class CommandLaunchSpec {
         val packageName: String? = null,
         val componentName: String? = null,
         val categories: List<String> = emptyList(),
-        val flags: List<String> = emptyList()
+        val flags: List<String> = emptyList(),
+        // Flux Keyboard: a complete intent (an app's own shortcut), started as it is
+        val intentUri: String? = null
     ) : CommandLaunchSpec()
 
     data class InternalAction(val actionId: String) : CommandLaunchSpec()

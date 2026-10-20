@@ -16,7 +16,7 @@
     <string name="settings_trackpad_gestures_title">Trackpad e gesti</string>
     <string name="settings_trackpad_gestures_description">Scorri sui tasti per scegliere suggerimenti, cancellare e aggiungere parole; lo swipe pad della barra di stato</string>
     <string name="settings_apps_title">App</string>
-    <string name="settings_apps_description">Invio per app, QuickLauncher, terminali e desktop Linux</string>
+    <string name="settings_apps_description">Scorciatoie delle app, Invio per app, QuickLauncher, terminali e desktop Linux</string>
 
     <string name="settings_keyboards_devices_description">Tastiere integrate, a schermo e accessori, e il passaggio tra di esse</string>
     <string name="settings_input_languages_description">Lingue, i loro layout e i tasti per cambiarli</string>

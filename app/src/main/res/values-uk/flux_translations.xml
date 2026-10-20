@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Pastiera: strings Pastiera and the fork added, translated -->
 <resources>
+    <string name="app_shortcuts_title">Сполучення для застосунків</string>
+    <string name="app_shortcuts_description">Ті самі сполучення клавіш у кожному застосунку</string>
+    <string name="app_shortcuts_intro">Натискайте те саме сполучення в будь-якому застосунку: Ctrl+F шукає, Ctrl+N створює щось нове, Alt+↓ переходить до наступного елемента. Pastiera надсилає кожному застосунку його власне сполучення для цього, а якщо його немає — відкриває екран «Поділитися» або пошук цього застосунку.</string>
+    <string name="app_shortcuts_enabled_title">Універсальні сполучення застосунків</string>
+    <string name="app_shortcuts_enabled_description">Надсилати кожному застосунку його власне сполучення для стандартних комбінацій</string>
+    <string name="app_shortcuts_section_standard">Стандартні сполучення</string>
+    <string name="app_shortcuts_section_apps">Застосунки</string>
+    <string name="app_shortcuts_section_mapping">Що надсилає кожне сполучення</string>
+    <string name="app_shortcuts_scope_outside_text_fields">Не під час введення в текстовому полі</string>
+    <string name="app_shortcuts_not_installed">не встановлено</string>
+    <string name="app_shortcuts_add_app">Додати застосунок</string>
+    <string name="app_shortcuts_research_note">Сполучення клавіш беруться лише з того, що кожен застосунок документує для Android (або містить у вихідному коді); більшість не документує жодного, тож їхні налаштування — це пропозиції. Застосунки — топ-100 Google Play у розділі «Соцмережі» та топ-10 у кожній іншій основній категорії.</string>
+    <string name="app_shortcuts_app_source">Налаштування з документації сполучень клавіш застосунку: %1$s</string>
+    <string name="app_shortcuts_app_custom">Додано вами: задайте, що надсилає кожне сполучення, натиснувши сполучення застосунку.</string>
+    <string name="app_shortcuts_app_enabled_title">Сполучення в цьому застосунку</string>
+    <string name="app_shortcuts_app_enabled_description">Надсилати %1$s його власні сполучення для стандартних комбінацій</string>
+    <string name="app_shortcuts_not_remapped">Без перепризначення: застосунок отримує сполучення як є</string>
+    <string name="app_shortcuts_same_in_app">Уже власне сполучення застосунку</string>
+    <string name="app_shortcuts_sent_as">Надсилається як %1$s</string>
+    <string name="app_shortcuts_changed_by_you">змінено вами</string>
+    <string name="app_shortcuts_reset_app">Повернути стандартне налаштування</string>
+    <string name="app_shortcuts_reset_app_description">Забути сполучення, змінені в цьому застосунку</string>
+    <string name="app_shortcuts_remove_app">Вилучити цей застосунок</string>
+    <string name="app_shortcuts_remove_app_description">Більше не надсилати йому сполучення й забути їх</string>
+    <string name="app_shortcuts_capture_instruction">Натисніть власне сполучення застосунку для цього. Pastiera надішле його, коли ви натиснете %1$s у застосунку.</string>
+    <string name="app_shortcuts_capture_waiting">Натисніть сполучення клавіш…</string>
+    <string name="app_shortcuts_capture_preset">Стандартно: %1$s</string>
+    <string name="app_shortcuts_dont_remap">Не перепризначати</string>
+    <string name="app_shortcuts_use_preset">Використати стандартне</string>
+    <string name="app_shortcuts_save">Зберегти</string>
     <string name="app_shortcut_new">Нове (повідомлення, нотатка, подія, вкладка)</string>
     <string name="app_shortcut_search">Пошук</string>
     <string name="app_shortcut_open">Відкрити або перейти</string>
@@ -19,6 +49,13 @@
     <string name="app_shortcut_previous">Попередній елемент</string>
     <string name="app_shortcut_menu">Меню або бічна панель</string>
     <string name="app_shortcut_help">Довідка щодо сполучень клавіш</string>
+    <string name="app_shortcuts_suggestions_title">Запропоновані сполучення</string>
+    <string name="app_shortcuts_suggestions_description">Якщо застосунок не документує сполучення клавіш, відкривається його власний екран: «Поділитися» для «Нове», пошук для «Пошук». Лише якщо застосунок на цьому телефоні це приймає.</string>
+    <string name="app_shortcuts_show_not_installed">Показати невстановлені застосунки</string>
+    <string name="app_shortcuts_app_suggested_only">Цей застосунок не документує сполучення клавіш. Запропоновані сполучення відкривають його власні екрани; кожне використовується, лише якщо застосунок його приймає.</string>
+    <string name="app_shortcuts_suggested_share">Пропозиція: відкриває екран «Поділитися» (новий допис або повідомлення)</string>
+    <string name="app_shortcuts_suggested_search">Пропозиція: відкриває пошук</string>
+    <string name="app_shortcuts_suggested_link">Пропозиція: відкриває %1$s у застосунку</string>
     <string name="app_shortcuts_category_social">Соцмережі</string>
     <string name="app_shortcuts_category_communication">Зв’язок</string>
     <string name="app_shortcuts_category_browsers">Браузери</string>
@@ -53,6 +90,12 @@
     <string name="app_shortcut_app_action_2">Сполучення застосунку 2</string>
     <string name="app_shortcut_app_action_3">Сполучення застосунку 3</string>
     <string name="app_shortcut_app_action_4">Сполучення застосунку 4</string>
+    <string name="app_shortcuts_opens_discovered">Відкриває %1$s (із застосунку)</string>
+    <string name="app_shortcuts_opens_settings">Відкриває налаштування застосунку</string>
+    <string name="app_shortcuts_section_discovered">Що пропонує застосунок</string>
+    <string name="app_shortcuts_discovered_note">Ярлики, які застосунок показує після довгого натискання на значок, і його екран налаштувань, прочитані із застосунку на цьому телефоні. Ctrl+Alt+1–4 відкривають перші чотири (на клавіатурі без ряду цифр утримуйте Ctrl+Alt і натискайте клавіші, що вводять 1–4), Ctrl+, відкриває налаштування, а ярлик із назвою на кшталт «Нове» чи «Пошук» займає Ctrl+N або Ctrl+F, якщо більше нічого немає.</string>
+    <string name="app_shortcuts_discovered_none">Цей застосунок не пропонує іншим застосункам ярликів чи екрана налаштувань.</string>
+    <string name="app_shortcuts_keys_note">Показано так, як ви натискаєте їх на своїй клавіатурі. Якщо на ній немає клавіші цифри чи \"/\", утримуйте Ctrl і Alt із літерою, яка її вводить (у дужках). Сполучення, які ваша клавіатура не може виконати, як-от стрілки без клавіш зі стрілками, не показано.</string>
     <string name="app_enter_behaviour_preset_newline_shift_send">Enter новий рядок, Shift+Enter надсилає</string>
     <string name="app_enter_behaviour_option_newline_shift_send">Enter новий рядок, Shift+Enter надсилає</string>
     <string name="enter_standard_notes">Нотатки · Enter новий рядок, Ctrl+Enter для дії застосунку</string>
@@ -126,6 +169,8 @@
     <string name="layout_editor_exported">Розкладку експортовано</string>
     <string name="layout_editor_export_failed">Не вдалося експортувати розкладку</string>
     <string name="layout_editor_link">Змінити розкладку: торкніться її олівця</string>
+    <string name="quick_launcher_app_shortcuts_title">Ярлики застосунків у результатах</string>
+    <string name="quick_launcher_app_shortcuts_description">Власні ярлики застосунків, які показує їхній значок після довгого натискання («Нове повідомлення», «Сканувати QR-код»), — це результати, які можна відкрити одразу.</string>
     <string name="quick_launcher_niagara_back_title">«Назад» повертає до застосунку</string>
     <string name="quick_launcher_niagara_back_description">Натискання «Назад» у пошуку Niagara, поки нічого не відкрито, повертає до застосунку, з якого ви його відкрили, а не на головний екран Niagara.</string>
     <string name="quick_launcher_niagara_note">Пошук Niagara сам сортує й відкриває результати, тож налаштування нижче, що змінюють результати, стосуються вбудованого швидкого запуску. Ваша розкладка клавіатури й повернення до застосунку кнопкою «Назад» діють і в Niagara.</string>
@@ -260,7 +305,7 @@
     <string name="settings_trackpad_gestures_title">Трекпад і жести</string>
     <string name="settings_trackpad_gestures_description">Свайпи по клавішах вибирають підказки, видаляють і додають слова; сенсорна панель рядка стану</string>
     <string name="settings_apps_title">Застосунки</string>
-    <string name="settings_apps_description">Enter для кожного застосунку, QuickLauncher, термінали й робочий стіл Linux</string>
+    <string name="settings_apps_description">Сполучення для застосунків, Enter для кожного застосунку, QuickLauncher, термінали й робочий стіл Linux</string>
     <string name="settings_keyboards_devices_description">Вбудовані, екранні й зовнішні клавіатури та перемикання між ними</string>
     <string name="settings_input_languages_description">Мови, їхні розкладки й клавіші для перемикання</string>
     <string name="settings_capitalisation_punctuation_title">Великі літери й пунктуація</string>
@@ -1198,13 +1243,47 @@
     <string name="settings_accessibility_bounce_keys_delay_link_title">Мінімальний інтервал для тієї самої клавіші</string>
     <string name="emoticon_punctuation_title">Смайлики зберігають форму</string>
     <string name="emoticon_punctuation_description">Розділові знаки, за якими одразу йдуть інші, як у :-) ;( :D чи :\'(, не отримують пробілу після. Якщо далі йде слово (:Do), пробіл повертається. Крапки завжди зберігають пробіл.</string>
+    <string name="user_shortcuts_title">Додати ярлик</string>
+    <string name="user_shortcuts_description">Помістіть ярлик застосунку, як-от швидкий виклик контакту, закладку чи сторінку налаштувань, у результати швидкого запуску.</string>
+    <string name="user_shortcuts_intro">Лише застосунок головного екрана може прочитати ярлики, які вже є на головному екрані, тож додайте потрібні тут один раз. Виберіть застосунок нижче й укажіть ярлик на його власному екрані.</string>
+    <string name="user_shortcuts_yours">Ваші ярлики</string>
+    <string name="user_shortcuts_add_from">Додати з</string>
+    <string name="user_shortcuts_none">Жоден застосунок на цьому телефоні не пропонує ярликів для додавання.</string>
+    <string name="user_shortcuts_added">%1$s тепер у швидкому запуску</string>
+    <string name="user_shortcuts_unsupported">Ярлик цього застосунку можна відкрити лише з головного екрана.</string>
+    <string name="user_shortcuts_remove">Вилучити %1$s</string>
     <string name="quick_launcher_open_failed">Не вдалося відкрити «%1$s»</string>
     <string name="learn_contact_details_title">Запам’ятовувати пошту й номери телефонів</string>
     <string name="learn_contact_details_description">Адреси пошти й номери телефонів, які ви набираєте самі, зберігаються у словнику та знову пропонуються в полях пошти й телефону. Ніколи не вставлений текст і нічого з полів паролів та приватних полів.</string>
     <string name="learn_frequent_words_title">Запам’ятовувати часто вживані слова</string>
     <string name="learn_frequent_words_description">Слово, якого немає у словнику, додається до нього, коли ви наберете його тричі: воно пропонуватиметься й ніколи не виправлятиметься автоматично. Окрім режиму інкогніто.</string>
+    <string name="user_shortcuts_builtin">Створені Pastiera</string>
+    <string name="user_shortcuts_call_title">Зателефонувати контакту</string>
+    <string name="user_shortcuts_message_title">Написати контакту</string>
+    <string name="user_shortcuts_website_title">Сайт</string>
+    <string name="user_shortcuts_termux_title">Завдання Termux</string>
+    <string name="user_shortcuts_termux_description">Скрипт із ~/.shortcuts, що запускається як у Termux:Widget: з tasks — у фоні, решта — у терміналі.</string>
+    <string name="user_shortcuts_termux_setup">Termux потрібен allow-external-apps = true у ~/.termux/termux.properties (потім перезапустіть Termux), а Pastiera — дозвіл запускати команди в Termux.</string>
+    <string name="user_shortcuts_termux_none">У ~/.shortcuts скриптів не знайдено</string>
+    <string name="user_shortcuts_call_label">Зателефонувати: %1$s</string>
+    <string name="user_shortcuts_message_label">Написати: %1$s</string>
+    <string name="user_shortcuts_website_address">Адреса</string>
+    <string name="user_shortcuts_name">Назва</string>
+    <string name="user_shortcuts_add">Додати</string>
+    <string name="quick_launcher_action_new_message">Нове повідомлення</string>
+    <string name="quick_launcher_action_new_post">Новий допис</string>
+    <string name="quick_launcher_action_new_note">Нова нотатка</string>
+    <string name="quick_launcher_action_compose">Написати лист</string>
+    <string name="quick_launcher_action_search">Пошук</string>
     <string name="auto_cap_after_emoticon_title">Велика літера після смайлика</string>
     <string name="auto_cap_after_emoticon_description">Текстовий смайлик на кшталт :) ;D або &lt;3 завершує речення, як крапка, і наступне слово починається з великої літери.</string>
+    <string name="quick_launcher_termux_scripts_title">Скрипти Termux</string>
+    <string name="quick_launcher_termux_scripts_description">Ваші скрипти й завдання Termux:Widget (~/.shortcuts) у швидкому запуску, завжди актуальні. Потрібні allow-external-apps = true у ~/.termux/termux.properties і дозвіл запускати команди в Termux.</string>
+    <string name="quick_launcher_listed_app_shortcuts_title">Ярлики для сумісних застосунків</string>
+    <string name="quick_launcher_listed_app_shortcuts_description">Pastiera додає до швидкого запуску «Нове повідомлення», «Нова нотатка», «Написати лист» і «Пошук» для знайомих йому застосунків, якщо застосунок їх приймає.</string>
+    <string name="quick_launcher_listed_app_toggle">Ярлики Pastiera для цього застосунку</string>
+    <string name="termux_runs_background">Termux · у фоні</string>
+    <string name="termux_runs_terminal">Termux · у терміналі</string>
     <string name="emoji_layer_recents_first_title">Недавні емодзі першими на шарі</string>
     <string name="emoji_layer_recents_first_description">Останні використані емодзі займають перші клавіші шару, а його власні зсуваються. Враховуються й набрані з шару.</string>
     <string name="emoji_layer_recents_count">Недавні емодзі: %1$d клавіш</string>
@@ -1244,6 +1323,24 @@
     <string name="root_note">Працюють через Shizuku як оболонка ADB. Pastiera виконує лише команди, потрібні кожному налаштуванню.</string>
     <string name="root_title">Доступ до оболонки</string>
     <string name="shift_field_other">Інші поля (які не повідомляють, що вони таке)</string>
+    <plurals name="app_shortcuts_remapped_count">
+        <item quantity="one">%d сполучення надсилається як власне сполучення застосунку</item>
+        <item quantity="few">%d сполучення надсилаються як власні сполучення застосунку</item>
+        <item quantity="many">%d сполучень надсилаються як власні сполучення застосунку</item>
+        <item quantity="other">%d сполучення надсилаються як власні сполучення застосунку</item>
+    </plurals>
+    <plurals name="app_shortcuts_suggested_count">
+        <item quantity="one">%d запропоноване сполучення</item>
+        <item quantity="few">%d запропоновані сполучення</item>
+        <item quantity="many">%d запропонованих сполучень</item>
+        <item quantity="other">%d запропонованого сполучення</item>
+    </plurals>
+    <plurals name="app_shortcuts_not_installed_count">
+        <item quantity="one">Ще %d застосунок із налаштуванням</item>
+        <item quantity="few">Ще %d застосунки з налаштуваннями</item>
+        <item quantity="many">Ще %d застосунків із налаштуваннями</item>
+        <item quantity="other">Ще %d застосунку з налаштуваннями</item>
+    </plurals>
     <plurals name="alt_key_editor_key_count">
         <item quantity="one">%d клавіша</item>
         <item quantity="few">%d клавіші</item>

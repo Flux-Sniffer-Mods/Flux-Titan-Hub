@@ -426,6 +426,8 @@ internal val fluxRowIcons: Map<String?, String> = mapOf(
     "quick_launcher.add_shortcut" to "+",
     "quick_launcher.termux_scripts" to "\u276F",
     "quick_launcher.niagara_back_returns" to "\u21A9",      // ↩
+    SettingLinkIds.APP_SHORTCUTS_ENABLED to "\u2318",
+    SettingLinkIds.APP_SHORTCUTS_SUGGESTIONS to "\u2318",
     // LEDs and the app
     SettingLinkIds.LED_INDIVIDUAL_COLORS to "\u25CF",
     SettingLinkIds.LED_LOCKED_ANIMATION to "\u25C9",        // ◉

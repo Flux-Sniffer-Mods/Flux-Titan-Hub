@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Pastiera: strings Pastiera and the fork added, translated -->
 <resources>
+    <string name="app_shortcuts_title">Raccourcis d’applis</string>
+    <string name="app_shortcuts_description">Les mêmes combinaisons de touches dans toutes les applis</string>
+    <string name="app_shortcuts_intro">Utilisez la même combinaison dans toutes les applis : Ctrl+F recherche, Ctrl+N crée quelque chose de nouveau, Alt+↓ passe à l’élément suivant. Pastiera envoie à chaque appli son propre raccourci pour cela ou, si l’appli n’en a pas, ouvre son propre écran de partage ou de recherche.</string>
+    <string name="app_shortcuts_enabled_title">Raccourcis d’applis universels</string>
+    <string name="app_shortcuts_enabled_description">Envoyer à chaque appli son propre raccourci pour les combinaisons standard</string>
+    <string name="app_shortcuts_section_standard">Combinaisons standard</string>
+    <string name="app_shortcuts_section_apps">Applis</string>
+    <string name="app_shortcuts_section_mapping">Ce qu’envoie chaque combinaison</string>
+    <string name="app_shortcuts_scope_outside_text_fields">Pas pendant la saisie dans un champ de texte</string>
+    <string name="app_shortcuts_not_installed">non installée</string>
+    <string name="app_shortcuts_add_app">Ajouter une appli</string>
+    <string name="app_shortcuts_research_note">Les raccourcis clavier ne viennent que de ce que chaque appli documente pour Android (ou inclut dans son code source) ; la plupart n’en documentent aucun, leurs préréglages sont donc des suggestions. Les applis sont le top 100 de Google Play en Réseaux sociaux et le top 10 de chaque autre catégorie principale.</string>
+    <string name="app_shortcuts_app_source">Préréglage d’après la documentation des raccourcis clavier de l’appli : %1$s</string>
+    <string name="app_shortcuts_app_custom">Ajoutée par vous : définissez ce qu’envoie chaque combinaison en appuyant sur le raccourci de l’appli.</string>
+    <string name="app_shortcuts_app_enabled_title">Raccourcis dans cette appli</string>
+    <string name="app_shortcuts_app_enabled_description">Envoyer à %1$s ses propres raccourcis pour les combinaisons standard</string>
+    <string name="app_shortcuts_not_remapped">Non réaffectée : l’appli reçoit la combinaison telle quelle</string>
+    <string name="app_shortcuts_same_in_app">Déjà le raccourci propre à l’appli</string>
+    <string name="app_shortcuts_sent_as">Envoyée comme %1$s</string>
+    <string name="app_shortcuts_changed_by_you">modifié par vous</string>
+    <string name="app_shortcuts_reset_app">Revenir au préréglage</string>
+    <string name="app_shortcuts_reset_app_description">Oublier les raccourcis modifiés dans cette appli</string>
+    <string name="app_shortcuts_remove_app">Retirer cette appli</string>
+    <string name="app_shortcuts_remove_app_description">Ne plus lui envoyer de raccourcis et les oublier</string>
+    <string name="app_shortcuts_capture_instruction">Appuyez sur le raccourci propre à l’appli pour cela. Pastiera l’envoie quand vous appuyez sur %1$s dans l’appli.</string>
+    <string name="app_shortcuts_capture_waiting">Appuyez sur une combinaison de touches…</string>
+    <string name="app_shortcuts_capture_preset">Préréglage : %1$s</string>
+    <string name="app_shortcuts_dont_remap">Ne pas réaffecter</string>
+    <string name="app_shortcuts_use_preset">Utiliser le préréglage</string>
+    <string name="app_shortcuts_save">Enregistrer</string>
     <string name="app_shortcut_new">Nouveau (message, note, événement, onglet)</string>
     <string name="app_shortcut_search">Rechercher</string>
     <string name="app_shortcut_open">Ouvrir ou aller à</string>
@@ -19,6 +49,13 @@
     <string name="app_shortcut_previous">Élément précédent</string>
     <string name="app_shortcut_menu">Menu ou panneau latéral</string>
     <string name="app_shortcut_help">Aide des raccourcis clavier</string>
+    <string name="app_shortcuts_suggestions_title">Raccourcis suggérés</string>
+    <string name="app_shortcuts_suggestions_description">Quand une appli ne documente aucun raccourci clavier, ouvrir plutôt son propre écran : son écran de partage pour Nouveau, sa recherche pour Rechercher. Seulement si l’appli de ce téléphone l’accepte.</string>
+    <string name="app_shortcuts_show_not_installed">Afficher les applis non installées</string>
+    <string name="app_shortcuts_app_suggested_only">Cette appli ne documente aucun raccourci clavier. Ses raccourcis suggérés ouvrent ses propres écrans ; chacun n’est utilisé que si l’appli l’accepte.</string>
+    <string name="app_shortcuts_suggested_share">Suggéré : ouvre son écran de partage (nouvelle publication ou message)</string>
+    <string name="app_shortcuts_suggested_search">Suggéré : ouvre sa recherche</string>
+    <string name="app_shortcuts_suggested_link">Suggéré : ouvre %1$s dans l’appli</string>
     <string name="app_shortcuts_category_social">Réseaux sociaux</string>
     <string name="app_shortcuts_category_communication">Communication</string>
     <string name="app_shortcuts_category_browsers">Navigateurs</string>
@@ -53,6 +90,12 @@
     <string name="app_shortcut_app_action_2">Raccourci 2 de l’appli</string>
     <string name="app_shortcut_app_action_3">Raccourci 3 de l’appli</string>
     <string name="app_shortcut_app_action_4">Raccourci 4 de l’appli</string>
+    <string name="app_shortcuts_opens_discovered">Ouvre %1$s (depuis l’appli)</string>
+    <string name="app_shortcuts_opens_settings">Ouvre les paramètres de l’appli</string>
+    <string name="app_shortcuts_section_discovered">Ce que propose l’appli</string>
+    <string name="app_shortcuts_discovered_note">Les raccourcis que cette appli affiche quand vous appuyez longuement sur son icône, et son écran de paramètres, lus depuis l’appli sur ce téléphone. Ctrl+Alt+1 à 4 ouvrent les quatre premiers (sur un clavier sans rangée de chiffres, maintenez Ctrl+Alt et appuyez sur les touches qui tapent 1 à 4), Ctrl+, ouvre ses paramètres, et un raccourci nommé comme Nouveau ou Rechercher remplit Ctrl+N ou Ctrl+F quand rien d’autre ne le fait.</string>
+    <string name="app_shortcuts_discovered_none">Cette appli ne propose ni raccourcis ni écran de paramètres aux autres applis.</string>
+    <string name="app_shortcuts_keys_note">Affichés tels que vous les tapez sur votre clavier. S’il n’a pas de touche de chiffre ou \"/\", maintenez Ctrl et Alt avec la lettre qui la tape (indiquée entre crochets). Les raccourcis que votre clavier ne peut pas faire, comme les flèches sans touches fléchées, ne sont pas listés.</string>
     <string name="app_enter_behaviour_preset_newline_shift_send">Entrée retour à la ligne, Shift+Entrée envoie</string>
     <string name="app_enter_behaviour_option_newline_shift_send">Entrée retour à la ligne, Shift+Entrée envoie</string>
     <string name="enter_standard_notes">Notes · Entrée retour à la ligne, Ctrl+Entrée pour l’action propre à l’appli</string>
@@ -126,6 +169,8 @@
     <string name="layout_editor_exported">Disposition exportée</string>
     <string name="layout_editor_export_failed">Impossible d’exporter la disposition</string>
     <string name="layout_editor_link">Modifier une disposition : touchez son crayon</string>
+    <string name="quick_launcher_app_shortcuts_title">Raccourcis d’apps dans les résultats</string>
+    <string name="quick_launcher_app_shortcuts_description">Les raccourcis propres aux apps, ceux qu’affiche leur icône par appui long (\"Nouveau message\", \"Scanner un code QR\"), sont des résultats que vous pouvez ouvrir directement.</string>
     <string name="quick_launcher_niagara_back_title">Retour ramène à l’app</string>
     <string name="quick_launcher_niagara_back_description">Appuyer sur Retour dans la recherche de Niagara avant d’ouvrir quoi que ce soit vous ramène à l’app d’où vous l’avez ouverte, au lieu de l’écran d’accueil de Niagara.</string>
     <string name="quick_launcher_niagara_note">La recherche de Niagara classe et ouvre elle-même les résultats, donc les réglages ci-dessous qui modifient les résultats s’appliquent au lanceur rapide intégré. Votre disposition de clavier et le retour à votre app avec Retour s’appliquent aussi à Niagara.</string>
@@ -260,7 +305,7 @@
     <string name="settings_trackpad_gestures_title">Trackpad et gestes</string>
     <string name="settings_trackpad_gestures_description">Balayez sur les touches pour choisir des suggestions, supprimer et ajouter des mots ; le pavé de balayage de la barre d’état</string>
     <string name="settings_apps_title">Apps</string>
-    <string name="settings_apps_description">Enter par app, QuickLauncher, terminaux et bureau Linux</string>
+    <string name="settings_apps_description">Raccourcis d’apps, Enter par app, QuickLauncher, terminaux et bureau Linux</string>
     <string name="settings_keyboards_devices_description">Claviers intégrés, à l’écran et accessoires, et le passage de l’un à l’autre</string>
     <string name="settings_input_languages_description">Les langues, leurs dispositions et les touches qui les changent</string>
     <string name="settings_capitalisation_punctuation_title">Majuscules et ponctuation</string>
@@ -1198,13 +1243,47 @@
     <string name="settings_accessibility_bounce_keys_delay_link_title">Délai minimum pour la même touche</string>
     <string name="emoticon_punctuation_title">Les émoticônes gardent leur forme</string>
     <string name="emoticon_punctuation_description">La ponctuation tapée directement suivie d’autre chose, comme dans :-) ;( :D ou :\'(, n’a pas d’espace après. Si un mot suit (:Do), l’espace revient. Les points gardent toujours leur espace.</string>
+    <string name="user_shortcuts_title">Ajouter un raccourci</string>
+    <string name="user_shortcuts_description">Placer un raccourci d’app, comme l’appel direct d’un contact, un favori ou une page de réglages, dans les résultats du lanceur rapide.</string>
+    <string name="user_shortcuts_intro">Seule l’app d’écran d’accueil peut lire les raccourcis déjà présents sur votre écran d’accueil ; ajoutez donc ici une fois ceux que vous voulez. Choisissez une app ci-dessous et sélectionnez le raccourci dans son propre écran.</string>
+    <string name="user_shortcuts_yours">Vos raccourcis</string>
+    <string name="user_shortcuts_add_from">Ajouter depuis</string>
+    <string name="user_shortcuts_none">Aucune app de ce téléphone ne propose de raccourcis à ajouter.</string>
+    <string name="user_shortcuts_added">%1$s est dans le lanceur rapide</string>
+    <string name="user_shortcuts_unsupported">Le raccourci de cette app ne peut s’ouvrir que depuis l’écran d’accueil.</string>
+    <string name="user_shortcuts_remove">Retirer %1$s</string>
     <string name="quick_launcher_open_failed">Impossible d’ouvrir %1$s</string>
     <string name="learn_contact_details_title">Mémoriser e-mails et numéros de téléphone</string>
     <string name="learn_contact_details_description">Les e-mails et numéros de téléphone que vous tapez vous-même sont gardés dans votre dictionnaire et proposés à nouveau dans les champs e-mail et téléphone. Jamais ce que vous collez, ni ce qui vient des champs de mot de passe ou privés.</string>
     <string name="learn_frequent_words_title">Apprendre les mots que vous utilisez souvent</string>
     <string name="learn_frequent_words_description">Un mot absent du dictionnaire y est ajouté une fois tapé trois fois, pour être suggéré et jamais corrigé automatiquement. Pas pendant la saisie en navigation privée.</string>
+    <string name="user_shortcuts_builtin">Créés par Pastiera</string>
+    <string name="user_shortcuts_call_title">Appeler un contact</string>
+    <string name="user_shortcuts_message_title">Écrire à un contact</string>
+    <string name="user_shortcuts_website_title">Site web</string>
+    <string name="user_shortcuts_termux_title">Tâche Termux</string>
+    <string name="user_shortcuts_termux_description">Un script de ~/.shortcuts, lancé comme le fait Termux:Widget : ceux de tasks en arrière-plan, les autres dans un terminal.</string>
+    <string name="user_shortcuts_termux_setup">Termux a besoin de allow-external-apps = true dans ~/.termux/termux.properties (puis redémarrez Termux), et Pastiera de l’autorisation d’exécuter des commandes dans Termux.</string>
+    <string name="user_shortcuts_termux_none">Aucun script trouvé dans ~/.shortcuts</string>
+    <string name="user_shortcuts_call_label">Appeler %1$s</string>
+    <string name="user_shortcuts_message_label">Écrire à %1$s</string>
+    <string name="user_shortcuts_website_address">Adresse</string>
+    <string name="user_shortcuts_name">Nom</string>
+    <string name="user_shortcuts_add">Ajouter</string>
+    <string name="quick_launcher_action_new_message">Nouveau message</string>
+    <string name="quick_launcher_action_new_post">Nouvelle publication</string>
+    <string name="quick_launcher_action_new_note">Nouvelle note</string>
+    <string name="quick_launcher_action_compose">Écrire un e-mail</string>
+    <string name="quick_launcher_action_search">Rechercher</string>
     <string name="auto_cap_after_emoticon_title">Majuscule après une émoticône</string>
     <string name="auto_cap_after_emoticon_description">Une émoticône en texte comme :) ;D ou &lt;3 termine une phrase comme un point, donc le mot suivant prend une majuscule.</string>
+    <string name="quick_launcher_termux_scripts_title">Scripts Termux</string>
+    <string name="quick_launcher_termux_scripts_description">Vos scripts et tâches Termux:Widget (~/.shortcuts) dans le lanceur rapide, toujours à jour. Nécessite allow-external-apps = true dans ~/.termux/termux.properties et l’autorisation d’exécuter des commandes dans Termux.</string>
+    <string name="quick_launcher_listed_app_shortcuts_title">Raccourcis pour les applis compatibles</string>
+    <string name="quick_launcher_listed_app_shortcuts_description">Pastiera ajoute Nouveau message, Nouvelle note, Écrire un e-mail et Rechercher au lanceur rapide pour les applis qu’il connaît, quand l’appli les accepte.</string>
+    <string name="quick_launcher_listed_app_toggle">Raccourcis Pastiera pour cette appli</string>
+    <string name="termux_runs_background">Termux · arrière-plan</string>
+    <string name="termux_runs_terminal">Termux · terminal</string>
     <string name="emoji_layer_recents_first_title">Emoji récents en premier sur la couche</string>
     <string name="emoji_layer_recents_first_description">Les emoji utilisés en dernier prennent les premières touches de la couche, les siens se décalent. Ceux tapés depuis la couche comptent aussi.</string>
     <string name="emoji_layer_recents_count">Emoji récents : %1$d touches</string>
@@ -1244,6 +1323,21 @@
     <string name="root_note">Ces options passent par Shizuku, comme le shell ADB. Pastiera n\'exécute que les commandes nécessaires à chaque option.</string>
     <string name="root_title">Accès au shell</string>
     <string name="shift_field_other">Autres champs (qui ne disent pas ce qu\'ils sont)</string>
+    <plurals name="app_shortcuts_remapped_count">
+        <item quantity="one">%d combinaison envoyée comme raccourci propre à l’appli</item>
+        <item quantity="many">%d combinaisons envoyées comme raccourcis propres à l’appli</item>
+        <item quantity="other">%d combinaisons envoyées comme raccourcis propres à l’appli</item>
+    </plurals>
+    <plurals name="app_shortcuts_suggested_count">
+        <item quantity="one">%d raccourci suggéré</item>
+        <item quantity="many">%d raccourcis suggérés</item>
+        <item quantity="other">%d raccourcis suggérés</item>
+    </plurals>
+    <plurals name="app_shortcuts_not_installed_count">
+        <item quantity="one">%d autre appli avec préréglage</item>
+        <item quantity="many">%d autres applis avec préréglages</item>
+        <item quantity="other">%d autres applis avec préréglages</item>
+    </plurals>
     <plurals name="alt_key_editor_key_count">
         <item quantity="one">%d touche</item>
         <item quantity="many">%d touches</item>

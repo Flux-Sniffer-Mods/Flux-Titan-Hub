@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Pastiera: strings Pastiera and the fork added, translated -->
 <resources>
+    <string name="app_shortcuts_title">Atajos de apps</string>
+    <string name="app_shortcuts_description">Las mismas combinaciones de teclas en todas las apps</string>
+    <string name="app_shortcuts_intro">Pulsa la misma combinación en todas las apps: Ctrl+F busca, Ctrl+N crea algo nuevo, Alt+↓ pasa al siguiente elemento. Pastiera envía a cada app su propio atajo para ello o, si la app no tiene ninguno, abre su propia pantalla de compartir o de búsqueda.</string>
+    <string name="app_shortcuts_enabled_title">Atajos universales de apps</string>
+    <string name="app_shortcuts_enabled_description">Enviar a cada app su propio atajo para las combinaciones estándar</string>
+    <string name="app_shortcuts_section_standard">Combinaciones estándar</string>
+    <string name="app_shortcuts_section_apps">Apps</string>
+    <string name="app_shortcuts_section_mapping">Qué envía cada combinación</string>
+    <string name="app_shortcuts_scope_outside_text_fields">No mientras escribes en un campo de texto</string>
+    <string name="app_shortcuts_not_installed">no instalada</string>
+    <string name="app_shortcuts_add_app">Añadir una app</string>
+    <string name="app_shortcuts_research_note">Los atajos de teclado solo proceden de lo que cada app documenta para Android (o incluye en su código fuente); la mayoría no documenta ninguno, así que sus ajustes predefinidos son sugerencias. Las apps son las 100 principales de Google Play en Social y las 10 principales de cada otra categoría principal.</string>
+    <string name="app_shortcuts_app_source">Ajuste predefinido según la documentación de atajos de teclado de la app: %1$s</string>
+    <string name="app_shortcuts_app_custom">Añadida por ti: define qué envía cada combinación pulsando el atajo de la app.</string>
+    <string name="app_shortcuts_app_enabled_title">Atajos en esta app</string>
+    <string name="app_shortcuts_app_enabled_description">Enviar a %1$s sus propios atajos para las combinaciones estándar</string>
+    <string name="app_shortcuts_not_remapped">Sin reasignar: la app recibe la combinación tal como se pulsa</string>
+    <string name="app_shortcuts_same_in_app">Ya es el atajo propio de la app</string>
+    <string name="app_shortcuts_sent_as">Se envía como %1$s</string>
+    <string name="app_shortcuts_changed_by_you">cambiado por ti</string>
+    <string name="app_shortcuts_reset_app">Volver al predefinido</string>
+    <string name="app_shortcuts_reset_app_description">Olvidar los atajos que cambiaste en esta app</string>
+    <string name="app_shortcuts_remove_app">Quitar esta app</string>
+    <string name="app_shortcuts_remove_app_description">Dejar de enviarle atajos y olvidarlos</string>
+    <string name="app_shortcuts_capture_instruction">Pulsa el atajo propio de la app para esto. Pastiera lo envía cuando pulsas %1$s en la app.</string>
+    <string name="app_shortcuts_capture_waiting">Pulsa una combinación de teclas…</string>
+    <string name="app_shortcuts_capture_preset">Predefinido: %1$s</string>
+    <string name="app_shortcuts_dont_remap">No reasignar</string>
+    <string name="app_shortcuts_use_preset">Usar predefinido</string>
+    <string name="app_shortcuts_save">Guardar</string>
     <string name="app_shortcut_new">Nuevo (mensaje, nota, evento, pestaña)</string>
     <string name="app_shortcut_search">Buscar</string>
     <string name="app_shortcut_open">Abrir o ir a</string>
@@ -19,6 +49,13 @@
     <string name="app_shortcut_previous">Elemento anterior</string>
     <string name="app_shortcut_menu">Menú o panel lateral</string>
     <string name="app_shortcut_help">Ayuda de atajos de teclado</string>
+    <string name="app_shortcuts_suggestions_title">Atajos sugeridos</string>
+    <string name="app_shortcuts_suggestions_description">Si una app no documenta ningún atajo de teclado, abre su propia pantalla: la de compartir para Nuevo y su búsqueda para Buscar. Solo si la app de este teléfono lo acepta.</string>
+    <string name="app_shortcuts_show_not_installed">Mostrar apps no instaladas</string>
+    <string name="app_shortcuts_app_suggested_only">Esta app no documenta atajos de teclado. Sus atajos sugeridos abren sus propias pantallas; cada uno se usa solo si la app lo acepta.</string>
+    <string name="app_shortcuts_suggested_share">Sugerido: abre su pantalla de compartir (nueva publicación o mensaje)</string>
+    <string name="app_shortcuts_suggested_search">Sugerido: abre su búsqueda</string>
+    <string name="app_shortcuts_suggested_link">Sugerido: abre %1$s en la app</string>
     <string name="app_shortcuts_category_social">Social</string>
     <string name="app_shortcuts_category_communication">Comunicación</string>
     <string name="app_shortcuts_category_browsers">Navegadores</string>
@@ -53,6 +90,12 @@
     <string name="app_shortcut_app_action_2">Atajo 2 de la app</string>
     <string name="app_shortcut_app_action_3">Atajo 3 de la app</string>
     <string name="app_shortcut_app_action_4">Atajo 4 de la app</string>
+    <string name="app_shortcuts_opens_discovered">Abre %1$s (de la app)</string>
+    <string name="app_shortcuts_opens_settings">Abre los ajustes de la app</string>
+    <string name="app_shortcuts_section_discovered">Lo que ofrece la app</string>
+    <string name="app_shortcuts_discovered_note">Los atajos que muestra esta app al mantener pulsado su icono, y su pantalla de ajustes, leídos de la app en este teléfono. Ctrl+Alt+1 a 4 abren los cuatro primeros (en un teclado sin fila de números, mantén Ctrl+Alt y pulsa las teclas que escriben 1 a 4), Ctrl+, abre sus ajustes, y uno llamado como Nuevo o Buscar ocupa Ctrl+N o Ctrl+F si no hay nada más.</string>
+    <string name="app_shortcuts_discovered_none">Esta app no ofrece atajos ni pantalla de ajustes a otras apps.</string>
+    <string name="app_shortcuts_keys_note">Se muestran tal como los pulsas en tu teclado. Si no tiene tecla de número o \"/\", mantén Ctrl y Alt con la letra que la escribe (entre corchetes). Los atajos que tu teclado no puede hacer, como flechas sin teclas de flecha, no aparecen.</string>
     <string name="app_enter_behaviour_preset_newline_shift_send">Enter línea nueva, Shift+Enter envía</string>
     <string name="app_enter_behaviour_option_newline_shift_send">Enter línea nueva, Shift+Enter envía</string>
     <string name="enter_standard_notes">Notas · Enter línea nueva, Ctrl+Enter para la acción propia de la app</string>
@@ -126,6 +169,8 @@
     <string name="layout_editor_exported">Distribución exportada</string>
     <string name="layout_editor_export_failed">No se pudo exportar la distribución</string>
     <string name="layout_editor_link">Editar una distribución: toca su lápiz</string>
+    <string name="quick_launcher_app_shortcuts_title">Atajos de apps en los resultados</string>
+    <string name="quick_launcher_app_shortcuts_description">Los atajos propios de las apps, los que muestra su icono al mantenerlo pulsado (\"Nuevo mensaje\", \"Escanear código QR\"), son resultados que puedes abrir directamente.</string>
     <string name="quick_launcher_niagara_back_title">Atrás vuelve a la app</string>
     <string name="quick_launcher_niagara_back_description">Pulsar Atrás en la búsqueda de Niagara antes de abrir nada te devuelve a la app desde la que la abriste, en lugar de a la pantalla de inicio de Niagara.</string>
     <string name="quick_launcher_niagara_note">La búsqueda de Niagara ordena y abre los resultados por sí misma, así que los ajustes de abajo que cambian los resultados se aplican al lanzador rápido integrado. Tu distribución de teclado y que Atrás vuelva a tu app también se aplican a Niagara.</string>
@@ -260,7 +305,7 @@
     <string name="settings_trackpad_gestures_title">Trackpad y gestos</string>
     <string name="settings_trackpad_gestures_description">Desliza sobre las teclas para elegir sugerencias, borrar y añadir palabras; el panel táctil de la barra de estado</string>
     <string name="settings_apps_title">Apps</string>
-    <string name="settings_apps_description">Enter por app, QuickLauncher, terminales y escritorio Linux</string>
+    <string name="settings_apps_description">Atajos de apps, Enter por app, QuickLauncher, terminales y escritorio Linux</string>
     <string name="settings_keyboards_devices_description">Teclados integrados, en pantalla y accesorios, y el cambio entre ellos</string>
     <string name="settings_input_languages_description">Idiomas, sus distribuciones y las teclas que los cambian</string>
     <string name="settings_capitalisation_punctuation_title">Mayúsculas y puntuación</string>
@@ -1198,13 +1243,47 @@
     <string name="settings_accessibility_bounce_keys_delay_link_title">Retraso mínimo para la misma tecla</string>
     <string name="emoticon_punctuation_title">Los emoticonos mantienen su forma</string>
     <string name="emoticon_punctuation_description">Los signos de puntuación seguidos directamente de más, como en :-) ;( :D o :\'(, no llevan espacio detrás. Si sigue una palabra (:Do), el espacio vuelve. Los puntos siempre conservan su espacio.</string>
+    <string name="user_shortcuts_title">Añadir un atajo</string>
+    <string name="user_shortcuts_description">Pon un atajo de una app, como la marcación directa de un contacto, un marcador o una página de ajustes, en los resultados del lanzador rápido.</string>
+    <string name="user_shortcuts_intro">Solo la app de pantalla de inicio puede leer los atajos que ya tienes en la pantalla de inicio, así que añade aquí una vez los que quieras. Elige una app abajo y escoge el atajo en su propia pantalla.</string>
+    <string name="user_shortcuts_yours">Tus atajos</string>
+    <string name="user_shortcuts_add_from">Añadir desde</string>
+    <string name="user_shortcuts_none">Ninguna app de este teléfono ofrece atajos para añadir.</string>
+    <string name="user_shortcuts_added">%1$s está en el lanzador rápido</string>
+    <string name="user_shortcuts_unsupported">El atajo de esta app solo se puede abrir desde la pantalla de inicio.</string>
+    <string name="user_shortcuts_remove">Quitar %1$s</string>
     <string name="quick_launcher_open_failed">No se pudo abrir %1$s</string>
     <string name="learn_contact_details_title">Recordar correos y teléfonos</string>
     <string name="learn_contact_details_description">Los correos y números de teléfono que escribes tú mismo se guardan en tu diccionario y se ofrecen de nuevo en los campos de correo y teléfono. Nunca lo que pegas, ni lo de campos de contraseña o privados.</string>
     <string name="learn_frequent_words_title">Aprender las palabras que usas a menudo</string>
     <string name="learn_frequent_words_description">Una palabra que no está en el diccionario se añade cuando la has escrito tres veces, así se sugiere y nunca se autocorrige. No mientras escribes en modo incógnito.</string>
+    <string name="user_shortcuts_builtin">Creados por Pastiera</string>
+    <string name="user_shortcuts_call_title">Llamar a un contacto</string>
+    <string name="user_shortcuts_message_title">Escribir a un contacto</string>
+    <string name="user_shortcuts_website_title">Sitio web</string>
+    <string name="user_shortcuts_termux_title">Tarea de Termux</string>
+    <string name="user_shortcuts_termux_description">Un script de ~/.shortcuts, ejecutado como lo hace Termux:Widget: los de tasks en segundo plano, los demás en una terminal.</string>
+    <string name="user_shortcuts_termux_setup">Termux necesita allow-external-apps = true en ~/.termux/termux.properties (y reiniciar Termux), y Pastiera necesita permiso para ejecutar comandos en Termux.</string>
+    <string name="user_shortcuts_termux_none">No se encontraron scripts en ~/.shortcuts</string>
+    <string name="user_shortcuts_call_label">Llamar a %1$s</string>
+    <string name="user_shortcuts_message_label">Escribir a %1$s</string>
+    <string name="user_shortcuts_website_address">Dirección</string>
+    <string name="user_shortcuts_name">Nombre</string>
+    <string name="user_shortcuts_add">Añadir</string>
+    <string name="quick_launcher_action_new_message">Nuevo mensaje</string>
+    <string name="quick_launcher_action_new_post">Nueva publicación</string>
+    <string name="quick_launcher_action_new_note">Nueva nota</string>
+    <string name="quick_launcher_action_compose">Redactar correo</string>
+    <string name="quick_launcher_action_search">Buscar</string>
     <string name="auto_cap_after_emoticon_title">Mayúscula tras un emoticono</string>
     <string name="auto_cap_after_emoticon_description">Un emoticono de texto como :) ;D o &lt;3 termina una frase como un punto, así la siguiente palabra empieza con mayúscula.</string>
+    <string name="quick_launcher_termux_scripts_title">Scripts de Termux</string>
+    <string name="quick_launcher_termux_scripts_description">Tus scripts y tareas de Termux:Widget (~/.shortcuts) en el lanzador rápido, siempre al día. Requiere allow-external-apps = true en ~/.termux/termux.properties y permiso para ejecutar comandos en Termux.</string>
+    <string name="quick_launcher_listed_app_shortcuts_title">Atajos para apps compatibles</string>
+    <string name="quick_launcher_listed_app_shortcuts_description">Pastiera añade Nuevo mensaje, Nueva nota, Redactar correo y Buscar al lanzador rápido para las apps que conoce, cuando la app los admite.</string>
+    <string name="quick_launcher_listed_app_toggle">Atajos de Pastiera para esta app</string>
+    <string name="termux_runs_background">Termux · segundo plano</string>
+    <string name="termux_runs_terminal">Termux · terminal</string>
     <string name="emoji_layer_recents_first_title">Emoji recientes primero en la capa</string>
     <string name="emoji_layer_recents_first_description">Los emoji que usaste por última vez ocupan las primeras teclas de la capa y los suyos se desplazan. También cuentan los que escribes desde la capa.</string>
     <string name="emoji_layer_recents_count">Emoji recientes: %1$d teclas</string>
@@ -1244,6 +1323,21 @@
     <string name="root_note">Se ejecutan mediante Shizuku, como shell de ADB. Pastiera solo ejecuta los comandos que necesita cada opción.</string>
     <string name="root_title">Acceso al shell</string>
     <string name="shift_field_other">Otros campos (que no dicen qué son)</string>
+    <plurals name="app_shortcuts_remapped_count">
+        <item quantity="one">%d combinación enviada como atajo propio de la app</item>
+        <item quantity="many">%d combinaciones enviadas como atajos propios de la app</item>
+        <item quantity="other">%d combinaciones enviadas como atajos propios de la app</item>
+    </plurals>
+    <plurals name="app_shortcuts_suggested_count">
+        <item quantity="one">%d atajo sugerido</item>
+        <item quantity="many">%d atajos sugeridos</item>
+        <item quantity="other">%d atajos sugeridos</item>
+    </plurals>
+    <plurals name="app_shortcuts_not_installed_count">
+        <item quantity="one">%d app más con ajuste predefinido</item>
+        <item quantity="many">%d apps más con ajustes predefinidos</item>
+        <item quantity="other">%d apps más con ajustes predefinidos</item>
+    </plurals>
     <plurals name="alt_key_editor_key_count">
         <item quantity="one">%d tecla</item>
         <item quantity="many">%d teclas</item>

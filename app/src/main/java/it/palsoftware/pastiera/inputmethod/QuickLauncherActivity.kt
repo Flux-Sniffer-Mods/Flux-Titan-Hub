@@ -47,6 +47,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
@@ -99,6 +101,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import it.palsoftware.pastiera.apps.builtInKindsFor
+import it.palsoftware.pastiera.apps.builtInTitle
 import it.palsoftware.pastiera.getEffectiveKeyboardTheme
 import it.palsoftware.pastiera.getKeyboardLayout
 import it.palsoftware.pastiera.getQuickLauncherAnimationDurationMs
@@ -108,6 +112,7 @@ import it.palsoftware.pastiera.getQuickLauncherFavoriteColor
 import it.palsoftware.pastiera.getQuickLauncherHighlightFavorites
 import it.palsoftware.pastiera.getQuickLauncherIconColors
 import it.palsoftware.pastiera.getQuickLauncherLimitResults
+import it.palsoftware.pastiera.getQuickLauncherListedAppsOff
 import it.palsoftware.pastiera.getQuickLauncherPillMode
 import it.palsoftware.pastiera.getQuickLauncherRespectKeyboardLayout
 import it.palsoftware.pastiera.getQuickLauncherShowAliasFirst
@@ -118,6 +123,7 @@ import it.palsoftware.pastiera.getQuickLauncherWidthPercent
 import it.palsoftware.pastiera.isCommandSourceEnabled
 import it.palsoftware.pastiera.isQuickLauncherShortcut
 import it.palsoftware.pastiera.setQuickLauncherCommandCustomization
+import it.palsoftware.pastiera.setQuickLauncherListedAppOff
 
 class QuickLauncherActivity : LocalizedComponentActivity() {
     private var commands: List<CommandTarget> = emptyList()
@@ -223,6 +229,8 @@ class QuickLauncherActivity : LocalizedComponentActivity() {
             }
         }
 
+        // Termux:Widget's scripts: asked for again, for the next time the launcher opens
+        it.palsoftware.pastiera.shortcuts.TermuxScripts.refresh(this)
         reloadCommandsFromRegistry()
     }
 
@@ -433,6 +441,12 @@ class QuickLauncherActivity : LocalizedComponentActivity() {
 
     private fun registerQuickLauncherPreferencesListener() {
         val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            // Flux Keyboard's own shortcuts turned on or off, or Termux's scripts listed again
+            if (key == "quick_launcher_listed_apps_off" || key == "quick_launcher_listed_app_shortcuts" ||
+                key == "quick_launcher_termux_scripts_found"
+            ) {
+                reloadCommandsFromRegistry()
+            }
             if (key == PREF_COMMAND_SURFACE_SOURCES) {
                 launchedAutomatically = false
                 commands = quickLauncherCommandsFromCachedApps()
@@ -1080,6 +1094,87 @@ private fun QuickLauncherEntryContextMenu(
                     )
                 },
                 onClick = { onMoveFavorite(1) }
+            )
+        }
+        // Add a shortcut: the home screen shortcuts this app offers (a contact's direct dial…)
+        val menuContext = LocalContext.current
+        val appPackage = (command.launch as? it.palsoftware.pastiera.commands.CommandLaunchSpec.AppPackage)?.packageName
+        // Flux Keyboard's own for this app first (call or message a contact, a website, a Termux
+        // task); the app's home screen variants only where Flux Keyboard has none
+        val builtInKinds = remember(appPackage, expanded) {
+            if (appPackage == null || !expanded) emptyList()
+            else it.palsoftware.pastiera.apps.builtInKindsFor(menuContext, appPackage)
+        }
+        builtInKinds.forEach { kind ->
+            DropdownMenuItem(
+                text = {
+                    Column {
+                        Text(stringResource(R.string.user_shortcuts_title))
+                        Text(
+                            stringResource(it.palsoftware.pastiera.apps.builtInTitle(kind)),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                },
+                leadingIcon = { Icon(imageVector = Icons.Filled.Add, contentDescription = null) },
+                onClick = {
+                    onDismiss()
+                    runCatching {
+                        menuContext.startActivity(
+                            android.content.Intent(menuContext, it.palsoftware.pastiera.UserShortcutsActivity::class.java)
+                                .putExtra(it.palsoftware.pastiera.UserShortcutsActivity.EXTRA_BUILT_IN, kind)
+                                .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                        )
+                    }
+                    (menuContext as? android.app.Activity)?.finish()
+                }
+            )
+        }
+        val shortcutProviders = remember(appPackage, expanded, builtInKinds) {
+            if (appPackage == null || !expanded || builtInKinds.isNotEmpty()) emptyList()
+            else it.palsoftware.pastiera.UserShortcutsActivity.providersOf(menuContext, appPackage)
+        }
+        // Flux Keyboard's New and Search for this app: on or off, app by app
+        val offersListed = remember(appPackage, expanded) {
+            appPackage != null && expanded &&
+                it.palsoftware.pastiera.commands.ListedAppCommandSource().offersShortcuts(menuContext, appPackage)
+        }
+        if (offersListed && appPackage != null) {
+            var listedOff by remember(appPackage) {
+                mutableStateOf(appPackage in SettingsManager.getQuickLauncherListedAppsOff(menuContext))
+            }
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.quick_launcher_listed_app_toggle)) },
+                trailingIcon = {
+                    androidx.compose.material3.Switch(checked = !listedOff, onCheckedChange = null)
+                },
+                onClick = {
+                    listedOff = !listedOff
+                    SettingsManager.setQuickLauncherListedAppOff(menuContext, appPackage, listedOff)
+                }
+            )
+        }
+        shortcutProviders.forEach { (component, label) ->
+            DropdownMenuItem(
+                text = {
+                    Column {
+                        Text(stringResource(R.string.user_shortcuts_title))
+                        Text(label, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                },
+                leadingIcon = { Icon(imageVector = Icons.Filled.Add, contentDescription = null) },
+                onClick = {
+                    onDismiss()
+                    runCatching {
+                        menuContext.startActivity(
+                            android.content.Intent(menuContext, it.palsoftware.pastiera.UserShortcutsActivity::class.java)
+                                .putExtra(it.palsoftware.pastiera.UserShortcutsActivity.EXTRA_PROVIDER, component.flattenToString())
+                                .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                        )
+                    }
+                    (menuContext as? android.app.Activity)?.finish()
+                }
             )
         }
         DropdownMenuItem(

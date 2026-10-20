@@ -17,7 +17,7 @@
     <string name="settings_trackpad_gestures_title">Trackpad &amp; gestures</string>
     <string name="settings_trackpad_gestures_description">Swipe on the keys to pick suggestions, delete and add words; the status bar swipe pad</string>
     <string name="settings_apps_title">Apps</string>
-    <string name="settings_apps_description">Enter per app, Quick Launcher, terminals and Linux desktop</string>
+    <string name="settings_apps_description">App shortcuts, Enter per app, Quick Launcher, terminals and Linux desktop</string>
 
     <string name="settings_keyboards_devices_description">Built-in, on-screen and accessory keyboards, and switching between them</string>
     <string name="settings_input_languages_description">Languages, their layouts and the keys that switch them</string>
