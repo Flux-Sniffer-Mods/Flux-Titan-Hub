@@ -70,6 +70,10 @@
     <string name="incognito_always_description">Learn nothing from anything you type: no new words, predictions, emails or numbers, and no recent emoji or symbols</string>
     <string name="incognito_follow_apps_title">Incognito when an app asks</string>
     <string name="incognito_follow_apps_description">Learn nothing in fields that ask keyboards not to, such as private browser tabs</string>
+    <string name="paste_suggestion_title">Suggest pasting what you copied</string>
+    <string name="paste_suggestion_description">For a minute after you copy text, a new text field offers it as a suggestion; typing dismisses it. Text marked sensitive (a password manager\'s) is only offered in password fields</string>
+    <string name="paste_in_password_fields_title">In password fields too</string>
+    <string name="paste_in_password_fields_description">A password field offers what you just copied, including from a password manager, as ⎘ •••••••• (never the text itself). It\'s kept in memory only, never in the clipboard history</string>
     <string name="emoji_suggestions_title">Emoji suggestions</string>
     <string name="emoji_suggestions_description">An emoji for the word you\'re typing, e.g. 🍕 for pizza. Picking it adds the emoji after the word.</string>
     <string name="alt_key_editor_intro">Make your own Device SYM layer: what each key types with SYM, and with Alt when Alt uses the Device SYM layer. A profile can replace a keyboard\'s own layer automatically, and Pastiera\'s backup includes it.</string>
@@ -109,7 +113,7 @@
     </plurals>
     <string name="clicks_all_key_mappings_ready_description">Your own Alt and SYM characters for every key, in a custom Device SYM profile. Ctrl shortcuts are under Key shortcuts.</string>
     <string name="alt_key_editor_no_profiles">No profiles yet. Start one above.</string>
-    <string name="settings_section_clipboard">Clipboard</string>
+    <string name="settings_section_clipboard">Clipboard &amp; codes</string>
     <string name="settings_section_editing">Editing and moving around</string>
     <string name="settings_nav_mode_hub_description">Arrow keys, selection and more from the letter keys, with Ctrl</string>
     <string name="settings_section_terminals">Terminals, code &amp; desktops</string>
@@ -118,6 +122,8 @@
     <string name="autocorrect_section_dictionary">Dictionary, learning and spelling</string>
     <string name="autocorrect_section_replacements">Text replacements</string>
     <string name="autocorrect_section_tuning">Fine-tuning</string>
+    <string name="inline_autofill_title">Autofill in the suggestion bar</string>
+    <string name="inline_autofill_description">Your password manager\'s saved logins, one-time codes and addresses appear as chips in the suggestion bar; tap one to fill the field.</string>
     <string name="led_colors_title">Status LED colours</string>
     <string name="led_colors_description">One colour for all LEDs from the theme, or a colour for each</string>
     <string name="led_colors_individual_title">Colour each LED</string>
@@ -226,6 +232,8 @@
     <string name="menu_bar_reset">Reset the menu bar</string>
     <string name="suggestions_bold_title">Bold suggestions</string>
     <string name="suggestions_bold_description">Suggestion bar words in bold, easier to spot at a glance</string>
+    <string name="clean_links_title">Clean copied links</string>
+    <string name="clean_links_description">Links you copy lose their tracking (utm_, fbclid, YouTube\'s si…) right on the clipboard, so they\'re clean wherever you paste them, and open the full site rather than the mobile one</string>
     <string name="suggestion_keys_title">Pick suggestions from the keyboard</string>
     <string name="suggestion_keys_ctrl_shift_qwe">Ctrl+Shift+Q, W or E: the left, middle or right suggestion</string>
     <string name="suggestion_keys_ctrl_digits">Ctrl+1, 2 or 3: the left, middle or right suggestion (number row)</string>
@@ -246,6 +254,7 @@
     <string name="root_note">These run through Shizuku, as the ADB shell. Pastiera only runs the commands each option needs.</string>
     <string name="shell_elsewhere_section">Elsewhere</string>
     <string name="shell_elsewhere_trackpad">Set to shell access, the trackpad\'s swipes are read straight from the keyboard.</string>
+    <string name="shell_elsewhere_otp">Shell access lets codes be read from notifications Android hides from apps (Android 15 and later).</string>
     <string name="shizuku_request_not_running">Shizuku isn\'t running yet. Start it in Shizuku (Start via Wireless debugging), then come back and try again.</string>
     <string name="shizuku_request_refused_before">Shizuku remembers Pastiera being refused, so it won\'t ask again. In Shizuku, open Authorized applications and switch on Pastiera.</string>
     <string name="shizuku_request_old">This Shizuku is too old to ask. Update it from Shizuku\'s GitHub page, then try again.</string>
@@ -287,7 +296,7 @@
     <string name="crash_log_cleared">Logs cleared</string>
     <string name="module_keyboard_title">Keyboard</string>
     <string name="settings_privacy_clipboard_title">Privacy &amp; clipboard</string>
-    <string name="settings_privacy_clipboard_description">Incognito and clipboard history</string>
+    <string name="settings_privacy_clipboard_description">Incognito, clipboard suggestions, one-time codes</string>
     <string name="settings_general_note">What every module shares. A module\'s own settings are on its page: tap its tile on the home screen.</string>
     <string name="shell_access_on">Running.</string>
     <string name="shell_access_off">Not running yet: tap to set up Shizuku.</string>

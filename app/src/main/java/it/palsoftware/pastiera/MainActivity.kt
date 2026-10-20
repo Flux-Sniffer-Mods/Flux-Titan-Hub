@@ -1159,6 +1159,10 @@ private fun buildKeyboardDebugReport(
             )
         }
         appendLine()
+        appendLine("[inline_autofill]")
+        val autofill = DebugCaptureStore.autofillSnapshot()
+        if (autofill.isEmpty()) appendLine("(none)")
+        autofill.forEach { (time, message) -> appendLine("${formatDebugTimestamp(time)} $message") }
         appendLine("candidates_view_backend=${SettingsManager.getExperimentalCandidatesViewEnabled(context)}")
         appendLine()
         appendLine("[keyboard_swipes_per_app]")

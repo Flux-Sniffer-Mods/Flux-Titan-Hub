@@ -1,6 +1,7 @@
 package it.palsoftware.pastiera.inputmethod
 
 import it.palsoftware.pastiera.legacy.LegacySettings
+import it.palsoftware.pastiera.clipboard.PasteSuggestion
 import it.palsoftware.pastiera.shortcuts.AppShortcutRemapper
 import it.palsoftware.pastiera.shortcuts.AppShortcutSettings
 import it.palsoftware.pastiera.shortcuts.KeyCombo
@@ -24,6 +25,7 @@ import it.palsoftware.pastiera.SoftwareKeyboardModeActions
 import android.inputmethodservice.InputMethodService
 import android.hardware.input.InputManager
 import android.os.Build
+import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
 import androidx.core.content.ContextCompat
@@ -150,6 +152,7 @@ import it.palsoftware.pastiera.getEmojiSymbolsActivationPolicy
 import it.palsoftware.pastiera.getEmojiSymbolsExactOnClose
 import it.palsoftware.pastiera.getEmojiSymbolsPresentation
 import it.palsoftware.pastiera.getHiddenAppStandardModifiers
+import it.palsoftware.pastiera.getInlineAutofillEnabled
 import it.palsoftware.pastiera.getKeyboardLayout
 import it.palsoftware.pastiera.getLauncherShortcut
 import it.palsoftware.pastiera.getLayoutAwareCtrlShortcutsEnabled
@@ -233,11 +236,14 @@ import it.palsoftware.pastiera.shouldApplyFrenchPunctuationSpacing
 class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibilityKeyBridge.Target {
 
     companion object {
+        /** Words in a field's hint, name or label that mark it as one for a one-time code. */
+        private val ONE_TIME_CODE_WORDS = Regex("code|otp|one.?time|verif|2fa|pin|token|passcode|sms|codice|código|kod|код|mã")
         /** A terminal swipe: a character per half a key's width, a line per key's height or so. */
         private const val TERMINAL_SWIPE_CHARACTER_KEYS = 1.0f
         private const val TERMINAL_SWIPE_LINE_KEYS = 1.6f
         /** Trackpad travel before a swipe moves the terminal cursor at all (of 1080 across). */
         private const val TERMINAL_SWIPE_DEAD_ZONE = 175f
+        private const val PASTE_SUGGESTION_WINDOW_MS = 60_000L
         private const val TAG = "PastieraInputMethod"
         private const val TRACKPAD_DEBUG_TAG = "TrackpadDebug"
         private const val NATIVE_TRACKPAD_MIN_SWIPE_VELOCITY_PX_PER_MS = 2f
@@ -825,7 +831,7 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
     }
 
     /**
-     * The bar's chips (emails and numbers) aren't part of the
+     * The bar's chips (autofill, one-time codes, paste, emails and numbers) aren't part of the
      * status the bar is redrawn for, so showing or clearing one forces the redraw.
      */
     private fun refreshBarChips() {
@@ -2052,6 +2058,11 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
     override fun onCreate() {
         super.onCreate()
         ClicksAccessibilityKeyBridge.register(this)
+        // A code arriving while typing is offered straight away
+        // A newer code replaces the chip too when the bar shows one already
+        it.palsoftware.pastiera.otp.OneTimeCodes.onNewCode = { if (isInputViewShown || isInputViewActive || pasteSuggestionShown) offerOneTimeCode() }
+        // One-time codes: Android 15 hides them from the listener unless allowed through the shell
+        it.palsoftware.pastiera.otp.OneTimeCodeListener.allowSensitive(this)
         EmojiCompatSupport.ensureLoaded(this)
         lastSystemLocalesSignature = resources.configuration.locales.toLanguageTags()
         prefs = getSharedPreferences("pastiera_prefs", Context.MODE_PRIVATE)
@@ -3353,6 +3364,7 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
     
     override fun onDestroy() {
         it.palsoftware.pastiera.inputmethod.extrakeys.ExtraKeysToggle.handler = null
+        it.palsoftware.pastiera.otp.OneTimeCodes.onNewCode = null
         HiddenAppKeyObserver.sink = null
         HiddenAppKeyObserver.interceptor = null
         HiddenAppKeyObserver.hiddenAppInFront = false
@@ -4460,6 +4472,10 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
         traceImeVisibility("onStartInputView restarting=$restarting")
         if (!restarting) holdBarInAutoFocusedSearch(info)
         if (!restarting) restoreAppLanguage(info)
+        // A new field: chips offered for the last one (a code, something to paste) go first
+        if (!restarting) clearPasteSuggestion()
+        if (!restarting) offerPasteSuggestion()
+        if (!restarting) offerOneTimeCode()
         // A new field: the last one's email or number chips go (emptied first, the refresh would
         // see nothing changed and leave them on the bar)
         if (!restarting) refreshContactSuggestions()
@@ -4549,6 +4565,7 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
                 QuickLauncherOpener.NiagaraReturn.decide()?.let(::returnToApp)
             }, QuickLauncherOpener.NiagaraReturn.DECIDE_AFTER_MS)
         }
+        clearInlineAutofill()
         symSticky = false
         emojiSticky = false
         pendingKeyboardSurfaceTransition?.let(uiHandler::removeCallbacks)
@@ -5087,6 +5104,13 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
         SettingsManager.setAppLanguage(this, pkg, SubtypeCycler.subtypeKey(subtype))
     }
 
+    // Paste suggestion: the chip offering what was just copied, while it is shown
+    private var pasteSuggestionShown = false
+    // A one-time code's pace: checked every step, a short settle after focus moves, at most a wait per character
+    private val OTP_STEP_MS = 30L
+    private val OTP_SETTLE_MS = 60L
+    private val OTP_WAIT_MS = 450L
+
     // Remember emails and phone numbers (ContactDetails): keys typed in this field, so only what
     // was typed by hand is kept, and the saved ones for this field's chips
     private var contactKeysTyped = 0
@@ -5152,7 +5176,7 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
     private fun refreshContactSuggestions() {
         if (!::candidatesBarController.isInitialized) return
         val kind = contactFieldKind()
-        val matches = if (kind == null || !contactDetailsAllowed()) {
+        val matches = if (kind == null || pasteSuggestionShown || !contactDetailsAllowed()) {
             emptyList()
         } else {
             val typed = runCatching { currentInputConnection?.getTextBeforeCursor(CONTACT_TEXT_LIMIT, 0) }
@@ -5182,6 +5206,190 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
             }
         }
         refreshBarChips()
+    }
+
+    /** In a new text field, offer text copied within the last minute as a chip to paste it. */
+    private fun offerPasteSuggestion() {
+        if (!::clipboardHistoryManager.isInitialized || !::candidatesBarController.isInitialized) return
+        if (!SettingsManager.getPasteSuggestionEnabled(this)) return
+        val state = inputContextState
+        if (!state.isReallyEditable || terminalModeActive || keyboardHiddenForApp) return
+        val passwordField = state.isPasswordField
+        if (passwordField && !SettingsManager.getPasteSuggestionInPasswordFields(this)) return
+        val copy = clipboardHistoryManager.recentCopy ?: return
+        if (System.currentTimeMillis() - copy.timestamp > PASTE_SUGGESTION_WINDOW_MS) return
+        // A password manager's copy only goes into password fields
+        if (copy.sensitive && !passwordField) return
+        // In a password field the chip never shows the text, and it's pasted exactly as copied
+        val label = if (passwordField) PasteSuggestion.MASKED_LABEL else PasteSuggestion.label(copy.text)
+        pasteSuggestionShown = true
+        candidatesBarController.showExpansionSuggestions(listOf(label)) { _ ->
+            clearPasteSuggestion()
+            val pasted = if (passwordField) copy.text else SettingsManager.textToPaste(this, copy.text)
+            // A copied code into a number field: typed one character at a time, so apps with a
+            // box per digit move along as it goes
+            if (inputContextState.isNumericField && looksLikeOneTimeCode(pasted)) typeOneTimeCode(pasted)
+            else currentInputConnection?.commitText(pasted, 1)
+            clipboardHistoryManager.consumeRecentCopy()
+            refreshBarChips()
+        }
+        refreshBarChips()
+    }
+
+    /** A one-time code from a notification, offered as a chip; one tap types it. */
+    private fun looksLikeOneTimeCode(text: CharSequence): Boolean =
+        text.length in 4..10 && text.all { it.isLetterOrDigit() }
+
+    /**
+     * A one-time code typed a character at a time, a moment apart, each into the field in focus
+     * then: one field takes the whole code; codes split over a box per digit (which move to the
+     * next box as each fills) fill every box. Digits go as key presses, which those boxes listen
+     * for; letters as text.
+     */
+    /**
+     * Types a code one character at a time, each once the last has landed: in a field of its
+     * own per digit, once the app has moved on to the next box (a fixed pace sent a digit to a
+     * box that was already full, and it was lost).
+     */
+    private fun typeOneTimeCode(code: CharSequence) {
+        val chars = code.toList()
+        var index = 0
+        fun sendNext() {
+            if (index >= chars.size) return
+            val ic = currentInputConnection ?: return
+            val field = currentInputEditorInfo?.fieldId
+            val char = chars[index++]
+            if (char in '0'..'9') {
+                val keyCode = KeyEvent.KEYCODE_0 + (char - '0')
+                val now = SystemClock.uptimeMillis()
+                ic.sendKeyEvent(KeyEvent(now, now, KeyEvent.ACTION_DOWN, keyCode, 0))
+                ic.sendKeyEvent(KeyEvent(now, now, KeyEvent.ACTION_UP, keyCode, 0))
+            } else {
+                ic.commitText(char.toString(), 1)
+            }
+            if (index >= chars.size) return
+            var waited = 0L
+            val check = object : Runnable {
+                override fun run() {
+                    waited += OTP_STEP_MS
+                    val now = currentInputConnection
+                    val moved = now !== ic || currentInputEditorInfo?.fieldId != field
+                    // A box holding one character is full: the next goes once focus moves on
+                    val text = runCatching {
+                        (now?.getTextBeforeCursor(16, 0)?.length ?: 0) + (now?.getTextAfterCursor(16, 0)?.length ?: 0)
+                    }.getOrDefault(0)
+                    val perDigitBox = !moved && text == 1
+                    when {
+                        moved -> uiHandler.postDelayed({ sendNext() }, OTP_SETTLE_MS)
+                        text > 0 && !perDigitBox -> uiHandler.postDelayed({ sendNext() }, OTP_STEP_MS)
+                        waited >= OTP_WAIT_MS -> sendNext()
+                        else -> uiHandler.postDelayed(this, OTP_STEP_MS)
+                    }
+                }
+            }
+            uiHandler.postDelayed(check, OTP_STEP_MS)
+        }
+        sendNext()
+    }
+
+    /** A field a one-time code goes in: a number field, or one whose hint or name says code. */
+    private fun oneTimeCodeField(): Boolean {
+        val info = currentInputEditorInfo ?: return false
+        val type = info.inputType
+        val cls = type and android.text.InputType.TYPE_MASK_CLASS
+        if (cls == android.text.InputType.TYPE_CLASS_NUMBER || cls == android.text.InputType.TYPE_CLASS_PHONE) return true
+        if (cls != android.text.InputType.TYPE_CLASS_TEXT) return false
+        val variation = type and android.text.InputType.TYPE_MASK_VARIATION
+        if (variation in setOf(
+                android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, android.text.InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS,
+                android.text.InputType.TYPE_TEXT_VARIATION_URI, android.text.InputType.TYPE_TEXT_VARIATION_PERSON_NAME,
+                android.text.InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS
+            )
+        ) return false
+        val words = (info.hintText?.toString().orEmpty() + " " + info.fieldName.orEmpty() + " " +
+            (info.label?.toString().orEmpty()) + " " + info.privateImeOptions.orEmpty()).lowercase()
+        return ONE_TIME_CODE_WORDS.containsMatchIn(words)
+    }
+
+    private fun offerOneTimeCode() {
+        if (!::candidatesBarController.isInitialized || !SettingsManager.getOneTimeCodesEnabled(this)) return
+        val state = inputContextState
+        if (!state.isReallyEditable || terminalModeActive || keyboardHiddenForApp) return
+        val code = it.palsoftware.pastiera.otp.OneTimeCodes.current() ?: return
+        // Only where a code goes: an email, name or message field isn't offered one
+        if (!oneTimeCodeField()) return
+        pasteSuggestionShown = true
+        candidatesBarController.showExpansionSuggestions(listOf(getString(R.string.one_time_code_chip, code))) { _ ->
+            clearPasteSuggestion()
+            // The newest code by then, if another arrived since the chip was shown
+            typeOneTimeCode(it.palsoftware.pastiera.otp.OneTimeCodes.current() ?: code)
+            it.palsoftware.pastiera.otp.OneTimeCodes.consume()
+            refreshBarChips()
+        }
+        refreshBarChips()
+    }
+
+    // Inline autofill (Android 11+): the password manager's chips in the suggestion bar
+    private var inlineAutofillGeneration = 0
+
+    @androidx.annotation.RequiresApi(android.os.Build.VERSION_CODES.R)
+    override fun onCreateInlineSuggestionsRequest(uiExtras: android.os.Bundle): android.view.inputmethod.InlineSuggestionsRequest? {
+        if (!SettingsManager.getInlineAutofillEnabled(this) || terminalModeActive || keyboardHiddenForApp) {
+            DebugCaptureStore.recordAutofill(
+                "request declined: setting=${SettingsManager.getInlineAutofillEnabled(this)} terminal=$terminalModeActive hidden=$keyboardHiddenForApp"
+            )
+            return null
+        }
+        DebugCaptureStore.recordAutofill("request made for ${currentInputEditorInfo?.packageName}")
+        val colours = if (::candidatesBarController.isInitialized) {
+            runCatching { candidatesBarController.suggestionChipColours() }.getOrNull()
+        } else null
+        return InlineAutofill.request(this, colours?.first, colours?.second, candidatesBarController.suggestionChipHeight())
+    }
+
+    @androidx.annotation.RequiresApi(android.os.Build.VERSION_CODES.R)
+    override fun onInlineSuggestionsResponse(response: android.view.inputmethod.InlineSuggestionsResponse): Boolean {
+        val suggestions = response.inlineSuggestions
+        DebugCaptureStore.recordAutofill(
+            "response: ${suggestions.size} chips" + suggestions.joinToString(prefix = " [", postfix = "]") { s ->
+                "${s.info.source}${if (s.info.isPinned) " pinned" else ""}"
+            } + " inputView=$isInputViewShown"
+        )
+        val generation = ++inlineAutofillGeneration
+        if (suggestions.isEmpty() || !::candidatesBarController.isInitialized) {
+            clearInlineAutofill()
+            return false
+        }
+        InlineAutofill.inflate(this, suggestions, candidatesBarController.suggestionChipHeight()) { views ->
+            // A newer response (another field) replaced this one while it was inflating
+            if (generation != inlineAutofillGeneration) {
+                DebugCaptureStore.recordAutofill("chips dropped: another field took over")
+                return@inflate
+            }
+            DebugCaptureStore.recordAutofill("inflated ${views.size} chips")
+            if (views.isEmpty()) {
+                clearInlineAutofill()
+            } else {
+                candidatesBarController.showInlineAutofill(views)
+            }
+            refreshBarChips()
+        }
+        return true
+    }
+
+    private fun clearInlineAutofill() {
+        inlineAutofillGeneration++
+        if (::candidatesBarController.isInitialized) {
+            candidatesBarController.clearInlineAutofill()
+            refreshBarChips()
+        }
+    }
+
+    private fun clearPasteSuggestion() {
+        if (!pasteSuggestionShown) return
+        pasteSuggestionShown = false
+        candidatesBarController.clearExpansionSuggestions()
+        invalidateRenderedStatusSnapshot()
     }
 
     // Terminal mode (Termux): see TerminalMode
@@ -5783,6 +5991,11 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
         val hasEditableField = initialInputConnection != null && inputType != EditorInfo.TYPE_NULL
         if (hasEditableField && !isInputViewActive) {
             isInputViewActive = true
+        }
+        if (pasteSuggestionShown && event?.repeatCount == 0 && !KeyEvent.isModifierKey(keyCode)) {
+            // Typing: the paste suggestion goes away (it is offered once per copy)
+            clearPasteSuggestion()
+            if (::clipboardHistoryManager.isInitialized) clipboardHistoryManager.consumeRecentCopy()
         }
         if (remapAppShortcut(keyCode_, event, hasEditableField)) {
             return true

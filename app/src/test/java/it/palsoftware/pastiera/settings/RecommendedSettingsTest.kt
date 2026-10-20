@@ -41,6 +41,7 @@ class RecommendedSettingsTest {
         assertTrue(SettingsManager.getShiftBackspaceDelete(context))
         // The whole configuration from Flux Keyboard's Titan 2 Elite, matters of taste included
         assertFalse(SettingsManager.getEmojiSuggestionsEnabled(context))
+        assertTrue(SettingsManager.getOneTimeCodesEnabled(context))
         // App lists aren't part of it: those stay at their defaults
         assertEquals(listOf("bitpit.launcher", "com.termux.x11"), SettingsManager.getHiddenKeyboardApps(context))
         assertEquals(SettingsManager.QUICK_LAUNCHER_BEHAVIOR_PASTIERA, SettingsManager.getQuickLauncherBehavior(context))

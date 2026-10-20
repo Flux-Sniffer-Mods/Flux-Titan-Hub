@@ -169,6 +169,9 @@
     <string name="layout_editor_exported">Розкладку експортовано</string>
     <string name="layout_editor_export_failed">Не вдалося експортувати розкладку</string>
     <string name="layout_editor_link">Змінити розкладку: торкніться її олівця</string>
+    <string name="one_time_codes_title">Одноразові коди</string>
+    <string name="one_time_codes_description">Пропонує код із SMS або листа у вигляді чипа в наступному текстовому полі. Потрібен доступ до сповіщень; зберігається лише код, у пам’яті, 3 хвилини.</string>
+    <string name="one_time_code_chip">Код %1$s</string>
     <string name="quick_launcher_app_shortcuts_title">Ярлики застосунків у результатах</string>
     <string name="quick_launcher_app_shortcuts_description">Власні ярлики застосунків, які показує їхній значок після довгого натискання («Нове повідомлення», «Сканувати QR-код»), — це результати, які можна відкрити одразу.</string>
     <string name="quick_launcher_niagara_back_title">«Назад» повертає до застосунку</string>
@@ -220,11 +223,15 @@
     <string name="recommended_label_emoji_key_opens_layer">Клавіша емодзі відкриває шар емодзі</string>
     <string name="recommended_label_emoji_suggestions_enabled">Підказки емодзі</string>
     <string name="recommended_label_keyboard_theme_wallpaper_colours">Кольори шпалер</string>
+    <string name="recommended_label_one_time_codes_enabled">Одноразові коди</string>
     <string name="recommended_label_quick_launcher_behavior">Швидкий запуск</string>
     <string name="recommended_label_search_bar_waits_for_typing">Панель клавіатури в рядках пошуку лише під час введення</string>
     <string name="recommended_label_titan2_elite_rounded_corner_insets">Заокруглені кути</string>
     <string name="restricted_settings_toast">Торкніться ⋮ угорі праворуч, потім «Дозволити обмежені налаштування». Якщо пункту немає, спершу спробуйте один раз увімкнути службу.</string>
     <string name="restricted_settings_accessibility">Вимкнено, і Android блокує це, доки ви не дозволите обмежені налаштування. Торкніться, щоб відкрити «Про застосунок», потім ⋮ › «Дозволити обмежені налаштування», і поверніться, щоб увімкнути.</string>
+    <string name="restricted_settings_notifications">Android блокує доступ до сповіщень, доки ви не дозволите обмежені налаштування. Торкніться, щоб відкрити «Про застосунок», потім ⋮ › «Дозволити обмежені налаштування», і поверніться.</string>
+    <string name="notification_access_title">Доступ до сповіщень</string>
+    <string name="notification_access_off">Вимкнено: він потрібен для одноразових кодів. Торкніться, щоб увімкнути.</string>
     <string name="restricted_settings_help_title">Дозволити обмежені налаштування</string>
     <string name="restricted_settings_help_steps">Android блокує доступ до спеціальних можливостей і сповіщень для застосунків, установлених із файлу, як-от Pastiera, доки ви один раз цього не дозволите:\n\n1. Торкніться «Відкрити дані про застосунок».\n2. Торкніться ⋮ угорі праворуч, потім «Дозволити обмежені налаштування», і підтвердьте PIN-кодом або відбитком.\n3. Немає цього пункту в ⋮? Поверніться, спробуйте один раз увімкнути функцію (Android повідомить, що це обмежене налаштування), і знову відкрийте дані про застосунок: пункт з’явиться.\n4. Поверніться до Pastiera і ввімкніть функцію.</string>
     <string name="restricted_settings_help_open">Відкрити дані про застосунок</string>
@@ -351,6 +358,10 @@
     <string name="incognito_always_description">Нічого не запам’ятовувати з набраного: ні нових слів, ні підказок, ні адрес пошти й номерів, ні нещодавніх емодзі й символів</string>
     <string name="incognito_follow_apps_title">Інкогніто на прохання застосунку</string>
     <string name="incognito_follow_apps_description">Нічого не вивчати в полях, які просять про це клавіатури, як-от приватні вкладки браузера</string>
+    <string name="paste_suggestion_title">Пропонувати вставити скопійоване</string>
+    <string name="paste_suggestion_description">Протягом хвилини після копіювання тексту нове текстове поле пропонує його як підказку; введення її прибирає. Текст, позначений як конфіденційний (з менеджера паролів), пропонується лише в полях паролів</string>
+    <string name="paste_in_password_fields_title">І в полях паролів</string>
+    <string name="paste_in_password_fields_description">Поле пароля пропонує щойно скопійоване, зокрема з менеджера паролів, як ⎘ •••••••• (ніколи сам текст). Зберігається лише в пам’яті, ніколи в історії буфера обміну</string>
     <string name="emoji_suggestions_title">Підказки емодзі</string>
     <string name="emoji_suggestions_description">Емодзі для слова, яке ви вводите, наприклад 🍕 для «піца». Вибір додає емодзі після слова.</string>
     <string name="alt_key_editor_intro">Створіть власний шар SYM пристрою: що вводить кожна клавіша із SYM, а також з Alt, коли Alt використовує шар SYM пристрою. Профіль може автоматично замінювати власний шар клавіатури, і він входить до резервної копії Pastiera.</string>
@@ -382,7 +393,7 @@
     <string name="alt_key_editor_summary_ready">Створіть власний шар SYM пристрою — порожній або на основі дібраного профілю.</string>
     <string name="clicks_all_key_mappings_ready_description">Ваші власні символи Alt і SYM для кожної клавіші у власному профілі SYM пристрою. Сполучення з Ctrl — у розділі «Сполучення клавіш».</string>
     <string name="alt_key_editor_no_profiles">Профілів ще немає. Створіть перший вище.</string>
-    <string name="settings_section_clipboard">Буфер обміну</string>
+    <string name="settings_section_clipboard">Буфер обміну й коди</string>
     <string name="settings_section_editing">Редагування й переміщення</string>
     <string name="settings_nav_mode_hub_description">Стрілки, виділення та інше з літерних клавіш, із Ctrl</string>
     <string name="settings_section_terminals">Термінали, код і робочі столи</string>
@@ -391,6 +402,8 @@
     <string name="autocorrect_section_dictionary">Словник, навчання і правопис</string>
     <string name="autocorrect_section_replacements">Заміни тексту</string>
     <string name="autocorrect_section_tuning">Тонке налаштування</string>
+    <string name="inline_autofill_title">Автозаповнення в рядку підказок</string>
+    <string name="inline_autofill_description">Збережені логіни, одноразові коди й адреси з менеджера паролів з’являються чипами в рядку підказок; торкніться чипа, щоб заповнити поле.</string>
     <string name="led_colors_title">Кольори індикаторів стану</string>
     <string name="led_colors_description">Один колір для всіх індикаторів із теми або свій колір для кожного</string>
     <string name="led_colors_individual_title">Свій колір для кожного індикатора</string>
@@ -482,6 +495,8 @@
     <string name="menu_bar_reset">Скинути панель меню</string>
     <string name="suggestions_bold_title">Жирні підказки</string>
     <string name="suggestions_bold_description">Слова в рядку підказок жирним шрифтом, їх легше помітити з першого погляду</string>
+    <string name="clean_links_title">Очищати скопійовані посилання</string>
+    <string name="clean_links_description">Скопійовані посилання втрачають відстеження (utm_, fbclid, si на YouTube…) просто в буфері обміну, тож чисті всюди, куди їх вставити, і відкривають повну версію сайту, а не мобільну</string>
     <string name="suggestion_keys_title">Вибір підказок із клавіатури</string>
     <string name="suggestion_keys_ctrl_shift_qwe">Ctrl+Shift+Q, W чи E: ліва, середня чи права підказка</string>
     <string name="suggestion_keys_ctrl_digits">Ctrl+1, 2 чи 3: ліва, середня чи права підказка (ряд цифр)</string>
@@ -1113,7 +1128,7 @@
     <string name="kw_main_keyboard_theme">тема, теми, кольори, темна, світла, система, готові, фізична клавіатура, екранна клавіатура, Classic Cloud, Classic Midnight</string>
     <string name="kw_main_app_language">мова, мова застосунку, локаль, переклад</string>
     <string name="kw_main_customization">налаштувати, налаштування, вигляд</string>
-    <string name="kw_main_advanced">конфіденційність, інкогніто, буфер обміну, додатково</string>
+    <string name="kw_main_advanced">конфіденційність, інкогніто, буфер обміну, вставлення, коди, додатково</string>
     <string name="kw_main_accessibility">спеціальні можливості, затримка, повторні натискання, клавіші, що перекриваються, програма читання з екрана</string>
     <string name="kw_main_about">про застосунок, версія, підтримка, ko-fi, пожертва</string>
     <string name="kw_text_input_auto_space_punctuation">пробіли, пробіл, пунктуація</string>
@@ -1460,6 +1475,7 @@
     <string name="sym_start_most_popular">Почати з найпопулярніших</string>
     <string name="shell_elsewhere_section">В інших розділах</string>
     <string name="shell_elsewhere_trackpad">З доступом до оболонки жести тачпада зчитуються прямо з клавіатури.</string>
+    <string name="shell_elsewhere_otp">Доступ до оболонки дає змогу читати коди зі сповіщень, які Android приховує від застосунків (Android 15 і новіші).</string>
     <string name="crash_log">Зберегти журнал збоїв</string>
     <string name="crash_log_description">Запис Android про останні збої Pastiera, збережений у Download/Pastiera/crash-log.txt, щоб поділитися.</string>
     <string name="crash_log_saved">Збережено в Download/Pastiera/crash-log.txt</string>
@@ -1470,7 +1486,7 @@
     <string name="crash_log_cleared">Журнали очищено</string>
     <string name="module_keyboard_title">Клавіатура</string>
     <string name="settings_privacy_clipboard_title">Конфіденційність і буфер обміну</string>
-    <string name="settings_privacy_clipboard_description">Інкогніто й історія буфера обміну</string>
+    <string name="settings_privacy_clipboard_description">Інкогніто, підказки з буфера обміну, одноразові коди</string>
     <string name="settings_general_note">Спільне для всіх модулів. Налаштування самого модуля — на його сторінці: натисніть його плитку на головному екрані.</string>
     <string name="shell_access_on">Запущено.</string>
     <string name="shell_access_off">Ще не запущено: натисніть, щоб налаштувати Shizuku.</string>

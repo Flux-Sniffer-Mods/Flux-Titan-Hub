@@ -44,6 +44,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import it.palsoftware.pastiera.R
 import androidx.compose.material3.Surface
+import it.palsoftware.pastiera.RestrictedSettings
 import it.palsoftware.pastiera.SettingsManager
 import it.palsoftware.pastiera.device.TrackpadGestureSettingsScreen
 import it.palsoftware.pastiera.getExperimentalCandidatesViewEnabled
@@ -67,6 +68,22 @@ fun AdvancedSettingsScreen(
     var clipboardRetentionTime by remember {
         mutableStateOf(SettingsManager.getClipboardRetentionTime(context).toString())
     }
+    var pasteSuggestion by remember { mutableStateOf(SettingsManager.getPasteSuggestionEnabled(context)) }
+    var pasteInPasswordFields by remember { mutableStateOf(SettingsManager.getPasteSuggestionInPasswordFields(context)) }
+    var oneTimeCodes by remember { mutableStateOf(SettingsManager.getOneTimeCodesEnabled(context)) }
+    // Notification access, re-read when coming back from Android's settings
+    var notificationAccess by remember { mutableStateOf(SettingsManager.hasNotificationAccess(context)) }
+    val accessLifecycle = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    androidx.compose.runtime.DisposableEffect(accessLifecycle) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                notificationAccess = SettingsManager.hasNotificationAccess(context)
+            }
+        }
+        accessLifecycle.lifecycle.addObserver(observer)
+        onDispose { accessLifecycle.lifecycle.removeObserver(observer) }
+    }
+    var cleanLinks by remember { mutableStateOf(SettingsManager.getCleanPastedLinks(context)) }
     var incognitoAlways by remember { mutableStateOf(SettingsManager.getIncognitoAlways(context)) }
     var incognitoFollowApps by remember { mutableStateOf(SettingsManager.getIncognitoFollowApps(context)) }
     var experimentalCandidatesViewEnabled by remember {
@@ -167,6 +184,64 @@ fun AdvancedSettingsScreen(
                     }
 
                     SettingsSectionDivider(stringResource(R.string.settings_section_clipboard))
+                    FluxSwitchRow(
+                        linkId = SettingLinkIds.PRIVACY_PASTE_SUGGESTION,
+                        title = stringResource(R.string.paste_suggestion_title),
+                        description = stringResource(R.string.paste_suggestion_description),
+                        checked = pasteSuggestion,
+                        onCheckedChange = {
+                            pasteSuggestion = it
+                            SettingsManager.setPasteSuggestionEnabled(context, it)
+                        }
+                    )
+                    if (pasteSuggestion) {
+                        FluxSwitchRow(
+                            linkId = SettingLinkIds.PRIVACY_PASTE_IN_PASSWORD_FIELDS,
+                            title = stringResource(R.string.paste_in_password_fields_title),
+                            description = stringResource(R.string.paste_in_password_fields_description),
+                            checked = pasteInPasswordFields,
+                            onCheckedChange = {
+                                pasteInPasswordFields = it
+                                SettingsManager.setPasteSuggestionInPasswordFields(context, it)
+                            }
+                        )
+                    }
+                    FluxSwitchRow(
+                        linkId = SettingLinkIds.PRIVACY_CLEAN_LINKS,
+                        title = stringResource(R.string.clean_links_title),
+                        description = stringResource(R.string.clean_links_description),
+                        checked = cleanLinks,
+                        onCheckedChange = {
+                            cleanLinks = it
+                            SettingsManager.setCleanPastedLinks(context, it)
+                        }
+                    )
+                    FluxSwitchRow(
+                        linkId = SettingLinkIds.PRIVACY_ONE_TIME_CODES,
+                        title = stringResource(R.string.one_time_codes_title),
+                        description = stringResource(R.string.one_time_codes_description),
+                        checked = oneTimeCodes,
+                        onCheckedChange = {
+                            oneTimeCodes = it
+                            SettingsManager.setOneTimeCodesEnabled(context, it)
+                            // Android's own switch lets the app read notifications
+                            if (it && !SettingsManager.hasNotificationAccess(context)) {
+                                RestrictedSettings.openNotificationAccess(context)
+                            }
+                        }
+                    )
+                    if (oneTimeCodes && !notificationAccess) {
+                        FluxActionRow(
+                            linkId = null,
+                            title = stringResource(R.string.notification_access_title),
+                            description = stringResource(
+                                if (RestrictedSettings.blocked(context)) R.string.restricted_settings_notifications
+                                else R.string.notification_access_off
+                            ),
+                            onClick = { RestrictedSettings.openNotificationAccess(context) }
+                        )
+                    }
+
                     // Clipboard Retention Time
                     Surface(
                         modifier = Modifier

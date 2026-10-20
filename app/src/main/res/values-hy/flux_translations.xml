@@ -169,6 +169,9 @@
     <string name="layout_editor_exported">Դասավորությունն արտահանվեց</string>
     <string name="layout_editor_export_failed">Չհաջողվեց արտահանել դասավորությունը</string>
     <string name="layout_editor_link">Խմբագրել դասավորությունը․ հպեք դրա մատիտին</string>
+    <string name="one_time_codes_title">Միանգամյա կոդեր</string>
+    <string name="one_time_codes_description">SMS-ից կամ էլ. նամակից կոդն առաջարկում է որպես չիպ հաջորդ տեքստային դաշտում։ Պահանջում է ծանուցումների հասանելիություն․ պահվում է միայն կոդը, հիշողության մեջ, 3 րոպե։</string>
+    <string name="one_time_code_chip">Կոդ %1$s</string>
     <string name="quick_launcher_app_shortcuts_title">Հավելվածների դյուրանցումներն արդյունքներում</string>
     <string name="quick_launcher_app_shortcuts_description">Հավելվածների սեփական դյուրանցումները, որոնք ցույց է տալիս դրանց պատկերակը երկար սեղմելիս («Նոր հաղորդագրություն», «Սկանավորել QR կոդ»), արդյունքներ են, որոնք կարող եք բացել անմիջապես։</string>
     <string name="quick_launcher_niagara_back_title">«Հետ»-ը վերադարձնում է հավելված</string>
@@ -220,11 +223,15 @@
     <string name="recommended_label_emoji_key_opens_layer">Էմոջիի ստեղնը բացում է էմոջիի շերտը</string>
     <string name="recommended_label_emoji_suggestions_enabled">Էմոջիի առաջարկներ</string>
     <string name="recommended_label_keyboard_theme_wallpaper_colours">Պաստառի գույներ</string>
+    <string name="recommended_label_one_time_codes_enabled">Միանգամյա կոդեր</string>
     <string name="recommended_label_quick_launcher_behavior">Արագ գործարկիչ</string>
     <string name="recommended_label_search_bar_waits_for_typing">Ստեղնաշարի գոտին որոնման դաշտերում միայն մուտքագրելիս</string>
     <string name="recommended_label_titan2_elite_rounded_corner_insets">Կլորացված անկյուններ</string>
     <string name="restricted_settings_toast">Հպեք ⋮ վերևի աջ անկյունում, ապա Թույլատրել սահմանափակված կարգավորումները։ Եթե այն չի երևում, նախ փորձեք մեկ անգամ միացնել ծառայությունը։</string>
     <string name="restricted_settings_accessibility">Անջատված է, և Android-ն արգելափակում է այն, մինչև թույլ տաք սահմանափակված կարգավորումները։ Հպեք՝ բացելու Հավելվածի մասին, ապա ⋮ › Թույլատրել սահմանափակված կարգավորումները, և վերադարձեք՝ միացնելու համար։</string>
+    <string name="restricted_settings_notifications">Android-ն արգելափակում է ծանուցումների հասանելիությունը, մինչև թույլ տաք սահմանափակված կարգավորումները։ Հպեք՝ բացելու Հավելվածի մասին, ապա ⋮ › Թույլատրել սահմանափակված կարգավորումները, և վերադարձեք։</string>
+    <string name="notification_access_title">Ծանուցումների հասանելիություն</string>
+    <string name="notification_access_off">Անջատված է․ այն անհրաժեշտ է միանգամյա կոդերի համար։ Հպեք՝ միացնելու համար։</string>
     <string name="restricted_settings_help_title">Թույլատրել սահմանափակված կարգավորումները</string>
     <string name="restricted_settings_help_steps">Android-ն արգելափակում է հատուկ գործառույթների և ծանուցումների հասանելիությունը ֆայլից տեղադրված հավելվածների համար, ինչպիսին է Pastiera-ը, մինչև մեկ անգամ թույլ տաք․\n\n1. Հպեք Բացել հավելվածի տվյալները։\n2. Հպեք ⋮ վերևի աջ անկյունում, ապա Թույլատրել սահմանափակված կարգավորումները, և հաստատեք PIN-ով կամ մատնահետքով։\n3. ⋮-ում այդ կետը չկա՞։ Վերադարձեք, մեկ անգամ փորձեք միացնել գործառույթը (Android-ը կասի, որ դա սահմանափակված կարգավորում է), և նորից բացեք հավելվածի տվյալները․ կետը կհայտնվի։\n4. Վերադարձեք Pastiera և միացրեք գործառույթը։</string>
     <string name="restricted_settings_help_open">Բացել հավելվածի տվյալները</string>
@@ -351,6 +358,10 @@
     <string name="incognito_always_description">Ոչինչ չսովորել մուտքագրածից՝ ոչ նոր բառեր, ոչ կանխատեսումներ, ոչ էլ. հասցեներ կամ համարներ, ոչ վերջին էմոջիներ կամ նշաններ</string>
     <string name="incognito_follow_apps_title">Ինկոգնիտո, երբ հավելվածը խնդրում է</string>
     <string name="incognito_follow_apps_description">Ոչինչ չսովորել այն դաշտերում, որոնք դա խնդրում են ստեղնաշարերից, օրինակ՝ դիտարկիչի գաղտնի ներդիրներում</string>
+    <string name="paste_suggestion_title">Առաջարկել տեղադրել պատճենվածը</string>
+    <string name="paste_suggestion_description">Տեքստը պատճենելուց հետո մեկ րոպե նոր տեքստային դաշտն այն առաջարկում է որպես առաջարկ․ մուտքագրելը հեռացնում է այն։ Զգայուն նշված տեքստը (գաղտնաբառերի կառավարչից) առաջարկվում է միայն գաղտնաբառի դաշտերում</string>
+    <string name="paste_in_password_fields_title">Նաև գաղտնաբառի դաշտերում</string>
+    <string name="paste_in_password_fields_description">Գաղտնաբառի դաշտն առաջարկում է հենց նոր պատճենվածը, այդ թվում գաղտնաբառերի կառավարչից, որպես ⎘ •••••••• (երբեք ինքը տեքստը)։ Պահվում է միայն հիշողության մեջ, երբեք սեղմատախտակի պատմության մեջ</string>
     <string name="emoji_suggestions_title">Էմոջիի առաջարկներ</string>
     <string name="emoji_suggestions_description">Էմոջի ձեր մուտքագրած բառի համար, օր.՝ 🍕 պիցցայի համար։ Ընտրելիս էմոջին ավելացվում է բառից հետո։</string>
     <string name="alt_key_editor_intro">Ստեղծեք ձեր սեփական սարքի SYM շերտը․ ինչ է մուտքագրում յուրաքանչյուր ստեղն SYM-ով, և Alt-ով, երբ Alt-ն օգտագործում է սարքի SYM շերտը։ Պրոֆիլը կարող է ինքնաշխատ փոխարինել ստեղնաշարի սեփական շերտը, և Pastiera-ի պահուստը ներառում է այն։</string>
@@ -382,7 +393,7 @@
     <string name="alt_key_editor_summary_ready">Ստեղծեք ձեր սեփական սարքի SYM շերտը՝ դատարկ կամ ընտրված պրոֆիլից։</string>
     <string name="clicks_all_key_mappings_ready_description">Ձեր սեփական Alt և SYM նիշերը յուրաքանչյուր ստեղնի համար՝ սարքի SYM անհատական պրոֆիլում։ Ctrl դյուրանցումները Ստեղնային դյուրանցումներ բաժնում են։</string>
     <string name="alt_key_editor_no_profiles">Դեռ պրոֆիլներ չկան։ Սկսեք մեկը վերևում։</string>
-    <string name="settings_section_clipboard">Սեղմատախտակ</string>
+    <string name="settings_section_clipboard">Սեղմատախտակ և կոդեր</string>
     <string name="settings_section_editing">Խմբագրում և տեղաշարժ</string>
     <string name="settings_nav_mode_hub_description">Սլաքներ, ընտրություն և ավելին տառային ստեղներից՝ Ctrl-ով</string>
     <string name="settings_section_terminals">Տերմինալներ, կոդ և աշխատասեղաններ</string>
@@ -391,6 +402,8 @@
     <string name="autocorrect_section_dictionary">Բառարան, ուսուցում և ուղղագրություն</string>
     <string name="autocorrect_section_replacements">Տեքստի փոխարինումներ</string>
     <string name="autocorrect_section_tuning">Նուրբ կարգավորում</string>
+    <string name="inline_autofill_title">Ինքնալրացում առաջարկների գոտում</string>
+    <string name="inline_autofill_description">Ձեր գաղտնաբառերի կառավարչի պահված մուտքերը, միանգամյա կոդերը և հասցեները հայտնվում են որպես չիպեր առաջարկների գոտում․ հպեք մեկին՝ դաշտը լրացնելու համար։</string>
     <string name="led_colors_title">Կարգավիճակի LED-ների գույներ</string>
     <string name="led_colors_description">Մեկ գույն բոլոր LED-ների համար թեմայից, կամ յուրաքանչյուրին իր գույնը</string>
     <string name="led_colors_individual_title">Գունավորել յուրաքանչյուր LED</string>
@@ -482,6 +495,8 @@
     <string name="menu_bar_reset">Վերակայել ընտրացանկի գոտին</string>
     <string name="suggestions_bold_title">Թավ առաջարկներ</string>
     <string name="suggestions_bold_description">Առաջարկների գոտու բառերը թավ, մեկ հայացքով ավելի հեշտ նկատելի</string>
+    <string name="clean_links_title">Մաքրել պատճենված հղումները</string>
+    <string name="clean_links_description">Ձեր պատճենած հղումները կորցնում են հետագծումը (utm_, fbclid, YouTube-ի si…) անմիջապես սեղմատախտակում, ուստի մաքուր են՝ որտեղ էլ տեղադրեք, և բացում են ամբողջական կայքը՝ ոչ բջջայինը</string>
     <string name="suggestion_keys_title">Ընտրել առաջարկները ստեղնաշարից</string>
     <string name="suggestion_keys_ctrl_shift_qwe">Ctrl+Shift+Q, W կամ E․ ձախ, միջին կամ աջ առաջարկը</string>
     <string name="suggestion_keys_ctrl_digits">Ctrl+1, 2 կամ 3․ ձախ, միջին կամ աջ առաջարկը (թվերի շարք)</string>
@@ -1113,7 +1128,7 @@
     <string name="kw_main_keyboard_theme">թեմա, թեմաներ, գույներ, մուգ, լուսավոր, համակարգ, պատրաստի, ֆիզիկական ստեղնաշար, էկրանային ստեղնաշար, Classic Cloud, Classic Midnight</string>
     <string name="kw_main_app_language">լեզու, հավելվածի լեզու, տարածաշրջան, թարգմանություն</string>
     <string name="kw_main_customization">հարմարեցնել, հարմարեցում, տեսք</string>
-    <string name="kw_main_advanced">գաղտնիություն, ինկոգնիտո, սեղմատախտակ, ընդլայնված</string>
+    <string name="kw_main_advanced">գաղտնիություն, ինկոգնիտո, սեղմատախտակ, տեղադրել, կոդեր, ընդլայնված</string>
     <string name="kw_main_accessibility">հատուկ գործառույթներ, ուշացում, կրկնվող սեղմումներ, համընկնող ստեղներ, էկրանի ընթերցիչ</string>
     <string name="kw_main_about">տեղեկություններ, տարբերակ, աջակցություն, ko-fi, նվիրատվություն</string>
     <string name="kw_text_input_auto_space_punctuation">բացատներ, բացատ, կետադրություն</string>
@@ -1448,6 +1463,7 @@
     <string name="sym_start_most_popular">Սկսել ամենահայտնիներից</string>
     <string name="shell_elsewhere_section">Այլ տեղերում</string>
     <string name="shell_elsewhere_trackpad">Shell մուտքի դեպքում թաչփադի սահեցումները կարդացվում են անմիջապես ստեղնաշարից։</string>
+    <string name="shell_elsewhere_otp">Shell մուտքը թույլ է տալիս կոդեր կարդալ ծանուցումներից, որոնք Android-ը թաքցնում է հավելվածներից (Android 15 և ավելի նոր)։</string>
     <string name="crash_log">Պահել խափանումների մատյանը</string>
     <string name="crash_log_description">Android-ի գրառումը Pastiera-ի վերջին խափանումների մասին՝ պահված Download/Pastiera/crash-log.txt-ում՝ կիսվելու համար։</string>
     <string name="crash_log_saved">Պահված է Download/Pastiera/crash-log.txt-ում</string>
@@ -1458,7 +1474,7 @@
     <string name="crash_log_cleared">Մատյանները մաքրված են</string>
     <string name="module_keyboard_title">Ստեղնաշար</string>
     <string name="settings_privacy_clipboard_title">Գաղտնիություն և սեղմատախտակ</string>
-    <string name="settings_privacy_clipboard_description">Ինկոգնիտո և սեղմատախտակի պատմություն</string>
+    <string name="settings_privacy_clipboard_description">Ինկոգնիտո, սեղմատախտակի առաջարկներ, միանգամյա կոդեր</string>
     <string name="settings_general_note">Այն, ինչ ընդհանուր է բոլոր մոդուլների համար։ Մոդուլի սեփական կարգավորումները նրա էջում են․ հպեք նրա սալիկին գլխավոր էկրանին։</string>
     <string name="shell_access_on">Աշխատում է։</string>
     <string name="shell_access_off">Դեռ չի աշխատում․ հպեք՝ Shizuku-ն կարգավորելու համար։</string>

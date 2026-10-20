@@ -34,6 +34,7 @@ object RecommendedSettings {
         "learn_frequent_words" to true,
         "led_individual_colors" to true,
         "led_locked_animation" to true,
+        "one_time_codes_enabled" to true,
         "quick_launcher_behavior" to "pastiera",
         "quick_launcher_pill_mode" to true,
         "search_bar_waits_for_typing" to true,

@@ -169,6 +169,9 @@
     <string name="layout_editor_exported">Η διάταξη εξήχθη</string>
     <string name="layout_editor_export_failed">Δεν ήταν δυνατή η εξαγωγή της διάταξης</string>
     <string name="layout_editor_link">Επεξεργασία διάταξης: πατήστε το μολύβι της</string>
+    <string name="one_time_codes_title">Κωδικοί μίας χρήσης</string>
+    <string name="one_time_codes_description">Προτείνει έναν κωδικό από SMS ή email ως chip στο επόμενο πεδίο κειμένου. Χρειάζεται πρόσβαση στις ειδοποιήσεις· κρατιέται μόνο ο κωδικός, στη μνήμη, για 3 λεπτά.</string>
+    <string name="one_time_code_chip">Κωδικός %1$s</string>
     <string name="quick_launcher_app_shortcuts_title">Συντομεύσεις εφαρμογών στα αποτελέσματα</string>
     <string name="quick_launcher_app_shortcuts_description">Οι δικές συντομεύσεις των εφαρμογών, αυτές που δείχνει το εικονίδιό τους με παρατεταμένο πάτημα («Νέο μήνυμα», «Σάρωση κωδικού QR»), είναι αποτελέσματα που μπορείτε να ανοίξετε απευθείας.</string>
     <string name="quick_launcher_niagara_back_title">Το Πίσω επιστρέφει στην εφαρμογή</string>
@@ -220,11 +223,15 @@
     <string name="recommended_label_emoji_key_opens_layer">Το πλήκτρο emoji ανοίγει το επίπεδο emoji</string>
     <string name="recommended_label_emoji_suggestions_enabled">Προτάσεις emoji</string>
     <string name="recommended_label_keyboard_theme_wallpaper_colours">Χρώματα ταπετσαρίας</string>
+    <string name="recommended_label_one_time_codes_enabled">Κωδικοί μίας χρήσης</string>
     <string name="recommended_label_quick_launcher_behavior">Γρήγορος εκκινητής</string>
     <string name="recommended_label_search_bar_waits_for_typing">Γραμμή πληκτρολογίου σε αναζητήσεις μόνο όταν πληκτρολογείτε</string>
     <string name="recommended_label_titan2_elite_rounded_corner_insets">Στρογγυλεμένες γωνίες</string>
     <string name="restricted_settings_toast">Πατήστε ⋮ πάνω δεξιά και μετά Να επιτρέπονται οι ρυθμίσεις περιορισμένης πρόσβασης. Αν δεν εμφανίζεται, δοκιμάστε πρώτα να ενεργοποιήσετε την υπηρεσία μία φορά.</string>
     <string name="restricted_settings_accessibility">Ανενεργό, και το Android το μπλοκάρει μέχρι να επιτρέψετε τις ρυθμίσεις περιορισμένης πρόσβασης. Πατήστε για να ανοίξετε τις Πληροφορίες εφαρμογής, μετά ⋮ › Να επιτρέπονται οι ρυθμίσεις περιορισμένης πρόσβασης, και επιστρέψτε για να το ενεργοποιήσετε.</string>
+    <string name="restricted_settings_notifications">Το Android μπλοκάρει την πρόσβαση στις ειδοποιήσεις μέχρι να επιτρέψετε τις ρυθμίσεις περιορισμένης πρόσβασης. Πατήστε για να ανοίξετε τις Πληροφορίες εφαρμογής, μετά ⋮ › Να επιτρέπονται οι ρυθμίσεις περιορισμένης πρόσβασης, και επιστρέψτε.</string>
+    <string name="notification_access_title">Πρόσβαση στις ειδοποιήσεις</string>
+    <string name="notification_access_off">Ανενεργή: τη χρειάζονται οι κωδικοί μίας χρήσης. Πατήστε για ενεργοποίηση.</string>
     <string name="restricted_settings_help_title">Να επιτρέπονται οι ρυθμίσεις περιορισμένης πρόσβασης</string>
     <string name="restricted_settings_help_steps">Το Android μπλοκάρει την πρόσβαση προσβασιμότητας και ειδοποιήσεων για εφαρμογές που εγκαταστάθηκαν από αρχείο, όπως το Pastiera, μέχρι να το επιτρέψετε μία φορά:\n\n1. Πατήστε Άνοιγμα πληροφοριών εφαρμογής.\n2. Πατήστε ⋮ πάνω δεξιά, μετά Να επιτρέπονται οι ρυθμίσεις περιορισμένης πρόσβασης, και επιβεβαιώστε με PIN ή δακτυλικό αποτύπωμα.\n3. Δεν υπάρχει αυτή η επιλογή στο ⋮; Επιστρέψτε, δοκιμάστε μία φορά να ενεργοποιήσετε τη λειτουργία (το Android θα πει ότι είναι ρύθμιση περιορισμένης πρόσβασης) και ξαναγυρίστε στις Πληροφορίες εφαρμογής: θα εμφανιστεί τότε.\n4. Επιστρέψτε στο Pastiera και ενεργοποιήστε τη λειτουργία.</string>
     <string name="restricted_settings_help_open">Άνοιγμα πληροφοριών εφαρμογής</string>
@@ -351,6 +358,10 @@
     <string name="incognito_always_description">Καμία εκμάθηση από ό,τι πληκτρολογείτε: ούτε νέες λέξεις, προβλέψεις, email ή αριθμοί, ούτε πρόσφατα emoji ή σύμβολα</string>
     <string name="incognito_follow_apps_title">Ανώνυμα όταν το ζητά μια εφαρμογή</string>
     <string name="incognito_follow_apps_description">Καμία εκμάθηση σε πεδία που το ζητούν από τα πληκτρολόγια, όπως ιδιωτικές καρτέλες προγράμματος περιήγησης</string>
+    <string name="paste_suggestion_title">Πρόταση επικόλλησης όσων αντιγράψατε</string>
+    <string name="paste_suggestion_description">Για ένα λεπτό μετά την αντιγραφή κειμένου, ένα νέο πεδίο κειμένου το προσφέρει ως πρόταση· η πληκτρολόγηση την απορρίπτει. Κείμενο που έχει σημανθεί ως ευαίσθητο (από διαχειριστή κωδικών) προσφέρεται μόνο σε πεδία κωδικών</string>
+    <string name="paste_in_password_fields_title">Και σε πεδία κωδικών</string>
+    <string name="paste_in_password_fields_description">Ένα πεδίο κωδικού προσφέρει ό,τι μόλις αντιγράψατε, ακόμα και από διαχειριστή κωδικών, ως ⎘ •••••••• (ποτέ το ίδιο το κείμενο). Κρατιέται μόνο στη μνήμη, ποτέ στο ιστορικό προχείρου</string>
     <string name="emoji_suggestions_title">Προτάσεις emoji</string>
     <string name="emoji_suggestions_description">Ένα emoji για τη λέξη που πληκτρολογείτε, π.χ. 🍕 για πίτσα. Η επιλογή του προσθέτει το emoji μετά τη λέξη.</string>
     <string name="alt_key_editor_intro">Φτιάξτε το δικό σας επίπεδο SYM συσκευής: τι πληκτρολογεί κάθε πλήκτρο με SYM, και με Alt όταν το Alt χρησιμοποιεί το επίπεδο SYM συσκευής. Ένα προφίλ μπορεί να αντικαταστήσει αυτόματα το επίπεδο ενός πληκτρολογίου, και το αντίγραφο ασφαλείας του Pastiera το περιλαμβάνει.</string>
@@ -382,7 +393,7 @@
     <string name="alt_key_editor_summary_ready">Φτιάξτε το δικό σας επίπεδο SYM συσκευής, κενό ή από ένα επιμελημένο προφίλ.</string>
     <string name="clicks_all_key_mappings_ready_description">Οι δικοί σας χαρακτήρες Alt και SYM για κάθε πλήκτρο, σε προσαρμοσμένο προφίλ SYM συσκευής. Οι συντομεύσεις Ctrl βρίσκονται στις Συντομεύσεις πλήκτρων.</string>
     <string name="alt_key_editor_no_profiles">Δεν υπάρχουν ακόμα προφίλ. Ξεκινήστε ένα παραπάνω.</string>
-    <string name="settings_section_clipboard">Πρόχειρο</string>
+    <string name="settings_section_clipboard">Πρόχειρο &amp; κωδικοί</string>
     <string name="settings_section_editing">Επεξεργασία και μετακίνηση</string>
     <string name="settings_nav_mode_hub_description">Βέλη, επιλογή και άλλα από τα πλήκτρα γραμμάτων, με Ctrl</string>
     <string name="settings_section_terminals">Τερματικά, κώδικας &amp; επιφάνειες εργασίας</string>
@@ -391,6 +402,8 @@
     <string name="autocorrect_section_dictionary">Λεξικό, εκμάθηση και ορθογραφία</string>
     <string name="autocorrect_section_replacements">Αντικαταστάσεις κειμένου</string>
     <string name="autocorrect_section_tuning">Λεπτομερής ρύθμιση</string>
+    <string name="inline_autofill_title">Αυτόματη συμπλήρωση στη γραμμή προτάσεων</string>
+    <string name="inline_autofill_description">Οι αποθηκευμένες συνδέσεις, οι κωδικοί μίας χρήσης και οι διευθύνσεις του διαχειριστή κωδικών σας εμφανίζονται ως chip στη γραμμή προτάσεων· πατήστε ένα για να συμπληρωθεί το πεδίο.</string>
     <string name="led_colors_title">Χρώματα LED κατάστασης</string>
     <string name="led_colors_description">Ένα χρώμα για όλα τα LED από το θέμα, ή ένα χρώμα για το καθένα</string>
     <string name="led_colors_individual_title">Χρώμα για κάθε LED</string>
@@ -482,6 +495,8 @@
     <string name="menu_bar_reset">Επαναφορά γραμμής μενού</string>
     <string name="suggestions_bold_title">Έντονες προτάσεις</string>
     <string name="suggestions_bold_description">Οι λέξεις της γραμμής προτάσεων σε έντονα, πιο εύκολα ορατές με μια ματιά</string>
+    <string name="clean_links_title">Καθαρισμός αντιγραμμένων συνδέσμων</string>
+    <string name="clean_links_description">Οι σύνδεσμοι που αντιγράφετε χάνουν την παρακολούθηση (utm_, fbclid, το si του YouTube…) μέσα στο πρόχειρο, ώστε να είναι καθαροί όπου κι αν τους επικολλήσετε, και ανοίγουν τον πλήρη ιστότοπο αντί για τον mobile</string>
     <string name="suggestion_keys_title">Επιλογή προτάσεων από το πληκτρολόγιο</string>
     <string name="suggestion_keys_ctrl_shift_qwe">Ctrl+Shift+Q, W ή E: η αριστερή, μεσαία ή δεξιά πρόταση</string>
     <string name="suggestion_keys_ctrl_digits">Ctrl+1, 2 ή 3: η αριστερή, μεσαία ή δεξιά πρόταση (σειρά αριθμών)</string>
@@ -826,6 +841,7 @@
     <string name="sym_start_most_popular">Έναρξη από τα πιο δημοφιλή</string>
     <string name="shell_elsewhere_section">Αλλού</string>
     <string name="shell_elsewhere_trackpad">Με ρύθμιση σε πρόσβαση shell, οι κινήσεις του trackpad διαβάζονται απευθείας από το πληκτρολόγιο.</string>
+    <string name="shell_elsewhere_otp">Η πρόσβαση shell επιτρέπει την ανάγνωση κωδικών από ειδοποιήσεις που το Android κρύβει από τις εφαρμογές (Android 15 και νεότερα).</string>
     <string name="crash_log">Αποθήκευση αρχείου σφαλμάτων</string>
     <string name="crash_log_description">Η καταγραφή του Android για τα τελευταία σφάλματα του Pastiera, αποθηκευμένη στο Download/Pastiera/crash-log.txt για κοινοποίηση.</string>
     <string name="crash_log_saved">Αποθηκεύτηκε στο Download/Pastiera/crash-log.txt</string>
@@ -838,7 +854,7 @@
     <string name="crash_log_cleared">Τα αρχεία καταγραφής εκκαθαρίστηκαν</string>
     <string name="module_keyboard_title">Πληκτρολόγιο</string>
     <string name="settings_privacy_clipboard_title">Απόρρητο &amp; πρόχειρο</string>
-    <string name="settings_privacy_clipboard_description">Ανώνυμη πληκτρολόγηση και ιστορικό προχείρου</string>
+    <string name="settings_privacy_clipboard_description">Ανώνυμη πληκτρολόγηση, προτάσεις από το πρόχειρο, κωδικοί μίας χρήσης</string>
     <string name="settings_general_note">Ό,τι μοιράζονται όλες οι ενότητες. Οι ρυθμίσεις κάθε ενότητας βρίσκονται στη σελίδα της: πατήστε το πλακίδιό της στην αρχική οθόνη.</string>
     <string name="shell_access_on">Εκτελείται.</string>
     <string name="shell_access_off">Δεν εκτελείται ακόμη: πατήστε για να ρυθμίσετε το Shizuku.</string>

@@ -1020,6 +1020,116 @@ class StatusBarController(
         onExpansionSuggestionSelected = null
     }
 
+    // Inline autofill: chips drawn by the password manager, shown in the middle of the bar
+    private var inlineAutofillViews: List<View> = emptyList()
+    private var inlineAutofillStrip: android.widget.HorizontalScrollView? = null
+
+    /** The colours the bar's suggestion buttons use, for the password manager's chips. */
+    fun suggestionChipColours(): Pair<Int, Int> = activeThemeColors().let { it.suggestion to it.textAndIcons }
+
+    /** The height of the bar's suggestion buttons (the bar's own), for the password manager's chips. */
+    fun suggestionChipHeight(): Int? = fullSuggestionsBar?.centerAccessoryHost()?.layoutParams?.height?.takeIf { it > 0 }
+
+    fun showInlineAutofill(views: List<View>) {
+        inlineAutofillViews = views
+        // Each new set of chips gets its own lines in a debug export
+        lastAutofillRender = null
+    }
+
+    fun clearInlineAutofill() {
+        if (inlineAutofillViews.isEmpty() && inlineAutofillStrip?.parent == null) return
+        inlineAutofillViews = emptyList()
+        renderInlineAutofill(false)
+    }
+
+    private var lastAutofillRender: String? = null
+
+    private fun noteAutofillRender(state: String) {
+        if (state == lastAutofillRender) return
+        lastAutofillRender = state
+        DebugCaptureStore.recordAutofill("bar: $state")
+    }
+
+    private fun renderInlineAutofill(active: Boolean) {
+        val bar = fullSuggestionsBar ?: run {
+            if (active) noteAutofillRender("no suggestion bar to show chips in")
+            return
+        }
+        val host = bar.centerAccessoryHost() ?: run {
+            if (active) noteAutofillRender("bar has no space for chips")
+            return
+        }
+        if (inlineAutofillViews.isNotEmpty() && !active) noteAutofillRender("chips held back (symbols, emoji or clipboard open)")
+        val strip = inlineAutofillStrip
+        if (!active) {
+            if (strip?.parent != null) {
+                (strip.parent as? ViewGroup)?.removeView(strip)
+                if (!emojiSearchInBar) bar.setCenterAccessoryActive(false)
+            }
+            return
+        }
+        val scroller = strip ?: android.widget.HorizontalScrollView(context).apply {
+            isHorizontalScrollBarEnabled = false
+            // Chips centred in the bar while they fit, scrolling when they don't
+            isFillViewport = true
+            addView(
+                android.widget.LinearLayout(context).apply {
+                    orientation = android.widget.LinearLayout.HORIZONTAL
+                    gravity = android.view.Gravity.CENTER
+                },
+                ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            )
+        }.also { inlineAutofillStrip = it }
+        val row = scroller.getChildAt(0) as android.widget.LinearLayout
+        if (row.childCount != inlineAutofillViews.size ||
+            inlineAutofillViews.withIndex().any { (i, v) -> (row.getChildAt(i) as? ViewGroup)?.getChildAt(0) !== v }
+        ) {
+            row.removeAllViews()
+            val gap = (4 * context.resources.displayMetrics.density).toInt()
+            val theme = activeThemeColors()
+            inlineAutofillViews.forEach { chip ->
+                (chip.parent as? ViewGroup)?.removeView(chip)
+                // The size the chip was made at (wrap content measures it at 0 wide)
+                val made = chip.layoutParams
+                val width = made?.width?.takeIf { it > 0 } ?: ViewGroup.LayoutParams.WRAP_CONTENT
+                // The chip is see-through: a suggestion button's background behind it, the bar's
+                // height, with the chip centred in it
+                val button = FrameLayout(context).apply {
+                    background = android.graphics.drawable.GradientDrawable().apply {
+                        cornerRadius = 7 * context.resources.displayMetrics.density
+                        setColor(theme.suggestion)
+                    }
+                    addView(chip, FrameLayout.LayoutParams(
+                        width,
+                        made?.height ?: ViewGroup.LayoutParams.WRAP_CONTENT,
+                        android.view.Gravity.CENTER
+                    ))
+                }
+                // The background a suggestion button's height, the chip (as tall as its text)
+                // centred in it
+                row.addView(button, android.widget.LinearLayout.LayoutParams(
+                    width, suggestionChipHeight() ?: made?.height?.takeIf { it > 0 } ?: ViewGroup.LayoutParams.MATCH_PARENT
+                ).apply { marginStart = gap; marginEnd = gap; gravity = android.view.Gravity.CENTER_VERTICAL })
+            }
+        }
+        if (scroller.parent !== host) {
+            (scroller.parent as? ViewGroup)?.removeView(scroller)
+            host.removeAllViews()
+            host.addView(scroller, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+        }
+        bar.setCenterAccessoryActive(true)
+        noteAutofillRender("showing ${inlineAutofillViews.size} chips")
+        // Once laid out: where the chips ended up, for a debug export when they can't be seen
+        scroller.post {
+            val chip = inlineAutofillViews.firstOrNull() ?: return@post
+            fun View.describe() = "${width}x$height shown=$isShown"
+            noteAutofillRender(
+                "laid out: chip ${chip.describe()} strip ${scroller.describe()} host ${host.describe()} " +
+                    "bar ${(host.parent as? View)?.describe()} window=${host.rootView?.let { "${it.width}x${it.height}" }}"
+            )
+        }
+    }
+
     fun cancelSoftwareKeyboardTouchState() {
         // The software keyboard can also sit below the emoji picker while its search is
         // active, so prefer the cached instance over the container's first child.
@@ -1548,7 +1658,8 @@ class StatusBarController(
 
     private fun releaseEmojiSearchFromBar() {
         emojiPickerView?.setSearchFieldHost(null)
-        fullSuggestionsBar?.setCenterAccessoryActive(false)
+        // Autofill chips keep the middle of the bar while they're shown
+        if (inlineAutofillStrip?.parent == null) fullSuggestionsBar?.setCenterAccessoryActive(false)
     }
 
     private fun showEmojiPickerSearchPopup(
@@ -3788,8 +3899,9 @@ class StatusBarController(
         val suggestionsEnabledSetting = SettingsManager.getSuggestionsEnabled(context)
         // Keep the suggestion/status row stable in both full-status-bar and Pastierina mode.
         val expansionActive = expansionSuggestions.isNotEmpty()
+        val autofillActive = inlineAutofillViews.isNotEmpty() && snapshot.symPage == 0 && !snapshot.clipboardOverlay
         // The extra keys row lives in the bar: open, it shows even where suggestions are off (terminals)
-        val showFullBar = extraKeysRow != null || expansionActive || (
+        val showFullBar = extraKeysRow != null || expansionActive || autofillActive || (
             suggestionsEnabledSetting &&
                 (experimentalEnabled || isFullSoftwareKeyboardMode) &&
                 (isFullSoftwareKeyboardMode || !snapshot.shouldDisableSuggestions) &&
@@ -3829,6 +3941,7 @@ class StatusBarController(
             canDeleteUserSuggestion,
             if (expansionActive) { _, suggestion -> onExpansionSuggestionSelected?.invoke(suggestion) } else null
         )
+        renderInlineAutofill(autofillActive && !emojiSearchInBar)
         val shouldShowSoftwareKeyboard =
             isFullSoftwareKeyboardMode &&
                 !snapshot.clipboardOverlay

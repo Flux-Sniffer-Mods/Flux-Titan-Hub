@@ -47,6 +47,13 @@ fun SettingsManager.setAddLastWordShortcut(context: Context, enabled: Boolean) {
     getPreferences(context).edit().putBoolean(KEY_ADD_LAST_WORD_SHORTCUT, enabled).apply()
 }
 
+fun SettingsManager.getInlineAutofillEnabled(context: Context): Boolean =
+    getPreferences(context).getBoolean(KEY_INLINE_AUTOFILL, true)
+
+fun SettingsManager.setInlineAutofillEnabled(context: Context, enabled: Boolean) {
+    getPreferences(context).edit().putBoolean(KEY_INLINE_AUTOFILL, enabled).apply()
+}
+
 /** An emoji for the word you're typing, in the suggestion bar. */
 /** Suggestion bar words in bold, easier to spot when typing fast (palsoftware/pastiera#310). */
 fun SettingsManager.getSuggestionsBold(context: Context): Boolean =

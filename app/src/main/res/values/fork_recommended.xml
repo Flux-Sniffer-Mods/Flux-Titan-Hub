@@ -47,6 +47,7 @@
     <string name="recommended_label_emoji_key_opens_layer">Emoji key opens the emoji layer</string>
     <string name="recommended_label_emoji_suggestions_enabled">Emoji suggestions</string>
     <string name="recommended_label_keyboard_theme_wallpaper_colours">Colours from wallpaper</string>
+    <string name="recommended_label_one_time_codes_enabled">One-time codes</string>
     <string name="recommended_label_quick_launcher_behavior">Quick launcher</string>
     <string name="recommended_label_search_bar_waits_for_typing">Keyboard bar only on typing in search bars</string>
     <string name="recommended_label_titan2_elite_rounded_corner_insets">Rounded corners</string>

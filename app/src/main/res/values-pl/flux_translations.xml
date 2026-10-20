@@ -169,6 +169,9 @@
     <string name="layout_editor_exported">Układ wyeksportowany</string>
     <string name="layout_editor_export_failed">Nie udało się wyeksportować układu</string>
     <string name="layout_editor_link">Edytuj układ: dotknij jego ołówka</string>
+    <string name="one_time_codes_title">Kody jednorazowe</string>
+    <string name="one_time_codes_description">Proponuje kod z SMS-a lub e-maila jako chip w następnym polu tekstowym. Wymaga dostępu do powiadomień; przechowywany jest tylko kod, w pamięci, przez 3 minuty.</string>
+    <string name="one_time_code_chip">Kod %1$s</string>
     <string name="quick_launcher_app_shortcuts_title">Skróty aplikacji w wynikach</string>
     <string name="quick_launcher_app_shortcuts_description">Własne skróty aplikacji, pokazywane po przytrzymaniu ich ikony („Nowa wiadomość”, „Skanuj kod QR”), są wynikami, które możesz otworzyć bezpośrednio.</string>
     <string name="quick_launcher_niagara_back_title">Wstecz wraca do aplikacji</string>
@@ -220,11 +223,15 @@
     <string name="recommended_label_emoji_key_opens_layer">Klawisz emoji otwiera warstwę emoji</string>
     <string name="recommended_label_emoji_suggestions_enabled">Podpowiedzi emoji</string>
     <string name="recommended_label_keyboard_theme_wallpaper_colours">Kolory tapety</string>
+    <string name="recommended_label_one_time_codes_enabled">Kody jednorazowe</string>
     <string name="recommended_label_quick_launcher_behavior">Szybkie uruchamianie</string>
     <string name="recommended_label_search_bar_waits_for_typing">Pasek klawiatury w polach wyszukiwania dopiero przy pisaniu</string>
     <string name="recommended_label_titan2_elite_rounded_corner_insets">Zaokrąglone rogi</string>
     <string name="restricted_settings_toast">Dotknij ⋮ w prawym górnym rogu, a potem Zezwól na ustawienia z ograniczonym dostępem. Jeśli opcji nie ma, najpierw spróbuj raz włączyć usługę.</string>
     <string name="restricted_settings_accessibility">Wyłączone, a Android blokuje to, dopóki nie zezwolisz na ustawienia z ograniczonym dostępem. Dotknij, aby otworzyć Informacje o aplikacji, potem ⋮ › Zezwól na ustawienia z ograniczonym dostępem, i wróć, aby włączyć.</string>
+    <string name="restricted_settings_notifications">Android blokuje dostęp do powiadomień, dopóki nie zezwolisz na ustawienia z ograniczonym dostępem. Dotknij, aby otworzyć Informacje o aplikacji, potem ⋮ › Zezwól na ustawienia z ograniczonym dostępem, i wróć.</string>
+    <string name="notification_access_title">Dostęp do powiadomień</string>
+    <string name="notification_access_off">Wyłączony: potrzebują go kody jednorazowe. Dotknij, aby włączyć.</string>
     <string name="restricted_settings_help_title">Zezwól na ustawienia z ograniczonym dostępem</string>
     <string name="restricted_settings_help_steps">Android blokuje dostęp do ułatwień dostępu i powiadomień dla aplikacji zainstalowanych z pliku, takich jak Pastiera, dopóki raz na to nie zezwolisz:\n\n1. Dotknij Otwórz informacje o aplikacji.\n2. Dotknij ⋮ w prawym górnym rogu, potem Zezwól na ustawienia z ograniczonym dostępem, i potwierdź PIN-em lub odciskiem palca.\n3. Brak tej opcji w ⋮? Wróć, spróbuj raz włączyć funkcję (Android powie, że to ustawienie z ograniczonym dostępem), i wróć do informacji o aplikacji: wtedy się pojawi.\n4. Wróć do Pastiera i włącz funkcję.</string>
     <string name="restricted_settings_help_open">Otwórz informacje o aplikacji</string>
@@ -351,6 +358,10 @@
     <string name="incognito_always_description">Nie ucz się niczego z tego, co piszesz: żadnych nowych słów, podpowiedzi, e-maili ani numerów, ani ostatnich emoji czy symboli</string>
     <string name="incognito_follow_apps_title">Incognito, gdy aplikacja o to prosi</string>
     <string name="incognito_follow_apps_description">Nie ucz się niczego w polach, które o to proszą, np. w prywatnych kartach przeglądarki</string>
+    <string name="paste_suggestion_title">Proponuj wklejenie skopiowanego</string>
+    <string name="paste_suggestion_description">Przez minutę po skopiowaniu tekstu nowe pole tekstowe proponuje go jako podpowiedź; pisanie ją odrzuca. Tekst oznaczony jako poufny (z menedżera haseł) jest proponowany tylko w polach haseł</string>
+    <string name="paste_in_password_fields_title">Także w polach haseł</string>
+    <string name="paste_in_password_fields_description">Pole hasła proponuje to, co właśnie skopiowałeś, także z menedżera haseł, jako ⎘ •••••••• (nigdy sam tekst). Jest trzymane tylko w pamięci, nigdy w historii schowka</string>
     <string name="emoji_suggestions_title">Podpowiedzi emoji</string>
     <string name="emoji_suggestions_description">Emoji dla wpisywanego słowa, np. 🍕 dla „pizza”. Wybranie go dodaje emoji po słowie.</string>
     <string name="alt_key_editor_intro">Utwórz własną warstwę SYM urządzenia: co wpisuje każdy klawisz z SYM, a także z Alt, gdy Alt używa warstwy SYM urządzenia. Profil może automatycznie zastąpić własną warstwę klawiatury, a kopia zapasowa Pastiera go obejmuje.</string>
@@ -382,7 +393,7 @@
     <string name="alt_key_editor_summary_ready">Utwórz własną warstwę SYM urządzenia, pustą lub z dobranego profilu.</string>
     <string name="clicks_all_key_mappings_ready_description">Twoje własne znaki Alt i SYM dla każdego klawisza, we własnym profilu SYM urządzenia. Skróty Ctrl są w sekcji Skróty klawiszowe.</string>
     <string name="alt_key_editor_no_profiles">Brak profili. Utwórz pierwszy powyżej.</string>
-    <string name="settings_section_clipboard">Schowek</string>
+    <string name="settings_section_clipboard">Schowek i kody</string>
     <string name="settings_section_editing">Edycja i poruszanie się</string>
     <string name="settings_nav_mode_hub_description">Strzałki, zaznaczanie i więcej z klawiszy liter, z Ctrl</string>
     <string name="settings_section_terminals">Terminale, kod i pulpity</string>
@@ -391,6 +402,8 @@
     <string name="autocorrect_section_dictionary">Słownik, nauka i pisownia</string>
     <string name="autocorrect_section_replacements">Zamiany tekstu</string>
     <string name="autocorrect_section_tuning">Dostrajanie</string>
+    <string name="inline_autofill_title">Autouzupełnianie na pasku podpowiedzi</string>
+    <string name="inline_autofill_description">Zapisane loginy, kody jednorazowe i adresy z menedżera haseł pojawiają się jako chipy na pasku podpowiedzi; dotknij jednego, aby wypełnić pole.</string>
     <string name="led_colors_title">Kolory diod stanu</string>
     <string name="led_colors_description">Jeden kolor dla wszystkich diod z motywu lub osobny kolor dla każdej</string>
     <string name="led_colors_individual_title">Koloruj każdą diodę</string>
@@ -482,6 +495,8 @@
     <string name="menu_bar_reset">Resetuj pasek menu</string>
     <string name="suggestions_bold_title">Pogrubione podpowiedzi</string>
     <string name="suggestions_bold_description">Słowa na pasku podpowiedzi pogrubione, łatwiejsze do zauważenia na pierwszy rzut oka</string>
+    <string name="clean_links_title">Czyść kopiowane linki</string>
+    <string name="clean_links_description">Kopiowane linki tracą śledzenie (utm_, fbclid, si z YouTube…) od razu w schowku, więc są czyste wszędzie, gdzie je wkleisz, i otwierają pełną stronę zamiast mobilnej</string>
     <string name="suggestion_keys_title">Wybieraj podpowiedzi z klawiatury</string>
     <string name="suggestion_keys_ctrl_shift_qwe">Ctrl+Shift+Q, W lub E: lewa, środkowa lub prawa podpowiedź</string>
     <string name="suggestion_keys_ctrl_digits">Ctrl+1, 2 lub 3: lewa, środkowa lub prawa podpowiedź (rząd cyfr)</string>
@@ -1113,7 +1128,7 @@
     <string name="kw_main_keyboard_theme">motyw, motywy, kolory, ciemny, jasny, system, gotowe, klawiatura fizyczna, klawiatura ekranowa, Classic Cloud, Classic Midnight</string>
     <string name="kw_main_app_language">język, język aplikacji, ustawienia regionalne, tłumaczenie</string>
     <string name="kw_main_customization">dostosuj, dostosowanie, wygląd</string>
-    <string name="kw_main_advanced">prywatność, incognito, schowek, zaawansowane</string>
+    <string name="kw_main_advanced">prywatność, incognito, schowek, wklej, kody, zaawansowane</string>
     <string name="kw_main_accessibility">ułatwienia dostępu, opóźnienie, klawisze powtarzane, nakładające się klawisze, czytnik ekranu</string>
     <string name="kw_main_about">informacje, wersja, wsparcie, ko-fi, darowizna</string>
     <string name="kw_text_input_auto_space_punctuation">odstępy, spacja, interpunkcja</string>
@@ -1460,6 +1475,7 @@
     <string name="sym_start_most_popular">Zacznij od najpopularniejszych</string>
     <string name="shell_elsewhere_section">Gdzie indziej</string>
     <string name="shell_elsewhere_trackpad">Przy dostępie do powłoki przesunięcia na gładziku są odczytywane bezpośrednio z klawiatury.</string>
+    <string name="shell_elsewhere_otp">Dostęp do powłoki pozwala odczytywać kody z powiadomień, które Android ukrywa przed aplikacjami (Android 15 i nowsze).</string>
     <string name="crash_log">Zapisz dziennik awarii</string>
     <string name="crash_log_description">Zapis Androida ostatnich awarii Pastiera, zapisany w Download/Pastiera/crash-log.txt do udostępnienia.</string>
     <string name="crash_log_saved">Zapisano w Download/Pastiera/crash-log.txt</string>
@@ -1470,7 +1486,7 @@
     <string name="crash_log_cleared">Logi wyczyszczone</string>
     <string name="module_keyboard_title">Klawiatura</string>
     <string name="settings_privacy_clipboard_title">Prywatność i schowek</string>
-    <string name="settings_privacy_clipboard_description">Incognito i historia schowka</string>
+    <string name="settings_privacy_clipboard_description">Incognito, podpowiedzi ze schowka, kody jednorazowe</string>
     <string name="settings_general_note">To, co wspólne dla wszystkich modułów. Ustawienia danego modułu są na jego stronie: dotknij jego kafelka na ekranie głównym.</string>
     <string name="shell_access_on">Działa.</string>
     <string name="shell_access_off">Jeszcze nie działa: dotknij, aby skonfigurować Shizuku.</string>

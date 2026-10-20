@@ -866,7 +866,7 @@ Ogni tasto può essere configurato come Keycode, Azione, Native Ctrl o Nessuno. 
     <string name="kw_main_keyboard_theme">tema, temi, colori, scuro, chiaro, preset, tastiera fisica, tastiera a schermo, Flux Dark, Flux Light, Cloud Tap, Moon Tap, Classic Cloud, Classic Midnight</string>
     <string name="kw_main_app_language">lingua, lingua app, locale, traduzione</string>
     <string name="kw_main_customization">personalizza, personalizzazione, aspetto</string>
-    <string name="kw_main_advanced">privacy, incognito, appunti, avanzate</string>
+    <string name="kw_main_advanced">privacy, incognito, appunti, incolla, codici, avanzate</string>
     <string name="kw_main_accessibility">accessibilità, ritardo, bounce keys, tasti sovrapposti, lettore schermo</string>
     <string name="kw_main_about">informazioni, versione, supporto, ko-fi, donazione</string>
     <string name="kw_text_input_auto_space_punctuation">spaziatura, spazio, punteggiatura</string>

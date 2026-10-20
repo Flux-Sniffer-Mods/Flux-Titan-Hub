@@ -1424,7 +1424,7 @@ QWERTZ σε φυσικό QWERTY
     <string name="kw_main_keyboard_theme">θέμα, θέματα, χρώματα, σκοτεινό, φωτεινό, προρυθμίσεις, hardware πληκτρολόγιο, πληκτρολόγιο οθόνης, theme, colors, dark, light, presets, Flux Dark, Flux Light, Cloud Tap, Moon Tap, Classic Cloud, Classic Midnight</string>
     <string name="kw_main_app_language">γλώσσα, γλώσσα εφαρμογής, locale, μετάφραση, language, app language, translation</string>
     <string name="kw_main_customization">προσαρμογή, εμφάνιση, customize, customization, appearance</string>
-    <string name="kw_main_advanced">απόρρητο, ανώνυμη, πρόχειρο, για προχωρημένους, privacy, incognito, clipboard</string>
+    <string name="kw_main_advanced">απόρρητο, ανώνυμη, πρόχειρο, επικόλληση, κωδικοί, για προχωρημένους, privacy, incognito, clipboard</string>
     <string name="kw_main_accessibility">προσβασιμότητα, καθυστέρηση, bounce keys, επικαλυπτόμενα πλήκτρα, screen reader, accessibility, delay, overlapping keys</string>
     <string name="kw_main_about">σχετικά, έκδοση, υποστήριξη, ko-fi, δωρεά, about, version, support, donate</string>
     <string name="kw_text_input_auto_space_punctuation">διαστήματα, διάστημα, στίξη, spacing, space, punctuation</string>

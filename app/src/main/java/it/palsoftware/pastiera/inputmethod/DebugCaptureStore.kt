@@ -109,6 +109,19 @@ object DebugCaptureStore {
     @Synchronized
     fun trackpadClaimSnapshot(): List<Pair<Long, String>> = trackpadClaimEvents.toList()
 
+    private const val MAX_AUTOFILL = 40
+    private val autofillEvents = ArrayDeque<Pair<Long, String>>()
+
+    /** A step of inline autofill (password managers' chips), for the debug export. */
+    @Synchronized
+    fun recordAutofill(message: String) {
+        autofillEvents.addLast(System.currentTimeMillis() to message)
+        while (autofillEvents.size > MAX_AUTOFILL) autofillEvents.removeFirst()
+    }
+
+    @Synchronized
+    fun autofillSnapshot(): List<Pair<Long, String>> = autofillEvents.toList()
+
     private const val MAX_FIELDS = 10
     private const val MAX_AUTO_CAP = 60
     private val fields = ArrayDeque<FieldInfo>()
@@ -341,5 +354,6 @@ object DebugCaptureStore {
         imeContextSnapshot = null
         fields.clear()
         autoCapTraces.clear()
+        autofillEvents.clear()
     }
 }

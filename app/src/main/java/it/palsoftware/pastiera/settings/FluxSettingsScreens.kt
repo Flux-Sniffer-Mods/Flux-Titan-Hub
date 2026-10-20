@@ -406,9 +406,14 @@ internal val fluxRowIcons: Map<String?, String> = mapOf(
     "trackpad.phone_settings" to "\u2699$TEXT",             // ⚙
     SettingLinkIds.ADVANCED_TRACKPAD_GESTURES to "\u21C5",  // ⇅
     // Privacy and typing
+    SettingLinkIds.PRIVACY_CLEAN_LINKS to "\u29C9",         // ⧉
     SettingLinkIds.PRIVACY_INCOGNITO_ALWAYS to "\u25CC",    // ◌
     SettingLinkIds.PRIVACY_INCOGNITO_FOLLOW_APPS to "\u25CC",
+    SettingLinkIds.PRIVACY_ONE_TIME_CODES to "#",
+    SettingLinkIds.PRIVACY_PASTE_SUGGESTION to "\u2398",    // ⎘
+    SettingLinkIds.PRIVACY_PASTE_IN_PASSWORD_FIELDS to "\u2217", // ∗
     "offline.enabled" to "\u2298",                          // ⊘
+    SettingLinkIds.AUTO_CORRECTION_INLINE_AUTOFILL to "\u26BF", // ⚿
     SettingLinkIds.AUTO_CORRECTION_EMOJI_SUGGESTIONS to "\u263A$TEXT",
     "auto_correction.show_add_word" to "+",
     "auto_correction.add_last_word_shortcut" to "+",

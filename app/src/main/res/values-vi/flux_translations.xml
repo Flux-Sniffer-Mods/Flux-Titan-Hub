@@ -169,6 +169,9 @@
     <string name="layout_editor_exported">Đã xuất bố cục</string>
     <string name="layout_editor_export_failed">Không thể xuất bố cục</string>
     <string name="layout_editor_link">Sửa bố cục: chạm vào biểu tượng bút chì</string>
+    <string name="one_time_codes_title">Mã dùng một lần</string>
+    <string name="one_time_codes_description">Đề xuất mã từ SMS hoặc email dưới dạng chip trong ô văn bản tiếp theo. Cần quyền truy cập thông báo; chỉ mã được giữ, trong bộ nhớ, trong 3 phút.</string>
+    <string name="one_time_code_chip">Mã %1$s</string>
     <string name="quick_launcher_app_shortcuts_title">Lối tắt ứng dụng trong kết quả</string>
     <string name="quick_launcher_app_shortcuts_description">Lối tắt riêng của ứng dụng, những lối tắt hiện khi nhấn giữ biểu tượng (\"Tin nhắn mới\", \"Quét mã QR\"), là kết quả bạn có thể mở trực tiếp.</string>
     <string name="quick_launcher_niagara_back_title">Quay lại trở về ứng dụng</string>
@@ -220,11 +223,15 @@
     <string name="recommended_label_emoji_key_opens_layer">Phím emoji mở lớp emoji</string>
     <string name="recommended_label_emoji_suggestions_enabled">Gợi ý emoji</string>
     <string name="recommended_label_keyboard_theme_wallpaper_colours">Màu hình nền</string>
+    <string name="recommended_label_one_time_codes_enabled">Mã dùng một lần</string>
     <string name="recommended_label_quick_launcher_behavior">Trình khởi chạy nhanh</string>
     <string name="recommended_label_search_bar_waits_for_typing">Thanh bàn phím trong ô tìm kiếm chỉ khi gõ</string>
     <string name="recommended_label_titan2_elite_rounded_corner_insets">Góc bo tròn</string>
     <string name="restricted_settings_toast">Chạm ⋮ ở góc trên bên phải, rồi Cho phép chế độ cài đặt hạn chế. Nếu không thấy, hãy thử bật dịch vụ một lần trước.</string>
     <string name="restricted_settings_accessibility">Đang tắt, và Android chặn nó cho đến khi bạn cho phép cài đặt hạn chế. Chạm để mở Thông tin ứng dụng, rồi ⋮ › Cho phép chế độ cài đặt hạn chế, và quay lại để bật.</string>
+    <string name="restricted_settings_notifications">Android chặn quyền truy cập thông báo cho đến khi bạn cho phép cài đặt hạn chế. Chạm để mở Thông tin ứng dụng, rồi ⋮ › Cho phép chế độ cài đặt hạn chế, và quay lại.</string>
+    <string name="notification_access_title">Quyền truy cập thông báo</string>
+    <string name="notification_access_off">Đang tắt: mã dùng một lần cần quyền này. Chạm để bật.</string>
     <string name="restricted_settings_help_title">Cho phép cài đặt hạn chế</string>
     <string name="restricted_settings_help_steps">Android chặn quyền trợ năng và truy cập thông báo cho các ứng dụng cài từ tệp, như Pastiera, cho đến khi bạn cho phép một lần:\n\n1. Chạm Mở thông tin ứng dụng.\n2. Chạm ⋮ ở góc trên bên phải, rồi Cho phép chế độ cài đặt hạn chế, và xác nhận bằng mã PIN hoặc vân tay.\n3. Không thấy mục đó trong ⋮? Quay lại, thử bật tính năng một lần (Android sẽ báo đây là cài đặt hạn chế), rồi trở lại Thông tin ứng dụng: mục sẽ xuất hiện.\n4. Quay lại Pastiera và bật tính năng.</string>
     <string name="restricted_settings_help_open">Mở thông tin ứng dụng</string>
@@ -351,6 +358,10 @@
     <string name="incognito_always_description">Không học gì từ nội dung bạn gõ: không từ mới, gợi ý, email hay số điện thoại, không emoji hay ký hiệu gần đây</string>
     <string name="incognito_follow_apps_title">Ẩn danh khi ứng dụng yêu cầu</string>
     <string name="incognito_follow_apps_description">Không học gì trong các ô yêu cầu bàn phím không học, như thẻ trình duyệt riêng tư</string>
+    <string name="paste_suggestion_title">Đề xuất dán nội dung bạn đã sao chép</string>
+    <string name="paste_suggestion_description">Trong một phút sau khi bạn sao chép văn bản, ô văn bản mới đề xuất nó như một gợi ý; gõ phím sẽ bỏ qua. Văn bản được đánh dấu nhạy cảm (từ trình quản lý mật khẩu) chỉ được đề xuất trong ô mật khẩu</string>
+    <string name="paste_in_password_fields_title">Cả trong ô mật khẩu</string>
+    <string name="paste_in_password_fields_description">Ô mật khẩu đề xuất nội dung bạn vừa sao chép, kể cả từ trình quản lý mật khẩu, dưới dạng ⎘ •••••••• (không bao giờ hiện văn bản). Chỉ được giữ trong bộ nhớ, không bao giờ trong lịch sử bảng nhớ tạm</string>
     <string name="emoji_suggestions_title">Gợi ý emoji</string>
     <string name="emoji_suggestions_description">Một emoji cho từ bạn đang gõ, ví dụ 🍕 cho pizza. Chọn nó sẽ thêm emoji sau từ.</string>
     <string name="alt_key_editor_intro">Tạo lớp SYM thiết bị của riêng bạn: mỗi phím gõ gì với SYM, và với Alt khi Alt dùng lớp SYM thiết bị. Một hồ sơ có thể tự động thay thế lớp riêng của bàn phím, và bản sao lưu của Pastiera bao gồm nó.</string>
@@ -382,7 +393,7 @@
     <string name="alt_key_editor_summary_ready">Tạo lớp SYM thiết bị của riêng bạn, trống hoặc từ hồ sơ có sẵn.</string>
     <string name="clicks_all_key_mappings_ready_description">Ký tự Alt và SYM của riêng bạn cho mọi phím, trong hồ sơ SYM thiết bị tùy chỉnh. Phím tắt Ctrl nằm trong Phím tắt.</string>
     <string name="alt_key_editor_no_profiles">Chưa có hồ sơ nào. Tạo một hồ sơ ở trên.</string>
-    <string name="settings_section_clipboard">Bảng nhớ tạm</string>
+    <string name="settings_section_clipboard">Bảng nhớ tạm &amp; mã</string>
     <string name="settings_section_editing">Chỉnh sửa và di chuyển</string>
     <string name="settings_nav_mode_hub_description">Phím mũi tên, vùng chọn và hơn nữa từ các phím chữ, với Ctrl</string>
     <string name="settings_section_terminals">Terminal, mã &amp; máy tính</string>
@@ -391,6 +402,8 @@
     <string name="autocorrect_section_dictionary">Từ điển, học từ và chính tả</string>
     <string name="autocorrect_section_replacements">Thay thế văn bản</string>
     <string name="autocorrect_section_tuning">Tinh chỉnh</string>
+    <string name="inline_autofill_title">Tự động điền trên thanh gợi ý</string>
+    <string name="inline_autofill_description">Thông tin đăng nhập, mã dùng một lần và địa chỉ đã lưu trong trình quản lý mật khẩu xuất hiện dưới dạng chip trên thanh gợi ý; chạm vào một chip để điền ô.</string>
     <string name="led_colors_title">Màu đèn LED trạng thái</string>
     <string name="led_colors_description">Một màu cho mọi đèn LED từ chủ đề, hoặc mỗi đèn một màu</string>
     <string name="led_colors_individual_title">Tô màu từng đèn LED</string>
@@ -482,6 +495,8 @@
     <string name="menu_bar_reset">Đặt lại thanh menu</string>
     <string name="suggestions_bold_title">Gợi ý in đậm</string>
     <string name="suggestions_bold_description">Chữ trên thanh gợi ý in đậm, dễ nhận ra hơn khi liếc nhìn</string>
+    <string name="clean_links_title">Làm sạch liên kết đã sao chép</string>
+    <string name="clean_links_description">Liên kết bạn sao chép được bỏ mã theo dõi (utm_, fbclid, si của YouTube…) ngay trong bộ nhớ tạm, nên sạch ở bất cứ đâu bạn dán, và mở trang đầy đủ thay vì bản di động</string>
     <string name="suggestion_keys_title">Chọn gợi ý từ bàn phím</string>
     <string name="suggestion_keys_ctrl_shift_qwe">Ctrl+Shift+Q, W hoặc E: gợi ý trái, giữa hoặc phải</string>
     <string name="suggestion_keys_ctrl_digits">Ctrl+1, 2 hoặc 3: gợi ý trái, giữa hoặc phải (hàng số)</string>
@@ -1113,7 +1128,7 @@
     <string name="kw_main_keyboard_theme">chủ đề, màu sắc, tối, sáng, hệ thống, có sẵn, bàn phím vật lý, bàn phím trên màn hình, Classic Cloud, Classic Midnight</string>
     <string name="kw_main_app_language">ngôn ngữ, ngôn ngữ ứng dụng, khu vực, bản dịch</string>
     <string name="kw_main_customization">tùy chỉnh, giao diện</string>
-    <string name="kw_main_advanced">quyền riêng tư, ẩn danh, bộ nhớ tạm, nâng cao</string>
+    <string name="kw_main_advanced">quyền riêng tư, ẩn danh, bộ nhớ tạm, dán, mã, nâng cao</string>
     <string name="kw_main_accessibility">trợ năng, độ trễ, phím nảy, phím chồng nhau, trình đọc màn hình</string>
     <string name="kw_main_about">giới thiệu, phiên bản, ủng hộ, ko-fi, quyên góp</string>
     <string name="kw_text_input_auto_space_punctuation">khoảng cách, dấu cách, dấu câu</string>
@@ -1442,6 +1457,7 @@
     <string name="sym_start_most_popular">Bắt đầu với những mục phổ biến nhất</string>
     <string name="shell_elsewhere_section">Ở nơi khác</string>
     <string name="shell_elsewhere_trackpad">Khi đặt là quyền truy cập shell, thao tác vuốt trên bàn di chuột được đọc trực tiếp từ bàn phím.</string>
+    <string name="shell_elsewhere_otp">Quyền truy cập shell cho phép đọc mã từ thông báo mà Android ẩn khỏi ứng dụng (Android 15 trở lên).</string>
     <string name="crash_log">Lưu nhật ký sự cố</string>
     <string name="crash_log_description">Bản ghi của Android về các sự cố gần nhất của Pastiera, lưu vào Download/Pastiera/crash-log.txt để chia sẻ.</string>
     <string name="crash_log_saved">Đã lưu vào Download/Pastiera/crash-log.txt</string>
@@ -1452,7 +1468,7 @@
     <string name="crash_log_cleared">Đã xóa nhật ký</string>
     <string name="module_keyboard_title">Bàn phím</string>
     <string name="settings_privacy_clipboard_title">Quyền riêng tư &amp; bộ nhớ tạm</string>
-    <string name="settings_privacy_clipboard_description">Gõ ẩn danh và lịch sử bộ nhớ tạm</string>
+    <string name="settings_privacy_clipboard_description">Gõ ẩn danh, gợi ý từ bộ nhớ tạm, mã dùng một lần</string>
     <string name="settings_general_note">Những gì mọi mô-đun dùng chung. Cài đặt riêng của một mô-đun nằm trên trang của nó: chạm vào ô của nó trên màn hình chính.</string>
     <string name="shell_access_on">Đang chạy.</string>
     <string name="shell_access_off">Chưa chạy: chạm để thiết lập Shizuku.</string>

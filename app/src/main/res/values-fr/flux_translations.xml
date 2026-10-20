@@ -169,6 +169,9 @@
     <string name="layout_editor_exported">Disposition exportée</string>
     <string name="layout_editor_export_failed">Impossible d’exporter la disposition</string>
     <string name="layout_editor_link">Modifier une disposition : touchez son crayon</string>
+    <string name="one_time_codes_title">Codes à usage unique</string>
+    <string name="one_time_codes_description">Propose un code reçu par SMS ou e-mail sous forme de puce dans le champ de texte suivant. Nécessite l’accès aux notifications ; seul le code est conservé, en mémoire, pendant 3 minutes.</string>
+    <string name="one_time_code_chip">Code %1$s</string>
     <string name="quick_launcher_app_shortcuts_title">Raccourcis d’apps dans les résultats</string>
     <string name="quick_launcher_app_shortcuts_description">Les raccourcis propres aux apps, ceux qu’affiche leur icône par appui long (\"Nouveau message\", \"Scanner un code QR\"), sont des résultats que vous pouvez ouvrir directement.</string>
     <string name="quick_launcher_niagara_back_title">Retour ramène à l’app</string>
@@ -220,11 +223,15 @@
     <string name="recommended_label_emoji_key_opens_layer">La touche emoji ouvre la couche emoji</string>
     <string name="recommended_label_emoji_suggestions_enabled">Suggestions d’emoji</string>
     <string name="recommended_label_keyboard_theme_wallpaper_colours">Couleurs du fond d’écran</string>
+    <string name="recommended_label_one_time_codes_enabled">Codes à usage unique</string>
     <string name="recommended_label_quick_launcher_behavior">Lanceur rapide</string>
     <string name="recommended_label_search_bar_waits_for_typing">Barre du clavier seulement à la saisie dans les barres de recherche</string>
     <string name="recommended_label_titan2_elite_rounded_corner_insets">Coins arrondis</string>
     <string name="restricted_settings_toast">Touchez ⋮ en haut à droite, puis Autoriser les paramètres restreints. S’il n’apparaît pas, essayez d’abord d’activer le service une fois.</string>
     <string name="restricted_settings_accessibility">Désactivé, et Android le bloque tant que vous n’autorisez pas les paramètres restreints. Touchez pour ouvrir Infos sur l’appli, puis ⋮ › Autoriser les paramètres restreints, et revenez l’activer.</string>
+    <string name="restricted_settings_notifications">Android bloque l’accès aux notifications tant que vous n’autorisez pas les paramètres restreints. Touchez pour ouvrir Infos sur l’appli, puis ⋮ › Autoriser les paramètres restreints, et revenez.</string>
+    <string name="notification_access_title">Accès aux notifications</string>
+    <string name="notification_access_off">Désactivé : les codes à usage unique en ont besoin. Touchez pour l’activer.</string>
     <string name="restricted_settings_help_title">Autoriser les paramètres restreints</string>
     <string name="restricted_settings_help_steps">Android bloque l’accès à l’accessibilité et aux notifications pour les apps installées depuis un fichier, comme Pastiera, jusqu’à ce que vous l’autorisiez une fois :\n\n1. Touchez Ouvrir les infos sur l’appli.\n2. Touchez ⋮ en haut à droite, puis Autoriser les paramètres restreints, et confirmez avec votre code ou votre empreinte.\n3. Autoriser les paramètres restreints n’apparaît pas dans ⋮ ? Revenez, essayez d’activer la fonction une fois (Android dira que c’est un paramètre restreint), puis retournez dans Infos sur l’appli : il apparaîtra ensuite.\n4. Revenez dans Pastiera et activez la fonction.</string>
     <string name="restricted_settings_help_open">Ouvrir les infos sur l’appli</string>
@@ -351,6 +358,10 @@
     <string name="incognito_always_description">N’apprendre rien de ce que vous tapez : ni nouveaux mots, ni prédictions, ni e-mails ou numéros, ni emoji ou symboles récents</string>
     <string name="incognito_follow_apps_title">Incognito quand une app le demande</string>
     <string name="incognito_follow_apps_description">N’apprendre rien dans les champs qui le demandent aux claviers, comme les onglets de navigation privée</string>
+    <string name="paste_suggestion_title">Proposer de coller ce que vous avez copié</string>
+    <string name="paste_suggestion_description">Pendant une minute après avoir copié du texte, un nouveau champ de texte le propose comme suggestion ; taper l’écarte. Le texte marqué sensible (celui d’un gestionnaire de mots de passe) n’est proposé que dans les champs de mot de passe</string>
+    <string name="paste_in_password_fields_title">Aussi dans les champs de mot de passe</string>
+    <string name="paste_in_password_fields_description">Un champ de mot de passe propose ce que vous venez de copier, y compris depuis un gestionnaire de mots de passe, sous la forme ⎘ •••••••• (jamais le texte lui-même). Il est gardé en mémoire uniquement, jamais dans l’historique du presse-papiers</string>
     <string name="emoji_suggestions_title">Suggestions d’emoji</string>
     <string name="emoji_suggestions_description">Un emoji pour le mot que vous tapez, par ex. 🍕 pour pizza. Le choisir ajoute l’emoji après le mot.</string>
     <string name="alt_key_editor_intro">Créez votre propre couche SYM de l’appareil : ce que tape chaque touche avec SYM, et avec Alt quand Alt utilise la couche SYM de l’appareil. Un profil peut remplacer automatiquement la couche propre d’un clavier, et la sauvegarde de Pastiera l’inclut.</string>
@@ -382,7 +393,7 @@
     <string name="alt_key_editor_summary_ready">Créez votre propre couche SYM de l’appareil, vierge ou à partir d’un profil prédéfini.</string>
     <string name="clicks_all_key_mappings_ready_description">Vos propres caractères Alt et SYM pour chaque touche, dans un profil SYM de l’appareil personnalisé. Les raccourcis Ctrl sont dans Raccourcis clavier.</string>
     <string name="alt_key_editor_no_profiles">Aucun profil pour l’instant. Commencez-en un ci-dessus.</string>
-    <string name="settings_section_clipboard">Presse-papiers</string>
+    <string name="settings_section_clipboard">Presse-papiers et codes</string>
     <string name="settings_section_editing">Édition et déplacements</string>
     <string name="settings_nav_mode_hub_description">Flèches, sélection et plus depuis les touches de lettres, avec Ctrl</string>
     <string name="settings_section_terminals">Terminaux, code et bureaux</string>
@@ -391,6 +402,8 @@
     <string name="autocorrect_section_dictionary">Dictionnaire, apprentissage et orthographe</string>
     <string name="autocorrect_section_replacements">Remplacements de texte</string>
     <string name="autocorrect_section_tuning">Réglage fin</string>
+    <string name="inline_autofill_title">Saisie automatique dans la barre de suggestions</string>
+    <string name="inline_autofill_description">Les identifiants enregistrés, codes à usage unique et adresses de votre gestionnaire de mots de passe apparaissent comme puces dans la barre de suggestions ; touchez-en une pour remplir le champ.</string>
     <string name="led_colors_title">Couleurs des LED d’état</string>
     <string name="led_colors_description">Une couleur pour toutes les LED depuis le thème, ou une couleur pour chacune</string>
     <string name="led_colors_individual_title">Colorer chaque LED</string>
@@ -482,6 +495,8 @@
     <string name="menu_bar_reset">Réinitialiser la barre de menu</string>
     <string name="suggestions_bold_title">Suggestions en gras</string>
     <string name="suggestions_bold_description">Les mots de la barre de suggestions en gras, plus faciles à repérer d’un coup d’œil</string>
+    <string name="clean_links_title">Nettoyer les liens copiés</string>
+    <string name="clean_links_description">Les liens que vous copiez perdent leur pistage (utm_, fbclid, le si de YouTube…) directement dans le presse-papiers : ils sont propres partout où vous les collez, et ouvrent le site complet plutôt que le mobile</string>
     <string name="suggestion_keys_title">Choisir les suggestions au clavier</string>
     <string name="suggestion_keys_ctrl_shift_qwe">Ctrl+Shift+Q, W ou E : la suggestion de gauche, du milieu ou de droite</string>
     <string name="suggestion_keys_ctrl_digits">Ctrl+1, 2 ou 3 : la suggestion de gauche, du milieu ou de droite (rangée de chiffres)</string>
@@ -1113,7 +1128,7 @@
     <string name="kw_main_keyboard_theme">thème, thèmes, couleurs, sombre, clair, système, prédéfinis, clavier physique, clavier à l’écran, Classic Cloud, Classic Midnight</string>
     <string name="kw_main_app_language">langue, langue de l’app, paramètres régionaux, traduction</string>
     <string name="kw_main_customization">personnaliser, personnalisation, apparence</string>
-    <string name="kw_main_advanced">confidentialité, incognito, presse-papiers, avancé</string>
+    <string name="kw_main_advanced">confidentialité, incognito, presse-papiers, coller, codes, avancé</string>
     <string name="kw_main_accessibility">accessibilité, délai, touches à rebond, touches qui se chevauchent, lecteur d’écran</string>
     <string name="kw_main_about">à propos, version, soutien, ko-fi, don</string>
     <string name="kw_text_input_auto_space_punctuation">espacement, espace, ponctuation</string>
@@ -1454,6 +1469,7 @@
     <string name="sym_start_most_popular">Commencer par les plus populaires</string>
     <string name="shell_elsewhere_section">Ailleurs</string>
     <string name="shell_elsewhere_trackpad">Réglé sur l\'accès shell, les balayages du pavé tactile sont lus directement depuis le clavier.</string>
+    <string name="shell_elsewhere_otp">L\'accès shell permet de lire les codes des notifications qu\'Android cache aux applis (Android 15 et versions ultérieures).</string>
     <string name="crash_log">Enregistrer le journal des plantages</string>
     <string name="crash_log_description">Le relevé Android des derniers plantages de Pastiera, enregistré dans Download/Pastiera/crash-log.txt pour le partager.</string>
     <string name="crash_log_saved">Enregistré dans Download/Pastiera/crash-log.txt</string>
@@ -1464,7 +1480,7 @@
     <string name="crash_log_cleared">Journaux effacés</string>
     <string name="module_keyboard_title">Clavier</string>
     <string name="settings_privacy_clipboard_title">Confidentialité et presse-papiers</string>
-    <string name="settings_privacy_clipboard_description">Saisie incognito et historique du presse-papiers</string>
+    <string name="settings_privacy_clipboard_description">Saisie incognito, suggestions du presse-papiers, codes à usage unique</string>
     <string name="settings_general_note">Ce que tous les modules partagent. Les réglages propres à un module sont sur sa page : touchez sa vignette sur l\'écran d\'accueil.</string>
     <string name="shell_access_on">En marche.</string>
     <string name="shell_access_off">Pas encore en marche : touchez pour configurer Shizuku.</string>

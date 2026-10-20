@@ -74,6 +74,9 @@
     <string name="layout_editor_exported">Layout esportato</string>
     <string name="layout_editor_export_failed">Impossibile esportare il layout</string>
     <string name="layout_editor_link">Modifica un layout: tocca la sua matita</string>
+    <string name="one_time_codes_title">Codici monouso</string>
+    <string name="one_time_codes_description">Propone un codice da un SMS o da un’email come chip nel campo di testo successivo. Richiede l’accesso alle notifiche; viene conservato solo il codice, in memoria, per 3 minuti.</string>
+    <string name="one_time_code_chip">Codice %1$s</string>
     <string name="quick_launcher_app_shortcuts_title">Scorciatoie delle app nei risultati</string>
     <string name="quick_launcher_app_shortcuts_description">Le scorciatoie proprie delle app, quelle mostrate tenendo premuta la loro icona (\"Nuovo messaggio\", \"Scansiona codice QR\"), sono risultati che puoi aprire direttamente.</string>
     <string name="quick_launcher_niagara_back_title">Indietro torna all’app</string>
@@ -125,11 +128,15 @@
     <string name="recommended_label_emoji_key_opens_layer">Il tasto emoji apre il livello emoji</string>
     <string name="recommended_label_emoji_suggestions_enabled">Suggerimenti emoji</string>
     <string name="recommended_label_keyboard_theme_wallpaper_colours">Colori dello sfondo</string>
+    <string name="recommended_label_one_time_codes_enabled">Codici monouso</string>
     <string name="recommended_label_quick_launcher_behavior">Lanciatore rapido</string>
     <string name="recommended_label_search_bar_waits_for_typing">Barra della tastiera solo digitando nelle barre di ricerca</string>
     <string name="recommended_label_titan2_elite_rounded_corner_insets">Angoli arrotondati</string>
     <string name="restricted_settings_toast">Tocca ⋮ in alto a destra, poi Consenti impostazioni con limitazioni. Se non compare, prova prima ad attivare il servizio una volta.</string>
     <string name="restricted_settings_accessibility">Disattivato, e Android lo blocca finché non consenti le impostazioni con limitazioni. Tocca per aprire Info app, poi ⋮ › Consenti impostazioni con limitazioni, e torna ad attivarlo.</string>
+    <string name="restricted_settings_notifications">Android blocca l’accesso alle notifiche finché non consenti le impostazioni con limitazioni. Tocca per aprire Info app, poi ⋮ › Consenti impostazioni con limitazioni, e torna qui.</string>
+    <string name="notification_access_title">Accesso alle notifiche</string>
+    <string name="notification_access_off">Disattivato: i codici monouso ne hanno bisogno. Tocca per attivarlo.</string>
     <string name="restricted_settings_help_title">Consenti impostazioni con limitazioni</string>
     <string name="restricted_settings_help_steps">Android blocca l’accesso ad accessibilità e notifiche per le app installate da un file, come Pastiera, finché non lo consenti una volta:\n\n1. Tocca Apri Info app.\n2. Tocca ⋮ in alto a destra, poi Consenti impostazioni con limitazioni, e conferma con PIN o impronta.\n3. Consenti impostazioni con limitazioni non compare in ⋮? Torna indietro, prova ad attivare la funzione una volta (Android dirà che è un’impostazione con limitazioni), poi torna in Info app: comparirà.\n4. Torna in Pastiera e attiva la funzione.</string>
     <string name="restricted_settings_help_open">Apri Info app</string>
@@ -194,6 +201,8 @@
     <string name="nightly_update_settings_description">Cerca una versione più recente di Pastiera Nightly.</string>
     <string name="nightly_update_checking">Ricerca delle versioni Nightly…</string>
     <string name="nightly_update_current">Nessuna versione più recente di Pastiera Nightly.</string>
+    <string name="paste_in_password_fields_title">Anche nei campi password</string>
+    <string name="paste_in_password_fields_description">Un campo password propone ciò che hai appena copiato, anche da un gestore di password, come ⎘ •••••••• (mai il testo stesso). Viene tenuto solo in memoria, mai nella cronologia degli appunti</string>
     <string name="led_colors_tap_hint">Tocca un LED per cambiarne il colore</string>
     <string name="led_colors_level_off">Spento</string>
     <string name="led_colors_level_active">Attivo</string>
@@ -1000,6 +1009,7 @@
     <string name="sym_start_most_popular">Inizia dai più popolari</string>
     <string name="shell_elsewhere_section">Altrove</string>
     <string name="shell_elsewhere_trackpad">Impostati sull\'accesso shell, gli scorrimenti del trackpad vengono letti direttamente dalla tastiera.</string>
+    <string name="shell_elsewhere_otp">L\'accesso shell permette di leggere i codici dalle notifiche che Android nasconde alle app (Android 15 e successivi).</string>
     <string name="crash_log">Salva il registro degli arresti</string>
     <string name="crash_log_description">Il registro di Android degli ultimi arresti di Pastiera, salvato in Download/Pastiera/crash-log.txt per condividerlo.</string>
     <string name="crash_log_saved">Salvato in Download/Pastiera/crash-log.txt</string>
@@ -1010,7 +1020,7 @@
     <string name="crash_log_cleared">Log cancellati</string>
     <string name="module_keyboard_title">Tastiera</string>
     <string name="settings_privacy_clipboard_title">Privacy e appunti</string>
-    <string name="settings_privacy_clipboard_description">Incognito e cronologia degli appunti</string>
+    <string name="settings_privacy_clipboard_description">Incognito, suggerimenti dagli appunti, codici monouso</string>
     <string name="settings_general_note">Ciò che tutti i moduli condividono. Le impostazioni proprie di un modulo sono nella sua pagina: tocca il suo riquadro nella schermata Home.</string>
     <string name="shell_access_on">Attiva.</string>
     <string name="shell_access_off">Non ancora attiva: tocca per configurare Shizuku.</string>

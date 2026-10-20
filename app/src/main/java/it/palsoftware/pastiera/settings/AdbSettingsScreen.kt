@@ -56,6 +56,11 @@ fun AdbSettingsScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
             title = stringResource(R.string.trackpad_provider_title),
             description = stringResource(R.string.shell_elsewhere_trackpad)
         ) { jump(SettingLinkIds.TRACKPAD_PROVIDER) }
+        FluxActionRow(
+            linkId = null,
+            title = stringResource(R.string.one_time_codes_title),
+            description = stringResource(R.string.shell_elsewhere_otp)
+        ) { jump(SettingLinkIds.PRIVACY_ONE_TIME_CODES) }
     }
 }
 

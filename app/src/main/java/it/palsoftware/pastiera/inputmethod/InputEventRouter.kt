@@ -1408,6 +1408,13 @@ class InputEventRouter(
             return true
         }
 
+        // Ctrl+V: a link on the clipboard is cleaned first, whoever pastes it
+        if (shortcutKeyCode == KeyEvent.KEYCODE_V && event?.repeatCount == 0 && SettingsManager.getCleanPastedLinks(context)) {
+            (context.getSystemService(Context.CLIPBOARD_SERVICE) as? android.content.ClipboardManager)?.let { clipboard ->
+                runCatching { it.palsoftware.pastiera.clipboard.LinkCleaner.cleanClipboard(context, clipboard) }
+            }
+        }
+
         // Ctrl+Z, Ctrl+Shift+Z and Ctrl+Y: the keyboard's own typing history, in any app (the
         // app's own undo when the keyboard has nothing to undo)
         if (!ctrlLatchFromNavMode && event?.repeatCount == 0 && inputConnection != null) {

@@ -51,21 +51,26 @@ object SettingsManager {
     internal const val KEY_SMART_ALT_OFF_AFTER_OPENING = "smart_alt_off_after_opening"
     internal const val KEY_DEVELOPER_OPTIONS_ENABLED = "developer_options_enabled"
     private const val KEY_INCOGNITO_ALWAYS = "incognito_always"
+    private const val KEY_PASTE_SUGGESTION = "paste_suggestion_enabled"
+    private const val KEY_PASTE_SUGGESTION_PASSWORD_FIELDS = "paste_suggestion_password_fields"
     private const val KEY_LANGUAGE_PER_APP = "language_per_app_enabled"
     internal const val KEY_KEYBOARD_WALLPAPER_COLOURS = "keyboard_theme_wallpaper_colours"
     internal const val KEY_KEYBOARD_BACKGROUND_AUTO_COLOURS = "keyboard_background_auto_colours"
     internal const val KEY_KEYBOARD_BACKGROUND_KEY_OPACITY = "keyboard_background_key_opacity"
     const val KEY_KEYBOARD_BACKGROUND_UPDATED = "keyboard_background_updated"
     internal const val KEY_KEYBOARD_BACKGROUND_FRAMING = "keyboard_background_framing"
+    private const val KEY_ONE_TIME_CODES = "one_time_codes_enabled"
     private const val KEY_AUTO_SHIFT_FIELD_TYPES = "auto_shift_field_types"
     private const val KEY_SEARCH_BAR_WAITS_FOR_TYPING = "search_bar_waits_for_typing"
     // Each app's last language, kept apart from settings (not in backups)
     private const val APP_LANGUAGES_PREFS = "app_languages"
+    private const val KEY_CLEAN_PASTED_LINKS = "clean_pasted_links" // Strip tracking from pasted links
     internal const val KEY_EMOJI_SUGGESTIONS = "emoji_suggestions_enabled"
     internal const val KEY_SUGGESTIONS_BOLD = "suggestions_bold" // Suggestion bar words in bold
     internal const val KEY_SUGGESTION_KEYS = "suggestion_keys" // Keys that pick a suggestion
     private const val KEY_SPEECH_KEEP_LISTENING = "speech_keep_listening" // Voice input carries on through pauses
     internal const val KEY_CLICKS_KEYBOARD_SEEN = "clicks_keyboard_seen" // A Clicks Power Keyboard has been connected here
+    internal const val KEY_INLINE_AUTOFILL = "inline_autofill_enabled"
     internal const val KEY_LED_INDIVIDUAL_COLORS = "led_individual_colors"
     internal const val KEY_LED_LOCKED_ANIMATION = "led_locked_animation"
     internal const val LED_COLOR_KEY_PREFIX = "led_color_"
@@ -785,6 +790,18 @@ object SettingsManager {
     fun titan2LayoutApplies(context: Context): Boolean =
         it.palsoftware.pastiera.inputmethod.DeviceSpecific.isTitan2Device() || isTitan2LayoutEnabled(context)
 
+    /** Links the keyboard pastes lose their tracking parameters and mobile hosts. On by default. */
+    fun getCleanPastedLinks(context: Context): Boolean =
+        getPreferences(context).getBoolean(KEY_CLEAN_PASTED_LINKS, true)
+
+    fun setCleanPastedLinks(context: Context, enabled: Boolean) {
+        getPreferences(context).edit().putBoolean(KEY_CLEAN_PASTED_LINKS, enabled).apply()
+    }
+
+    /** [text] as the keyboard pastes it: links cleaned when that's on. */
+    fun textToPaste(context: Context, text: String): String =
+        if (getCleanPastedLinks(context)) it.palsoftware.pastiera.clipboard.LinkCleaner.clean(text) else text
+
     /** Remember the language per app: each app gets back the language last used in it. */
     fun getLanguagePerAppEnabled(context: Context): Boolean =
         getPreferences(context).getBoolean(KEY_LANGUAGE_PER_APP, true)
@@ -818,6 +835,34 @@ object SettingsManager {
 
     fun setAutoShiftFieldTypes(context: Context, ids: Set<String>) {
         getPreferences(context).edit().putString(KEY_AUTO_SHIFT_FIELD_TYPES, ids.sorted().joinToString(",")).apply()
+    }
+
+    /** One-time codes from notifications, offered as a chip (needs notification access). */
+    fun getOneTimeCodesEnabled(context: Context): Boolean =
+        getPreferences(context).getBoolean(KEY_ONE_TIME_CODES, false)
+
+    fun setOneTimeCodesEnabled(context: Context, enabled: Boolean) {
+        getPreferences(context).edit().putBoolean(KEY_ONE_TIME_CODES, enabled).apply()
+        if (!enabled) it.palsoftware.pastiera.otp.OneTimeCodes.consume()
+    }
+
+    /** Whether Android lets the app read notifications (for one-time codes). */
+    fun hasNotificationAccess(context: Context): Boolean =
+        androidx.core.app.NotificationManagerCompat.getEnabledListenerPackages(context).contains(context.packageName)
+
+    fun getPasteSuggestionEnabled(context: Context): Boolean =
+        getPreferences(context).getBoolean(KEY_PASTE_SUGGESTION, true)
+
+    fun setPasteSuggestionEnabled(context: Context, enabled: Boolean) {
+        getPreferences(context).edit().putBoolean(KEY_PASTE_SUGGESTION, enabled).apply()
+    }
+
+    /** The paste suggestion in password fields too, masked (a password you just copied). */
+    fun getPasteSuggestionInPasswordFields(context: Context): Boolean =
+        getPreferences(context).getBoolean(KEY_PASTE_SUGGESTION_PASSWORD_FIELDS, true)
+
+    fun setPasteSuggestionInPasswordFields(context: Context, enabled: Boolean) {
+        getPreferences(context).edit().putBoolean(KEY_PASTE_SUGGESTION_PASSWORD_FIELDS, enabled).apply()
     }
 
     /** Incognito typing everywhere: the keyboard learns nothing from what you type. */

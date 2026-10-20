@@ -69,6 +69,8 @@
     <string name="incognito_always_description">Non imparare nulla da ciò che digiti: niente parole nuove, previsioni, email o numeri, né emoji o simboli recenti</string>
     <string name="incognito_follow_apps_title">In incognito quando un’app lo chiede</string>
     <string name="incognito_follow_apps_description">Non imparare nulla nei campi che lo chiedono alle tastiere, come le schede private dei browser</string>
+    <string name="paste_suggestion_title">Suggerisci di incollare ciò che hai copiato</string>
+    <string name="paste_suggestion_description">Per un minuto dopo aver copiato del testo, un nuovo campo lo propone come suggerimento; scrivere lo nasconde. Mai nei campi password o per testo segnato come sensibile</string>
     <string name="emoji_suggestions_title">Suggerimenti emoji</string>
     <string name="emoji_suggestions_description">Un\'emoji per la parola che scrivi, es. 🍕 per pizza. Sceglierla aggiunge l\'emoji dopo la parola.</string>
     <string name="alt_key_editor_intro">Crea il tuo livello SYM del dispositivo: cosa scrive ogni tasto con SYM, e con Alt quando Alt usa il livello SYM del dispositivo. Un profilo può sostituire automaticamente quello di una tastiera, e il backup di Pastiera lo include.</string>
@@ -118,6 +120,8 @@
     <string name="autocorrect_section_replacements">Sostituzioni del testo</string>
     <string name="autocorrect_section_tuning">Regolazioni</string>
     <string name="clicks_launcher_interception_service_description">Permette a Pastiera di fare ciò che una tastiera da sola non può, per le opzioni che attivi: leggere gli scorrimenti sulla tastiera, gestire i tasti che un\'app leggerebbe per prima (pulsanti assegnati ad azioni di Pastiera e, nelle app in cui la tastiera è nascosta, i tasti per i LED di stato, il tasto emoji e Sym) e vedere quale app è in primo piano, così la dimensione dello schermo per app può seguirla. Non può leggere ciò che c\'è sullo schermo.</string>
+    <string name="inline_autofill_title">Compilazione automatica nella barra</string>
+    <string name="inline_autofill_description">Gli accessi salvati, i codici monouso e gli indirizzi del tuo gestore password compaiono come chip nella barra dei suggerimenti; toccane uno per compilare il campo.</string>
     <string name="led_colors_title">Colori dei LED di stato</string>
     <string name="led_colors_description">Un colore per tutti i LED dal tema, o un colore per ciascuno</string>
     <string name="led_colors_individual_title">Colora ogni LED</string>
@@ -196,6 +200,8 @@
     <string name="menu_bar_reset">Ripristina la barra del menu</string>
     <string name="suggestions_bold_title">Suggerimenti in grassetto</string>
     <string name="suggestions_bold_description">Parole della barra dei suggerimenti in grassetto, più facili da vedere</string>
+    <string name="clean_links_title">Pulisci i link copiati</string>
+    <string name="clean_links_description">I link che copi perdono il tracciamento (utm_, fbclid, il si di YouTube…) direttamente negli appunti, così sono puliti ovunque li incolli, e aprono il sito completo invece di quello mobile</string>
     <string name="suggestion_keys_title">Scegli i suggerimenti dalla tastiera</string>
     <string name="suggestion_keys_ctrl_shift_qwe">Ctrl+Maiusc+Q, W o E: il suggerimento a sinistra, al centro o a destra</string>
     <string name="suggestion_keys_ctrl_digits">Ctrl+1, 2 o 3: il suggerimento a sinistra, al centro o a destra (fila dei numeri)</string>

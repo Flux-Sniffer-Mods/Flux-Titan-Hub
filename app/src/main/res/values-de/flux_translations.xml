@@ -128,6 +128,9 @@
     <string name="layout_editor_exported">Layout exportiert</string>
     <string name="layout_editor_export_failed">Layout konnte nicht exportiert werden</string>
     <string name="layout_editor_link">Layout bearbeiten: tippe auf seinen Stift</string>
+    <string name="one_time_codes_title">Einmalcodes</string>
+    <string name="one_time_codes_description">Bietet einen Code aus einer SMS oder E-Mail als Chip im nächsten Textfeld an. Benötigt Benachrichtigungszugriff; nur der Code wird 3 Minuten lang im Speicher gehalten.</string>
+    <string name="one_time_code_chip">Code %1$s</string>
     <string name="quick_launcher_app_shortcuts_title">App-Verknüpfungen in den Ergebnissen</string>
     <string name="quick_launcher_app_shortcuts_description">Die eigenen Verknüpfungen von Apps, die ihr Symbol bei langem Drücken zeigt (\"Neue Nachricht\", \"QR-Code scannen\"), sind Ergebnisse, die du direkt öffnen kannst.</string>
     <string name="quick_launcher_niagara_back_title">Zurück kehrt zur App zurück</string>
@@ -179,11 +182,15 @@
     <string name="recommended_label_emoji_key_opens_layer">Emoji-Taste öffnet die Emoji-Ebene</string>
     <string name="recommended_label_emoji_suggestions_enabled">Emoji-Vorschläge</string>
     <string name="recommended_label_keyboard_theme_wallpaper_colours">Hintergrundfarben</string>
+    <string name="recommended_label_one_time_codes_enabled">Einmalcodes</string>
     <string name="recommended_label_quick_launcher_behavior">Schnellstarter</string>
     <string name="recommended_label_search_bar_waits_for_typing">Tastaturleiste in Suchleisten erst beim Tippen</string>
     <string name="recommended_label_titan2_elite_rounded_corner_insets">Abgerundete Ecken</string>
     <string name="restricted_settings_toast">Tippe oben rechts auf ⋮ und dann auf Eingeschränkte Einstellungen zulassen. Falls es nicht erscheint, versuche zuerst einmal, den Dienst einzuschalten.</string>
     <string name="restricted_settings_accessibility">Aus, und Android blockiert es, bis du eingeschränkte Einstellungen zulässt. Tippe, um App-Info zu öffnen, dann ⋮ › Eingeschränkte Einstellungen zulassen, und komm zurück, um es einzuschalten.</string>
+    <string name="restricted_settings_notifications">Android blockiert den Benachrichtigungszugriff, bis du eingeschränkte Einstellungen zulässt. Tippe, um App-Info zu öffnen, dann ⋮ › Eingeschränkte Einstellungen zulassen, und komm zurück.</string>
+    <string name="notification_access_title">Benachrichtigungszugriff</string>
+    <string name="notification_access_off">Aus: Einmalcodes benötigen ihn. Tippe, um ihn einzuschalten.</string>
     <string name="restricted_settings_help_title">Eingeschränkte Einstellungen zulassen</string>
     <string name="restricted_settings_help_steps">Android blockiert Bedienungshilfen- und Benachrichtigungszugriff für Apps, die aus einer Datei installiert wurden, wie Pastiera, bis du es einmal zulässt:\n\n1. Tippe auf App-Info öffnen.\n2. Tippe oben rechts auf ⋮, dann auf Eingeschränkte Einstellungen zulassen, und bestätige mit PIN oder Fingerabdruck.\n3. Kein Eingeschränkte Einstellungen zulassen unter ⋮? Geh zurück, versuche einmal, die Funktion einzuschalten (Android meldet eine eingeschränkte Einstellung), und kehre zu App-Info zurück: Danach erscheint es.\n4. Kehre zu Pastiera zurück und schalte die Funktion ein.</string>
     <string name="restricted_settings_help_open">App-Info öffnen</string>
@@ -302,6 +309,10 @@
     <string name="incognito_always_description">Nichts aus deinen Eingaben lernen: keine neuen Wörter, Vorhersagen, E-Mails oder Nummern und keine zuletzt verwendeten Emoji oder Symbole</string>
     <string name="incognito_follow_apps_title">Inkognito, wenn eine App darum bittet</string>
     <string name="incognito_follow_apps_description">Nichts lernen in Feldern, die Tastaturen darum bitten, etwa in privaten Browser-Tabs</string>
+    <string name="paste_suggestion_title">Einfügen des Kopierten vorschlagen</string>
+    <string name="paste_suggestion_description">Eine Minute lang nach dem Kopieren bietet ein neues Textfeld den Text als Vorschlag an; Tippen verwirft ihn. Als sensibel markierter Text (aus einem Passwortmanager) wird nur in Passwortfeldern angeboten</string>
+    <string name="paste_in_password_fields_title">Auch in Passwortfeldern</string>
+    <string name="paste_in_password_fields_description">Ein Passwortfeld bietet an, was du gerade kopiert hast, auch aus einem Passwortmanager, als ⎘ •••••••• (nie den Text selbst). Es wird nur im Speicher gehalten, nie im Zwischenablageverlauf</string>
     <string name="emoji_suggestions_title">Emoji-Vorschläge</string>
     <string name="emoji_suggestions_description">Ein Emoji für das Wort, das du tippst, z. B. 🍕 für Pizza. Auswählen fügt das Emoji nach dem Wort ein.</string>
     <string name="alt_key_editor_intro">Erstelle deine eigene Geräte-SYM-Ebene: was jede Taste mit SYM schreibt, und mit Alt, wenn Alt die Geräte-SYM-Ebene nutzt. Ein Profil kann die eigene Ebene einer Tastatur automatisch ersetzen, und die Sicherung von Pastiera enthält es.</string>
@@ -333,7 +344,7 @@
     <string name="alt_key_editor_summary_ready">Erstelle deine eigene Geräte-SYM-Ebene, leer oder aus einem kuratierten Profil.</string>
     <string name="clicks_all_key_mappings_ready_description">Deine eigenen Alt- und SYM-Zeichen für jede Taste, in einem eigenen Geräte-SYM-Profil. Ctrl-Kürzel findest du unter Tastenkürzel.</string>
     <string name="alt_key_editor_no_profiles">Noch keine Profile. Beginne oben eines.</string>
-    <string name="settings_section_clipboard">Zwischenablage</string>
+    <string name="settings_section_clipboard">Zwischenablage &amp; Codes</string>
     <string name="settings_section_editing">Bearbeiten und Bewegen</string>
     <string name="settings_nav_mode_hub_description">Pfeiltasten, Auswahl und mehr über die Buchstabentasten, mit Ctrl</string>
     <string name="settings_section_terminals">Terminals, Code &amp; Desktops</string>
@@ -342,6 +353,8 @@
     <string name="autocorrect_section_dictionary">Wörterbuch, Lernen und Rechtschreibung</string>
     <string name="autocorrect_section_replacements">Textersetzungen</string>
     <string name="autocorrect_section_tuning">Feinabstimmung</string>
+    <string name="inline_autofill_title">Autofill in der Vorschlagsleiste</string>
+    <string name="inline_autofill_description">Die gespeicherten Anmeldedaten, Einmalcodes und Adressen deines Passwortmanagers erscheinen als Chips in der Vorschlagsleiste; tippe auf einen, um das Feld auszufüllen.</string>
     <string name="led_colors_title">Farben der Status-LEDs</string>
     <string name="led_colors_description">Eine Farbe für alle LEDs aus dem Theme, oder eine Farbe für jede</string>
     <string name="led_colors_individual_title">Jede LED einfärben</string>
@@ -433,6 +446,8 @@
     <string name="menu_bar_reset">Menüleiste zurücksetzen</string>
     <string name="suggestions_bold_title">Fette Vorschläge</string>
     <string name="suggestions_bold_description">Wörter der Vorschlagsleiste fett, auf einen Blick leichter zu erkennen</string>
+    <string name="clean_links_title">Kopierte Links bereinigen</string>
+    <string name="clean_links_description">Kopierte Links verlieren ihr Tracking (utm_, fbclid, YouTubes si …) direkt in der Zwischenablage – so sind sie überall sauber, wo du sie einfügst, und öffnen die volle Website statt der mobilen</string>
     <string name="suggestion_keys_title">Vorschläge per Tastatur wählen</string>
     <string name="suggestion_keys_ctrl_shift_qwe">Ctrl+Shift+Q, W oder E: der linke, mittlere oder rechte Vorschlag</string>
     <string name="suggestion_keys_ctrl_digits">Ctrl+1, 2 oder 3: der linke, mittlere oder rechte Vorschlag (Zahlenreihe)</string>
@@ -915,6 +930,7 @@
     <string name="sym_start_most_popular">Mit den beliebtesten beginnen</string>
     <string name="shell_elsewhere_section">Anderswo</string>
     <string name="shell_elsewhere_trackpad">Auf Shell-Zugriff gestellt, werden die Wischgesten des Trackpads direkt von der Tastatur gelesen.</string>
+    <string name="shell_elsewhere_otp">Mit Shell-Zugriff lassen sich Codes aus Benachrichtigungen lesen, die Android vor Apps verbirgt (Android 15 und neuer).</string>
     <string name="crash_log">Absturzprotokoll speichern</string>
     <string name="crash_log_description">Androids Aufzeichnung der letzten Abstürze von Pastiera, gespeichert unter Download/Pastiera/crash-log.txt zum Teilen.</string>
     <string name="crash_log_saved">Gespeichert unter Download/Pastiera/crash-log.txt</string>
@@ -926,7 +942,7 @@
     <string name="crash_log_cleared">Logs geleert</string>
     <string name="module_keyboard_title">Tastatur</string>
     <string name="settings_privacy_clipboard_title">Datenschutz &amp; Zwischenablage</string>
-    <string name="settings_privacy_clipboard_description">Inkognito und Verlauf der Zwischenablage</string>
+    <string name="settings_privacy_clipboard_description">Inkognito, Vorschläge aus der Zwischenablage, Einmalcodes</string>
     <string name="settings_general_note">Was alle Module gemeinsam haben. Die Einstellungen eines Moduls stehen auf seiner Seite: Tippe auf dem Startbildschirm auf seine Kachel.</string>
     <string name="shell_access_on">Läuft.</string>
     <string name="shell_access_off">Läuft noch nicht: Tippe, um Shizuku einzurichten.</string>

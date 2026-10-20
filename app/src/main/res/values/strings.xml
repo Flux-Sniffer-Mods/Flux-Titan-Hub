@@ -1471,7 +1471,7 @@ Each key can be configured as Keycode, Action, Native Ctrl, or None. Use overrid
     <string name="kw_main_keyboard_theme">theme, themes, colors, colours, dark, light, system, presets, hardware keyboard, on-screen keyboard, Classic Cloud, Classic Midnight</string>
     <string name="kw_main_app_language">language, app language, locale, translation</string>
     <string name="kw_main_customization">customize, customization, appearance</string>
-    <string name="kw_main_advanced">privacy, incognito, clipboard, advanced</string>
+    <string name="kw_main_advanced">privacy, incognito, clipboard, paste, codes, advanced</string>
     <string name="kw_main_accessibility">accessibility, delay, bounce keys, overlapping keys, screen reader</string>
     <string name="kw_main_about">about, version, support, ko-fi, donate</string>
     <string name="kw_text_input_auto_space_punctuation">spacing, space, punctuation</string>

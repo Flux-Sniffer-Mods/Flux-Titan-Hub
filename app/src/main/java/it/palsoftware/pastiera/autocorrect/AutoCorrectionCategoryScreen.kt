@@ -57,6 +57,7 @@ import it.palsoftware.pastiera.getAddLastWordShortcut
 import it.palsoftware.pastiera.getAutoCorrectEnabled
 import it.palsoftware.pastiera.getAutoReplaceOnSpaceEnter
 import it.palsoftware.pastiera.getEmojiSuggestionsEnabled
+import it.palsoftware.pastiera.getInlineAutofillEnabled
 import it.palsoftware.pastiera.getLearnContactDetails
 import it.palsoftware.pastiera.getLearnFrequentWords
 import it.palsoftware.pastiera.getMaxAutoReplaceDistance
@@ -73,6 +74,7 @@ import it.palsoftware.pastiera.setAutoCorrectEnabled
 import it.palsoftware.pastiera.setAutoReplaceOnSpaceEnter
 import it.palsoftware.pastiera.setEmojiSuggestionsEnabled
 import it.palsoftware.pastiera.setExperimentalSuggestionsEnabled
+import it.palsoftware.pastiera.setInlineAutofillEnabled
 import it.palsoftware.pastiera.setLearnContactDetails
 import it.palsoftware.pastiera.setLearnFrequentWords
 import it.palsoftware.pastiera.setMaxAutoReplaceDistance
@@ -101,6 +103,9 @@ fun AutoCorrectionCategoryScreen(
     }
     var suggestionsEnabled by remember {
         mutableStateOf(SettingsManager.getSuggestionsEnabled(context))
+    }
+    var inlineAutofillEnabled by remember {
+        mutableStateOf(SettingsManager.getInlineAutofillEnabled(context))
     }
     var suggestionsBold by remember { mutableStateOf(SettingsManager.getSuggestionsBold(context)) }
     var suggestionKeys by remember { mutableStateOf(SettingsManager.getSuggestionKeys(context)) }
@@ -412,6 +417,19 @@ fun AutoCorrectionCategoryScreen(
                             SettingsManager.setEmojiSuggestionsEnabled(context, enabled)
                         }
                     )
+
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                        FluxSwitchRow(
+                            linkId = SettingLinkIds.AUTO_CORRECTION_INLINE_AUTOFILL,
+                            title = stringResource(R.string.inline_autofill_title),
+                            description = stringResource(R.string.inline_autofill_description),
+                            checked = inlineAutofillEnabled,
+                            onCheckedChange = { enabled ->
+                                inlineAutofillEnabled = enabled
+                                SettingsManager.setInlineAutofillEnabled(context, enabled)
+                            }
+                        )
+                    }
 
                     // Gestures that pick, add or delete words live with the suggestions
                     FluxActionRow(
