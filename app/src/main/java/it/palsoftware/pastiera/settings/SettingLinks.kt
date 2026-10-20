@@ -1151,6 +1151,11 @@ object SettingLinkRegistry {
         SettingsDestination.FluxHiddenApps to R.string.flux_hidden_apps_title,
         SettingsDestination.FluxLinuxDesktop to R.string.flux_linux_desktop_title,
         SettingsDestination.FluxOffline to R.string.flux_offline_title,
+        SettingsDestination.GameMode to R.string.game_mode_title,
+        SettingsDestination.GameControls to R.string.game_mode_controls_section,
+        SettingsDestination.GameSources to R.string.game_mode_sources_section,
+        SettingsDestination.GamesApp to R.string.game_mode_games_app_section,
+        SettingsDestination.GamePhone to R.string.game_mode_phone_section,
         SettingsDestination.Root to R.string.root_title,
         SettingsDestination.KeyboardsLayouts to R.string.settings_keyboards_layouts_title,
         SettingsDestination.Typing to R.string.settings_typing_title,
@@ -1192,14 +1197,14 @@ object SettingLinkRegistry {
     ) + customizationSettingSubtitles()
 
     /**
-     * The headings search results are grouped under: the keyboard's sections, then Shell
-     * access and Settings (the gear), shared by every module.
+     * The headings search results are grouped under: the keyboard's sections, gaming mode, then
+     * Shell access and Settings (the gear), shared by every module.
      */
     val categories: List<SettingsDestination> = listOf(
         SettingsDestination.KeyboardHome, SettingsDestination.Typing, SettingsDestination.KeyboardsLayouts,
         SettingsDestination.Modifiers, SettingsDestination.FluxEmojiGifs, SettingsDestination.Apps,
         SettingsDestination.LookSound, SettingsDestination.Advanced, SettingsDestination.ShellExtras,
-        SettingsDestination.Root, SettingsDestination.Main
+        SettingsDestination.GameMode, SettingsDestination.Root, SettingsDestination.Main
     )
 
     /** The keyboard's headings: what its page's search covers. */
@@ -1228,6 +1233,9 @@ object SettingLinkRegistry {
         SettingsDestination.KeyboardHome, SettingsDestination.QuickSettings -> SettingsDestination.KeyboardHome
         SettingsDestination.Advanced -> SettingsDestination.Advanced
         SettingsDestination.ShellExtras -> SettingsDestination.ShellExtras
+        // Modules of their own: their settings under their own heading
+        SettingsDestination.GameMode, SettingsDestination.GameControls, SettingsDestination.GameSources,
+        SettingsDestination.GamesApp, SettingsDestination.GamePhone -> SettingsDestination.GameMode
         SettingsDestination.Root -> SettingsDestination.Root
         // Settings (the gear): what every module shares
         else -> SettingsDestination.Main

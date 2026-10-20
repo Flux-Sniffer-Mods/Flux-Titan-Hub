@@ -25,6 +25,9 @@ class ClicksLauncherButtonAccessibilityService : AccessibilityService() {
     private val mapper = ClicksLauncherAccessibilityKeyMapper()
 
     override fun onKeyEvent(event: KeyEvent): Boolean {
+        // Gaming mode: a real controller's button, or else the key goes to the game as it is
+        if (it.palsoftware.pastiera.gaming.GameMode.onKeyEvent(event)) return true
+        if (it.palsoftware.pastiera.gaming.GameMode.passesKeys()) return false
         // Hidden apps: keys for Pastiera's emoji/symbols panels go to Pastiera, not the app
         val taken = HiddenAppKeyObserver.intercept(event)
         HiddenAppKeyObserver.logKey(event, if (taken) "accessibility, to the keyboard" else "accessibility, to the app")
@@ -64,6 +67,10 @@ class ClicksLauncherButtonAccessibilityService : AccessibilityService() {
             // dialog-style screen) keeps the screen size of the app beneath: switching would
             // flicker the app between the two
             val floating = confirmed && isFloating(pkg, event.className?.toString())
+            // Gaming mode's Back confirmation is for the game's own screen, not its app's menus or dialogs
+            // (a dialog over it isn't followed: Android doesn't always say when one closes)
+            if (!overlay && confirmed && !floating) it.palsoftware.pastiera.gaming.GameMode.onWindow(pkg, event.className?.toString())
+            // Gaming mode goes the same way, once the app in front has settled
             if (!overlay && !floating) it.palsoftware.pastiera.adb.PerAppDensity.onAppInFront(this, pkg, needsConfirming = !confirmed)
             // Keyboard swipes per app follow the app's own screens (the quick launcher, over
             // another app, keeps that app's choice)
@@ -108,6 +115,8 @@ class ClicksLauncherButtonAccessibilityService : AccessibilityService() {
         // Keyboard swipes: taken from apps while a field is typed in, handed to the keyboard
         ClicksAccessibilityKeyBridge.onTrackpadCaptureChanged = { captured -> claimTrackpad(captured) }
         claimTrackpad(ClicksAccessibilityKeyBridge.trackpadCaptured)
+        // Gaming mode's double Back, in a game that ignores Back: the home screen
+        it.palsoftware.pastiera.gaming.GameMode.goHome = { performGlobalAction(GLOBAL_ACTION_HOME) }
         // Started with an app already in front (after an update, or the service turned on): ask
         // Android which, through Shizuku, rather than wait for the next app to open
         Thread {
@@ -163,6 +172,7 @@ class ClicksLauncherButtonAccessibilityService : AccessibilityService() {
 
     override fun onDestroy() {
         ClicksAccessibilityKeyBridge.onTrackpadCaptureChanged = null
+        it.palsoftware.pastiera.gaming.GameMode.goHome = null
         mapper.reset()
         super.onDestroy()
     }

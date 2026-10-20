@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Keyboard
+import androidx.compose.material.icons.filled.SportsEsports
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -21,11 +22,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import it.palsoftware.pastiera.R
 import it.palsoftware.pastiera.TutorialFeaturePageContent
 import it.palsoftware.pastiera.modules.FluxModule
+import it.palsoftware.pastiera.settings.ReadinessCard
 
 /**
  * The first run's choice: which modules you'll use. Each is switched on or off as it's picked,
@@ -47,6 +50,8 @@ fun FluxTutorialModulesPageContent(chosen: Set<FluxModule>, onChange: (FluxModul
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 ModuleChoice(Icons.Filled.Keyboard, R.string.module_keyboard_title, R.string.flux_tutorial_modules_keyboard,
                     FluxModule.KEYBOARD in chosen) { onChange(FluxModule.KEYBOARD, it) }
+                ModuleChoice(Icons.Filled.SportsEsports, R.string.game_mode_title, R.string.flux_tutorial_modules_gaming,
+                    FluxModule.GAMING in chosen) { onChange(FluxModule.GAMING, it) }
                 Text(
                     stringResource(R.string.flux_tutorial_modules_later),
                     style = MaterialTheme.typography.bodySmall,
@@ -79,4 +84,27 @@ private fun ModuleChoice(icon: ImageVector, title: Int, text: Int, on: Boolean, 
             Switch(checked = on, onCheckedChange = onChange)
         }
     }
+}
+
+/** Gaming mode, chosen: what it does, what it still needs (each a tap from its fix), its settings. */
+@Composable
+fun FluxTutorialGamingPageContent(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    TutorialFeaturePageContent(
+        title = stringResource(R.string.game_mode_title),
+        description = stringResource(R.string.flux_tutorial_gaming_description),
+        icon = Icons.Filled.SportsEsports,
+        tint = MaterialTheme.colorScheme.tertiary,
+        bullets = listOf(
+            stringResource(R.string.flux_tutorial_gaming_bullet_keys),
+            stringResource(R.string.flux_tutorial_gaming_bullet_games),
+            stringResource(R.string.flux_tutorial_gaming_bullet_place)
+        ),
+        buttonText = stringResource(R.string.flux_tutorial_gaming_button),
+        onButtonClick = { openTutorialSettingById(context, "main.root.game_mode") },
+        modifier = modifier,
+        extraContent = {
+            ReadinessCard(FluxModule.GAMING, modifier = Modifier.padding(top = 8.dp), readyText = stringResource(R.string.flux_tutorial_gaming_ready))
+        }
+    )
 }

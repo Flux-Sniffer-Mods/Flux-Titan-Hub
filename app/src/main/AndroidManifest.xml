@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Gaming mode: placing keys over a game's own on-screen controls -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     
     <!-- Vibration, for haptic feedback -->
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -270,7 +272,75 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:exported="false"
             android:excludeFromRecents="true" />
+        <!-- A game's home screen shortcut: its profile on, then the game -->
+        <activity
+            android:name=".gaming.GameLaunchActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|density|keyboard|keyboardHidden|navigation|uiMode"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <!-- Quick Settings: gaming mode on or off; a long-press opens its settings -->
+        <service
+            android:name=".modules.GamingTileService"
+            android:exported="true"
+            android:icon="@drawable/ic_qs_gaming"
+            android:label="@string/game_mode_title"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.quicksettings.TOGGLEABLE_TILE"
+                android:value="true" />
+        </service>
+        <activity
+            android:name=".modules.QuickTileSettingsActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
+            </intent-filter>
+        </activity>
 
+        <!-- One game's or app's gaming mode settings, on their own -->
+        <activity
+            android:name=".gaming.GameEditActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:taskAffinity="it.palsoftware.pastiera.games"
+            android:theme="@style/Theme.Pastiera" />
+        <!-- Games: an app of its own in the app list, every game in it (off until turned on) -->
+        <activity
+            android:name=".gaming.GamesActivity"
+            android:exported="true"
+            android:label="@string/games_app_title"
+            android:icon="@mipmap/ic_games"
+            android:roundIcon="@mipmap/ic_games"
+            android:taskAffinity="it.palsoftware.pastiera.games"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|density"
+            android:theme="@style/Theme.Pastiera" />
+        <!-- Its entry in the app list (Games in the app list) -->
+        <activity-alias
+            android:name=".gaming.GamesLauncher"
+            android:targetActivity=".gaming.GamesActivity"
+            android:exported="true"
+            android:enabled="false"
+            android:label="@string/games_app_title"
+            android:icon="@mipmap/ic_games"
+            android:roundIcon="@mipmap/ic_games">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <!-- Gaming mode's notification: the next profile -->
+        <receiver
+            android:name=".gaming.GameMode$Receiver"
+            android:exported="false" />
         <!-- The pairing code typed into the built-in shell's notification -->
         <receiver
             android:name=".adb.shell.ShellSetup$PairReceiver"

@@ -2,6 +2,7 @@ package it.palsoftware.pastiera.settings
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.provider.Settings
 import android.view.inputmethod.InputMethodManager
 import androidx.compose.foundation.clickable
@@ -92,13 +93,23 @@ internal fun ReadinessCard(module: FluxModule, modifier: Modifier = Modifier, re
 @Composable
 private fun NeedRow(module: FluxModule, need: Need, onDone: () -> Unit) {
     val context = LocalContext.current
+    val shellPaired = remember { runCatching { it.palsoftware.pastiera.adb.shell.ShellSetup.paired(context) }.getOrDefault(false) }
     val title = stringResource(when (need) {
         Need.KEYBOARD_ON -> R.string.enable_pastiera
         Need.KEYBOARD_CHOSEN -> R.string.readiness_keyboard_chosen
+        Need.ACCESSIBILITY -> R.string.readiness_accessibility
+        Need.SHELL -> R.string.root_title
+        Need.OVERLAY -> R.string.readiness_overlay
+        Need.NOTIFICATIONS -> R.string.readiness_notifications
     })
     val description = when (need) {
         Need.KEYBOARD_ON -> stringResource(R.string.readiness_keyboard_on_description)
         Need.KEYBOARD_CHOSEN -> stringResource(R.string.readiness_keyboard_chosen_description)
+        Need.ACCESSIBILITY -> stringResource(R.string.readiness_accessibility_description)
+        Need.SHELL -> stringResource(R.string.shell_access_for_gaming) +
+            " " + stringResource(if (shellPaired) R.string.shell_access_paired else R.string.shell_access_off)
+        Need.OVERLAY -> stringResource(R.string.readiness_overlay_description)
+        Need.NOTIFICATIONS -> stringResource(R.string.readiness_notifications_gaming)
     }
     Row(
         modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).clickable { fix(context, need); onDone() }
@@ -123,5 +134,9 @@ private fun fix(context: Context, need: Need) {
         Need.KEYBOARD_CHOSEN -> runCatching {
             (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).showInputMethodPicker()
         }
+        Need.ACCESSIBILITY -> it.palsoftware.pastiera.RestrictedSettings.openAccessibility(context)
+        Need.SHELL -> openSettingsPage(context, SettingsPage(SettingsDestination.Root))
+        Need.OVERLAY -> open(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:${context.packageName}")))
+        Need.NOTIFICATIONS -> open(Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName))
     }
 }

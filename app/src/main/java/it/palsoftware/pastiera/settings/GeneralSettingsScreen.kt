@@ -184,7 +184,7 @@ internal fun GeneralSettingsScreen(
             )
 
             // The shell every module works through, then the whole phone's density, as a whole and
-            // per app
+            // per app (gaming mode's games too)
             SettingsSectionDivider(stringResource(R.string.settings_section_phone))
             val shell = rememberShellState()
             val shellStatus by shell.status

@@ -245,6 +245,8 @@ import it.palsoftware.pastiera.shouldApplyFrenchPunctuationSpacing
 class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibilityKeyBridge.Target {
 
     companion object {
+        /** How long after the keyboard asks to be shown itself a show request is still its own. */
+        private const val SELF_SHOW_MS = 1_000L
         /** Words in a field's hint, name or label that mark it as one for a one-time code. */
         private val ONE_TIME_CODE_WORDS = Regex("code|otp|one.?time|verif|2fa|pin|token|passcode|sms|codice|código|kod|код|mã")
         /** A terminal swipe: a character per half a key's width, a line per key's height or so. */
@@ -2070,6 +2072,8 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
     override fun onCreate() {
         super.onCreate()
         ClicksAccessibilityKeyBridge.register(this)
+        // The Games app's entry in the app list as its setting says
+        Thread { runCatching { it.palsoftware.pastiera.gaming.GamesActivity.syncLauncher(this) } }.start()
         // Root: the keyboard backlight follows the screen, when set (the Root page)
         it.palsoftware.pastiera.adb.KeyboardBacklight.start(this)
         // A code arriving while typing is offered straight away
@@ -3523,6 +3527,11 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
     }
 
     override fun onShowInputRequested(flags: Int, configChange: Boolean): Boolean {
+        // The app asked for the keyboard (not the keyboard itself, bringing its bar back): in a
+        // game, its text field is being typed in
+        if (!configChange && android.os.SystemClock.uptimeMillis() - selfShowAt > SELF_SHOW_MS) {
+            it.palsoftware.pastiera.gaming.GameMode.keyboardRequested()
+        }
         val accepted = super.onShowInputRequested(flags, configChange)
         if (hiddenAppSurfaceBlocked()) return false
         if (::keyboardVisibilityController.isInitialized) {
@@ -3569,7 +3578,13 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
         setExtractViewShown(true)
     }
 
-    private fun requestKeyboardInputView() = requestShowSelf(0)
+    /** When the keyboard last asked to be shown itself (its own bar brought back), not an app. */
+    @Volatile private var selfShowAt = 0L
+
+    private fun requestKeyboardInputView() {
+        selfShowAt = android.os.SystemClock.uptimeMillis()
+        requestShowSelf(0)
+    }
 
     /**
      * A GIF picked in the emoji picker. Fields that take GIF content get the file itself
@@ -4334,6 +4349,8 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
     }
 
     override fun onStartInput(info: EditorInfo?, restarting: Boolean) {
+        // A new field: a game's hidden one doesn't take the keys from it until it asks for the keyboard
+        if (!restarting) it.palsoftware.pastiera.gaming.GameMode.inputStarted()
         AutoCapitalizeHelper.debugPackage = info?.packageName
         info?.let {
             DebugCaptureStore.recordField(
@@ -4548,6 +4565,8 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
 
     override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
         if (terminalModeActive) TerminalMode.apply(info)
+        // A text field in a game: the keys type into it, not play
+        it.palsoftware.pastiera.gaming.GameMode.editorStarted(info)
         super.onStartInputView(info, restarting)
         hideSurfaceIfHiddenForApp()
         if (::textExpansionController.isInitialized) textExpansionController.clear()
@@ -4683,6 +4702,7 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
     
     override fun onFinishInputView(finishingInput: Boolean) {
         super.onFinishInputView(finishingInput)
+        it.palsoftware.pastiera.gaming.GameMode.editorFinished()
         if (::textExpansionController.isInitialized) textExpansionController.clear()
         // Finishing a view does not finish the editor session (Back and backend transitions).
         isInputViewActive = !finishingInput && inputContextState.isEditable
@@ -4904,6 +4924,7 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
     ) {
         val perfStart = ImePerfLogger.mark()
         super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd, candidatesStart, candidatesEnd)
+        if (playerOwnsInput()) return
         if (contactChips.isNotEmpty() || contactFieldKind() != null) refreshContactSuggestions()
         
         val state = inputContextState
@@ -5873,6 +5894,7 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
     }
 
     override fun onKeyLongPress(keyCode_: Int, event_: KeyEvent?): Boolean {
+        if (playerOwnsInput()) return false
         if (keyboardHiddenForApp && !hiddenAppKeyGoesToPastiera(keyCode_)) return super.onKeyLongPress(keyCode_, event_)
         if (!replayingProtectedNumberKey) {
             val accidentalInput = accidentalKeyInput(keyCode_, event_)
@@ -5917,11 +5939,17 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
     // Back taken from Niagara's search to return to the app: its release is ours too
     private var niagaraBackReturnTo: String? = null
 
+    /** In a game (nothing being typed): its keys are gaming mode's, the typing leaves them alone. */
+    private fun playerOwnsInput(): Boolean = it.palsoftware.pastiera.gaming.GameMode.passesKeys()
+
     override fun onKeyDown(keyCode_: Int, event_: KeyEvent?): Boolean {
         // Keycode 0 types nothing: the keyboard light's wake-up key, passed straight on
         if (keyCode_ == KeyEvent.KEYCODE_UNKNOWN) return super.onKeyDown(keyCode_, event_)
+        if (playerOwnsInput()) return false
         // The quick launcher in front: its keys go to it, not to the app's field beneath
         if (QuickLauncherActivity.ownsKey(event_)) return false
+        // The Games app moved through with keys: its keys
+        if ((currentInputEditorInfo?.inputType ?: 0) == 0 && it.palsoftware.pastiera.gaming.GamesActivity.ownsKey(this, event_)) return false
         // Suggestion swipes: typing keeps them picking; Backspace right after one undoes it
         if ((event_?.repeatCount ?: 0) == 0 && !KeyEvent.isModifierKey(keyCode_)) {
             if (keyCode_ == KeyEvent.KEYCODE_DEL) it.palsoftware.pastiera.core.SuggestionSwipeLearning.onDeleted(this)
@@ -6890,7 +6918,10 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
 
     override fun onKeyUp(keyCode_: Int, event_: KeyEvent?): Boolean {
         if (keyCode_ == KeyEvent.KEYCODE_UNKNOWN) return super.onKeyUp(keyCode_, event_)
+        if (playerOwnsInput()) return false
         if (QuickLauncherActivity.ownsKey(event_)) return false
+        // The Games app moved through with keys: its keys
+        if ((currentInputEditorInfo?.inputType ?: 0) == 0 && it.palsoftware.pastiera.gaming.GamesActivity.ownsKey(this, event_)) return false
         if (keyCode_ == KEYCODE_SYM) {
             symKeyHeld = false
             // Released after a chord in a hidden app: no panel

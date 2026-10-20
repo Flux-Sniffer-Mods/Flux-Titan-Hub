@@ -53,11 +53,41 @@ internal fun CrashLogRow() {
                 val traces = anrTraces(context)
                 it.palsoftware.pastiera.adb.AdbShell.run(
                     "f='$file'; mkdir -p \"\${f%/*}\"; { " +
-                        // Why Android last ended the app: a crash, memory running low
+                        // Why Android last ended the app: a crash or memory running low
                         "echo '== why it stopped =='; dumpsys activity exit-info $app | head -n 120; " +
                         "echo '== crashes =='; logcat -d -b crash -t 400; " +
                         "echo '== warnings and errors =='; logcat -d -b main,system '*:W' 'ActivityTaskManager:I' | " +
-                        "grep -i -E '$app|Permission Denial|quickstep|launcher3|Recents|OverviewProxy|AndroidRuntime|lowmemorykiller|has died|Killing' | grep -v 'Changing focus' | tail -n 400; " +
+                        "grep -i -E '$app|gamehub|egggame|Permission Denial|quickstep|launcher3|Recents|OverviewProxy|FluxGameMode|FluxGameLaunch|AndroidRuntime|lowmemorykiller|has died|Killing' | grep -v 'Changing focus' | tail -n 400; " +
+                        // The screen and window settings gaming mode and the desktop change
+                        // (through a pipe: Android's services can't write into a file in Download)
+                        // The input devices (the keyboard, the side buttons): which one each key comes from
+                        "echo '== input devices =='; dumpsys input | grep -E '^ +Device -?[0-9]+:' | head -30; " +
+                        "echo '== screen and window settings =='; wm size | cat; wm density | cat; " +
+                        "for k in force_resizable_activities enable_non_resizable_multi_window enable_freeform_support " +
+                        "force_desktop_mode_on_external_displays override_desktop_mode_features override_desktop_experience_features; do " +
+                        "echo \"\$k=\$(settings get global \$k | cat)\"; done; " +
+                        "echo \"rotation=\$(settings get system user_rotation | cat) auto=\$(settings get system accelerometer_rotation | cat)\"; " +
+                        // Recents: whether apps' turning is ignored, and what Recents and its screen are doing
+                        "echo \"ignore orientation=\$(cmd window get-ignore-orientation-request | cat)\"; " +
+                        "echo '== recents =='; dumpsys activity recents | head -n 12; " +
+                        "dumpsys activity activities | grep -E 'mResumedActivity|topResumedActivity|RecentsActivity|quickstep' | head -n 10; " +
+                        // The official GameHub's ways in (its activities, actions and links), to start its games directly
+                        "for p in com.xiaoji.egggame gamehub.lite; do pm path \$p >/dev/null 2>&1 && { echo \"== \$p ==\"; " +
+                        "dumpsys package \$p | grep -E 'Activity|Action:|Scheme:|Authority:|Path' | grep -v -i 'permission' | head -n 150; }; done; " +
+                        // Where games are found: the game folders, every Steam library on the phone's storage
+                        // and the launchers' own folders, and the launchers' home screen shortcuts
+                        "echo '== game folders =='; find '${it.palsoftware.pastiera.gaming.GameFolders.ROOT}' -maxdepth 4 ! -name '.nomedia' 2>/dev/null | head -n 200; " +
+                        "echo '== steam libraries =='; find /storage/emulated/0 -maxdepth 7 -name 'appmanifest_*.acf' 2>/dev/null | head -n 60; " +
+                        "for p in gamehub.lite emuready.gamehub.lite com.antutu.ABenchMark com.antutu.benchmark.full com.ludashi.aibench com.xiaoji.egggame app.gamenative; do " +
+                        "[ -d \"/storage/emulated/0/Android/data/\$p\" ] && { echo \"== \$p files ==\"; find \"/storage/emulated/0/Android/data/\$p\" -maxdepth 4 -type d 2>/dev/null | head -n 60; }; done; " +
+                        // Only the game launchers' own shortcuts: other apps' hold contacts and chats
+                        "echo '== launcher shortcuts =='; dumpsys shortcut | grep -E '^ *Package: |shortLabel=' | while IFS= read -r l; do case \"\$l\" in " +
+                        "*'Package: '*) case \"\$l\" in *'Package: gamehub'*|*'Package: emuready'*|*'Package: com.antutu'*|*'Package: com.ludashi'*|*'Package: com.xiaoji'*|*'Package: app.gamenative'*) k=1; echo \"\$l\";; *) k=;; esac;; " +
+                        "*) [ -n \"\$k\" ] && echo \"\$l\";; esac; done | head -n 80; " +
+                        // Gaming mode reads keys through Flux Keyboard's accessibility service: whether it's on
+                        "echo '== accessibility services =='; settings get secure enabled_accessibility_services | tr ':' '\\n'; " +
+                        // Flux Keyboard's own record of gaming mode and game launches (the phone's turns over in seconds)
+                        "echo '== gaming mode =='; tail -c 120000 '${context.getExternalFilesDir(null)?.path}/${it.palsoftware.pastiera.FluxLog.FILE_NAME}'; " +
                         (if (traces != null) "echo '== not responding: threads =='; cat '${traces.path}'; " else "") +
                         // Everything through a pipe: Android's services can't write into a file in Download
                         "} 2>&1 | cat > \"\$f\"; echo ok",

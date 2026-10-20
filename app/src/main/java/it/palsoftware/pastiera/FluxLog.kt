@@ -8,7 +8,7 @@ import java.util.Date
 import java.util.Locale
 
 /**
- * Warnings worth keeping (the shell, modules switched on and off), in a file of the app's own as
+ * Warnings from gaming mode and game launches, kept in a file of the app's own as
  * well as Android's log: the phone's log turns over in seconds, so by the time a crash log is
  * saved they'd be gone. The crash log adds the file.
  */

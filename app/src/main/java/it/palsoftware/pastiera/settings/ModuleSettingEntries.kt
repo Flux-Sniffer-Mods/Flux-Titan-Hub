@@ -2,8 +2,18 @@ package it.palsoftware.pastiera.settings
 
 import it.palsoftware.pastiera.R
 
-/** The rows of the smaller pages, so the search finds them too. */
+/** The rows of gaming mode and the smaller pages, so the search finds them too. */
 internal fun moduleSettingEntries(): List<SettingEntry> = listOf(
+    SettingEntry("game_mode.layout", R.string.game_mode_layout_title, summaryRes = R.string.game_remap_row_description, route = SettingRoute(SettingsDestination.GameControls)),
+    SettingEntry("game_mode.open_games", R.string.games_app_open, summaryRes = R.string.games_app_open_description, route = SettingRoute(SettingsDestination.GamesApp)),
+    SettingEntry("game_mode.add_game", R.string.game_mode_import, summaryRes = R.string.game_mode_import_description, route = SettingRoute(SettingsDestination.GameSources)),
+    SettingEntry("game_mode.folders", R.string.game_mode_folders, summaryRes = R.string.game_mode_folders_description, route = SettingRoute(SettingsDestination.GameSources)),
+    SettingEntry("game_mode.quick_launcher", R.string.game_mode_quick_launcher, summaryRes = R.string.game_mode_quick_launcher_description, route = SettingRoute(SettingsDestination.GamesApp)),
+    SettingEntry("game_mode.games_app", R.string.games_app_switch, summaryRes = R.string.games_app_switch_description, route = SettingRoute(SettingsDestination.GamesApp)),
+    SettingEntry("game_mode.games_app_controller_keys", R.string.games_app_controller_keys, summaryRes = R.string.games_app_controller_keys_description, route = SettingRoute(SettingsDestination.GamesApp)),
+    SettingEntry("game_mode.pin_all", R.string.games_pin_all, summaryRes = R.string.games_pin_all_description, route = SettingRoute(SettingsDestination.GamesApp)),
+    SettingEntry("game_mode.folder_add", R.string.game_mode_folder_add, summaryRes = R.string.game_mode_folder_add_description, route = SettingRoute(SettingsDestination.GameSources)),
+    SettingEntry("game_mode.phone_game_mode", R.string.phone_game_mode, summaryRes = R.string.phone_game_mode_description, route = SettingRoute(SettingsDestination.GamePhone)),
     SettingEntry("system.crash_log", R.string.crash_log, summaryRes = R.string.crash_log_description, route = SettingRoute(SettingsDestination.Main)),
     SettingEntry("system.clear_logs", R.string.crash_log_clear, summaryRes = R.string.crash_log_clear_description, route = SettingRoute(SettingsDestination.Main)),
     SettingEntry("main.keyboard_app", R.string.keyboard_app_switch, summaryRes = R.string.keyboard_app_switch_description, route = SettingRoute(SettingsDestination.KeyboardHome)),

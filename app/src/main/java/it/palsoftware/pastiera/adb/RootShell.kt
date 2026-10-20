@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Root, when the phone has it and it's switched on in Shell access: every shell command then
  * runs through su instead of the built-in shell or Shizuku (no pairing, ready at boot without
- * Wi-Fi). Off by default.
+ * Wi-Fi), and gaming mode can be a real controller. Off by default.
  */
 object RootShell {
     private const val KEY_ENABLED = "root_shell_enabled"

@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.EmojiEmotions
 import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material.icons.filled.SportsEsports
 import androidx.compose.material.icons.filled.Terminal
 import androidx.compose.material.icons.filled.TextFields
 import androidx.compose.material.icons.filled.Tune
@@ -63,8 +64,9 @@ import kotlinx.coroutines.withContext
 internal fun ModuleTiles(onSettings: (FluxModule) -> Unit = {}, onOpen: (FluxModule) -> Unit) {
     val context = LocalContext.current
     var states by remember { mutableStateOf(FluxModule.entries.associateWith { FluxModules.on(context, it) }) }
-    // Read at once (quick), so the tiles open saying it
+    // Read at once (quick), so the tiles open saying it; the games counted as before until counted again
     var statuses by remember { mutableStateOf(FluxModule.entries.associateWith { ModuleReadiness.status(context, it) }) }
+    var games by remember { mutableStateOf(knownGames) }
     var check by remember { mutableIntStateOf(0) }
     // Read again on coming back: a module's own page can switch it on or off, or fix what it needs
     val lifecycle = androidx.lifecycle.compose.LocalLifecycleOwner.current.lifecycle
@@ -78,8 +80,11 @@ internal fun ModuleTiles(onSettings: (FluxModule) -> Unit = {}, onOpen: (FluxMod
         lifecycle.addObserver(observer)
         onDispose { lifecycle.removeObserver(observer) }
     }
-    // How each is doing, every few seconds
+    // How each is doing, every few seconds (the shell comes up); the games once
     LaunchedEffect(check) {
+        games = withContext(Dispatchers.IO) {
+            runCatching { it.palsoftware.pastiera.gaming.GamesActivity.games(context).size }.getOrNull()
+        }?.also { knownGames = it } ?: games
         while (true) {
             statuses = withContext(Dispatchers.IO) { FluxModule.entries.associateWith { ModuleReadiness.status(context, it) } }
             delay(3_000)
@@ -94,7 +99,7 @@ internal fun ModuleTiles(onSettings: (FluxModule) -> Unit = {}, onOpen: (FluxMod
     TileGrid(gap = 12.dp, modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
         FluxModule.entries.forEach { module ->
             val on = states[module] == true
-            val (line, needsFix) = tileLine(module, on, statuses[module])
+            val (line, needsFix) = tileLine(module, on, statuses[module], games)
             ModuleTile(
                 module = module,
                 on = on,
@@ -120,14 +125,18 @@ internal fun ModuleTiles(onSettings: (FluxModule) -> Unit = {}, onOpen: (FluxMod
     )
 }
 
+/** The games counted last, for the gaming tile's line as the home screen opens again. */
+@Volatile private var knownGames: Int? = null
+
 /**
  * A tile's line: what the module does while it's off; on, how it's doing, or the first thing it
  * still needs (true: shown as needing a fix, which its page has).
  */
 @Composable
-private fun tileLine(module: FluxModule, on: Boolean, status: ModuleReadiness.Status?): Pair<String, Boolean> {
+private fun tileLine(module: FluxModule, on: Boolean, status: ModuleReadiness.Status?, games: Int?): Pair<String, Boolean> {
     val description = stringResource(when (module) {
         FluxModule.KEYBOARD -> R.string.module_keyboard_description
+        FluxModule.GAMING -> R.string.module_gaming_description
         FluxModule.DESKTOP -> R.string.module_coming_soon
     })
     if (!on || status == null) return description to false
@@ -136,8 +145,17 @@ private fun tileLine(module: FluxModule, on: Boolean, status: ModuleReadiness.St
         need != null -> stringResource(R.string.tile_fix, stringResource(when (need) {
             Need.KEYBOARD_ON -> R.string.tile_need_keyboard_on
             Need.KEYBOARD_CHOSEN -> R.string.tile_need_keyboard_chosen
+            Need.SHELL -> R.string.tile_need_shell
+            Need.ACCESSIBILITY -> R.string.tile_need_accessibility
+            Need.OVERLAY -> R.string.tile_need_overlay
+            Need.NOTIFICATIONS -> R.string.tile_need_notifications
         })) to true
         module == FluxModule.KEYBOARD -> stringResource(R.string.tile_keyboard_ready) to false
+        module == FluxModule.GAMING -> when (games) {
+            null -> description
+            0 -> stringResource(R.string.tile_gaming_no_games)
+            else -> stringResource(R.string.tile_gaming_ready, games)
+        } to false
         else -> description to false
     }
 }
@@ -159,18 +177,20 @@ private fun TileGrid(gap: androidx.compose.ui.unit.Dp, modifier: Modifier, conte
 
 private fun moduleIcon(module: FluxModule): ImageVector = when (module) {
     FluxModule.KEYBOARD -> Icons.Filled.Keyboard
+    FluxModule.GAMING -> Icons.Filled.SportsEsports
     FluxModule.DESKTOP -> Icons.Filled.DesktopWindows
 }
 
 @Composable
 internal fun moduleTitle(module: FluxModule): String = stringResource(when (module) {
     FluxModule.KEYBOARD -> R.string.module_keyboard_title
+    FluxModule.GAMING -> R.string.game_mode_title
     FluxModule.DESKTOP -> R.string.module_desktop_title
 })
 
 /**
  * A module's colours: the wallpaper's (the theme's), each module a step further round the hue
- * than the one before it, so the tiles run as a gradient (the keyboard, then the desktop)
+ * than the one before it, so the tiles run as a gradient (keyboard, gaming, then the desktop)
  * and tell apart at a glance while still matching the phone.
  */
 @Composable
@@ -179,7 +199,8 @@ private fun moduleColors(module: FluxModule): Pair<androidx.compose.ui.graphics.
     val accent = MaterialTheme.colorScheme.primary
     val turn = when (module) {
         FluxModule.KEYBOARD -> 0f
-        FluxModule.DESKTOP -> HUE_STEP
+        FluxModule.GAMING -> HUE_STEP
+        FluxModule.DESKTOP -> HUE_STEP * 2
     }
     return remember(container, accent, turn) { turned(container, turn) to turned(accent, turn) }
 }
@@ -317,6 +338,7 @@ internal fun ModuleOffBar(module: FluxModule, onTurnedOn: () -> Unit) {
                 Text(
                     stringResource(when (module) {
                         FluxModule.KEYBOARD -> R.string.module_off_keyboard
+                        FluxModule.GAMING -> R.string.module_off_gaming
                         FluxModule.DESKTOP -> R.string.module_coming_soon
                     }),
                     style = MaterialTheme.typography.bodySmall,
@@ -398,7 +420,7 @@ internal fun KeyboardSettingsRows(onNavigate: (SettingsDestination) -> Unit) {
         linkId = "main.shell_extras",
         onClick = { onNavigate(SettingsDestination.ShellExtras) }
     )
-    // This page as an app of its own in the home screen's app list
+    // This page as an app of its own in the home screen's app list, as Games is
     val context = LocalContext.current
     var inAppList by remember { mutableStateOf(it.palsoftware.pastiera.KeyboardActivity.inAppList(context)) }
     FluxSwitchRow(

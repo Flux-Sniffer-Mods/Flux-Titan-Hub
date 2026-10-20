@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import it.palsoftware.pastiera.modules.FluxModule
+import it.palsoftware.pastiera.modules.FluxModules
 import it.palsoftware.pastiera.adb.KeyboardBacklight
 import it.palsoftware.pastiera.adb.PerAppDensity
 import it.palsoftware.pastiera.adb.ScreenDensity
@@ -30,7 +32,7 @@ import it.palsoftware.pastiera.resolveShizukuStatus
 
 /**
  * Shell access: the built-in shell (paired once through wireless debugging), root or Shizuku,
- * which the shell extras run their commands through.
+ * which gaming mode and the shell extras run their commands through.
  */
 @Composable
 fun AdbSettingsScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
@@ -172,6 +174,12 @@ fun AdbSettingsScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
             title = stringResource(R.string.density_section),
             description = stringResource(R.string.screen_size_row_description)
         ) { openSettingsPage(context, SettingsPage(SettingsDestination.ScreenSize)) }
+        if (FluxModules.on(context, FluxModule.GAMING)) FluxActionRow(
+            linkId = null,
+            icon = "\u271A",
+            title = stringResource(R.string.game_mode_title),
+            description = stringResource(R.string.shell_access_for_gaming)
+        ) { openSettingsPage(context, SettingsPage(SettingsDestination.GameMode)) }
         FluxActionRow(
             linkId = null,
             title = stringResource(R.string.trackpad_provider_title),

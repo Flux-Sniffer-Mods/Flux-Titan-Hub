@@ -141,8 +141,9 @@ sealed class TutorialPageType {
     object FluxPermissions : TutorialPageType()
     object FluxBar : TutorialPageType()
     object FluxShizuku : TutorialPageType()
-    // The first run's choice of modules
+    // The first run's choice of modules, then a page for each module chosen beyond the keyboard
     object FluxModules : TutorialPageType()
+    object FluxGaming : TutorialPageType()
     
     data class Standard(
         val title: String,
@@ -262,6 +263,7 @@ fun TutorialScreen(
         }.toSet())
     }
     val keyboard = it.palsoftware.pastiera.modules.FluxModule.KEYBOARD in modules
+    val gaming = it.palsoftware.pastiera.modules.FluxModule.GAMING in modules
 
     val pages = buildList {
         if (configureOnly) {
@@ -309,9 +311,10 @@ fun TutorialScreen(
         // Flux Keyboard's flow: get it working (set up, the caption bar), learn it (typing, emoji
         // and symbols, moving around), your apps (shortcuts, the quick launcher), make it yours
         // (choices, the look), then the extras that need a permission or another app
-        // Android's restricted settings first: everything after can then be switched on
+        // Android's restricted settings first: everything after can then be switched on (the
+        // accessibility helper gaming mode reads the keys through too)
+        if (keyboard || gaming) add(TutorialPageType.FluxPermissions)
         if (keyboard) {
-            add(TutorialPageType.FluxPermissions)
             add(TutorialPageType.FluxSetup)
             add(TutorialPageType.FluxBar)
             if (DeviceSpecific.isTitan2Device()) {
@@ -348,11 +351,10 @@ fun TutorialScreen(
             add(TutorialPageType.FluxChoices)
             add(TutorialPageType.FluxPersonalise)
         }
-        // The shell, which the keyboard's extras run through
-        if (keyboard) {
-            add(TutorialPageType.FluxShizuku)
-            add(TutorialPageType.FluxExtras)
-        }
+        // The shell, which gaming mode and the keyboard's extras run through
+        if (keyboard || gaming) add(TutorialPageType.FluxShizuku)
+        if (keyboard) add(TutorialPageType.FluxExtras)
+        if (gaming) add(TutorialPageType.FluxGaming)
         add(
             TutorialPageType.Standard(
                 title = stringResource(R.string.tutorial_page_ready_title),
@@ -472,6 +474,7 @@ fun TutorialScreen(
                             },
                             modifier = Modifier.fillMaxSize()
                         )
+                        TutorialPageType.FluxGaming -> it.palsoftware.pastiera.tutorial.FluxTutorialGamingPageContent(modifier = Modifier.fillMaxSize())
                         TutorialPageType.FeatureStatuses -> {
                             TutorialFeatureStatusesPageContent(modifier = Modifier.fillMaxSize())
                         }
