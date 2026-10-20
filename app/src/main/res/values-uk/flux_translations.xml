@@ -319,7 +319,7 @@
     <string name="settings_capitalisation_punctuation_description">Великі літери, пробіли, тире й лапки</string>
     <string name="settings_editing_keys_title">Клавіші редагування</string>
     <string name="settings_editing_keys_description">Сполучення Backspace і Delete</string>
-    <string name="settings_auto_correction_description">Підказки, автовиправлення, підказки емодзі, словники й заміни</string>
+    <string name="settings_auto_correction_description">Підказки, автовиправлення, підказки емодзі, перевірка правопису, словники й заміни</string>
     <string name="settings_text_expansion_hub_description">Фрагменти тексту та короткі коди емодзі й символів</string>
     <string name="settings_theme_led_colours_title">Тема</string>
     <string name="settings_theme_led_colours_description">Кольори клавіатури та форми клавіш</string>
@@ -364,6 +364,9 @@
     <string name="paste_in_password_fields_description">Поле пароля пропонує щойно скопійоване, зокрема з менеджера паролів, як ⎘ •••••••• (ніколи сам текст). Зберігається лише в пам’яті, ніколи в історії буфера обміну</string>
     <string name="emoji_suggestions_title">Підказки емодзі</string>
     <string name="emoji_suggestions_description">Емодзі для слова, яке ви вводите, наприклад 🍕 для «піца». Вибір додає емодзі після слова.</string>
+    <string name="spell_checker_name">Перевірка правопису Pastiera</string>
+    <string name="spell_checker_title">Перевірка правопису</string>
+    <string name="spell_checker_description">Підкреслює слова з помилками в усіх застосунках за словниками Pastiera, зокрема додані вами слова. Торкніться, щоб вибрати Pastiera в налаштуваннях перевірки правопису Android.</string>
     <string name="alt_key_editor_intro">Створіть власний шар SYM пристрою: що вводить кожна клавіша із SYM, а також з Alt, коли Alt використовує шар SYM пристрою. Профіль може автоматично замінювати власний шар клавіатури, і він входить до резервної копії Pastiera.</string>
     <string name="alt_key_editor_keys_description">Торкніться клавіші, щоб задати, що вона вводить. Залиште порожнім, щоб нічого не вводити.</string>
     <string name="alt_key_editor_import_title">Імпорт профілю</string>
@@ -1310,6 +1313,8 @@
     <string name="suggestion_swipe_idle_value">Через %1$d с без набору свайп прокручує замість вибору</string>
     <string name="suggestion_swipe_idle_off">Свайп завжди вибирає</string>
     <string name="phone_trackpad_scroll_assist_tip">Увімкніть помічник прокручування: телефон передає свайпи клавіатури у Pastiera лише поки він увімкнений. Залиште режим свайпу на прокручуванні: власні дії забирають свайпи собі.</string>
+    <string name="phone_spell_checker_title">Перевірка правопису телефона в підказках</string>
+    <string name="phone_spell_checker_description">Якщо перевірка правопису Android від іншого застосунку (наприклад, Gboard), її виправлення для слова з помилкою додаються до панелі підказок.</string>
     <string name="select_from_cursor_title">Виділити від курсора</string>
     <string name="select_from_cursor_subtitle">Режим навігації увімкнено, кожен рух розширює виділення</string>
     <string name="private_mode_title">Приватний режим</string>

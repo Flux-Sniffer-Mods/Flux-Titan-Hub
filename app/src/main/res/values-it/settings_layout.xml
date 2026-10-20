@@ -25,7 +25,7 @@
     <string name="settings_capitalisation_punctuation_description">Lettere maiuscole, spazi, trattini e virgolette</string>
     <string name="settings_editing_keys_title">Tasti di modifica</string>
     <string name="settings_editing_keys_description">Combinazioni di Backspace e Canc</string>
-    <string name="settings_auto_correction_description">Suggerimenti, correzione automatica, emoji suggerite, dizionari e sostituzioni</string>
+    <string name="settings_auto_correction_description">Suggerimenti, correzione automatica, emoji suggerite, controllo ortografico, dizionari e sostituzioni</string>
     <string name="settings_text_expansion_hub_description">Snippet e codici brevi per emoji e simboli</string>
 
     <string name="settings_theme_led_colours_title">Tema</string>
@@ -73,6 +73,9 @@
     <string name="paste_suggestion_description">Per un minuto dopo aver copiato del testo, un nuovo campo lo propone come suggerimento; scrivere lo nasconde. Mai nei campi password o per testo segnato come sensibile</string>
     <string name="emoji_suggestions_title">Suggerimenti emoji</string>
     <string name="emoji_suggestions_description">Un\'emoji per la parola che scrivi, es. 🍕 per pizza. Sceglierla aggiunge l\'emoji dopo la parola.</string>
+    <string name="spell_checker_name">Controllo ortografico Pastiera</string>
+    <string name="spell_checker_title">Controllo ortografico</string>
+    <string name="spell_checker_description">Sottolinea le parole sbagliate in ogni app con i dizionari di Pastiera, comprese le parole che hai aggiunto. Tocca per scegliere Pastiera nelle impostazioni del controllo ortografico di Android.</string>
     <string name="alt_key_editor_intro">Crea il tuo livello SYM del dispositivo: cosa scrive ogni tasto con SYM, e con Alt quando Alt usa il livello SYM del dispositivo. Un profilo può sostituire automaticamente quello di una tastiera, e il backup di Pastiera lo include.</string>
     <string name="alt_key_editor_keys_description">Tocca un tasto per scegliere cosa scrive. Lascialo vuoto per non scrivere nulla.</string>
     <string name="alt_key_editor_import_title">Importa un profilo</string>

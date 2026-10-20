@@ -319,7 +319,7 @@
     <string name="settings_capitalisation_punctuation_description">Chữ in hoa, khoảng cách, gạch ngang và dấu ngoặc kép</string>
     <string name="settings_editing_keys_title">Phím chỉnh sửa</string>
     <string name="settings_editing_keys_description">Tổ hợp Backspace và Delete</string>
-    <string name="settings_auto_correction_description">Gợi ý, tự động sửa, gợi ý emoji, từ điển và thay thế</string>
+    <string name="settings_auto_correction_description">Gợi ý, tự động sửa, gợi ý emoji, kiểm tra chính tả, từ điển và thay thế</string>
     <string name="settings_text_expansion_hub_description">Đoạn văn mẫu, và mã ngắn emoji và ký hiệu</string>
     <string name="settings_theme_led_colours_title">Chủ đề</string>
     <string name="settings_theme_led_colours_description">Màu bàn phím và hình dạng phím</string>
@@ -364,6 +364,9 @@
     <string name="paste_in_password_fields_description">Ô mật khẩu đề xuất nội dung bạn vừa sao chép, kể cả từ trình quản lý mật khẩu, dưới dạng ⎘ •••••••• (không bao giờ hiện văn bản). Chỉ được giữ trong bộ nhớ, không bao giờ trong lịch sử bảng nhớ tạm</string>
     <string name="emoji_suggestions_title">Gợi ý emoji</string>
     <string name="emoji_suggestions_description">Một emoji cho từ bạn đang gõ, ví dụ 🍕 cho pizza. Chọn nó sẽ thêm emoji sau từ.</string>
+    <string name="spell_checker_name">Trình kiểm tra chính tả Pastiera</string>
+    <string name="spell_checker_title">Kiểm tra chính tả</string>
+    <string name="spell_checker_description">Gạch chân từ sai chính tả trong mọi ứng dụng bằng từ điển của Pastiera, bao gồm cả từ bạn đã thêm. Chạm để chọn Pastiera trong cài đặt kiểm tra chính tả của Android.</string>
     <string name="alt_key_editor_intro">Tạo lớp SYM thiết bị của riêng bạn: mỗi phím gõ gì với SYM, và với Alt khi Alt dùng lớp SYM thiết bị. Một hồ sơ có thể tự động thay thế lớp riêng của bàn phím, và bản sao lưu của Pastiera bao gồm nó.</string>
     <string name="alt_key_editor_keys_description">Chạm một phím để đặt ký tự nó gõ. Để trống để không gõ gì.</string>
     <string name="alt_key_editor_import_title">Nhập hồ sơ</string>
@@ -1310,6 +1313,8 @@
     <string name="suggestion_swipe_idle_value">Sau %1$d giây không gõ, vuốt sẽ cuộn thay vì chọn</string>
     <string name="suggestion_swipe_idle_off">Vuốt luôn chọn</string>
     <string name="phone_trackpad_scroll_assist_tip">Bật Trợ lý cuộn: điện thoại chỉ chuyển thao tác vuốt bàn phím cho Pastiera khi nó bật. Để Chế độ vuốt ở cuộn: thao tác vuốt tùy chỉnh sẽ giữ lấy lần vuốt.</string>
+    <string name="phone_spell_checker_title">Trình kiểm tra chính tả của điện thoại trong gợi ý</string>
+    <string name="phone_spell_checker_description">Khi trình kiểm tra chính tả của Android thuộc ứng dụng khác (như Gboard), các sửa lỗi của nó cho từ sai sẽ có trong thanh gợi ý.</string>
     <string name="select_from_cursor_title">Chọn từ con trỏ</string>
     <string name="select_from_cursor_subtitle">Bật Chế độ điều hướng, mỗi lần di chuyển mở rộng vùng chọn</string>
     <string name="private_mode_title">Chế độ riêng tư</string>

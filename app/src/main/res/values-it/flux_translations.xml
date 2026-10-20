@@ -880,6 +880,8 @@
     <string name="suggestion_swipe_idle_value">Dopo %1$d s senza scrivere, uno scorrimento fa scorrere invece di scegliere</string>
     <string name="suggestion_swipe_idle_off">Gli scorrimenti scelgono sempre</string>
     <string name="phone_trackpad_scroll_assist_tip">Attiva l\'assistente di scorrimento: il telefono passa gli scorrimenti della tastiera a Pastiera solo mentre è attivo. Lascia la modalità di scorrimento su scorrere: le azioni personalizzate si tengono gli scorrimenti.</string>
+    <string name="phone_spell_checker_title">Il correttore del telefono nei suggerimenti</string>
+    <string name="phone_spell_checker_description">Se il correttore di Android è di un\'altra app (quello di Gboard, ad esempio), le sue correzioni per una parola sbagliata si aggiungono alla barra dei suggerimenti.</string>
     <string name="select_from_cursor_title">Seleziona dal cursore</string>
     <string name="select_from_cursor_subtitle">Modalità navigazione attiva, ogni spostamento estende la selezione</string>
     <string name="private_mode_title">Modalità privata</string>

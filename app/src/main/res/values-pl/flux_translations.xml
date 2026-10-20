@@ -319,7 +319,7 @@
     <string name="settings_capitalisation_punctuation_description">Wielkie litery, odstępy, myślniki i cudzysłowy</string>
     <string name="settings_editing_keys_title">Klawisze edycji</string>
     <string name="settings_editing_keys_description">Kombinacje Backspace i Delete</string>
-    <string name="settings_auto_correction_description">Podpowiedzi, automatyczna korekta, podpowiedzi emoji, słowniki i zamiany</string>
+    <string name="settings_auto_correction_description">Podpowiedzi, automatyczna korekta, podpowiedzi emoji, sprawdzanie pisowni, słowniki i zamiany</string>
     <string name="settings_text_expansion_hub_description">Fragmenty tekstu oraz kody skrótowe emoji i symboli</string>
     <string name="settings_theme_led_colours_title">Motyw</string>
     <string name="settings_theme_led_colours_description">Kolory klawiatury i kształty klawiszy</string>
@@ -364,6 +364,9 @@
     <string name="paste_in_password_fields_description">Pole hasła proponuje to, co właśnie skopiowałeś, także z menedżera haseł, jako ⎘ •••••••• (nigdy sam tekst). Jest trzymane tylko w pamięci, nigdy w historii schowka</string>
     <string name="emoji_suggestions_title">Podpowiedzi emoji</string>
     <string name="emoji_suggestions_description">Emoji dla wpisywanego słowa, np. 🍕 dla „pizza”. Wybranie go dodaje emoji po słowie.</string>
+    <string name="spell_checker_name">Sprawdzanie pisowni Pastiera</string>
+    <string name="spell_checker_title">Sprawdzanie pisowni</string>
+    <string name="spell_checker_description">Podkreśla błędnie napisane słowa w każdej aplikacji, korzystając ze słowników Pastiera, w tym dodanych przez Ciebie słów. Dotknij, aby wybrać Pastiera w ustawieniach sprawdzania pisowni Androida.</string>
     <string name="alt_key_editor_intro">Utwórz własną warstwę SYM urządzenia: co wpisuje każdy klawisz z SYM, a także z Alt, gdy Alt używa warstwy SYM urządzenia. Profil może automatycznie zastąpić własną warstwę klawiatury, a kopia zapasowa Pastiera go obejmuje.</string>
     <string name="alt_key_editor_keys_description">Dotknij klawisza, aby ustawić, co wpisuje. Zostaw puste, aby nic nie wpisywał.</string>
     <string name="alt_key_editor_import_title">Importuj profil</string>
@@ -1310,6 +1313,8 @@
     <string name="suggestion_swipe_idle_value">Po %1$d s bez pisania przesunięcie przewija zamiast wybierać</string>
     <string name="suggestion_swipe_idle_off">Przesunięcia zawsze wybierają</string>
     <string name="phone_trackpad_scroll_assist_tip">Włącz asystenta przewijania: telefon przekazuje przesunięcia klawiatury do Pastiera tylko wtedy, gdy jest włączony. Zostaw tryb przesuwania na przewijaniu: własne akcje zabierają przesunięcia.</string>
+    <string name="phone_spell_checker_title">Sprawdzanie pisowni telefonu w podpowiedziach</string>
+    <string name="phone_spell_checker_description">Gdy sprawdzanie pisowni Androida należy do innej aplikacji (np. Gboard), jego poprawki dla błędnego słowa trafiają na pasek podpowiedzi.</string>
     <string name="select_from_cursor_title">Zaznacz od kursora</string>
     <string name="select_from_cursor_subtitle">Tryb nawigacji włączony, każdy ruch rozszerza zaznaczenie</string>
     <string name="private_mode_title">Tryb prywatny</string>

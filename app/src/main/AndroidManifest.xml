@@ -198,6 +198,19 @@
         </service>
 
         <service
+            android:name=".spellcheck.PastieraSpellCheckerService"
+            android:label="@string/spell_checker_name"
+            android:permission="android.permission.BIND_TEXT_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.textservice.SpellCheckerService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.view.textservice.scs"
+                android:resource="@xml/spellchecker" />
+        </service>
+
+        <service
             android:name=".inputmethod.ClicksLauncherButtonAccessibilityService"
             android:exported="true"
             android:label="@string/clicks_launcher_interception_service_label"

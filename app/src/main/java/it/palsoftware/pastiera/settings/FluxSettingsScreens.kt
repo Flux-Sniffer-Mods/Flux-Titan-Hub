@@ -413,6 +413,8 @@ internal val fluxRowIcons: Map<String?, String> = mapOf(
     SettingLinkIds.PRIVACY_PASTE_SUGGESTION to "\u2398",    // ⎘
     SettingLinkIds.PRIVACY_PASTE_IN_PASSWORD_FIELDS to "\u2217", // ∗
     "offline.enabled" to "\u2298",                          // ⊘
+    SettingLinkIds.AUTO_CORRECTION_SPELL_CHECKER to "\u2713",   // ✓
+    "auto_correction.phone_spell_checker" to "\u2713",
     SettingLinkIds.AUTO_CORRECTION_INLINE_AUTOFILL to "\u26BF", // ⚿
     SettingLinkIds.AUTO_CORRECTION_EMOJI_SUGGESTIONS to "\u263A$TEXT",
     "auto_correction.show_add_word" to "+",

@@ -270,7 +270,7 @@
     <string name="settings_capitalisation_punctuation_description">Großbuchstaben, Abstände, Striche und Anführungszeichen</string>
     <string name="settings_editing_keys_title">Bearbeitungstasten</string>
     <string name="settings_editing_keys_description">Kombinationen mit Rücktaste und Entf</string>
-    <string name="settings_auto_correction_description">Vorschläge, automatische Korrektur, Emoji-Vorschläge, Wörterbücher und Ersetzungen</string>
+    <string name="settings_auto_correction_description">Vorschläge, automatische Korrektur, Emoji-Vorschläge, Rechtschreibprüfung, Wörterbücher und Ersetzungen</string>
     <string name="settings_text_expansion_hub_description">Textbausteine sowie Emoji- und Symbol-Kurzcodes</string>
     <string name="settings_theme_led_colours_title">Theme</string>
     <string name="settings_theme_led_colours_description">Tastaturfarben und Tastenformen</string>
@@ -315,6 +315,9 @@
     <string name="paste_in_password_fields_description">Ein Passwortfeld bietet an, was du gerade kopiert hast, auch aus einem Passwortmanager, als ⎘ •••••••• (nie den Text selbst). Es wird nur im Speicher gehalten, nie im Zwischenablageverlauf</string>
     <string name="emoji_suggestions_title">Emoji-Vorschläge</string>
     <string name="emoji_suggestions_description">Ein Emoji für das Wort, das du tippst, z. B. 🍕 für Pizza. Auswählen fügt das Emoji nach dem Wort ein.</string>
+    <string name="spell_checker_name">Pastiera-Rechtschreibprüfung</string>
+    <string name="spell_checker_title">Rechtschreibprüfung</string>
+    <string name="spell_checker_description">Unterstreicht falsch geschriebene Wörter in jeder App mit den Wörterbüchern von Pastiera, einschließlich deiner hinzugefügten Wörter. Tippe, um Pastiera in den Rechtschreibprüfungs-Einstellungen von Android auszuwählen.</string>
     <string name="alt_key_editor_intro">Erstelle deine eigene Geräte-SYM-Ebene: was jede Taste mit SYM schreibt, und mit Alt, wenn Alt die Geräte-SYM-Ebene nutzt. Ein Profil kann die eigene Ebene einer Tastatur automatisch ersetzen, und die Sicherung von Pastiera enthält es.</string>
     <string name="alt_key_editor_keys_description">Tippe auf eine Taste, um festzulegen, was sie schreibt. Leer lassen, damit sie nichts schreibt.</string>
     <string name="alt_key_editor_import_title">Profil importieren</string>
@@ -777,6 +780,8 @@
     <string name="suggestion_swipe_idle_value">Nach %1$d s ohne Tippen scrollt eine Wischgeste statt auszuwählen</string>
     <string name="suggestion_swipe_idle_off">Wischgesten wählen immer</string>
     <string name="phone_trackpad_scroll_assist_tip">Schalte den Scroll-Assistenten ein: Das Telefon gibt Wischgesten der Tastatur nur dann an Pastiera weiter. Lass den Wischmodus auf Scrollen: Eigene Wischaktionen behalten die Gesten für sich.</string>
+    <string name="phone_spell_checker_title">Die Rechtschreibprüfung des Telefons in Vorschlägen</string>
+    <string name="phone_spell_checker_description">Ist die Android-Rechtschreibprüfung die einer anderen App (etwa Gboard), kommen ihre Korrekturen für ein falsch geschriebenes Wort in die Vorschlagsleiste.</string>
     <string name="select_from_cursor_title">Ab dem Cursor markieren</string>
     <string name="select_from_cursor_subtitle">Navigationsmodus an, jede Bewegung erweitert die Markierung</string>
     <string name="private_mode_title">Privatmodus</string>

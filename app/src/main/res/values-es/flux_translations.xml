@@ -319,7 +319,7 @@
     <string name="settings_capitalisation_punctuation_description">Mayúsculas, espaciado, guiones y comillas</string>
     <string name="settings_editing_keys_title">Teclas de edición</string>
     <string name="settings_editing_keys_description">Combinaciones de Retroceso y Suprimir</string>
-    <string name="settings_auto_correction_description">Sugerencias, corrección automática, sugerencias de emoji, diccionarios y sustituciones</string>
+    <string name="settings_auto_correction_description">Sugerencias, corrección automática, sugerencias de emoji, corrector ortográfico, diccionarios y sustituciones</string>
     <string name="settings_text_expansion_hub_description">Fragmentos y códigos cortos de emoji y símbolos</string>
     <string name="settings_theme_led_colours_title">Tema</string>
     <string name="settings_theme_led_colours_description">Colores del teclado y formas de las teclas</string>
@@ -364,6 +364,9 @@
     <string name="paste_in_password_fields_description">Un campo de contraseña ofrece lo que acabas de copiar, incluso desde un gestor de contraseñas, como ⎘ •••••••• (nunca el texto en sí). Se guarda solo en memoria, nunca en el historial del portapapeles</string>
     <string name="emoji_suggestions_title">Sugerencias de emoji</string>
     <string name="emoji_suggestions_description">Un emoji para la palabra que escribes, p. ej. 🍕 para pizza. Al elegirlo se añade el emoji tras la palabra.</string>
+    <string name="spell_checker_name">Corrector ortográfico de Pastiera</string>
+    <string name="spell_checker_title">Corrector ortográfico</string>
+    <string name="spell_checker_description">Subraya las palabras mal escritas en todas las apps con los diccionarios de Pastiera, incluidas las palabras que añadiste. Toca para elegir Pastiera en los ajustes del corrector ortográfico de Android.</string>
     <string name="alt_key_editor_intro">Crea tu propia capa SYM del dispositivo: lo que escribe cada tecla con SYM, y con Alt cuando Alt usa la capa SYM del dispositivo. Un perfil puede sustituir automáticamente la capa propia de un teclado, y la copia de seguridad de Pastiera lo incluye.</string>
     <string name="alt_key_editor_keys_description">Toca una tecla para definir lo que escribe. Déjala vacía para que no escriba nada.</string>
     <string name="alt_key_editor_import_title">Importar un perfil</string>
@@ -1310,6 +1313,8 @@
     <string name="suggestion_swipe_idle_value">Tras %1$d s sin escribir, deslizar desplaza en vez de elegir</string>
     <string name="suggestion_swipe_idle_off">Deslizar siempre elige</string>
     <string name="phone_trackpad_scroll_assist_tip">Activa el asistente de desplazamiento: el teléfono solo pasa los deslizamientos del teclado a Pastiera mientras está activo. Deja el modo de deslizamiento en desplazar: las acciones personalizadas se quedan los deslizamientos.</string>
+    <string name="phone_spell_checker_title">El corrector del teléfono en las sugerencias</string>
+    <string name="phone_spell_checker_description">Si el corrector de Android es de otra app (el de Gboard, por ejemplo), sus correcciones para una palabra mal escrita se suman a la barra de sugerencias.</string>
     <string name="select_from_cursor_title">Seleccionar desde el cursor</string>
     <string name="select_from_cursor_subtitle">Modo de navegación activo; cada movimiento amplía la selección</string>
     <string name="private_mode_title">Modo privado</string>

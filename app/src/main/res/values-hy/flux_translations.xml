@@ -319,7 +319,7 @@
     <string name="settings_capitalisation_punctuation_description">Մեծատառեր, բացատներ, գծիկներ և չակերտներ</string>
     <string name="settings_editing_keys_title">Խմբագրման ստեղներ</string>
     <string name="settings_editing_keys_description">Backspace-ի և Delete-ի համակցություններ</string>
-    <string name="settings_auto_correction_description">Առաջարկներ, ինքնաշտկում, էմոջիի առաջարկներ, բառարաններ և փոխարինումներ</string>
+    <string name="settings_auto_correction_description">Առաջարկներ, ինքնաշտկում, էմոջիի առաջարկներ, ուղղագրության ստուգիչ, բառարաններ և փոխարինումներ</string>
     <string name="settings_text_expansion_hub_description">Տեքստային հատվածներ և էմոջիի ու նշանների կարճ կոդեր</string>
     <string name="settings_theme_led_colours_title">Թեմա</string>
     <string name="settings_theme_led_colours_description">Ստեղնաշարի գույներ և ստեղների ձևեր</string>
@@ -364,6 +364,9 @@
     <string name="paste_in_password_fields_description">Գաղտնաբառի դաշտն առաջարկում է հենց նոր պատճենվածը, այդ թվում գաղտնաբառերի կառավարչից, որպես ⎘ •••••••• (երբեք ինքը տեքստը)։ Պահվում է միայն հիշողության մեջ, երբեք սեղմատախտակի պատմության մեջ</string>
     <string name="emoji_suggestions_title">Էմոջիի առաջարկներ</string>
     <string name="emoji_suggestions_description">Էմոջի ձեր մուտքագրած բառի համար, օր.՝ 🍕 պիցցայի համար։ Ընտրելիս էմոջին ավելացվում է բառից հետո։</string>
+    <string name="spell_checker_name">Pastiera-ի ուղղագրության ստուգիչ</string>
+    <string name="spell_checker_title">Ուղղագրության ստուգիչ</string>
+    <string name="spell_checker_description">Ընդգծում է սխալ գրված բառերը բոլոր հավելվածներում Pastiera-ի բառարաններով, ներառյալ ձեր ավելացրած բառերը։ Հպեք՝ Android-ի ուղղագրության ստուգիչի կարգավորումներում Pastiera-ը ընտրելու համար։</string>
     <string name="alt_key_editor_intro">Ստեղծեք ձեր սեփական սարքի SYM շերտը․ ինչ է մուտքագրում յուրաքանչյուր ստեղն SYM-ով, և Alt-ով, երբ Alt-ն օգտագործում է սարքի SYM շերտը։ Պրոֆիլը կարող է ինքնաշխատ փոխարինել ստեղնաշարի սեփական շերտը, և Pastiera-ի պահուստը ներառում է այն։</string>
     <string name="alt_key_editor_keys_description">Հպեք ստեղնին՝ սահմանելու, թե ինչ է այն մուտքագրում։ Թողեք դատարկ, որպեսզի ոչինչ չմուտքագրի։</string>
     <string name="alt_key_editor_import_title">Ներմուծել պրոֆիլ</string>
@@ -1310,6 +1313,8 @@
     <string name="suggestion_swipe_idle_value">%1$d վ առանց մուտքագրման հետո սահեցումը ոլորում է, ոչ թե ընտրում</string>
     <string name="suggestion_swipe_idle_off">Սահեցումը միշտ ընտրում է</string>
     <string name="phone_trackpad_scroll_assist_tip">Միացրեք ոլորման օգնականը․ հեռախոսը ստեղնաշարի սահեցումները Pastiera-ին է փոխանցում միայն այն միացված լինելու դեպքում։ Թողեք սահեցման ռեժիմը ոլորման վրա․ հատուկ գործողությունները սահեցումները պահում են իրենց համար։</string>
+    <string name="phone_spell_checker_title">Հեռախոսի ուղղագրիչը առաջարկներում</string>
+    <string name="phone_spell_checker_description">Երբ Android-ի ուղղագրիչը այլ հավելվածինն է (օրինակ՝ Gboard-ինը), սխալ բառի նրա ուղղումները հայտնվում են առաջարկների գոտում։</string>
     <string name="select_from_cursor_title">Ընտրել կուրսորից</string>
     <string name="select_from_cursor_subtitle">Նավիգացիայի ռեժիմը միացված է, յուրաքանչյուր շարժում ընդլայնում է ընտրությունը</string>
     <string name="private_mode_title">Գաղտնի ռեժիմ</string>

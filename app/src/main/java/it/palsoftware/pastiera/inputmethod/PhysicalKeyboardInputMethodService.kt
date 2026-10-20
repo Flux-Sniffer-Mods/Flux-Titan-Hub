@@ -2105,7 +2105,13 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
             activeSuggestionLocalesProvider = { getAdditionalSuggestionLocalesForActiveInputStyle() }
         )
         inputEventRouter.suggestionController = suggestionController
+        // The phone's own spell checker (Gboard's, say) as a second opinion on misspelt words
+        val phoneSpellChecker = it.palsoftware.pastiera.spellcheck.PhoneSpellChecker(this)
+        suggestionController.externalSuggestions = { word, locale, onResult -> phoneSpellChecker.suggest(word, locale, onResult) }
         suggestionController.textAfterCursorProvider = { currentInputConnection?.getTextAfterCursor(32, 0) }
+        // The spell checker reads the loaded dictionary instead of loading its own
+        it.palsoftware.pastiera.spellcheck.PastieraSpellCheckerService.keyboardController =
+            java.lang.ref.WeakReference(suggestionController)
         
         // Preload dictionary in background so it's ready when user focuses a field
         suggestionController.preloadDictionary()
@@ -3365,6 +3371,7 @@ class PhysicalKeyboardInputMethodService : InputMethodService(), ClicksAccessibi
     override fun onDestroy() {
         it.palsoftware.pastiera.inputmethod.extrakeys.ExtraKeysToggle.handler = null
         it.palsoftware.pastiera.otp.OneTimeCodes.onNewCode = null
+        it.palsoftware.pastiera.spellcheck.PastieraSpellCheckerService.keyboardController = null
         HiddenAppKeyObserver.sink = null
         HiddenAppKeyObserver.interceptor = null
         HiddenAppKeyObserver.hiddenAppInFront = false

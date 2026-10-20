@@ -319,7 +319,7 @@
     <string name="settings_capitalisation_punctuation_description">Majuscules, espacement, tirets et guillemets</string>
     <string name="settings_editing_keys_title">Touches d’édition</string>
     <string name="settings_editing_keys_description">Combinaisons de Retour arrière et Suppr</string>
-    <string name="settings_auto_correction_description">Suggestions, correction automatique, suggestions d’emoji, dictionnaires et remplacements</string>
+    <string name="settings_auto_correction_description">Suggestions, correction automatique, suggestions d’emoji, correcteur orthographique, dictionnaires et remplacements</string>
     <string name="settings_text_expansion_hub_description">Extraits, et codes courts d’emoji et de symboles</string>
     <string name="settings_theme_led_colours_title">Thème</string>
     <string name="settings_theme_led_colours_description">Couleurs du clavier et formes des touches</string>
@@ -364,6 +364,9 @@
     <string name="paste_in_password_fields_description">Un champ de mot de passe propose ce que vous venez de copier, y compris depuis un gestionnaire de mots de passe, sous la forme ⎘ •••••••• (jamais le texte lui-même). Il est gardé en mémoire uniquement, jamais dans l’historique du presse-papiers</string>
     <string name="emoji_suggestions_title">Suggestions d’emoji</string>
     <string name="emoji_suggestions_description">Un emoji pour le mot que vous tapez, par ex. 🍕 pour pizza. Le choisir ajoute l’emoji après le mot.</string>
+    <string name="spell_checker_name">Correcteur orthographique Pastiera</string>
+    <string name="spell_checker_title">Correcteur orthographique</string>
+    <string name="spell_checker_description">Souligne les mots mal orthographiés dans toutes les apps avec les dictionnaires de Pastiera, y compris les mots que vous avez ajoutés. Touchez pour choisir Pastiera dans les paramètres du correcteur orthographique d’Android.</string>
     <string name="alt_key_editor_intro">Créez votre propre couche SYM de l’appareil : ce que tape chaque touche avec SYM, et avec Alt quand Alt utilise la couche SYM de l’appareil. Un profil peut remplacer automatiquement la couche propre d’un clavier, et la sauvegarde de Pastiera l’inclut.</string>
     <string name="alt_key_editor_keys_description">Touchez une touche pour définir ce qu’elle tape. Laissez-la vide pour ne rien taper.</string>
     <string name="alt_key_editor_import_title">Importer un profil</string>
@@ -1310,6 +1313,8 @@
     <string name="suggestion_swipe_idle_value">Après %1$d s sans taper, un balayage fait défiler au lieu de choisir</string>
     <string name="suggestion_swipe_idle_off">Les balayages choisissent toujours</string>
     <string name="phone_trackpad_scroll_assist_tip">Activez l’assistant de défilement : le téléphone ne transmet les balayages du clavier à Pastiera que lorsqu’il est actif. Laissez le mode de balayage sur défilement : les actions personnalisées gardent les balayages.</string>
+    <string name="phone_spell_checker_title">Le correcteur du téléphone dans les suggestions</string>
+    <string name="phone_spell_checker_description">Si le correcteur d’Android est celui d’une autre appli (Gboard, par exemple), ses corrections pour un mot mal orthographié rejoignent la barre de suggestions.</string>
     <string name="select_from_cursor_title">Sélectionner depuis le curseur</string>
     <string name="select_from_cursor_subtitle">Mode navigation activé, chaque déplacement étend la sélection</string>
     <string name="private_mode_title">Mode privé</string>

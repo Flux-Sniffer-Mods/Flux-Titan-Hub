@@ -319,7 +319,7 @@
     <string name="settings_capitalisation_punctuation_description">Κεφαλαία γράμματα, διαστήματα, παύλες και εισαγωγικά</string>
     <string name="settings_editing_keys_title">Πλήκτρα επεξεργασίας</string>
     <string name="settings_editing_keys_description">Συνδυασμοί Backspace και Delete</string>
-    <string name="settings_auto_correction_description">Προτάσεις, αυτόματη διόρθωση, προτάσεις emoji, λεξικά και αντικαταστάσεις</string>
+    <string name="settings_auto_correction_description">Προτάσεις, αυτόματη διόρθωση, προτάσεις emoji, ορθογραφικός έλεγχος, λεξικά και αντικαταστάσεις</string>
     <string name="settings_text_expansion_hub_description">Αποσπάσματα κειμένου και σύντομοι κωδικοί emoji και συμβόλων</string>
     <string name="settings_theme_led_colours_title">Θέμα</string>
     <string name="settings_theme_led_colours_description">Χρώματα πληκτρολογίου και σχήματα πλήκτρων</string>
@@ -364,6 +364,9 @@
     <string name="paste_in_password_fields_description">Ένα πεδίο κωδικού προσφέρει ό,τι μόλις αντιγράψατε, ακόμα και από διαχειριστή κωδικών, ως ⎘ •••••••• (ποτέ το ίδιο το κείμενο). Κρατιέται μόνο στη μνήμη, ποτέ στο ιστορικό προχείρου</string>
     <string name="emoji_suggestions_title">Προτάσεις emoji</string>
     <string name="emoji_suggestions_description">Ένα emoji για τη λέξη που πληκτρολογείτε, π.χ. 🍕 για πίτσα. Η επιλογή του προσθέτει το emoji μετά τη λέξη.</string>
+    <string name="spell_checker_name">Ορθογραφικός έλεγχος Pastiera</string>
+    <string name="spell_checker_title">Ορθογραφικός έλεγχος</string>
+    <string name="spell_checker_description">Υπογραμμίζει ανορθόγραφες λέξεις σε κάθε εφαρμογή με τα λεξικά του Pastiera, μαζί με λέξεις που προσθέσατε. Πατήστε για να επιλέξετε το Pastiera στις ρυθμίσεις ορθογραφικού ελέγχου του Android.</string>
     <string name="alt_key_editor_intro">Φτιάξτε το δικό σας επίπεδο SYM συσκευής: τι πληκτρολογεί κάθε πλήκτρο με SYM, και με Alt όταν το Alt χρησιμοποιεί το επίπεδο SYM συσκευής. Ένα προφίλ μπορεί να αντικαταστήσει αυτόματα το επίπεδο ενός πληκτρολογίου, και το αντίγραφο ασφαλείας του Pastiera το περιλαμβάνει.</string>
     <string name="alt_key_editor_keys_description">Πατήστε ένα πλήκτρο για να ορίσετε τι πληκτρολογεί. Αφήστε το κενό για να μην πληκτρολογεί τίποτα.</string>
     <string name="alt_key_editor_import_title">Εισαγωγή προφίλ</string>
@@ -688,6 +691,8 @@
     <string name="suggestion_swipe_idle_value">Μετά από %1$d δ χωρίς πληκτρολόγηση, το σάρωμα κάνει κύλιση αντί να επιλέγει</string>
     <string name="suggestion_swipe_idle_off">Τα σαρώματα επιλέγουν πάντα</string>
     <string name="phone_trackpad_scroll_assist_tip">Ενεργοποίησε τον βοηθό κύλισης: το τηλέφωνο περνά τα σαρώματα του πληκτρολογίου στο Pastiera μόνο όσο είναι ενεργός. Άφησε τη λειτουργία σαρώματος σε κύλιση: οι προσαρμοσμένες ενέργειες κρατούν τα σαρώματα.</string>
+    <string name="phone_spell_checker_title">Ο ορθογραφικός έλεγχος του τηλεφώνου στις προτάσεις</string>
+    <string name="phone_spell_checker_description">Όταν ο ορθογραφικός έλεγχος του Android είναι άλλης εφαρμογής (π.χ. του Gboard), οι διορθώσεις του για μια λάθος λέξη μπαίνουν στη γραμμή προτάσεων.</string>
     <string name="select_from_cursor_title">Επιλογή από τον κέρσορα</string>
     <string name="select_from_cursor_subtitle">Λειτουργία πλοήγησης ενεργή, κάθε κίνηση επεκτείνει την επιλογή</string>
     <string name="private_mode_title">Ιδιωτική λειτουργία</string>

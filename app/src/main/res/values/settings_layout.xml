@@ -26,7 +26,7 @@
     <string name="settings_capitalisation_punctuation_description">Capital letters, spacing, dashes and quotes</string>
     <string name="settings_editing_keys_title">Editing keys</string>
     <string name="settings_editing_keys_description">Backspace and Delete combinations</string>
-    <string name="settings_auto_correction_description">Suggestions, automatic correction, emoji suggestions, dictionaries and replacements</string>
+    <string name="settings_auto_correction_description">Suggestions, automatic correction, emoji suggestions, spell checker, dictionaries and replacements</string>
     <string name="settings_text_expansion_hub_description">Snippets, and emoji and symbol shortcodes</string>
 
     <string name="settings_theme_led_colours_title">Theme</string>
@@ -76,6 +76,10 @@
     <string name="paste_in_password_fields_description">A password field offers what you just copied, including from a password manager, as ⎘ •••••••• (never the text itself). It\'s kept in memory only, never in the clipboard history</string>
     <string name="emoji_suggestions_title">Emoji suggestions</string>
     <string name="emoji_suggestions_description">An emoji for the word you\'re typing, e.g. 🍕 for pizza. Picking it adds the emoji after the word.</string>
+    <string name="spell_checker_name">Pastiera spell checker</string>
+    <string name="spell_checker_subtype" translatable="false">%s</string>
+    <string name="spell_checker_title">Spell checker</string>
+    <string name="spell_checker_description">Underline misspelt words in every app using Pastiera\'s dictionaries, including words you added. Tap to choose Pastiera in Android\'s spell checker settings.</string>
     <string name="alt_key_editor_intro">Make your own Device SYM layer: what each key types with SYM, and with Alt when Alt uses the Device SYM layer. A profile can replace a keyboard\'s own layer automatically, and Pastiera\'s backup includes it.</string>
     <string name="alt_key_editor_keys_description">Tap a key to set what it types. Leave it empty to type nothing.</string>
     <string name="alt_key_editor_import_title">Import a profile</string>
@@ -250,6 +254,8 @@
     <string name="suggestion_swipe_idle_value">After %1$d s without typing, a swipe scrolls instead of picking</string>
     <string name="suggestion_swipe_idle_off">Swipes always pick</string>
     <string name="phone_trackpad_scroll_assist_tip">Turn Scroll assistant on: the phone only passes keyboard swipes to Pastiera while it\'s on. Leave Swipe mode on scrolling: custom swipe actions take the swipes for themselves.</string>
+    <string name="phone_spell_checker_title">The phone\'s spell checker in suggestions</string>
+    <string name="phone_spell_checker_description">When Android\'s spell checker is another app\'s (Gboard\'s, say), its corrections for a misspelt word join the suggestion bar.</string>
     <string name="root_title">Shell access</string>
     <string name="root_note">These run through Shizuku, as the ADB shell. Pastiera only runs the commands each option needs.</string>
     <string name="shell_elsewhere_section">Elsewhere</string>

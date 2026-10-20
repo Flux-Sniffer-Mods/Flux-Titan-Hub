@@ -519,6 +519,26 @@ fun AutoCorrectionCategoryScreen(
                             SettingsManager.setAddLastWordShortcut(context, enabled)
                         }
                     )
+                    FluxActionRow(
+                        linkId = SettingLinkIds.AUTO_CORRECTION_SPELL_CHECKER,
+                        title = stringResource(R.string.spell_checker_title),
+                        description = stringResource(R.string.spell_checker_description),
+                        onClick = { it.palsoftware.pastiera.spellcheck.SpellCheckRules.openSystemSettings(context) }
+                    )
+                    var phoneSpellChecker by remember {
+                        mutableStateOf(SettingsManager.getPreferences(context).getBoolean(it.palsoftware.pastiera.spellcheck.PhoneSpellChecker.KEY_ENABLED, true))
+                    }
+                    FluxSwitchRow(
+                        linkId = "auto_correction.phone_spell_checker",
+                        title = stringResource(R.string.phone_spell_checker_title),
+                        description = stringResource(R.string.phone_spell_checker_description),
+                        checked = phoneSpellChecker,
+                        onCheckedChange = { enabled ->
+                            phoneSpellChecker = enabled
+                            SettingsManager.getPreferences(context).edit()
+                                .putBoolean(it.palsoftware.pastiera.spellcheck.PhoneSpellChecker.KEY_ENABLED, enabled).apply()
+                        }
+                    )
 
                     SettingsSectionDivider(stringResource(R.string.autocorrect_section_replacements))
                     // Text replacements: explicit user/default rules like "ca -> ça".
