@@ -1696,8 +1696,4 @@ Each key can be configured as Keycode, Action, Native Ctrl, or None. Use overrid
     <string name="learn_table_description">Words you use often join the dictionary after three times; emails and phone numbers you type yourself are offered again in email and phone fields. Never in Incognito typing.</string>
     <string name="learn_table_words">Words</string>
     <string name="learn_table_contacts">Emails &amp; numbers</string>
-    <string name="settings_stable_update_checking">Checking Pastiera and Plektra releases…</string>
-    <string name="settings_stable_update_section_title">Pastiera and Plektra updates</string>
-    <string name="settings_stable_update_section_description">Check for Pastiera security updates and Plektra releases.</string>
-    <string name="settings_stable_update_up_to_date">No Pastiera or Plektra update found.</string>
 </resources>

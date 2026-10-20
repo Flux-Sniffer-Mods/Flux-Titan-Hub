@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Flux Keyboard installs its own updates (update/ForkUpdateInstaller.kt) -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
     <application>
         <!-- One-time codes from notifications (otp/OneTimeCodeListener.kt); reads nothing
              until the user grants notification access and turns the option on -->

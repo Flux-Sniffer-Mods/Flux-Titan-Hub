@@ -55,7 +55,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import it.palsoftware.pastiera.ui.theme.PastieraTheme
 import it.palsoftware.pastiera.BuildConfig
-import it.palsoftware.pastiera.update.fetchReleaseNotesForVersion
 import it.palsoftware.pastiera.update.ReleaseNotesSummary
 import it.palsoftware.pastiera.update.shouldUseGithubUpdateChecks
 import it.palsoftware.pastiera.inputmethod.DeviceSpecific
@@ -213,22 +212,19 @@ fun TutorialScreen(
     val lastSeenWhatsNewVersion = remember {
         SettingsManager.getLastSeenWhatsNewVersion(context)
     }
+    // Notes bundled with the build (a fork's own changes) win over the online ones
+    // After an update, only what's new since the version the notes were last seen on
+    val bundledNotes = remember {
+        it.palsoftware.pastiera.update.bundledReleaseNotes(
+            context, BuildConfig.VERSION_NAME,
+            sinceVersion = if (updateTutorial && previousVersionOverride == null) lastSeenWhatsNewVersion else null
+        )
+    }
     var releaseNotes by remember {
-        mutableStateOf(ReleaseNotesSummary.fallback(BuildConfig.VERSION_NAME, releaseNotesLanguageTag))
+        mutableStateOf(bundledNotes ?: ReleaseNotesSummary.fallback(BuildConfig.VERSION_NAME, releaseNotesLanguageTag))
     }
 
-    LaunchedEffect(updateTutorial) {
-        if (updateTutorial) {
-            fetchReleaseNotesForVersion(
-                version = BuildConfig.VERSION_NAME,
-                languageTag = releaseNotesLanguageTag
-            ) { summary ->
-                if (summary != null && summary.highlights.isNotEmpty()) {
-                    releaseNotes = summary
-                }
-            }
-        }
-    }
+    // Flux Keyboard's notes are bundled; Pastiera's website notes describe Pastiera, not this app
 
     // Check IME status
     var isPastieraEnabled by remember { mutableStateOf(false) }
@@ -1259,7 +1255,7 @@ fun TutorialWhatsNewPageContent(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = stringResource(R.string.tutorial_whats_new_description),
+            text = page.summary.intro ?: stringResource(R.string.tutorial_whats_new_description),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -1268,6 +1264,7 @@ fun TutorialWhatsNewPageContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        page.summary.sectionTitle?.let { ReleaseNotesSectionTitle(it) }
         page.summary.highlights.forEach { highlight ->
             ReleaseNoteRow(
                 text = highlight,
@@ -1284,6 +1281,19 @@ fun TutorialWhatsNewPageContent(
                     text = improvement,
                     icon = Icons.Filled.CheckCircle,
                     tint = MaterialTheme.colorScheme.secondary,
+                    prominent = false
+                )
+            }
+        }
+
+        if (page.summary.upstreamChanges.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(12.dp))
+            page.summary.upstreamTitle?.let { ReleaseNotesSectionTitle(it) }
+            page.summary.upstreamChanges.forEach { change ->
+                ReleaseNoteRow(
+                    text = change,
+                    icon = Icons.Filled.CheckCircle,
+                    tint = MaterialTheme.colorScheme.tertiary,
                     prominent = false
                 )
             }
@@ -1351,7 +1361,7 @@ fun TutorialWhatsNewPageContent(
                 modifier = Modifier.size(18.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(stringResource(R.string.tutorial_whats_new_docs_button))
+            Text(page.summary.docsLabel ?: stringResource(R.string.tutorial_whats_new_docs_button))
         }
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -1370,6 +1380,20 @@ fun TutorialWhatsNewPageContent(
             )
         }
     }
+}
+
+/** A heading inside the release notes, such as whose changes follow. */
+@Composable
+private fun ReleaseNotesSectionTitle(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.titleSmall,
+        fontWeight = FontWeight.SemiBold,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 4.dp, bottom = 6.dp)
+    )
 }
 
 @Composable
@@ -1413,10 +1437,12 @@ private fun buildReleaseRangeLabel(previousVersion: String?, currentVersion: Str
         ?.trim()
         ?.substringBefore("-nightly.")
         ?.takeIf { it.isNotBlank() && it != normalizedCurrent }
+    // Versions as people read them (a build's date rather than its timestamp)
+    val current = it.palsoftware.pastiera.update.friendlyVersion(normalizedCurrent)
     return if (normalizedPrevious != null) {
-        "$normalizedPrevious → $normalizedCurrent"
+        "${it.palsoftware.pastiera.update.friendlyVersion(normalizedPrevious)} → $current"
     } else {
-        normalizedCurrent
+        current
     }
 }
 

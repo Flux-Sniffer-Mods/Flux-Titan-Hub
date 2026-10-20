@@ -150,6 +150,7 @@ object SettingLinkIds {
     const val ADVANCED_EXPERIMENTAL_CANDIDATES_VIEW = "advanced.experimental_candidates_view"
     const val ADVANCED_SHOW_TUTORIAL = "advanced.show_tutorial"
     const val ADVANCED_SHOW_RELEASE_NOTES_TUTORIAL = "advanced.show_release_notes_tutorial"
+    const val FORK_UPDATE_CHANNEL = "advanced.update_channel"
 
     // Trackpad gesture screen
     const val TRACKPAD_GESTURES_ENABLED = "trackpad.gestures_enabled"
@@ -743,6 +744,14 @@ object SettingLinkRegistry {
             R.string.tutorial_show,
             R.string.tutorial_review_description,
             destination = SettingsDestination.Main
+        ),
+        entry(
+            SettingLinkIds.FORK_UPDATE_CHANNEL,
+            R.string.fork_update_channel_title,
+            R.string.fork_update_channel_stable,
+            destination = SettingsDestination.Developer,
+            availability = SettingAvailability.DeveloperOptionsEnabled,
+            unavailableFallbackId = SettingLinkIds.DEVELOPER_OPTIONS_ENABLED
         ),
         entry(
             SettingLinkIds.ADVANCED_SHOW_RELEASE_NOTES_TUTORIAL,

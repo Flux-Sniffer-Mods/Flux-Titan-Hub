@@ -493,6 +493,37 @@ fun SettingsManager.setQuickLauncherTextFieldShortcuts(context: Context, enabled
         .apply()
 }
 
+/**
+ * Stable: full releases only (0.92). Dev: also each dev build (0.93-flux.<time>). Until
+ * chosen, it follows the installed build: a dev build stays on dev builds, a release on releases.
+ */
+fun SettingsManager.getForkUpdateChannel(context: Context): String =
+    when (getPreferences(context).getString(KEY_FORK_UPDATE_CHANNEL, null)) {
+        FORK_UPDATE_CHANNEL_DEV -> FORK_UPDATE_CHANNEL_DEV
+        FORK_UPDATE_CHANNEL_STABLE -> FORK_UPDATE_CHANNEL_STABLE
+        else -> if (BuildConfig.VERSION_NAME.contains("-flux.")) FORK_UPDATE_CHANNEL_DEV else FORK_UPDATE_CHANNEL_STABLE
+    }
+
+/**
+ * A dev build's choices stay when it updates to a full release: the Dev update channel and
+ * Developer options, which otherwise follow the installed build, are kept as settings. Also
+ * for a release installed over a dev build, while What's new still remembers the dev build.
+ */
+fun SettingsManager.keepDevBuildChoices(context: Context) {
+    val prefs = getPreferences(context)
+    val onDevBuild = BuildConfig.VERSION_NAME.contains("-flux.") ||
+        prefs.getString(KEY_LAST_SEEN_WHATS_NEW_VERSION, null)?.contains("-flux.") == true
+    if (!onDevBuild) return
+    val edit = prefs.edit()
+    if (!prefs.contains(KEY_FORK_UPDATE_CHANNEL)) edit.putString(KEY_FORK_UPDATE_CHANNEL, FORK_UPDATE_CHANNEL_DEV)
+    if (!prefs.contains(KEY_DEVELOPER_OPTIONS_ENABLED)) edit.putBoolean(KEY_DEVELOPER_OPTIONS_ENABLED, true)
+    edit.apply()
+}
+
+fun SettingsManager.setForkUpdateChannel(context: Context, channel: String) {
+    getPreferences(context).edit().putString(KEY_FORK_UPDATE_CHANNEL, channel).apply()
+}
+
 /** Flux Keyboard's own shortcuts (New message, Search) for the apps in its shortcut and Enter lists. */
 /** Apps whose Flux Keyboard shortcuts you turned off (from their long-press menu). */
 fun SettingsManager.getQuickLauncherListedAppsOff(context: Context): Set<String> =

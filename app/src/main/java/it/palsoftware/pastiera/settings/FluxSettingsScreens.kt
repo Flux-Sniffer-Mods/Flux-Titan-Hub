@@ -466,6 +466,7 @@ internal val fluxRowIcons: Map<String?, String> = mapOf(
     SettingLinkIds.LED_INDIVIDUAL_COLORS to "\u25CF",
     SettingLinkIds.LED_LOCKED_ANIMATION to "\u25C9",        // ◉
     "led_colors.emoji_led" to "\u25CF",
+    SettingLinkIds.FORK_UPDATE_CHANNEL to "\u21E3",         // ⇣
     SettingLinkIds.DEVELOPER_OPTIONS_ENABLED to "\u2699$TEXT",
     SettingLinkIds.ADVANCED_SHOW_RELEASE_NOTES_TUTORIAL to "\u24D8", // ⓘ
     "advanced.corner_calibration" to "\u25DC"               // ◜

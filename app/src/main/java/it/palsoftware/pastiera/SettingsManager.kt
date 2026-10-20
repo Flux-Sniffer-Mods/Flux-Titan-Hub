@@ -896,8 +896,9 @@ object SettingsManager {
                 imeOptions and android.view.inputmethod.EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING != 0)
 
     /** Developer options (calibration, debugging and preview tools) are shown in the settings. */
+    /** Developer options: on by default in dev builds (x.yy-flux.<time>), off in full releases. */
     fun getDeveloperOptionsEnabled(context: Context): Boolean =
-        getPreferences(context).getBoolean(KEY_DEVELOPER_OPTIONS_ENABLED, false)
+        getPreferences(context).getBoolean(KEY_DEVELOPER_OPTIONS_ENABLED, BuildConfig.VERSION_NAME.contains("-flux."))
 
     fun setDeveloperOptionsEnabled(context: Context, enabled: Boolean) {
         getPreferences(context).edit().putBoolean(KEY_DEVELOPER_OPTIONS_ENABLED, enabled).apply()
@@ -1002,6 +1003,11 @@ object SettingsManager {
         val favoriteOrder: Int = Int.MAX_VALUE,
         val color: Int? = null
     )
+
+    // Flux Keyboard: which releases updates offer
+    internal const val KEY_FORK_UPDATE_CHANNEL = "fork_update_channel"
+    const val FORK_UPDATE_CHANNEL_STABLE = "stable"
+    const val FORK_UPDATE_CHANNEL_DEV = "dev"
 
     // Flux Keyboard: quick launcher extras
     internal const val KEY_QUICK_LAUNCHER_APP_SHORTCUTS = "quick_launcher_app_shortcuts"

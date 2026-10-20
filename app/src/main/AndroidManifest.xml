@@ -241,6 +241,12 @@
             android:noHistory="true"
             android:finishOnTaskLaunch="true" />
 
+        <activity
+            android:name=".update.UpdateInstallActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:exported="false"
+            android:excludeFromRecents="true" />
+
         <!-- The pairing code typed into the built-in shell's notification -->
         <receiver
             android:name=".adb.shell.ShellSetup$PairReceiver"

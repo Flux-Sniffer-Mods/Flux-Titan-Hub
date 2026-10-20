@@ -18,6 +18,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import it.palsoftware.pastiera.R
 import it.palsoftware.pastiera.SettingsManager
+import it.palsoftware.pastiera.update.forkReleasesPage
 import it.palsoftware.pastiera.update.successorReleasesPage
 import it.palsoftware.pastiera.getTapHapticDurationMs
 import it.palsoftware.pastiera.getTapHapticUseSystem
@@ -210,7 +211,9 @@ object NotificationHelper {
         displayName: String,
         releasePageUrl: String?,
         isNightlyUpdate: Boolean = false,
-        isPastieraStableUpdate: Boolean = false
+        isPastieraStableUpdate: Boolean = false,
+        isForkUpdate: Boolean = false,
+        downloadUrl: String? = null
     ) {
         if (!hasNotificationPermission(context)) {
             android.util.Log.w("NotificationHelper", "Notification permission not granted")
@@ -221,12 +224,15 @@ object NotificationHelper {
         
         createUpdateNotificationChannel(context)
         
-        val targetUrl = releasePageUrl ?: if (isNightlyUpdate || isPastieraStableUpdate) {
-            "https://github.com/palsoftware/pastiera/releases"
-        } else {
-            successorReleasesPage()
+        val targetUrl = releasePageUrl ?: when {
+            isForkUpdate -> forkReleasesPage()
+            isNightlyUpdate || isPastieraStableUpdate -> "https://github.com/palsoftware/pastiera/releases"
+            else -> successorReleasesPage()
         }
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(targetUrl)).apply {
+        // This app's own update: downloaded and installed straight away, as its dialog does
+        val intent = if (isForkUpdate && downloadUrl != null) {
+            it.palsoftware.pastiera.update.UpdateInstallActivity.downloadIntent(context, downloadUrl, releasePageUrl)
+        } else Intent(Intent.ACTION_VIEW, Uri.parse(targetUrl)).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         
@@ -240,11 +246,13 @@ object NotificationHelper {
         )
         
         val titleResource = when {
+            isForkUpdate -> R.string.fork_update_title
             isNightlyUpdate -> R.string.nightly_update_title
             isPastieraStableUpdate -> R.string.notification_pastiera_stable_update_title
             else -> R.string.notification_successor_release_title
         }
         val textResource = when {
+            isForkUpdate -> R.string.fork_update_message
             isNightlyUpdate -> R.string.nightly_update_message
             isPastieraStableUpdate -> R.string.notification_pastiera_stable_update_text
             else -> R.string.notification_successor_release_text
@@ -273,6 +281,12 @@ object NotificationHelper {
         notificationManager.notify(notificationId, notification)
     }
     
+    /** Cancels the update notification (release or fork builds). */
+    fun cancelUpdateNotification(context: Context) {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(UPDATE_NOTIFICATION_ID)
+    }
+
     /**
      * Cancels the nav mode notification.
      */

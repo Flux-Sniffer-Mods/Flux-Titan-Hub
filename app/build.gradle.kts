@@ -144,6 +144,16 @@ android {
         )
     }
 
+    // Stable builds update from Flux Titan Hub's "flux/" GitHub releases (the repository was
+    // Flux-Keyboard before)
+    val forkGithubRepository = providers.gradleProperty("PASTIERA_FORK_GITHUB_REPOSITORY")
+        .orNull ?: "Flux-Sniffer-Mods/Flux-Titan-Hub"
+    if (forkGithubRepository.isNotEmpty() && !forkGithubRepository.matches(Regex("[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+"))) {
+        throw GradleException(
+            "PASTIERA_FORK_GITHUB_REPOSITORY must be empty or have the form owner/repository"
+        )
+    }
+
     defaultConfig {
         applicationId = "it.palsoftware.pastiera"
         minSdk = 29
@@ -155,6 +165,7 @@ android {
         buildConfigField("String", "APP_NAME", "\"Pastiera\"")
         buildConfigField("String", "COMPACT_MODE_NAME", "\"Pastierina\"")
         buildConfigField("String", "SUCCESSOR_GITHUB_REPOSITORY", "\"$successorGithubRepository\"")
+        buildConfigField("String", "FORK_GITHUB_REPOSITORY", "\"$forkGithubRepository\"")
         buildConfigField("String", "KLIPY_API_KEY", "\"$klipyApiKey\"")
     }
 

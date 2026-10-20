@@ -192,6 +192,13 @@ open class MainActivity : LocalizedComponentActivity() {
             return
         }
 
+        // An update with nothing new in What's new since the version last seen shows nothing
+        if (SettingsManager.shouldShowWhatsNew(this, BuildConfig.VERSION_NAME)) {
+            val lastSeen = SettingsManager.getLastSeenWhatsNewVersion(this)
+            if (lastSeen != null && it.palsoftware.pastiera.update.bundledNotesHaveNewSince(this, lastSeen) == false) {
+                SettingsManager.markWhatsNewSeen(this, BuildConfig.VERSION_NAME)
+            }
+        }
         if (SettingsManager.shouldShowWhatsNew(this, BuildConfig.VERSION_NAME)) {
             val intent = Intent(this, TutorialActivity::class.java).apply {
                 putExtra(TutorialActivity.EXTRA_UPDATE_TUTORIAL, true)

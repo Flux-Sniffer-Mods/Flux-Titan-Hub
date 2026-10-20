@@ -59,12 +59,15 @@ class UpdateCheckWorker(
         var announcement: UpdateCheckResult? = result
         while (announcement != null) {
             if (announcement.hasAnnouncement && announcement.displayName != null) {
+                if (announcement.isForkUpdate) announcement.releaseTag?.let { rememberAnnouncedForkRelease(context, it) }
                 NotificationHelper.showUpdateAvailableNotification(
                     context = context,
                     displayName = announcement.displayName,
                     releasePageUrl = announcement.releasePageUrl,
                     isNightlyUpdate = announcement.isNightlyUpdate,
-                    isPastieraStableUpdate = announcement.isPastieraStableUpdate
+                    isPastieraStableUpdate = announcement.isPastieraStableUpdate,
+                    isForkUpdate = announcement.isForkUpdate,
+                    downloadUrl = announcement.downloadUrl
                 )
             }
             announcement = announcement.followUpAnnouncement
@@ -81,8 +84,10 @@ class UpdateCheckWorker(
         private const val UNIQUE_WORK_NAME = "pastiera_update_check"
 
         /**
-         * Schedules a periodic background update check every 24 hours.
-         * If already scheduled, the existing work is kept.
+         * Schedules a background update check every 15 minutes (the shortest Android allows), so
+         * a new release is announced soon after its APK is published. A schedule from an earlier
+         * version (once a day) is replaced. Each check is one small request, and while nothing
+         * has changed GitHub answers "not modified" (see checkRelease).
          */
         fun schedule(context: Context) {
             if (!shouldUseGithubUpdateChecks(context)) {
@@ -95,14 +100,14 @@ class UpdateCheckWorker(
                 .build()
 
             val request = PeriodicWorkRequestBuilder<UpdateCheckWorker>(
-                24, TimeUnit.HOURS
+                15, TimeUnit.MINUTES
             )
                 .setConstraints(constraints)
                 .build()
 
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 UNIQUE_WORK_NAME,
-                ExistingPeriodicWorkPolicy.KEEP,
+                ExistingPeriodicWorkPolicy.UPDATE,
                 request
             )
         }

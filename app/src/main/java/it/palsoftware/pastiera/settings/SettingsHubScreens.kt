@@ -67,6 +67,7 @@ import it.palsoftware.pastiera.apps.AppListHelper
 import it.palsoftware.pastiera.apps.AppPickerDialog
 import it.palsoftware.pastiera.getExactTypingApps
 import it.palsoftware.pastiera.getExactTypingForNoSuggestionFields
+import it.palsoftware.pastiera.getForkUpdateChannel
 import it.palsoftware.pastiera.getMaxSwipeIncrementalThreshold
 import it.palsoftware.pastiera.getMinSwipeIncrementalThreshold
 import it.palsoftware.pastiera.getSwipeIncrementalThreshold
@@ -78,6 +79,7 @@ import it.palsoftware.pastiera.getTerminalModeShowLeds
 import it.palsoftware.pastiera.getTitan2EliteRoundedCornerInsetsEnabled
 import it.palsoftware.pastiera.setExactTypingApps
 import it.palsoftware.pastiera.setExactTypingForNoSuggestionFields
+import it.palsoftware.pastiera.setForkUpdateChannel
 import it.palsoftware.pastiera.setSwipeIncrementalThreshold
 import it.palsoftware.pastiera.setTerminalModeApps
 import it.palsoftware.pastiera.setTerminalModeEmojiKeyAction
@@ -416,40 +418,58 @@ internal fun SettingsUpdateRows(context: android.content.Context) {
             }
         )
     }
-    val stable = BuildConfig.RELEASE_CHANNEL == "stable"
+    val fork = it.palsoftware.pastiera.update.forkUpdatesEnabled()
     SettingsCategoryRow(
-        icon = ImageVector.vectorResource(R.drawable.plektra_open_monochrome_24),
+        icon = if (fork) Icons.Filled.SystemUpdate else ImageVector.vectorResource(R.drawable.plektra_open_monochrome_24),
         title = stringResource(when {
-            checkingForUpdates -> if (stable) R.string.settings_stable_update_checking else R.string.settings_update_checking
-            stable -> R.string.settings_stable_update_section_title
+            checkingForUpdates -> if (fork) R.string.fork_update_checking else R.string.settings_update_checking
+            fork -> R.string.fork_update_settings_title
             else -> R.string.settings_update_section_title
         }),
         description = stringResource(
-            if (stable) R.string.settings_stable_update_section_description else R.string.settings_update_section_description
+            if (fork) R.string.fork_update_settings_description else R.string.settings_update_section_description
         ),
         enabled = !checkingForUpdates,
         onClick = {
             checkingForUpdates = true
-            it.palsoftware.pastiera.update.checkForUpdateNotices(
+            it.palsoftware.pastiera.update.checkForUpdate(
                 context = context,
                 releaseChannel = BuildConfig.RELEASE_CHANNEL,
                 ignoreDismissedReleases = false
             ) { result ->
                 checkingForUpdates = false
                 when {
-                    result.hasAnnouncement -> it.palsoftware.pastiera.update.showReleaseNotice(context, result)
                     !result.successful -> Toast.makeText(
                         context,
                         context.getString(R.string.settings_update_check_failed),
                         Toast.LENGTH_SHORT
                     ).show()
+                    result.hasAnnouncement && result.releaseTag != null && result.displayName != null ->
+                        it.palsoftware.pastiera.update.showReleaseNotice(context, result)
                     else -> Toast.makeText(
                         context,
-                        context.getString(if (stable) R.string.settings_stable_update_up_to_date else R.string.settings_update_up_to_date),
+                        context.getString(if (fork) R.string.fork_update_current else R.string.settings_update_up_to_date),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
             }
+        }
+    )
+}
+
+/** Which releases updates offer: full releases, or dev builds too. */
+@Composable
+internal fun ForkUpdateChannelRow(context: android.content.Context) {
+    var channel by remember { mutableStateOf(SettingsManager.getForkUpdateChannel(context)) }
+    val dev = channel == SettingsManager.FORK_UPDATE_CHANNEL_DEV
+    FluxSwitchRow(
+        linkId = SettingLinkIds.FORK_UPDATE_CHANNEL,
+        title = stringResource(R.string.fork_update_channel_title),
+        description = stringResource(if (dev) R.string.fork_update_channel_dev else R.string.fork_update_channel_stable),
+        checked = dev,
+        onCheckedChange = { on ->
+            channel = if (on) SettingsManager.FORK_UPDATE_CHANNEL_DEV else SettingsManager.FORK_UPDATE_CHANNEL_STABLE
+            SettingsManager.setForkUpdateChannel(context, channel)
         }
     )
 }
@@ -467,6 +487,7 @@ fun DeveloperOptionsScreen(modifier: Modifier = Modifier, onBack: () -> Unit) {
     }
     FluxScreenScaffold(stringResource(R.string.developer_options_title), onBack, modifier) {
         FluxNote(stringResource(R.string.developer_options_note))
+        if (it.palsoftware.pastiera.update.forkUpdatesEnabled()) ForkUpdateChannelRow(context)
         if (it.palsoftware.pastiera.inputmethod.DeviceSpecific.isTitan2EliteDevice() || SettingsManager.getTitan2EliteRoundedCornerInsetsEnabled(context)) {
             FluxActionRow(
                 linkId = "advanced.corner_calibration",
