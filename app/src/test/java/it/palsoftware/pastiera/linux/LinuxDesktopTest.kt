@@ -1,0 +1,114 @@
+package it.palsoftware.pastiera.linux
+
+import android.view.KeyEvent
+import org.junit.Assert.assertArrayEquals
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
+import org.junit.Test
+import java.io.DataInputStream
+import java.io.DataOutputStream
+import java.io.PipedInputStream
+import java.io.PipedOutputStream
+
+class LinuxDesktopTest {
+    @Test
+    fun vncLoginMatchesDes() {
+        // Made with Python's DES: the password's bytes bit-reversed as the key, challenge 0..15
+        assertEquals("c4d4c8ce321a50f105ba594249ad69bc", VncClient.response("flux1234", ByteArray(16) { it.toByte() }).hex())
+    }
+
+    private fun ByteArray.hex() = joinToString("") { "%02x".format(it.toInt() and 0xFF) }
+
+    /** A VNC server's side of the talk, over pipes. */
+    private class Server {
+        val toClient = PipedOutputStream()
+        val clientIn = PipedInputStream(toClient, 1 shl 20)
+        val fromClient = PipedInputStream(1 shl 20)
+        val clientOut = PipedOutputStream(fromClient)
+        val out = DataOutputStream(toClient)
+        val input = DataInputStream(fromClient)
+    }
+
+    @Test
+    fun logsInAndDrawsRawAndCopiedRectangles() {
+        val server = Server()
+        val frames = mutableListOf<List<Int>>()
+        val client = VncClient(server.clientIn, server.clientOut, onFrame = { x, y, w, h -> frames += listOf(x, y, w, h) })
+        val challenge = ByteArray(16) { (it * 7).toByte() }
+        val serverThread = Thread {
+            server.out.write("RFB 003.008\n".toByteArray()); server.out.flush()
+            assertEquals("RFB 003.008\n", String(ByteArray(12).also { server.input.readFully(it) }))
+            server.out.writeByte(1); server.out.writeByte(VncClient.VNC_AUTH); server.out.flush()
+            assertEquals(VncClient.VNC_AUTH, server.input.readUnsignedByte())
+            server.out.write(challenge); server.out.flush()
+            val answer = ByteArray(16).also { server.input.readFully(it) }
+            server.out.writeInt(if (answer.contentEquals(VncClient.response("secret12", challenge))) 0 else 1); server.out.flush()
+            assertEquals(1, server.input.readUnsignedByte())
+            // ServerInit: 4 x 2, a pixel format, a name
+            server.out.writeShort(4); server.out.writeShort(2); server.out.write(ByteArray(16))
+            server.out.writeInt(5); server.out.write("flux1".toByteArray()); server.out.flush()
+            // SetPixelFormat (20 bytes), SetEncodings (4 + 3 x 4), then the first request (10)
+            server.input.readFully(ByteArray(20))
+            server.input.readFully(ByteArray(4 + 12))
+            server.input.readFully(ByteArray(10))
+            // An update: a raw 2 x 1 at (0,0), then a copy of it to (2,1)
+            server.out.writeByte(0); server.out.writeByte(0); server.out.writeShort(2)
+            server.out.writeShort(0); server.out.writeShort(0); server.out.writeShort(2); server.out.writeShort(1)
+            server.out.writeInt(VncClient.ENCODING_RAW)
+            server.out.write(byteArrayOf(0x33, 0x22, 0x11, 0, 0x66, 0x55, 0x44, 0))
+            server.out.writeShort(2); server.out.writeShort(1); server.out.writeShort(2); server.out.writeShort(1)
+            server.out.writeInt(VncClient.ENCODING_COPY_RECT)
+            server.out.writeShort(0); server.out.writeShort(0)
+            server.out.flush()
+            // The client's next request, then the end
+            server.input.readFully(ByteArray(10))
+            server.toClient.close()
+        }.apply { start() }
+        assertTrue(client.handshake("secret12"))
+        assertEquals("flux1", client.name)
+        assertEquals(4, client.width)
+        runCatching { client.run() }
+        serverThread.join(5_000)
+        assertEquals(0xFF112233.toInt(), client.pixels[0])
+        assertEquals(0xFF445566.toInt(), client.pixels[1])
+        assertEquals(0xFF112233.toInt(), client.pixels[1 * 4 + 2])
+        assertEquals(0xFF445566.toInt(), client.pixels[1 * 4 + 3])
+        assertEquals(listOf(listOf(0, 0, 2, 1), listOf(2, 1, 2, 1)), frames)
+    }
+
+    @Test
+    fun wrongPasswordIsRefused() {
+        val server = Server()
+        val client = VncClient(server.clientIn, server.clientOut)
+        Thread {
+            server.out.write("RFB 003.008\n".toByteArray()); server.out.flush()
+            server.input.readFully(ByteArray(12))
+            server.out.writeByte(1); server.out.writeByte(VncClient.VNC_AUTH); server.out.flush()
+            server.input.readUnsignedByte()
+            server.out.write(ByteArray(16)); server.out.flush()
+            server.input.readFully(ByteArray(16))
+            server.out.writeInt(1); server.out.flush()
+        }.start()
+        assertFalse(client.handshake("wrong"))
+    }
+
+    @Test
+    fun pointerAndKeysGoOutAsRfb() {
+        val server = Server()
+        val client = VncClient(server.clientIn, server.clientOut)
+        client.key(0xFF0D, true)
+        assertArrayEquals(byteArrayOf(4, 1, 0, 0, 0, 0, 0xFF.toByte(), 0x0D), ByteArray(8).also { server.input.readFully(it) })
+    }
+
+    @Test
+    fun keysymsForSpecialKeysAndCharacters() {
+        assertEquals(0xFF0D, Keysyms.of(KeyEvent.KEYCODE_ENTER, '\n'.code))
+        assertEquals(0xFF08, Keysyms.of(KeyEvent.KEYCODE_DEL, 0))
+        assertEquals('a'.code, Keysyms.of(KeyEvent.KEYCODE_A, 'a'.code))
+        assertEquals('é'.code, Keysyms.of('é'.code))
+        assertEquals(0x10020AC, Keysyms.of('€'.code))
+        assertEquals(0, Keysyms.of(KeyEvent.KEYCODE_UNKNOWN, 0))
+        assertTrue(Keysyms.isModifier(Keysyms.of(KeyEvent.KEYCODE_SHIFT_LEFT, 0)))
+    }
+}

@@ -139,7 +139,7 @@ private fun tileLine(module: FluxModule, on: Boolean, status: ModuleReadiness.St
         FluxModule.KEYBOARD -> R.string.module_keyboard_description
         FluxModule.GAMING -> R.string.module_gaming_description
         FluxModule.STREAMING -> R.string.module_streaming_description
-        FluxModule.DESKTOP -> R.string.module_coming_soon
+        FluxModule.DESKTOP -> R.string.module_desktop_description
     })
     if (!on || status == null) return description to false
     val need = status.needs.firstOrNull()
@@ -350,7 +350,7 @@ internal fun ModuleOffBar(module: FluxModule, onTurnedOn: () -> Unit) {
                         FluxModule.KEYBOARD -> R.string.module_off_keyboard
                         FluxModule.GAMING -> R.string.module_off_gaming
                         FluxModule.STREAMING -> R.string.module_off_streaming
-                        FluxModule.DESKTOP -> R.string.module_coming_soon
+                        FluxModule.DESKTOP -> R.string.module_off_desktop
                     }),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSecondaryContainer

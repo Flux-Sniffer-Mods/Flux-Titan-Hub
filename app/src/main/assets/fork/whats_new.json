@@ -4,6 +4,9 @@
   "sectionTitle": "Added by Flux Titan Hub",
   "highlights": [
     {
+      "text": "Desktop: a Linux desktop (Debian 12 with Xfce, Firefox and a terminal) on the phone or a TV, through the built-in shell. With root it runs as a chroot at full speed (any root manager's su); without, through PRoot. Shown in the app's own viewer: touch, mouse and the keyboard all work. No sound yet."
+    },
+    {
       "text": "AirPlay: the phone's screen, with its sound, on an Apple TV or a TV with AirPlay, with no app on the TV. Find TVs in the Streaming app; type the code the TV shows the first time if it asks. A few seconds behind: good for apps and video, not fast games."
     },
     {
