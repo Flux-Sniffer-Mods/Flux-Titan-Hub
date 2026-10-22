@@ -163,6 +163,12 @@ private fun tileLine(module: FluxModule, on: Boolean, status: ModuleReadiness.St
         } to false
         module == FluxModule.STREAMING ->
             (if (status.listening) stringResource(R.string.tile_streaming_ready, status.paired) else stringResource(R.string.tile_streaming_off)) to false
+        // Running, installed or not yet
+        module == FluxModule.DESKTOP -> stringResource(when {
+            it.palsoftware.pastiera.linux.LinuxDesktop.state.value == it.palsoftware.pastiera.linux.LinuxDesktop.State.Running -> R.string.tile_desktop_running
+            it.palsoftware.pastiera.linux.LinuxDesktop.installedMode(LocalContext.current) != null -> R.string.tile_desktop_installed
+            else -> R.string.tile_desktop_not_installed
+        }) to false
         else -> description to false
     }
 }

@@ -78,7 +78,7 @@ internal class VncClient(
         // 32-bit pixels, red, green, blue from high to low: Android's own order once alpha's added
         output.writeByte(0); output.write(ByteArray(3))
         output.write(byteArrayOf(32, 24, 0, 1, 0, 255.toByte(), 0, 255.toByte(), 0, 255.toByte(), 16, 8, 0, 0, 0, 0))
-        val encodings = intArrayOf(ENCODING_COPY_RECT, ENCODING_RAW, ENCODING_DESKTOP_SIZE)
+        val encodings = intArrayOf(ENCODING_COPY_RECT, ENCODING_RAW, ENCODING_EXTENDED_DESKTOP_SIZE, ENCODING_DESKTOP_SIZE)
         output.writeByte(2); output.writeByte(0); output.writeShort(encodings.size)
         encodings.forEach { output.writeInt(it) }
         output.flush()
@@ -124,14 +124,43 @@ internal class VncClient(
             when (val encoding = input.readInt()) {
                 ENCODING_RAW -> raw(x, y, w, h)
                 ENCODING_COPY_RECT -> copy(input.readUnsignedShort(), input.readUnsignedShort(), x, y, w, h)
-                ENCODING_DESKTOP_SIZE -> {
-                    width = w; height = h
-                    pixels = IntArray(w * h)
-                    onResize(w, h)
+                ENCODING_DESKTOP_SIZE -> resized(w, h)
+                ENCODING_EXTENDED_DESKTOP_SIZE -> {
+                    // x is why (0 the server, 1 this client asked), y whether it worked
+                    val screens = input.readUnsignedByte()
+                    input.skipBytes(3)
+                    repeat(screens) { index ->
+                        val id = input.readInt()
+                        input.skipBytes(8)
+                        flags = input.readInt()
+                        if (index == 0) screenId = id
+                    }
+                    resizable = true
+                    if (x != 1 || y == 0) resized(w, h)
                 }
                 else -> throw IOException("unknown encoding $encoding")
             }
         }
+    }
+
+    private fun resized(w: Int, h: Int) {
+        if (w == width && h == height) return
+        width = w; height = h
+        pixels = IntArray(w * h)
+        onResize(w, h)
+    }
+
+    /** The server can be asked for another size (it said so with ExtendedDesktopSize). */
+    @Volatile var resizable = false
+        private set
+    private var screenId = 0
+    private var flags = 0
+
+    /** Asks the server to make the desktop [w] x [h] (where [resizable]): it answers with the new size. */
+    fun setSize(w: Int, h: Int) = send {
+        writeByte(251); writeByte(0); writeShort(w); writeShort(h)
+        writeByte(1); writeByte(0)
+        writeInt(screenId); writeShort(0); writeShort(0); writeShort(w); writeShort(h); writeInt(flags)
     }
 
     private val row = ByteArray(4 * 4096)
@@ -195,6 +224,7 @@ internal class VncClient(
         const val ENCODING_RAW = 0
         const val ENCODING_COPY_RECT = 1
         const val ENCODING_DESKTOP_SIZE = -223
+        const val ENCODING_EXTENDED_DESKTOP_SIZE = -308
 
         fun connect(host: String, port: Int, onFrame: (Int, Int, Int, Int) -> Unit, onResize: (Int, Int) -> Unit,
                     onClipboard: (String) -> Unit): VncClient {

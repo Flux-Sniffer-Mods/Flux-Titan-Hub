@@ -91,11 +91,18 @@ start() {
     [ "$MODE" = proot ] && { proot_ready || exit 2; }
     [ "$MODE" = chroot ] && chroot_mounts
     echo $$ > "$PIDS/start.pid"
+    # Set up by an older version: brought up to date first (new packages, the session script)
+    wanted=$(sed -n 's/^FLUX_GUEST_VERSION=//p' "$GUEST")
+    if [ "$(cat "$ROOTFS/etc/flux-guest-version" 2>/dev/null)" != "$wanted" ]; then
+        say "updating the desktop"
+        cp "$GUEST" "$ROOTFS/root/flux-guest.sh"
+        guest /bin/sh /root/flux-guest.sh "$MODE" || say "update failed, starting anyway"
+    fi
     say "starting"
     if [ "$MODE" = proot ]; then
-        guest /usr/bin/env FLUX_GEOMETRY="$GEOMETRY" FLUX_PASSWORD="$PASSWORD" /usr/local/bin/flux-session
+        guest /usr/bin/env FLUX_GEOMETRY="$GEOMETRY" FLUX_PASSWORD="$PASSWORD" FLUX_MODE=proot /usr/local/bin/flux-session
     else
-        guest /usr/bin/env FLUX_GEOMETRY="$GEOMETRY" FLUX_PASSWORD="$PASSWORD" /bin/su - flux -w FLUX_GEOMETRY,FLUX_PASSWORD -c /usr/local/bin/flux-session
+        guest /usr/bin/env FLUX_GEOMETRY="$GEOMETRY" FLUX_PASSWORD="$PASSWORD" FLUX_MODE=chroot /bin/su - flux -w FLUX_GEOMETRY,FLUX_PASSWORD,FLUX_MODE -c /usr/local/bin/flux-session
         chroot_unmount
     fi
     rm -f "$PIDS/start.pid"
@@ -104,12 +111,12 @@ start() {
 
 # Ends the desktop: the VNC server first (the session follows it), then whatever's left
 stop() {
-    for f in "$ROOTFS/tmp/flux-xvnc.pid" "$ROOTFS/tmp/flux-session.pid"; do
+    for f in "$ROOTFS/tmp/flux-xvnc.pid" "$ROOTFS/tmp/flux-session.pid" "$ROOTFS/tmp/flux-pulse.pid"; do
         [ -f "$f" ] && kill "$(cat "$f")" 2>/dev/null
     done
     sleep 1
     [ -f "$PIDS/start.pid" ] && kill "$(cat "$PIDS/start.pid")" 2>/dev/null
-    rm -f "$ROOTFS/tmp/flux-xvnc.pid" "$ROOTFS/tmp/flux-session.pid" "$PIDS/start.pid"
+    rm -f "$ROOTFS/tmp/flux-xvnc.pid" "$ROOTFS/tmp/flux-session.pid" "$ROOTFS/tmp/flux-pulse.pid" "$PIDS/start.pid"
     [ "$MODE" = chroot ] && chroot_unmount
     say "stopped"
 }

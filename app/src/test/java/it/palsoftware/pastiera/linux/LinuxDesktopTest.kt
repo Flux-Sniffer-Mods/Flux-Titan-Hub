@@ -111,4 +111,43 @@ class LinuxDesktopTest {
         assertEquals(0, Keysyms.of(KeyEvent.KEYCODE_UNKNOWN, 0))
         assertTrue(Keysyms.isModifier(Keysyms.of(KeyEvent.KEYCODE_SHIFT_LEFT, 0)))
     }
+
+    @Test
+    fun desktopResizesWhenTheServerSaysItCan() {
+        val server = Server()
+        val sizes = mutableListOf<Pair<Int, Int>>()
+        val client = VncClient(server.clientIn, server.clientOut, onResize = { w, h -> sizes += w to h })
+        val sent = ByteArray(24)
+        val thread = Thread {
+            server.out.write("RFB 003.008\n".toByteArray()); server.out.flush()
+            server.input.readFully(ByteArray(12))
+            server.out.writeByte(1); server.out.writeByte(VncClient.NO_AUTH); server.out.flush()
+            server.input.readUnsignedByte()
+            server.out.writeInt(0); server.out.flush()
+            server.input.readUnsignedByte()
+            server.out.writeShort(8); server.out.writeShort(4); server.out.write(ByteArray(16)); server.out.writeInt(0); server.out.flush()
+            server.input.readFully(ByteArray(20 + 4 + 16 + 10))
+            // ExtendedDesktopSize: one screen (id 7), now 6 x 2
+            server.out.writeByte(0); server.out.writeByte(0); server.out.writeShort(1)
+            server.out.writeShort(0); server.out.writeShort(0); server.out.writeShort(6); server.out.writeShort(2)
+            server.out.writeInt(VncClient.ENCODING_EXTENDED_DESKTOP_SIZE)
+            server.out.writeByte(1); server.out.write(ByteArray(3))
+            server.out.writeInt(7); server.out.writeShort(0); server.out.writeShort(0); server.out.writeShort(6); server.out.writeShort(2); server.out.writeInt(0)
+            server.out.flush()
+            server.input.readFully(ByteArray(10))
+            server.toClient.close()
+            // What the client asks next, read here (a pipe's reader has to stay alive)
+            server.input.readFully(sent)
+        }
+        thread.start()
+        assertTrue(client.handshake(""))
+        runCatching { client.run() }
+        assertTrue(client.resizable)
+        assertEquals(listOf(6 to 2), sizes)
+        assertEquals(12, client.pixels.size)
+        client.setSize(10, 6)
+        thread.join(5_000)
+        // SetDesktopSize: type 251, 10 x 6, one screen keeping the server's id
+        assertArrayEquals(byteArrayOf(251.toByte(), 0, 0, 10, 0, 6, 1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 10, 0, 6, 0, 0, 0, 0), sent)
+    }
 }

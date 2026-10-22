@@ -36,6 +36,14 @@ internal class DesktopView(context: Context) : View(context) {
         setBackgroundColor(Color.BLACK)
     }
 
+    /** Told the view's size when it's laid out anew. */
+    var onSized: (Int, Int) -> Unit = { _, _ -> }
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        if (w > 0 && h > 0) onSized(w, h)
+    }
+
     fun attach(vnc: VncClient) {
         client = vnc
         post { resize(vnc.width, vnc.height) }

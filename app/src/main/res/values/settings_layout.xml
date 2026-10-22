@@ -859,7 +859,7 @@
     <string name="linux_installing">Installing the desktop. This takes a few minutes; you can leave this page.</string>
     <string name="linux_starting">Starting the desktop…</string>
     <string name="linux_stopping">Stopping…</string>
-    <string name="linux_note">Debian 12 with Xfce, Firefox and a terminal. No sound yet. Apps installed with apt (sudo works) stay installed.</string>
+    <string name="linux_note">Debian 12 with Xfce, Firefox and a terminal, with its sound. Apps installed with apt (sudo works) stay installed.</string>
     <string name="linux_intro">Downloads Debian (about 50 MB) and installs a desktop (about 1.5 GB in all).</string>
     <string name="linux_mode_chroot">Chroot (root)</string>
     <string name="linux_mode_chroot_description">Full speed. Uses root through Shell access.</string>
@@ -881,4 +881,8 @@
     <string name="linux_failed_install">The install didn\'t finish. The lines below say where.</string>
     <string name="linux_failed_start">The desktop didn\'t start. The lines below say why.</string>
     <string name="linux_try_again">Try again</string>
+    <string name="linux_tile">Linux desktop</string>
+    <string name="tile_desktop_running">Running</string>
+    <string name="tile_desktop_installed">Installed, ready to start</string>
+    <string name="tile_desktop_not_installed">Not installed yet</string>
 </resources>

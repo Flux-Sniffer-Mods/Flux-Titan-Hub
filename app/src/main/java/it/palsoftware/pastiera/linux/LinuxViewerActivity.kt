@@ -21,6 +21,7 @@ import it.palsoftware.pastiera.R
  */
 class LinuxViewerActivity : Activity() {
     private lateinit var view: DesktopView
+    private val sound = LinuxSound()
     private lateinit var message: TextView
     @Volatile private var client: VncClient? = null
     @Volatile private var open = true
@@ -31,6 +32,8 @@ class LinuxViewerActivity : Activity() {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         view = DesktopView(this)
+        // The desktop resized to this screen whenever the view's size settles (or changes)
+        view.onSized = { w, h -> fit(w, h) }
         message = TextView(this).apply {
             setTextColor(0xFFFFFFFF.toInt())
             textSize = 16f
@@ -67,6 +70,9 @@ class LinuxViewerActivity : Activity() {
         if (vnc == null) { show(R.string.linux_viewer_unreachable); return }
         client = vnc
         view.attach(vnc)
+        sound.start()
+        // The server says whether it can resize with its first picture: asked then
+        view.postDelayed({ fit(view.width, view.height) }, 1_500)
         runOnUiThread { message.visibility = android.view.View.GONE }
         runCatching { vnc.run() }.onFailure { if (open) FluxLog.w("FluxLinux", "viewer: $it") }
         if (open) show(R.string.linux_viewer_ended)
@@ -121,9 +127,26 @@ class LinuxViewerActivity : Activity() {
         if (!text.isNullOrEmpty()) vnc.clipboard(text)
     }
 
+    /**
+     * The desktop made the view's size, in pixels: on the phone at two thirds (text big enough to
+     * read up close), on a TV as it is. Only where the server can resize, and only when it's off.
+     */
+    private fun fit(w: Int, h: Int) {
+        val vnc = client ?: return
+        if (!vnc.resizable || w <= 0 || h <= 0) return
+        @Suppress("DEPRECATION")
+        val onPhone = (windowManager.defaultDisplay?.displayId ?: 0) == android.view.Display.DEFAULT_DISPLAY
+        val scale = if (onPhone) 2f / 3f else 1f
+        val width = ((w * scale).toInt() and 1.inv()).coerceIn(640, 3840)
+        val height = ((h * scale).toInt() and 1.inv()).coerceIn(480, 2160)
+        if (kotlin.math.abs(width - vnc.width) < 8 && kotlin.math.abs(height - vnc.height) < 8) return
+        Thread { vnc.setSize(width, height) }.start()
+    }
+
     override fun onDestroy() {
         open = false
         client?.close()
+        sound.stop()
         super.onDestroy()
     }
 }
