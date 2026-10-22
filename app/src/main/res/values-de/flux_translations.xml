@@ -1699,7 +1699,7 @@
     <string name="linux_installing">Der Desktop wird installiert. Das dauert ein paar Minuten; du kannst die Seite verlassen.</string>
     <string name="linux_starting">Desktop startet…</string>
     <string name="linux_stopping">Wird beendet…</string>
-    <string name="linux_note">Debian 12 mit Xfce, Firefox und einem Terminal. Noch kein Ton. Mit apt installierte Apps (sudo funktioniert) bleiben installiert.</string>
+    <string name="linux_note">Debian 12 mit Xfce, Firefox und einem Terminal, samt Ton. Mit apt installierte Apps (sudo funktioniert) bleiben installiert.</string>
     <string name="linux_intro">Lädt Debian herunter (etwa 50 MB) und installiert einen Desktop (insgesamt etwa 1,5 GB).</string>
     <string name="linux_mode_chroot">Chroot (Root)</string>
     <string name="linux_mode_chroot_description">Volle Geschwindigkeit. Nutzt Root über den Shell-Zugriff.</string>
@@ -1721,4 +1721,8 @@
     <string name="linux_failed_install">Die Installation wurde nicht fertig. Die Zeilen unten zeigen, wo.</string>
     <string name="linux_failed_start">Der Desktop ist nicht gestartet. Die Zeilen unten zeigen, warum.</string>
     <string name="linux_try_again">Erneut versuchen</string>
+    <string name="linux_tile">Linux-Desktop</string>
+    <string name="tile_desktop_running">Läuft</string>
+    <string name="tile_desktop_installed">Installiert, startbereit</string>
+    <string name="tile_desktop_not_installed">Noch nicht installiert</string>
 </resources>

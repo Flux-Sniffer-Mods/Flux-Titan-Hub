@@ -2243,7 +2243,7 @@
     <string name="linux_installing">Встановлення робочого столу. Це займе кілька хвилин; можна піти з цієї сторінки.</string>
     <string name="linux_starting">Запуск робочого столу…</string>
     <string name="linux_stopping">Зупинка…</string>
-    <string name="linux_note">Debian 12 з Xfce, Firefox і терміналом. Звуку поки немає. Застосунки, встановлені через apt (sudo працює), лишаються встановленими.</string>
+    <string name="linux_note">Debian 12 з Xfce, Firefox і терміналом, зі звуком. Застосунки, встановлені через apt (sudo працює), лишаються встановленими.</string>
     <string name="linux_intro">Завантажує Debian (близько 50 МБ) і встановлює робочий стіл (загалом близько 1,5 ГБ).</string>
     <string name="linux_mode_chroot">Chroot (root)</string>
     <string name="linux_mode_chroot_description">Повна швидкість. Використовує root через Доступ до оболонки.</string>
@@ -2265,4 +2265,8 @@
     <string name="linux_failed_install">Встановлення не завершилося. Рядки нижче показують, де.</string>
     <string name="linux_failed_start">Робочий стіл не запустився. Рядки нижче показують, чому.</string>
     <string name="linux_try_again">Спробувати ще раз</string>
+    <string name="linux_tile">Робочий стіл Linux</string>
+    <string name="tile_desktop_running">Працює</string>
+    <string name="tile_desktop_installed">Встановлено, готовий до запуску</string>
+    <string name="tile_desktop_not_installed">Ще не встановлено</string>
 </resources>

@@ -2243,7 +2243,7 @@
     <string name="linux_installing">Instalowanie pulpitu. To potrwa kilka minut; możesz opuścić tę stronę.</string>
     <string name="linux_starting">Uruchamianie pulpitu…</string>
     <string name="linux_stopping">Zatrzymywanie…</string>
-    <string name="linux_note">Debian 12 z Xfce, Firefoksem i terminalem. Na razie bez dźwięku. Aplikacje zainstalowane przez apt (sudo działa) zostają zainstalowane.</string>
+    <string name="linux_note">Debian 12 z Xfce, Firefoksem i terminalem, z dźwiękiem. Aplikacje zainstalowane przez apt (sudo działa) zostają zainstalowane.</string>
     <string name="linux_intro">Pobiera Debiana (około 50 MB) i instaluje pulpit (łącznie około 1,5 GB).</string>
     <string name="linux_mode_chroot">Chroot (root)</string>
     <string name="linux_mode_chroot_description">Pełna szybkość. Używa roota przez Dostęp do powłoki.</string>
@@ -2265,4 +2265,8 @@
     <string name="linux_failed_install">Instalacja się nie zakończyła. Linie poniżej pokazują, gdzie.</string>
     <string name="linux_failed_start">Pulpit się nie uruchomił. Linie poniżej pokazują, dlaczego.</string>
     <string name="linux_try_again">Spróbuj ponownie</string>
+    <string name="linux_tile">Pulpit Linux</string>
+    <string name="tile_desktop_running">Działa</string>
+    <string name="tile_desktop_installed">Zainstalowany, gotowy do uruchomienia</string>
+    <string name="tile_desktop_not_installed">Jeszcze niezainstalowany</string>
 </resources>

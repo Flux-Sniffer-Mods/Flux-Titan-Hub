@@ -2237,7 +2237,7 @@
     <string name="linux_installing">Installation du bureau. Cela prend quelques minutes ; vous pouvez quitter cette page.</string>
     <string name="linux_starting">Démarrage du bureau…</string>
     <string name="linux_stopping">Arrêt…</string>
-    <string name="linux_note">Debian 12 avec Xfce, Firefox et un terminal. Pas encore de son. Les applis installées avec apt (sudo fonctionne) restent installées.</string>
+    <string name="linux_note">Debian 12 avec Xfce, Firefox et un terminal, avec son son. Les applis installées avec apt (sudo fonctionne) restent installées.</string>
     <string name="linux_intro">Télécharge Debian (environ 50 Mo) et installe un bureau (environ 1,5 Go en tout).</string>
     <string name="linux_mode_chroot">Chroot (root)</string>
     <string name="linux_mode_chroot_description">Pleine vitesse. Utilise root via l\'Accès au shell.</string>
@@ -2259,4 +2259,8 @@
     <string name="linux_failed_install">L\'installation n\'a pas abouti. Les lignes ci-dessous disent où.</string>
     <string name="linux_failed_start">Le bureau n\'a pas démarré. Les lignes ci-dessous disent pourquoi.</string>
     <string name="linux_try_again">Réessayer</string>
+    <string name="linux_tile">Bureau Linux</string>
+    <string name="tile_desktop_running">En cours</string>
+    <string name="tile_desktop_installed">Installé, prêt à démarrer</string>
+    <string name="tile_desktop_not_installed">Pas encore installé</string>
 </resources>

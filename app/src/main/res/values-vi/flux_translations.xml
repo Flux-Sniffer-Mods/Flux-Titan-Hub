@@ -2225,7 +2225,7 @@
     <string name="linux_installing">Đang cài desktop. Mất vài phút; bạn có thể rời trang này.</string>
     <string name="linux_starting">Đang khởi động desktop…</string>
     <string name="linux_stopping">Đang dừng…</string>
-    <string name="linux_note">Debian 12 với Xfce, Firefox và một terminal. Chưa có âm thanh. Ứng dụng cài bằng apt (sudo dùng được) vẫn được giữ lại.</string>
+    <string name="linux_note">Debian 12 với Xfce, Firefox và một terminal, có cả âm thanh. Ứng dụng cài bằng apt (sudo dùng được) vẫn được giữ lại.</string>
     <string name="linux_intro">Tải Debian (khoảng 50 MB) và cài một desktop (tổng cộng khoảng 1,5 GB).</string>
     <string name="linux_mode_chroot">Chroot (root)</string>
     <string name="linux_mode_chroot_description">Tốc độ tối đa. Dùng root qua Truy cập shell.</string>
@@ -2247,4 +2247,8 @@
     <string name="linux_failed_install">Cài đặt chưa xong. Các dòng bên dưới cho biết ở đâu.</string>
     <string name="linux_failed_start">Desktop không khởi động được. Các dòng bên dưới cho biết lý do.</string>
     <string name="linux_try_again">Thử lại</string>
+    <string name="linux_tile">Desktop Linux</string>
+    <string name="tile_desktop_running">Đang chạy</string>
+    <string name="tile_desktop_installed">Đã cài, sẵn sàng khởi động</string>
+    <string name="tile_desktop_not_installed">Chưa cài đặt</string>
 </resources>

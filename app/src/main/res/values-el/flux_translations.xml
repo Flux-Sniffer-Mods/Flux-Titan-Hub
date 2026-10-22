@@ -1611,7 +1611,7 @@
     <string name="linux_installing">Εγκατάσταση της επιφάνειας εργασίας. Παίρνει λίγα λεπτά· μπορείτε να φύγετε από τη σελίδα.</string>
     <string name="linux_starting">Εκκίνηση της επιφάνειας εργασίας…</string>
     <string name="linux_stopping">Διακοπή…</string>
-    <string name="linux_note">Debian 12 με Xfce, Firefox και τερματικό. Χωρίς ήχο ακόμη. Οι εφαρμογές που εγκαθίστανται με apt (το sudo λειτουργεί) μένουν εγκατεστημένες.</string>
+    <string name="linux_note">Debian 12 με Xfce, Firefox και τερματικό, με τον ήχο του. Οι εφαρμογές που εγκαθίστανται με apt (το sudo λειτουργεί) μένουν εγκατεστημένες.</string>
     <string name="linux_intro">Κατεβάζει το Debian (περίπου 50 MB) και εγκαθιστά μια επιφάνεια εργασίας (περίπου 1,5 GB συνολικά).</string>
     <string name="linux_mode_chroot">Chroot (root)</string>
     <string name="linux_mode_chroot_description">Πλήρης ταχύτητα. Χρησιμοποιεί root μέσω της Πρόσβασης στο shell.</string>
@@ -1633,4 +1633,8 @@
     <string name="linux_failed_install">Η εγκατάσταση δεν ολοκληρώθηκε. Οι γραμμές παρακάτω δείχνουν πού.</string>
     <string name="linux_failed_start">Η επιφάνεια εργασίας δεν ξεκίνησε. Οι γραμμές παρακάτω δείχνουν γιατί.</string>
     <string name="linux_try_again">Δοκιμή ξανά</string>
+    <string name="linux_tile">Επιφάνεια εργασίας Linux</string>
+    <string name="tile_desktop_running">Τρέχει</string>
+    <string name="tile_desktop_installed">Εγκατεστημένο, έτοιμο για εκκίνηση</string>
+    <string name="tile_desktop_not_installed">Δεν έχει εγκατασταθεί ακόμη</string>
 </resources>

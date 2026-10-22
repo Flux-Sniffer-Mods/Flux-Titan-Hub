@@ -2231,7 +2231,7 @@
     <string name="linux_installing">Աշխատասեղանի տեղադրում։ Մի քանի րոպե է տևում․ կարող եք լքել այս էջը։</string>
     <string name="linux_starting">Աշխատասեղանի մեկնարկ…</string>
     <string name="linux_stopping">Կանգնեցում…</string>
-    <string name="linux_note">Debian 12՝ Xfce-ով, Firefox-ով և տերմինալով։ Ձայն դեռ չկա։ apt-ով տեղադրված հավելվածները (sudo-ն աշխատում է) մնում են տեղադրված։</string>
+    <string name="linux_note">Debian 12՝ Xfce-ով, Firefox-ով և տերմինալով, ձայնով։ apt-ով տեղադրված հավելվածները (sudo-ն աշխատում է) մնում են տեղադրված։</string>
     <string name="linux_intro">Ներբեռնում է Debian-ը (մոտ 50 ՄԲ) և տեղադրում աշխատասեղան (ընդհանուր մոտ 1,5 ԳԲ)։</string>
     <string name="linux_mode_chroot">Chroot (root)</string>
     <string name="linux_mode_chroot_description">Լրիվ արագություն։ Օգտագործում է root՝ Shell-ի մուտքի միջոցով։</string>
@@ -2253,4 +2253,8 @@
     <string name="linux_failed_install">Տեղադրումը չավարտվեց։ Ներքևի տողերը ցույց են տալիս, թե որտեղ։</string>
     <string name="linux_failed_start">Աշխատասեղանը չմեկնարկեց։ Ներքևի տողերը ցույց են տալիս՝ ինչու։</string>
     <string name="linux_try_again">Փորձել կրկին</string>
+    <string name="linux_tile">Linux աշխատասեղան</string>
+    <string name="tile_desktop_running">Աշխատում է</string>
+    <string name="tile_desktop_installed">Տեղադրված է, պատրաստ մեկնարկի</string>
+    <string name="tile_desktop_not_installed">Դեռ տեղադրված չէ</string>
 </resources>
