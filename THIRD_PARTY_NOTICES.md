@@ -133,3 +133,11 @@ Linked into PRoot. `replace.h` is a small stand-in for Samba's lib/replace.
 ## Debian and Ubuntu
 
 The Linux desktop downloads Debian's official arm64 image (debuerreotype, https://github.com/debuerreotype/docker-debian-artifacts) or Ubuntu's (Ubuntu Base, https://cdimage.ubuntu.com/ubuntu-base/) when it's installed, and its packages from their servers; none of it is in the app. Each package keeps its own license, listed inside Linux under `/usr/share/doc`.
+
+## Titan-2-Elite-Debian-Chroot
+
+- Project: Titan-2-Elite-Debian-Chroot, by Flux-Sniffer-Mods (the same author)
+- Source repository: https://github.com/Flux-Sniffer-Mods/Titan-2-Elite-Debian-Chroot
+- License: GNU General Public License, version 3 or later
+
+The Linux desktop's chroot mounts, apt and dpkg settings, systemctl stand-in, KDE touch tuning, applications menu and notification bridge (`app/src/main/assets/fork/linux/`) are adapted from it.

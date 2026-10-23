@@ -129,17 +129,14 @@ class LinuxViewerActivity : Activity() {
     }
 
     /**
-     * The desktop made the view's size, in pixels: on the phone at two thirds (text big enough to
-     * read up close), on a TV as it is. Only where the server can resize, and only when it's off.
+     * The desktop made the view's size, in pixels, every one of them (the desktop draws itself
+     * bigger instead, by its scale). Only where the server can resize, and only when it's off.
      */
     private fun fit(w: Int, h: Int) {
         val vnc = client ?: return
         if (!vnc.resizable || w <= 0 || h <= 0) return
-        @Suppress("DEPRECATION")
-        val onPhone = (windowManager.defaultDisplay?.displayId ?: 0) == android.view.Display.DEFAULT_DISPLAY
-        val scale = if (onPhone) 2f / 3f else 1f
-        val width = ((w * scale).toInt() and 1.inv()).coerceIn(640, 3840)
-        val height = ((h * scale).toInt() and 1.inv()).coerceIn(480, 2160)
+        val width = (w and 1.inv()).coerceIn(640, 3840)
+        val height = (h and 1.inv()).coerceIn(480, 2160)
         if (kotlin.math.abs(width - vnc.width) < 8 && kotlin.math.abs(height - vnc.height) < 8) return
         Thread { vnc.setSize(width, height) }.start()
     }

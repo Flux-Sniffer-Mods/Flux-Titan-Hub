@@ -223,9 +223,17 @@ class LinuxDesktopTest {
 
     @Test
     fun newestUbuntuImageIsPicked() {
-        val listing = "<a href=\"ubuntu-base-24.04.3-base-arm64.tar.gz\">x</a> ubuntu-base-24.04.10-base-arm64.tar.gz " +
-            "ubuntu-base-24.04.5-base-arm64.tar.gz ubuntu-base-24.04.5-base-amd64.tar.gz"
-        assertEquals("ubuntu-base-24.04.10-base-arm64.tar.gz", LinuxDesktop.newestUbuntu(listing))
+        val listing = "<a href=\"ubuntu-base-26.04-base-arm64.tar.gz\">x</a> ubuntu-base-26.04.10-base-arm64.tar.gz " +
+            "ubuntu-base-26.04.1-base-arm64.tar.gz ubuntu-base-26.04.1-base-amd64.tar.gz ubuntu-base-24.04.9-base-arm64.tar.gz"
+        assertEquals("ubuntu-base-26.04.10-base-arm64.tar.gz", LinuxDesktop.newestUbuntu(listing))
+    }
+
+    @Test
+    fun linuxNotificationsReadFromTheQueue() {
+        val notes = LinuxNotifications.parse("firefox-esr-3\tDownload done\tfile.zip\tFirefox\n\nbad line\nlinux-7\tUpdates\t\t\n")
+        assertEquals(listOf("firefox-esr-3", "linux-7"), notes.map { it.tag })
+        assertEquals("file.zip", notes[0].body)
+        assertEquals("Firefox", notes[0].app)
     }
 
     @Test

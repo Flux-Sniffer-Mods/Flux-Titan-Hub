@@ -324,7 +324,7 @@ class StreamingActivity : ComponentActivity() {
             else -> {
                 @Suppress("DEPRECATION")
                 val metrics = android.util.DisplayMetrics().also { windowManager.defaultDisplay.getRealMetrics(it) }
-                val (w, h) = if (screen != null) 1920 to 1080 else metrics.widthPixels * 2 / 3 to metrics.heightPixels * 2 / 3
+                val (w, h) = if (screen != null) 1920 to 1080 else metrics.widthPixels to metrics.heightPixels
                 Toast.makeText(this, R.string.linux_starting, Toast.LENGTH_SHORT).show()
                 desktop.start(this, w, h) { desktop.show(context, screen) }
             }

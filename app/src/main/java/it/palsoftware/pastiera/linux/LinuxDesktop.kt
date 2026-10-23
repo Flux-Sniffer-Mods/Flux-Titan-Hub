@@ -31,14 +31,14 @@ object LinuxDesktop {
     private const val KEY_DISTRO = "linux_distro"
     private const val KEY_DESKTOP = "linux_desktop"
     private const val DEBIAN_URL =
-        "https://raw.githubusercontent.com/debuerreotype/docker-debian-artifacts/dist-arm64v8/bookworm/oci/blobs/rootfs.tar.gz"
+        "https://raw.githubusercontent.com/debuerreotype/docker-debian-artifacts/dist-arm64v8/trixie/oci/blobs/rootfs.tar.gz"
     /** Ubuntu's base images, one per point release: the newest is picked from the folder. */
-    private const val UBUNTU_FOLDER = "https://cdimage.ubuntu.com/ubuntu-base/releases/noble/release/"
+    private const val UBUNTU_FOLDER = "https://cdimage.ubuntu.com/ubuntu-base/releases/resolute/release/"
 
     enum class Mode { PROOT, CHROOT }
 
     /** The Linux installed: its name as shown, and as the scripts know it. */
-    enum class Distro(val label: String, val id: String) { DEBIAN("Debian 12", "debian"), UBUNTU("Ubuntu 24.04", "ubuntu") }
+    enum class Distro(val label: String, val id: String) { DEBIAN("Debian 13", "debian"), UBUNTU("Ubuntu 26.04", "ubuntu") }
 
     /** Its desktop: as shown, as the scripts know it, and as .desktop files name it (OnlyShowIn). */
     enum class Desktop(val label: String, val id: String, val xdg: String) { XFCE("Xfce", "xfce", "XFCE"), KDE("KDE Plasma", "kde", "KDE") }
@@ -121,7 +121,11 @@ object LinuxDesktop {
             "LIBDIR" to context.applicationInfo.nativeLibraryDir,
             "GUEST" to reach(guest, mode),
             "DISTRO" to distro(context).id,
-            "DESKTOP" to desktop(context).id
+            "DESKTOP" to desktop(context).id,
+            // The phone's language and time zone, carried into Linux
+            "LOCALE" to java.util.Locale.getDefault().let { if (it.country.isNotEmpty()) "${it.language}_${it.country}" else it.language },
+            "TZNAME" to java.util.TimeZone.getDefault().id,
+            "SCALE" to scale(context).toString()
         ) + extra
         return env.entries.joinToString(" ") { "${it.key}=${quote(it.value)}" } + " sh ${quote(reach(script, mode))} $action 2>&1"
     }
@@ -167,6 +171,7 @@ object LinuxDesktop {
                 "running" in out -> State.Running
                 else -> State.Stopped
             })
+            if (state.value == State.Running) LinuxNotifications.watch(app)
         }
     }
 
@@ -237,6 +242,14 @@ object LinuxDesktop {
         }.onFailure { line("flux: download failed: $it"); FluxLog.w(TAG, "download: $it") }.getOrDefault(false)
     }
 
+    private const val KEY_SCALE = "linux_scale"
+    val SCALES = listOf(1.0f, 1.25f, 1.5f, 2.0f)
+
+    /** How much bigger everything is drawn, for a phone's small screen (from the next start). */
+    fun scale(context: Context): Float = prefs(context).getFloat(KEY_SCALE, 1.5f).takeIf { it in SCALES } ?: 1.5f
+
+    fun setScale(context: Context, value: Float) = prefs(context).edit().putFloat(KEY_SCALE, value).apply()
+
     /** The VNC password for this run (new each start). */
     fun password(context: Context): String = prefs(context).getString(KEY_PASSWORD, null).orEmpty()
 
@@ -263,7 +276,13 @@ object LinuxDesktop {
         background {
             val until = System.currentTimeMillis() + 90_000
             while (System.currentTimeMillis() < until && (state.value == State.Starting)) {
-                if (listening()) { set(State.Running); LinuxService.idle(app); onReady(); return@background }
+                if (listening()) {
+                    set(State.Running)
+                    LinuxService.idle(app)
+                    LinuxNotifications.watch(app)
+                    onReady()
+                    return@background
+                }
                 Thread.sleep(500)
             }
         }
@@ -289,7 +308,7 @@ object LinuxDesktop {
 
     /** The newest arm64 base image in Ubuntu's release folder's listing. */
     internal fun newestUbuntu(listing: String): String =
-        Regex("ubuntu-base-(24\\.04(?:\\.\\d+)?)-base-arm64\\.tar\\.gz").findAll(listing)
+        Regex("ubuntu-base-(26\\.04(?:\\.\\d+)?)-base-arm64\\.tar\\.gz").findAll(listing)
             .maxByOrNull { match -> match.groupValues[1].split('.').map { it.toIntOrNull() ?: 0 }.let { it.getOrElse(2) { 0 } } }
             ?.value ?: throw IllegalStateException("no Ubuntu image listed")
 

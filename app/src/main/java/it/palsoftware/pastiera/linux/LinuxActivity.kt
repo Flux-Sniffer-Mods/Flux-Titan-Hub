@@ -62,7 +62,12 @@ import kotlinx.coroutines.delay
 class LinuxActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent { PastieraTheme { Page() } }
+        // On the theme's own background, so text takes the theme's colours (not black on dark)
+        setContent {
+            PastieraTheme {
+                Surface(color = MaterialTheme.colorScheme.background, modifier = Modifier.fillMaxSize()) { Page() }
+            }
+        }
     }
 
     override fun onResume() {
@@ -75,12 +80,12 @@ class LinuxActivity : ComponentActivity() {
     /** A TV screen to show the desktop on: the stream's separate screen, or Miracast's. */
     private fun tvScreen(): Int? = ExtraScreen.current?.id ?: Miracast.displayId(this)
 
-    /** On the phone, a desktop the phone's shape at two thirds of its pixels (bigger text); on a TV, 1080p. */
+    /** On the phone, a desktop the phone's own size (it draws itself bigger by its scale); on a TV, 1080p. */
     private fun size(tv: Boolean): Pair<Int, Int> {
         if (tv) return 1920 to 1080
         @Suppress("DEPRECATION")
         val metrics = android.util.DisplayMetrics().also { windowManager.defaultDisplay.getRealMetrics(it) }
-        return metrics.widthPixels * 2 / 3 to metrics.heightPixels * 2 / 3
+        return metrics.widthPixels to metrics.heightPixels
     }
 
     private fun startOn(tv: Boolean) {
@@ -293,6 +298,7 @@ class LinuxActivity : ComponentActivity() {
             Button(onClick = { startOn(tv = false) }) { Text(stringResource(R.string.linux_start_phone)) }
             if (tvThere) FilledTonalButton(onClick = { startOn(tv = true) }) { Text(stringResource(R.string.linux_start_tv)) }
         }
+        ScaleChoice()
         TextButton(onClick = { removing = true }) { Text(stringResource(R.string.linux_remove)) }
         if (removing) AlertDialog(
             onDismissRequest = { removing = false },
@@ -301,6 +307,25 @@ class LinuxActivity : ComponentActivity() {
             confirmButton = { TextButton(onClick = { removing = false; LinuxDesktop.remove(this) }) { Text(stringResource(R.string.linux_remove)) } },
             dismissButton = { TextButton(onClick = { removing = false }) { Text(stringResource(android.R.string.cancel)) } }
         )
+    }
+
+    /** How much bigger the desktop draws itself: from its next start. */
+    @OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+    @Composable
+    private fun ScaleChoice() {
+        var scale by remember { mutableStateOf(LinuxDesktop.scale(this)) }
+        Heading(stringResource(R.string.linux_scale))
+        androidx.compose.foundation.layout.FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            LinuxDesktop.SCALES.forEach { value ->
+                androidx.compose.material3.FilterChip(
+                    selected = scale == value,
+                    onClick = { scale = value; LinuxDesktop.setScale(this@LinuxActivity, value) },
+                    label = { Text("${java.text.DecimalFormat("0.##").format(value)}\u00D7") }
+                )
+            }
+        }
+        Text(stringResource(R.string.linux_scale_hint), style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 
     @Composable

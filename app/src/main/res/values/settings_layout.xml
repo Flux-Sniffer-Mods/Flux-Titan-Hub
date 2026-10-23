@@ -898,4 +898,7 @@
     <string name="linux_distro_ubuntu_description">Newer packages, with the Falkon browser (Ubuntu\'s Firefox needs Snap, which can\'t run here).</string>
     <string name="linux_desktop_xfce_description">Light and quick: the best fit for PRoot.</string>
     <string name="linux_desktop_kde_description">Fuller and more polished, but heavier (about 1 GB more): best with root.</string>
+    <string name="linux_scale">Size of everything</string>
+    <string name="linux_scale_hint">From the next start. Bigger suits the phone; 1× suits a large screen.</string>
+    <string name="linux_notifications_channel">Linux notifications</string>
 </resources>

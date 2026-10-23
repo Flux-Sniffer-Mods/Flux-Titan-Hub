@@ -1,14 +1,15 @@
 # Flux Titan Hub's Linux desktop: Debian or Ubuntu, with Xfce or KDE Plasma, seen through VNC.
 # Run by Android's sh, as the built-in shell (proot: no root) or as root through su (chroot).
-#   flux-linux.sh install | start | stop | status | remove | apps | icons NAME... | launch
+#   flux-linux.sh install | start | stop | status | remove | apps | icons NAME... | launch | notifications
 # From the app, in the environment:
 #   MODE     proot or chroot
 #   BASE     where it lives (/data/local/tmp/flux-linux, or /data/local/flux-linux with root)
 #   TARBALL  the distribution's root file system (a .tar.gz), for install
 #   DISTRO   debian or ubuntu, DESKTOP xfce or kde, for install and start
 #   LIBDIR   the app's native libraries: libproot.so and libproot-loader.so (proot)
-#   GUEST    the script set up inside Debian (flux-guest.sh), for install
-#   GEOMETRY the desktop's size (1920x1080), PASSWORD its VNC password, for start
+#   GUEST    the script that sets Linux up (flux-guest.sh), for install and start
+#   GEOMETRY the desktop's size (1920x1080), PASSWORD its VNC password, SCALE its size-up (1.5), for start
+#   LOCALE   the phone's language (de_DE), TZNAME its time zone (Europe/Berlin), for install and start
 #   EXEC     a program's command line, TERMINAL 1 to run it in a terminal, for launch
 
 set -u
@@ -26,7 +27,7 @@ proot_ready() {
     export PROOT_LOADER="$BASE/bin/loader" PROOT_TMP_DIR="$BASE/tmp"
 }
 
-# A command inside Debian: as root, or with ID (uid:gid) as that user
+# A command inside Linux, as root
 guest() {
     if [ "$MODE" = proot ]; then
         "$BASE/bin/proot" --kill-on-exit --link2symlink -0 -r "$ROOTFS" \
@@ -39,27 +40,80 @@ guest() {
     fi
 }
 
-# What a chroot needs from Android: devices, processes, storage, shared memory
+# What a chroot needs from Android (after Titan-2-Elite-Debian-Chroot): the chroot on a mount
+# of its own that allows setuid and devices (Android mounts /data without them, so sudo and
+# device nodes fail; this way /data itself is left as it is), its own /dev with only the
+# usual devices (and the GPU's), processes, a fresh /run, shared memory and storage
 chroot_mounts() {
-    for d in dev proc sys sdcard dev/pts dev/shm; do mkdir -p "$ROOTFS/$d"; done
-    grep -q " $ROOTFS/dev " /proc/mounts || mount -o bind /dev "$ROOTFS/dev"
-    grep -q " $ROOTFS/dev/pts " /proc/mounts || mount -t devpts devpts "$ROOTFS/dev/pts"
-    grep -q " $ROOTFS/dev/shm " /proc/mounts || mount -t tmpfs -o size=256M tmpfs "$ROOTFS/dev/shm"
-    grep -q " $ROOTFS/proc " /proc/mounts || mount -t proc proc "$ROOTFS/proc"
-    grep -q " $ROOTFS/sys " /proc/mounts || mount -t sysfs sysfs "$ROOTFS/sys"
-    grep -q " $ROOTFS/sdcard " /proc/mounts || mount -o bind /data/media/0 "$ROOTFS/sdcard"
+    C="$ROOTFS"
+    if ! grep -q " $C " /proc/mounts; then
+        mount --bind "$C" "$C" && mount -o remount,bind,suid,dev,exec "$C" "$C" \
+            || say "the chroot couldn't allow setuid: sudo inside may fail"
+    fi
+    grep -q " $C/proc " /proc/mounts && return 0
+    mkdir -p "$C/proc" "$C/sys" "$C/dev" "$C/tmp" "$C/run" "$C/sdcard"
+    chmod 1777 "$C/tmp"
+    mount -t proc proc "$C/proc"
+    mount -t sysfs sysfs "$C/sys"
+    mount -t tmpfs -o mode=755,dev,suid,exec tmpfs "$C/dev"
+    mkdir -p "$C/dev/pts" "$C/dev/shm" "$C/dev/dri"
+    mount -t devpts -o newinstance,gid=5,mode=620,ptmxmode=0666 devpts "$C/dev/pts"
+    mount -t tmpfs -o mode=1777 tmpfs "$C/dev/shm"
+    for spec in "null 1 3" "zero 1 5" "full 1 7" "random 1 8" "urandom 1 9" "tty 5 0"; do
+        set -- $spec
+        rm -f "$C/dev/$1"
+        # Where making the device is refused, Android's own is lent instead
+        mknod -m 666 "$C/dev/$1" c "$2" "$3" 2>/dev/null \
+            || { : > "$C/dev/$1"; mount --bind "/dev/$1" "$C/dev/$1" 2>/dev/null || say "no /dev/$1 inside"; }
+    done
+    ln -sf pts/ptmx "$C/dev/ptmx"
+    ln -sf /proc/self/fd "$C/dev/fd"
+    ln -sf /proc/self/fd/0 "$C/dev/stdin"
+    ln -sf /proc/self/fd/1 "$C/dev/stdout"
+    ln -sf /proc/self/fd/2 "$C/dev/stderr"
+    [ -d /dev/dri ] && mount --bind /dev/dri "$C/dev/dri"
+    mount -t tmpfs -o mode=755 tmpfs "$C/run"
+    mkdir -p "$C/run/dbus" "$C/run/lock"
+    [ -L "$C/var/run" ] || { rm -rf "$C/var/run"; ln -s /run "$C/var/run"; }
+    mount --bind /data/media/0 "$C/sdcard"
 }
 
+# Everything mounted in the chroot let go, deepest first, then the chroot's own mount
 chroot_unmount() {
-    for d in sdcard sys proc dev/shm dev/pts dev; do
-        grep -q " $ROOTFS/$d " /proc/mounts && umount -l "$ROOTFS/$d"
+    for m in $(grep " $ROOTFS/" /proc/mounts | cut -d' ' -f2 | sort -r); do
+        umount -l "$m" 2>/dev/null
+    done
+    grep -q " $ROOTFS " /proc/mounts && umount -l "$ROOTFS" 2>/dev/null
+    return 0
+}
+
+# Anything at all still mounted in or on the chroot
+mounted() { grep -q " $ROOTFS[ /]" /proc/mounts; }
+
+# Every process whose root is inside the chroot, ended (the desktop and anything it left)
+kill_chroot_procs() {
+    for p in /proc/[0-9]*; do
+        r=$(readlink "$p/root" 2>/dev/null) || continue
+        case "$r" in "$ROOTFS"|"$ROOTFS"/*) kill -9 "${p#/proc/}" 2>/dev/null ;; esac
     done
     return 0
+}
+
+# The phone's time zone (and language, for the setup) carried into Linux
+phone_settings() {
+    zone=$(printf '%s' "${TZNAME:-}" | tr -cd 'A-Za-z0-9_/+-')
+    if [ -n "$zone" ] && [ -f "$ROOTFS/usr/share/zoneinfo/$zone" ]; then
+        ln -sf "/usr/share/zoneinfo/$zone" "$ROOTFS/etc/localtime"
+        echo "$zone" > "$ROOTFS/etc/timezone"
+    fi
 }
 
 install() {
     if [ ! -x "$ROOTFS/usr/bin/env" ]; then
         say "unpacking Linux"
+        [ "$MODE" = chroot ] && { kill_chroot_procs; chroot_unmount; }
+        # Never through a mount still in place: the phone's own files would go with it
+        if mounted; then say "still mounted, not unpacked"; exit 6; fi
         rm -rf "$ROOTFS"
         mkdir -p "$ROOTFS"
         if [ "$MODE" = proot ]; then
@@ -79,7 +133,8 @@ install() {
     cp "$GUEST" "$ROOTFS/root/flux-guest.sh"
     [ "$MODE" = chroot ] && chroot_mounts
     say "installing the desktop (a few minutes)"
-    guest /bin/sh /root/flux-guest.sh "$MODE" "${DISTRO:-debian}" "${DESKTOP:-xfce}"
+    phone_settings
+    guest /usr/bin/env FLUX_LOCALE="${LOCALE:-en_US}" /bin/sh /root/flux-guest.sh "$MODE" "${DISTRO:-debian}" "${DESKTOP:-xfce}"
     result=$?
     [ "$MODE" = chroot ] && chroot_unmount
     [ $result -eq 0 ] || { say "install failed"; exit 4; }
@@ -98,13 +153,16 @@ start() {
     if [ "$(cat "$ROOTFS/etc/flux-guest-version" 2>/dev/null)" != "$wanted" ]; then
         say "updating the desktop"
         cp "$GUEST" "$ROOTFS/root/flux-guest.sh"
-        guest /bin/sh /root/flux-guest.sh "$MODE" "${DISTRO:-debian}" "${DESKTOP:-xfce}" || say "update failed, starting anyway"
+        guest /usr/bin/env FLUX_LOCALE="${LOCALE:-en_US}" /bin/sh /root/flux-guest.sh "$MODE" "${DISTRO:-debian}" "${DESKTOP:-xfce}" || say "update failed, starting anyway"
     fi
+    phone_settings
     say "starting"
     if [ "$MODE" = proot ]; then
-        guest /usr/bin/env FLUX_GEOMETRY="$GEOMETRY" FLUX_PASSWORD="$PASSWORD" FLUX_MODE=proot /usr/local/bin/flux-session
+        guest /usr/bin/env FLUX_GEOMETRY="$GEOMETRY" FLUX_PASSWORD="$PASSWORD" FLUX_MODE=proot FLUX_SCALE="${SCALE:-1.5}" /usr/local/bin/flux-session
     else
-        guest /usr/bin/env FLUX_GEOMETRY="$GEOMETRY" FLUX_PASSWORD="$PASSWORD" FLUX_MODE=chroot /bin/su - flux -w FLUX_GEOMETRY,FLUX_PASSWORD,FLUX_MODE -c /usr/local/bin/flux-session
+        guest /usr/bin/env FLUX_GEOMETRY="$GEOMETRY" FLUX_PASSWORD="$PASSWORD" FLUX_MODE=chroot FLUX_SCALE="${SCALE:-1.5}" \
+            /bin/su - flux -w FLUX_GEOMETRY,FLUX_PASSWORD,FLUX_MODE,FLUX_SCALE -c /usr/local/bin/flux-session
+        kill_chroot_procs
         chroot_unmount
     fi
     rm -f "$PIDS/start.pid"
@@ -119,7 +177,7 @@ stop() {
     sleep 1
     [ -f "$PIDS/start.pid" ] && kill "$(cat "$PIDS/start.pid")" 2>/dev/null
     rm -f "$ROOTFS/tmp/flux-xvnc.pid" "$ROOTFS/tmp/flux-session.pid" "$ROOTFS/tmp/flux-pulse.pid" "$ROOTFS/tmp/flux-env" "$PIDS/start.pid"
-    [ "$MODE" = chroot ] && chroot_unmount
+    [ "$MODE" = chroot ] && { kill_chroot_procs; chroot_unmount; }
     say "stopped"
 }
 
@@ -134,9 +192,9 @@ status() {
 
 remove() {
     stop >/dev/null 2>&1
-    [ "$MODE" = chroot ] && chroot_unmount
+    [ "$MODE" = chroot ] && { kill_chroot_procs; chroot_unmount; }
     # Never through a mount still in place: the phone's own files would go with it
-    if grep -q " $ROOTFS/" /proc/mounts; then say "still mounted, not removed"; exit 6; fi
+    if mounted; then say "still mounted, not removed"; exit 6; fi
     rm -rf "$BASE"
     say "removed"
 }
@@ -191,6 +249,15 @@ run_app() {
     fi
 }
 
+# Linux's notifications since last asked, one per line (tag, title, body, app), then forgotten
+notifications() {
+    q="$ROOTFS/tmp/flux-notify.queue"
+    [ -s "$q" ] || return 0
+    mv "$q" "$q.read" 2>/dev/null || return 0
+    cat "$q.read"
+    rm -f "$q.read"
+}
+
 case "${1:-}" in
     install) install ;;
     start) start ;;
@@ -201,5 +268,6 @@ case "${1:-}" in
     icons) shift; icons "$@" ;;
     launch) launch ;;
     run-app) run_app ;;
+    notifications) notifications ;;
     *) say "install | start | stop | status | remove | apps | icons | launch"; exit 1 ;;
 esac

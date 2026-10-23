@@ -22,7 +22,7 @@ class LinuxLaunchActivity : Activity() {
                 if (LinuxDesktop.state.value != LinuxDesktop.State.Running) {
                     Toast.makeText(this, getString(R.string.linux_opening, app.name), Toast.LENGTH_SHORT).show()
                 }
-                LinuxApps.open(this, app, metrics.widthPixels * 2 / 3, metrics.heightPixels * 2 / 3)
+                LinuxApps.open(this, app, metrics.widthPixels, metrics.heightPixels)
             }
         }
         finish()
