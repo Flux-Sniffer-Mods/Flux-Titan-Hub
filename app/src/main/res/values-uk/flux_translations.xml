@@ -2282,4 +2282,7 @@
     <string name="linux_distro_ubuntu_description">Новіші пакети, з браузером Falkon (Firefox в Ubuntu потребує Snap, який тут не працює).</string>
     <string name="linux_desktop_xfce_description">Легкий і швидкий: найкраще для PRoot.</string>
     <string name="linux_desktop_kde_description">Повніший і охайніший, але важчий (приблизно на 1 ГБ більше): найкраще з root.</string>
+    <string name="linux_scale">Розмір усього</string>
+    <string name="linux_scale_hint">З наступного запуску. Більший пасує телефону, 1× — великому екрану.</string>
+    <string name="linux_notifications_channel">Сповіщення Linux</string>
 </resources>

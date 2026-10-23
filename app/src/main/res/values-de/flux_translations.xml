@@ -1738,4 +1738,7 @@
     <string name="linux_distro_ubuntu_description">Neuere Pakete, mit dem Browser Falkon (Firefox braucht unter Ubuntu Snap, das hier nicht läuft).</string>
     <string name="linux_desktop_xfce_description">Leicht und schnell: am besten für PRoot.</string>
     <string name="linux_desktop_kde_description">Umfangreicher und ausgefeilter, aber schwerer (etwa 1 GB mehr): am besten mit Root.</string>
+    <string name="linux_scale">Größe von allem</string>
+    <string name="linux_scale_hint">Ab dem nächsten Start. Größer passt zum Telefon, 1× zu einem großen Bildschirm.</string>
+    <string name="linux_notifications_channel">Linux-Benachrichtigungen</string>
 </resources>

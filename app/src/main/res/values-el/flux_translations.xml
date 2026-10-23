@@ -1650,4 +1650,7 @@
     <string name="linux_distro_ubuntu_description">Νεότερα πακέτα, με το πρόγραμμα περιήγησης Falkon (ο Firefox του Ubuntu θέλει Snap, που δεν τρέχει εδώ).</string>
     <string name="linux_desktop_xfce_description">Ελαφρύ και γρήγορο: το καλύτερο για PRoot.</string>
     <string name="linux_desktop_kde_description">Πληρέστερο και πιο φροντισμένο, αλλά βαρύτερο (περίπου 1 GB παραπάνω): καλύτερο με root.</string>
+    <string name="linux_scale">Μέγεθος όλων</string>
+    <string name="linux_scale_hint">Από την επόμενη εκκίνηση. Μεγαλύτερο ταιριάζει στο τηλέφωνο, 1× σε μεγάλη οθόνη.</string>
+    <string name="linux_notifications_channel">Ειδοποιήσεις Linux</string>
 </resources>

@@ -2276,4 +2276,7 @@
     <string name="linux_distro_ubuntu_description">Paquets plus récents, avec le navigateur Falkon (le Firefox d\'Ubuntu a besoin de Snap, qui ne tourne pas ici).</string>
     <string name="linux_desktop_xfce_description">Léger et rapide : le meilleur choix pour PRoot.</string>
     <string name="linux_desktop_kde_description">Plus complet et soigné, mais plus lourd (environ 1 Go de plus) : idéal avec root.</string>
+    <string name="linux_scale">Taille de tout</string>
+    <string name="linux_scale_hint">Au prochain démarrage. Plus grand convient au téléphone ; 1× à un grand écran.</string>
+    <string name="linux_notifications_channel">Notifications Linux</string>
 </resources>

@@ -2264,4 +2264,7 @@
     <string name="linux_distro_ubuntu_description">Gói mới hơn, có trình duyệt Falkon (Firefox của Ubuntu cần Snap, thứ không chạy được ở đây).</string>
     <string name="linux_desktop_xfce_description">Nhẹ và nhanh: hợp nhất với PRoot.</string>
     <string name="linux_desktop_kde_description">Đầy đủ và trau chuốt hơn nhưng nặng hơn (thêm khoảng 1 GB): tốt nhất khi có root.</string>
+    <string name="linux_scale">Kích thước mọi thứ</string>
+    <string name="linux_scale_hint">Từ lần khởi động sau. Lớn hơn hợp với điện thoại; 1× hợp với màn hình lớn.</string>
+    <string name="linux_notifications_channel">Thông báo Linux</string>
 </resources>
