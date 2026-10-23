@@ -4,7 +4,7 @@
   "sectionTitle": "Added by Flux Titan Hub",
   "highlights": [
     {
-      "text": "Desktop without root: fixed the desktop closing seconds after it appeared. Under PRoot, Linux's session bus turned every program away; it now lets them in. If the desktop stops on its own, the viewer shows Linux's logs, and the crash log includes the desktop's last start."
+      "text": "Desktop without root: fixed the desktop closing seconds after it appeared. Android doesn't let Linux make socket files without root, so its session bus and sound couldn't start; both now run over 127.0.0.1, proven by a cookie only Linux's user can read. If the desktop stops on its own, the viewer shows Linux's logs, and the crash log includes the desktop's last start."
     },
     {
       "text": "Desktop: fixed a black desktop with \"Unable to contact settings server\": Linux's session bus is now started at a fixed address, and if it can't start, the desktop starts its own instead of being given an empty one."

@@ -11,7 +11,7 @@ LOCALE=$(printf '%s' "${FLUX_LOCALE:-en_US}" | tr -cd 'A-Za-z_@')
 LANGUAGE_CODE=${LOCALE%%_*}
 # Raised whenever this script changes: flux-linux.sh runs it again on start. Its packages are
 # installed again only when FLUX_PACKAGES_VERSION is raised too
-FLUX_GUEST_VERSION=8
+FLUX_GUEST_VERSION=9
 FLUX_PACKAGES_VERSION=5
 export DEBIAN_FRONTEND=noninteractive
 
@@ -102,9 +102,9 @@ chmod 440 /etc/sudoers.d/flux
 # A machine ID: D-Bus wants one, and an image ships none
 dbus-uuidgen --ensure 2>/dev/null || true
 
-# ---- The session's bus: open to any user. Under PRoot the bus believes it runs as root while
-# the kernel reports every program as the phone's shell user, so its usual rule (only its own
-# user) turns every program away; its socket is in the runtime folder only that user can open ----
+# ---- The session's bus: callers proven by a cookie in the user's home (DBUS_COOKIE_SHA1), as
+# it's reached over 127.0.0.1. Without root Android won't let Linux make socket files, and under
+# PRoot the kernel's account of who's calling never matches whom the bus believes it is ----
 base=/usr/share/dbus-1/session.conf
 [ -f "$base" ] || base=/etc/dbus-1/session.conf
 cat > /etc/flux-dbus-session.conf <<EOF
@@ -112,9 +112,7 @@ cat > /etc/flux-dbus-session.conf <<EOF
  "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
 <busconfig>
   <include>$base</include>
-  <policy context="default">
-    <allow user="*"/>
-  </policy>
+  <auth>DBUS_COOKIE_SHA1</auth>
 </busconfig>
 EOF
 
@@ -298,11 +296,13 @@ Xvnc :1 -geometry "$geometry" -depth 24 -dpi "$dpi" -rfbport 5901 -localhost -Se
     -PasswordFile "$HOME/.vnc/passwd" -AlwaysShared -AcceptSetDesktopSize >/tmp/flux-xvnc.log 2>&1 &
 echo $! > /tmp/flux-xvnc.pid
 # Sound: everything plays into a silent sink whose monitor goes out as raw 48 kHz stereo
+# Programs reach it over 127.0.0.1 too (no socket files without root), proven by its cookie
+export PULSE_SERVER=tcp:127.0.0.1:4713
 if command -v pulseaudio >/dev/null 2>&1; then
     pulseaudio --kill >/dev/null 2>&1
     pulseaudio --daemonize=no --exit-idle-time=-1 --disallow-exit -n --disable-shm=yes \
         -L "module-null-sink sink_name=flux rate=48000 channels=2" \
-        -L "module-native-protocol-unix auth-anonymous=1" \
+        -L "module-native-protocol-tcp listen=127.0.0.1 port=4713" \
         -L "module-simple-protocol-tcp listen=127.0.0.1 port=5911 record=true playback=false source=flux.monitor format=s16le rate=48000 channels=2" \
         >/tmp/flux-pulse.log 2>&1 &
     echo $! > /tmp/flux-pulse.pid
@@ -311,18 +311,21 @@ if command -v pulseaudio >/dev/null 2>&1; then
 fi
 sleep 1
 export DISPLAY=:1
-# The session's bus at a fixed address, started here so the phone's shortcuts can open programs
-# in this session; dbus-launch the second try. Never an empty address: every program refuses one
-# ("Unable to contact settings server"), where with none the desktop starts a bus of its own
-bus="$XDG_RUNTIME_DIR/bus"
-rm -f "$bus"
+# The session's bus on 127.0.0.1 (a free port), callers proven by the cookie only this user can
+# read: without root Android won't let Linux make socket files. Started here so the phone's
+# shortcuts can open programs in this session; dbus-launch the second try. Never an empty
+# address: every program refuses one, where with none the desktop starts a bus of its own
 conf=/etc/flux-dbus-session.conf
-[ -f "$conf" ] || conf=/usr/share/dbus-1/session.conf
-DBUS_SESSION_BUS_PID=$(dbus-daemon --config-file="$conf" --address="unix:path=$bus" --fork --print-pid 2>/tmp/flux-dbus.log | head -n 1)
-if [ -S "$bus" ]; then
-    export DBUS_SESSION_BUS_ADDRESS="unix:path=$bus"
+if [ -f "$conf" ]; then
+    bus=$(dbus-daemon --config-file="$conf" --address="tcp:host=127.0.0.1,bind=127.0.0.1,port=0" \
+        --fork --print-address=1 --print-pid=1 2>/tmp/flux-dbus.log)
+    DBUS_SESSION_BUS_ADDRESS=$(printf '%s\n' "$bus" | sed -n 1p)
+    DBUS_SESSION_BUS_PID=$(printf '%s\n' "$bus" | sed -n 2p)
+fi
+if [ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
+    export DBUS_SESSION_BUS_ADDRESS
 else
-    eval "$(dbus-launch --sh-syntax --config-file="$conf" 2>>/tmp/flux-dbus.log)"
+    eval "$(dbus-launch --sh-syntax 2>>/tmp/flux-dbus.log)"
 fi
 [ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ] || { unset DBUS_SESSION_BUS_ADDRESS; echo "flux: no session bus" >> /tmp/flux-dbus.log; }
 gdk_int=$(awk -v s="$scale" 'BEGIN { i = int(s); if (i < 1) i = 1; print i }')
@@ -338,6 +341,8 @@ cursor=$(awk -v s="$scale" 'BEGIN { printf "%d", 24 * s + 0.5 }')
     echo "export QT_QUICK_BACKEND=software QSG_RENDER_LOOP=basic LIBGL_ALWAYS_SOFTWARE=1 MESA_NO_ERROR=1"
     echo "export QT_LOGGING_RULES='kpipewire_logging=false;kf.kirigami.platform.warning=false'"
     echo "export GTK_CSD=0 MOZ_USE_XINPUT2=0"
+    # Sound over 127.0.0.1; no accessibility bus (it would want a socket file)
+    echo "export PULSE_SERVER=$PULSE_SERVER NO_AT_BRIDGE=1"
     # The phone's GPU, when the app started its server: Mesa's virpipe driver sends OpenGL there
     # (the desktop's own parts kept on the CPU by flux-linux.sh)
     [ -S /tmp/.virgl_test ] && [ -e /tmp/flux-gpu ] && echo "export GALLIUM_DRIVER=virpipe VTEST_SOCKET_NAME=/tmp/.virgl_test MESA_GL_VERSION_OVERRIDE=4.3 MESA_GLSL_VERSION_OVERRIDE=430"
