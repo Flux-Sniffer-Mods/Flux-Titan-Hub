@@ -1783,4 +1783,6 @@
     <string name="linux_scale">Dimensione di tutto</string>
     <string name="linux_scale_hint">Dal prossimo avvio. Più grande è adatto al telefono, 1× a uno schermo grande.</string>
     <string name="linux_notifications_channel">Notifiche di Linux</string>
+    <string name="linux_viewer_refused">Il desktop ha rifiutato la password.</string>
+    <string name="linux_show_log">Mostra cos’è successo</string>
 </resources>

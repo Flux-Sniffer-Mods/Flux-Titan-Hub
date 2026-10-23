@@ -2279,4 +2279,6 @@
     <string name="linux_scale">Tamaño de todo</string>
     <string name="linux_scale_hint">A partir del próximo inicio. Más grande va mejor en el teléfono; 1× en una pantalla grande.</string>
     <string name="linux_notifications_channel">Notificaciones de Linux</string>
+    <string name="linux_viewer_refused">El escritorio rechazó la contraseña.</string>
+    <string name="linux_show_log">Mostrar qué pasó</string>
 </resources>

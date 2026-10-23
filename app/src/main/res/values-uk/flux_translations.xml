@@ -2285,4 +2285,6 @@
     <string name="linux_scale">Розмір усього</string>
     <string name="linux_scale_hint">З наступного запуску. Більший пасує телефону, 1× — великому екрану.</string>
     <string name="linux_notifications_channel">Сповіщення Linux</string>
+    <string name="linux_viewer_refused">Робочий стіл відхилив пароль.</string>
+    <string name="linux_show_log">Показати, що сталося</string>
 </resources>

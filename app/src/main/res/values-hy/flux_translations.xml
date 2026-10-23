@@ -2273,4 +2273,6 @@
     <string name="linux_scale">Ամեն ինչի չափը</string>
     <string name="linux_scale_hint">Հաջորդ մեկնարկից։ Ավելի մեծը հարմար է հեռախոսին, 1×-ը՝ մեծ էկրանին։</string>
     <string name="linux_notifications_channel">Linux-ի ծանուցումներ</string>
+    <string name="linux_viewer_refused">Աշխատասեղանը մերժեց գաղտնաբառը։</string>
+    <string name="linux_show_log">Ցույց տալ, թե ինչ եղավ</string>
 </resources>

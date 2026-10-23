@@ -1653,4 +1653,6 @@
     <string name="linux_scale">Μέγεθος όλων</string>
     <string name="linux_scale_hint">Από την επόμενη εκκίνηση. Μεγαλύτερο ταιριάζει στο τηλέφωνο, 1× σε μεγάλη οθόνη.</string>
     <string name="linux_notifications_channel">Ειδοποιήσεις Linux</string>
+    <string name="linux_viewer_refused">Η επιφάνεια εργασίας απέρριψε τον κωδικό.</string>
+    <string name="linux_show_log">Δείξε τι έγινε</string>
 </resources>

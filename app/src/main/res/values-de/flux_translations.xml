@@ -1741,4 +1741,6 @@
     <string name="linux_scale">Größe von allem</string>
     <string name="linux_scale_hint">Ab dem nächsten Start. Größer passt zum Telefon, 1× zu einem großen Bildschirm.</string>
     <string name="linux_notifications_channel">Linux-Benachrichtigungen</string>
+    <string name="linux_viewer_refused">Der Desktop hat das Passwort abgelehnt.</string>
+    <string name="linux_show_log">Zeigen, was passiert ist</string>
 </resources>

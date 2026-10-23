@@ -2285,4 +2285,6 @@
     <string name="linux_scale">Rozmiar wszystkiego</string>
     <string name="linux_scale_hint">Od następnego uruchomienia. Większy pasuje do telefonu, 1× do dużego ekranu.</string>
     <string name="linux_notifications_channel">Powiadomienia Linuksa</string>
+    <string name="linux_viewer_refused">Pulpit odrzucił hasło.</string>
+    <string name="linux_show_log">Pokaż, co się stało</string>
 </resources>
