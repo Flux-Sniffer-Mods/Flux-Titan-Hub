@@ -79,13 +79,7 @@ class LinuxViewerActivity : Activity() {
             // Why, from Linux itself
             val logs = LinuxDesktop.guestLogs(this).orEmpty()
             FluxLog.w("FluxLinux", "viewer gave up: $problem\n$logs")
-            runOnUiThread {
-                message.gravity = Gravity.START or Gravity.CENTER_VERTICAL
-                message.textSize = 13f
-                message.text = listOf(getString(R.string.linux_viewer_unreachable), problem, logs)
-                    .filter { it.isNotBlank() }.joinToString("\n\n")
-                message.visibility = android.view.View.VISIBLE
-            }
+            explain(getString(R.string.linux_viewer_unreachable), problem, logs)
             return
         }
         vnc.live()
@@ -96,7 +90,20 @@ class LinuxViewerActivity : Activity() {
         view.postDelayed({ fit(view.width, view.height) }, 1_500)
         runOnUiThread { message.visibility = android.view.View.GONE }
         runCatching { vnc.run() }.onFailure { if (open) FluxLog.w("FluxLinux", "viewer: $it") }
-        if (open) show(R.string.linux_viewer_ended)
+        if (open) {
+            // Ended without being asked: why, from Linux itself
+            val logs = LinuxDesktop.guestLogs(this).orEmpty()
+            if (logs.isNotBlank()) FluxLog.w("FluxLinux", "desktop ended:\n$logs")
+            explain(getString(R.string.linux_viewer_ended), "", logs)
+        }
+    }
+
+    /** [text], then why: the problem seen and the ends of Linux's own logs, small and left-aligned. */
+    private fun explain(text: String, problem: String, logs: String) = runOnUiThread {
+        message.gravity = Gravity.START or Gravity.CENTER_VERTICAL
+        message.textSize = 13f
+        message.text = listOf(text, problem, logs).filter { it.isNotBlank() }.joinToString("\n\n")
+        message.visibility = android.view.View.VISIBLE
     }
 
     /** While connecting: what the desktop is doing (its last line), or why it isn't answering yet. */

@@ -11,7 +11,7 @@ LOCALE=$(printf '%s' "${FLUX_LOCALE:-en_US}" | tr -cd 'A-Za-z_@')
 LANGUAGE_CODE=${LOCALE%%_*}
 # Raised whenever this script changes: flux-linux.sh runs it again on start. Its packages are
 # installed again only when FLUX_PACKAGES_VERSION is raised too
-FLUX_GUEST_VERSION=7
+FLUX_GUEST_VERSION=8
 FLUX_PACKAGES_VERSION=5
 export DEBIAN_FRONTEND=noninteractive
 
@@ -101,6 +101,22 @@ echo 'flux ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/flux
 chmod 440 /etc/sudoers.d/flux
 # A machine ID: D-Bus wants one, and an image ships none
 dbus-uuidgen --ensure 2>/dev/null || true
+
+# ---- The session's bus: open to any user. Under PRoot the bus believes it runs as root while
+# the kernel reports every program as the phone's shell user, so its usual rule (only its own
+# user) turns every program away; its socket is in the runtime folder only that user can open ----
+base=/usr/share/dbus-1/session.conf
+[ -f "$base" ] || base=/etc/dbus-1/session.conf
+cat > /etc/flux-dbus-session.conf <<EOF
+<!DOCTYPE busconfig PUBLIC "-//freedesktop//DTD D-Bus Bus Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
+<busconfig>
+  <include>$base</include>
+  <policy context="default">
+    <allow user="*"/>
+  </policy>
+</busconfig>
+EOF
 
 # ---- KDE: an applications menu (Plasma 6 on Debian ships none, leaving the launcher empty) ----
 if [ "$DESKTOP" = kde ] && [ ! -s /etc/xdg/menus/applications.menu ]; then
@@ -286,7 +302,7 @@ if command -v pulseaudio >/dev/null 2>&1; then
     pulseaudio --kill >/dev/null 2>&1
     pulseaudio --daemonize=no --exit-idle-time=-1 --disallow-exit -n --disable-shm=yes \
         -L "module-null-sink sink_name=flux rate=48000 channels=2" \
-        -L "module-native-protocol-unix" \
+        -L "module-native-protocol-unix auth-anonymous=1" \
         -L "module-simple-protocol-tcp listen=127.0.0.1 port=5911 record=true playback=false source=flux.monitor format=s16le rate=48000 channels=2" \
         >/tmp/flux-pulse.log 2>&1 &
     echo $! > /tmp/flux-pulse.pid
@@ -300,11 +316,13 @@ export DISPLAY=:1
 # ("Unable to contact settings server"), where with none the desktop starts a bus of its own
 bus="$XDG_RUNTIME_DIR/bus"
 rm -f "$bus"
-DBUS_SESSION_BUS_PID=$(dbus-daemon --session --address="unix:path=$bus" --fork --print-pid 2>/tmp/flux-dbus.log | head -n 1)
+conf=/etc/flux-dbus-session.conf
+[ -f "$conf" ] || conf=/usr/share/dbus-1/session.conf
+DBUS_SESSION_BUS_PID=$(dbus-daemon --config-file="$conf" --address="unix:path=$bus" --fork --print-pid 2>/tmp/flux-dbus.log | head -n 1)
 if [ -S "$bus" ]; then
     export DBUS_SESSION_BUS_ADDRESS="unix:path=$bus"
 else
-    eval "$(dbus-launch --sh-syntax 2>>/tmp/flux-dbus.log)"
+    eval "$(dbus-launch --sh-syntax --config-file="$conf" 2>>/tmp/flux-dbus.log)"
 fi
 [ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ] || { unset DBUS_SESSION_BUS_ADDRESS; echo "flux: no session bus" >> /tmp/flux-dbus.log; }
 gdk_int=$(awk -v s="$scale" 'BEGIN { i = int(s); if (i < 1) i = 1; print i }')
@@ -343,6 +361,7 @@ else
 fi
 echo $! > /tmp/flux-session.pid
 wait $!
+echo "flux: the desktop ended ($?)" >> /tmp/flux-session.log
 kill "$DBUS_SESSION_BUS_PID" "$(cat /tmp/flux-xvnc.pid)" "$(cat /tmp/flux-pulse.pid 2>/dev/null)" \
     "$(cat /tmp/flux-notify.pid 2>/dev/null)" 2>/dev/null
 rm -f /tmp/flux-xvnc.pid /tmp/flux-session.pid /tmp/flux-pulse.pid /tmp/flux-notify.pid /tmp/flux-env

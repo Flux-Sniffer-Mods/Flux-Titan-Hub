@@ -74,8 +74,35 @@ object LinuxDesktop {
 
     private fun set(value: State) { mutableState.value = value }
 
+    /** Where the last install's or start's lines are kept, for the crash log after the app restarts. */
+    @Volatile private var logFile: java.io.File? = null
+
     private fun line(text: String) {
         mutableLog.value = (mutableLog.value + text).takeLast(200)
+        logFile?.let { file -> runCatching { file.appendText(text + "\n") } }
+    }
+
+    /** A fresh log for an install or a start. */
+    private fun newLog(context: Context) {
+        mutableLog.value = emptyList()
+        logFile = java.io.File(context.filesDir, "linux.log").also { runCatching { it.writeText("") } }
+    }
+
+    /**
+     * For the crash log: how it's set up, what the last install or start printed and the ends
+     * of Linux's own logs. Blocking, through the shell.
+     */
+    fun report(context: Context): String {
+        val app = context.applicationContext
+        val mode = installedMode(app) ?: return "not installed"
+        val last = runCatching { java.io.File(app.filesDir, "linux.log").readLines().takeLast(80) }.getOrDefault(emptyList())
+        return listOf(
+            "${distro(app).label}, ${desktop(app).label}, $mode, state ${state.value}, GPU ${gpu(app)}, scale ${scale(app)}",
+            "-- last install or start",
+            last.joinToString("\n"),
+            "-- Linux's logs",
+            guestLogs(app).orEmpty()
+        ).joinToString("\n")
     }
 
     private fun prefs(context: Context) = SettingsManager.getPreferences(context)
@@ -190,7 +217,7 @@ object LinuxDesktop {
         val app = context.applicationContext
         if (!canRun(mode)) { set(State.Failed(if (mode == Mode.CHROOT) Step.NO_ROOT else Step.NO_SHELL)); return }
         prefs(app).edit().putString(KEY_DISTRO, distro.name).putString(KEY_DESKTOP, desktop.name).apply()
-        mutableLog.value = emptyList()
+        newLog(app)
         LinuxService.start(app)
         background {
             try {
@@ -276,7 +303,7 @@ object LinuxDesktop {
         val random = SecureRandom()
         val password = String(CharArray(8) { alphabet[random.nextInt(alphabet.length)] })
         prefs(app).edit().putString(KEY_PASSWORD, password).apply()
-        mutableLog.value = emptyList()
+        newLog(app)
         set(State.Starting)
         LinuxService.start(app)
         background {
