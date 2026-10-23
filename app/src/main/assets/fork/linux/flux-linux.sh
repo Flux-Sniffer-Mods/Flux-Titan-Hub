@@ -300,9 +300,9 @@ run_app() {
     fi
 }
 
-# The ends of Linux's own logs: the VNC server's, the session's, sound's, the tuning's, the GPU's
+# The ends of Linux's own logs: the VNC server's, the session's and its bus's, sound's, the tuning's, the GPU's
 logs() {
-    for f in flux-xvnc.log flux-session.log flux-pulse.log flux-tune.log flux-gpu.log; do
+    for f in flux-xvnc.log flux-session.log flux-dbus.log flux-pulse.log flux-tune.log flux-gpu.log; do
         [ -s "$ROOTFS/tmp/$f" ] && { echo "== $f"; tail -n 12 "$ROOTFS/tmp/$f"; }
     done
     return 0

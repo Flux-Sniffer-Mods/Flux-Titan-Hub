@@ -11,7 +11,7 @@ LOCALE=$(printf '%s' "${FLUX_LOCALE:-en_US}" | tr -cd 'A-Za-z_@')
 LANGUAGE_CODE=${LOCALE%%_*}
 # Raised whenever this script changes: flux-linux.sh runs it again on start. Its packages are
 # installed again only when FLUX_PACKAGES_VERSION is raised too
-FLUX_GUEST_VERSION=6
+FLUX_GUEST_VERSION=7
 FLUX_PACKAGES_VERSION=5
 export DEBIAN_FRONTEND=noninteractive
 
@@ -295,8 +295,18 @@ if command -v pulseaudio >/dev/null 2>&1; then
 fi
 sleep 1
 export DISPLAY=:1
-# The session's bus, started here so the phone's shortcuts can open programs in this session
-eval "$(dbus-launch --sh-syntax)"
+# The session's bus at a fixed address, started here so the phone's shortcuts can open programs
+# in this session; dbus-launch the second try. Never an empty address: every program refuses one
+# ("Unable to contact settings server"), where with none the desktop starts a bus of its own
+bus="$XDG_RUNTIME_DIR/bus"
+rm -f "$bus"
+DBUS_SESSION_BUS_PID=$(dbus-daemon --session --address="unix:path=$bus" --fork --print-pid 2>/tmp/flux-dbus.log | head -n 1)
+if [ -S "$bus" ]; then
+    export DBUS_SESSION_BUS_ADDRESS="unix:path=$bus"
+else
+    eval "$(dbus-launch --sh-syntax 2>>/tmp/flux-dbus.log)"
+fi
+[ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ] || { unset DBUS_SESSION_BUS_ADDRESS; echo "flux: no session bus" >> /tmp/flux-dbus.log; }
 gdk_int=$(awk -v s="$scale" 'BEGIN { i = int(s); if (i < 1) i = 1; print i }')
 gdk_dpi=$(awk -v s="$scale" -v i="$gdk_int" 'BEGIN { printf "%.3f", s / i }')
 cursor=$(awk -v s="$scale" 'BEGIN { printf "%d", 24 * s + 0.5 }')
@@ -305,7 +315,7 @@ cursor=$(awk -v s="$scale" 'BEGIN { printf "%d", 24 * s + 0.5 }')
 {
     echo "export DISPLAY=:1 LANG='$LANG' XDG_SESSION_TYPE=x11 QT_QPA_PLATFORM=xcb"
     echo "export XDG_RUNTIME_DIR='$XDG_RUNTIME_DIR'"
-    echo "export DBUS_SESSION_BUS_ADDRESS='$DBUS_SESSION_BUS_ADDRESS'"
+    [ -n "${DBUS_SESSION_BUS_ADDRESS:-}" ] && echo "export DBUS_SESSION_BUS_ADDRESS='$DBUS_SESSION_BUS_ADDRESS'"
     echo "export QT_SCALE_FACTOR=$scale GDK_SCALE=$gdk_int GDK_DPI_SCALE=$gdk_dpi XCURSOR_SIZE=$cursor FLUX_SCALE=$scale"
     echo "export QT_QUICK_BACKEND=software QSG_RENDER_LOOP=basic LIBGL_ALWAYS_SOFTWARE=1 MESA_NO_ERROR=1"
     echo "export QT_LOGGING_RULES='kpipewire_logging=false;kf.kirigami.platform.warning=false'"
