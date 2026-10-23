@@ -249,6 +249,14 @@ run_app() {
     fi
 }
 
+# The ends of Linux's own logs: the VNC server's, the session's, sound's, the tuning's
+logs() {
+    for f in flux-xvnc.log flux-session.log flux-pulse.log flux-tune.log; do
+        [ -s "$ROOTFS/tmp/$f" ] && { echo "== $f"; tail -n 12 "$ROOTFS/tmp/$f"; }
+    done
+    return 0
+}
+
 # Linux's notifications since last asked, one per line (tag, title, body, app), then forgotten
 notifications() {
     q="$ROOTFS/tmp/flux-notify.queue"
@@ -269,5 +277,6 @@ case "${1:-}" in
     launch) launch ;;
     run-app) run_app ;;
     notifications) notifications ;;
+    logs) logs ;;
     *) say "install | start | stop | status | remove | apps | icons | launch"; exit 1 ;;
 esac

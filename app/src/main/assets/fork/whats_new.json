@@ -4,6 +4,9 @@
   "sectionTitle": "Added by Flux Titan Hub",
   "highlights": [
     {
+      "text": "Desktop: says what it's doing while it connects (an update after installing a new version can take minutes), and why when it can't, with Linux's own logs (also under Show what happened). It no longer stops waiting for a slow first start."
+    },
+    {
       "text": "Desktop, tuned for the phone (from Titan-2-Elite-Debian-Chroot): Debian 13 and Ubuntu 26.04, drawn at the screen's full sharpness and sized up 1.5 times (or 1, 1.25 or 2), in the phone's language and time zone; KDE Plasma in tablet mode with bigger text and icons and a working launcher menu; quicker, smaller installs; Linux's notifications in the phone's shade; and with root, a tidier chroot that leaves /data as it is and stops cleanly."
     },
     {

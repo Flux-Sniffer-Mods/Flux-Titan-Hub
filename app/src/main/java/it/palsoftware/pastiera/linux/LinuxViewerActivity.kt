@@ -53,22 +53,42 @@ class LinuxViewerActivity : Activity() {
     }
 
     private fun connect() {
-        val password = LinuxDesktop.password(this)
-        // The server may still be starting: tried for as long as it is, then half a minute more
+        // The server may still be starting: tried for as long as it is, then half a minute more,
+        // what's going on shown meanwhile (installing what's new, starting, why it isn't answering)
         var until = System.currentTimeMillis() + 30_000
         var vnc: VncClient? = null
+        var problem = ""
         while (open && vnc == null && (System.currentTimeMillis() < until || LinuxDesktop.state.value == LinuxDesktop.State.Starting)) {
-            if (LinuxDesktop.state.value == LinuxDesktop.State.Starting) until = System.currentTimeMillis() + 30_000
+            val state = LinuxDesktop.state.value
+            if (state == LinuxDesktop.State.Starting) until = System.currentTimeMillis() + 30_000
+            if (state is LinuxDesktop.State.Failed) break
+            progress(problem)
+            // The password of this run, read each time (a start may have made a new one)
+            val password = LinuxDesktop.password(this)
             vnc = runCatching {
                 VncClient.connect("127.0.0.1", LinuxDesktop.PORT,
                     onFrame = { x, y, w, h -> view.changed(x, y, w, h) },
                     onResize = { w, h -> view.post { view.resize(w, h) } },
                     onClipboard = { text -> runOnUiThread { copied(text) } }
-                ).also { if (!it.handshake(password)) { it.close(); throw IllegalStateException("password refused") } }
-            }.getOrNull()
-            if (vnc == null) Thread.sleep(700)
+                ).also { if (!it.handshake(password)) { it.close(); throw IllegalStateException(getString(R.string.linux_viewer_refused)) } }
+            }.onFailure { problem = it.message?.takeIf { m -> m.isNotBlank() && "ECONNREFUSED" !in m && "failed to connect" !in m }.orEmpty() }
+                .getOrNull()
+            if (vnc == null) Thread.sleep(1_000)
         }
-        if (vnc == null) { show(R.string.linux_viewer_unreachable); return }
+        if (vnc == null) {
+            // Why, from Linux itself
+            val logs = LinuxDesktop.guestLogs(this).orEmpty()
+            FluxLog.w("FluxLinux", "viewer gave up: $problem\n$logs")
+            runOnUiThread {
+                message.gravity = Gravity.START or Gravity.CENTER_VERTICAL
+                message.textSize = 13f
+                message.text = listOf(getString(R.string.linux_viewer_unreachable), problem, logs)
+                    .filter { it.isNotBlank() }.joinToString("\n\n")
+                message.visibility = android.view.View.VISIBLE
+            }
+            return
+        }
+        vnc.live()
         client = vnc
         view.attach(vnc)
         sound.start()
@@ -77,6 +97,16 @@ class LinuxViewerActivity : Activity() {
         runOnUiThread { message.visibility = android.view.View.GONE }
         runCatching { vnc.run() }.onFailure { if (open) FluxLog.w("FluxLinux", "viewer: $it") }
         if (open) show(R.string.linux_viewer_ended)
+    }
+
+    /** While connecting: what the desktop is doing (its last line), or why it isn't answering yet. */
+    private fun progress(problem: String) = runOnUiThread {
+        val detail = when (val state = LinuxDesktop.state.value) {
+            LinuxDesktop.State.Starting -> LinuxDesktop.log.value.lastOrNull()?.removePrefix("flux: ").orEmpty()
+            is LinuxDesktop.State.Failed -> state.step.name
+            else -> problem
+        }
+        message.text = getString(R.string.linux_viewer_connecting) + if (detail.isNotBlank()) "\n\n" + detail else ""
     }
 
     private fun show(text: Int) = runOnUiThread {

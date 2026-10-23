@@ -213,6 +213,9 @@ internal class VncClient(
         runCatching { synchronized(output) { output.write(); output.flush() } }
     }
 
+    /** Logged in: the picture may now go quiet for as long as nothing changes. */
+    fun live() { runCatching { socket?.soTimeout = 0 } }
+
     fun close() {
         open = false
         runCatching { socket?.close() }
@@ -231,6 +234,8 @@ internal class VncClient(
             val socket = Socket()
             socket.connect(InetSocketAddress(host, port), 3_000)
             socket.tcpNoDelay = true
+            // A server that takes the connection but never speaks is given up on, not waited on forever
+            socket.soTimeout = 8_000
             return VncClient(socket.getInputStream(), socket.getOutputStream(), onFrame, onResize, onClipboard)
                 .also { it.socket = socket }
         }

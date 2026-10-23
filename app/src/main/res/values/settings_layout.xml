@@ -901,4 +901,6 @@
     <string name="linux_scale">Size of everything</string>
     <string name="linux_scale_hint">From the next start. Bigger suits the phone; 1× suits a large screen.</string>
     <string name="linux_notifications_channel">Linux notifications</string>
+    <string name="linux_viewer_refused">The desktop turned the password down.</string>
+    <string name="linux_show_log">Show what happened</string>
 </resources>

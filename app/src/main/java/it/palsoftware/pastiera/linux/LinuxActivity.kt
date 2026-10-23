@@ -336,6 +336,28 @@ class LinuxActivity : ComponentActivity() {
             if (tv != null) FilledTonalButton(onClick = { LinuxDesktop.show(this@LinuxActivity, tv) }) { Text(stringResource(R.string.linux_open_tv)) }
         }
         OutlinedButton(onClick = { LinuxDesktop.stop(this) }) { Text(stringResource(R.string.miracast_stop)) }
+        ShowLog()
+    }
+
+    /** Linux's own logs (the VNC server, the session, sound), read through the shell when asked. */
+    @Composable
+    private fun ShowLog() {
+        var logs by remember { mutableStateOf<String?>(null) }
+        TextButton(onClick = {
+            logs = ""
+            Thread { logs = LinuxDesktop.guestLogs(this).orEmpty().ifBlank { "\u2014" } }.start()
+        }) { Text(stringResource(R.string.linux_show_log)) }
+        val shown = logs
+        if (shown != null) AlertDialog(
+            onDismissRequest = { logs = null },
+            title = { Text(stringResource(R.string.linux_show_log)) },
+            text = {
+                if (shown.isEmpty()) LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                else Text(shown, style = MaterialTheme.typography.bodySmall, fontFamily = FontFamily.Monospace,
+                    modifier = Modifier.verticalScroll(rememberScrollState()))
+            },
+            confirmButton = { TextButton(onClick = { logs = null }) { Text(stringResource(android.R.string.ok)) } }
+        )
     }
 
     @Composable

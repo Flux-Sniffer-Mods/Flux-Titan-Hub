@@ -151,6 +151,12 @@ object LinuxDesktop {
     internal fun runForOutput(context: Context, mode: Mode, action: String, timeoutMs: Long = 30_000): String? =
         AdbShell.run(command(context, mode, action), timeoutMs)
 
+    /** The ends of Linux's own logs (the VNC server, the session, sound): what to look at when it won't show. */
+    fun guestLogs(context: Context): String? {
+        val mode = installedMode(context) ?: return null
+        return runForOutput(context.applicationContext, mode, "logs", 8_000)?.trim()
+    }
+
     /** Opens [exec] in the running desktop ([terminal]: in a terminal). Blocking, briefly. */
     fun launch(context: Context, exec: String, terminal: Boolean) {
         val mode = installedMode(context) ?: return
@@ -268,14 +274,16 @@ object LinuxDesktop {
         background {
             run(app, mode, "start", mapOf("GEOMETRY" to "${width and 1.inv()}x${height and 1.inv()}", "PASSWORD" to password), keep = true)
             session = null
-            // Ended before its picture ever came: it couldn't start (the log says why)
-            set(if (state.value == State.Starting) State.Failed(Step.START) else State.Stopped)
+            // Ended before its picture ever came: it couldn't start (the log says why, Linux's own too)
+            if (state.value == State.Starting) {
+                guestLogs(app)?.lineSequence()?.forEach { line(it) }
+                set(State.Failed(Step.START))
+            } else set(State.Stopped)
             LinuxService.idle(app)
         }
-        // Ready once the VNC server answers
+        // Ready once the VNC server answers, however long an update first takes (a failed start ends it)
         background {
-            val until = System.currentTimeMillis() + 90_000
-            while (System.currentTimeMillis() < until && (state.value == State.Starting)) {
+            while (state.value == State.Starting) {
                 if (listening()) {
                     set(State.Running)
                     LinuxService.idle(app)
