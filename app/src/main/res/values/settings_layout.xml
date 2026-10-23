@@ -885,4 +885,10 @@
     <string name="tile_desktop_running">Running</string>
     <string name="tile_desktop_installed">Installed, ready to start</string>
     <string name="tile_desktop_not_installed">Not installed yet</string>
+    <string name="linux_programs">Programs</string>
+    <string name="linux_programs_hint">Tap one to open it in the desktop; long-press to put it on the home screen.</string>
+    <string name="linux_programs_none">No programs found yet.</string>
+    <string name="linux_pinned">%1$s added to the home screen</string>
+    <string name="linux_opening">Opening %1$s…</string>
+    <string name="linux_program_gone">That program isn\'t in Linux any more.</string>
 </resources>

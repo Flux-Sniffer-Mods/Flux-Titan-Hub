@@ -150,4 +150,74 @@ class LinuxDesktopTest {
         // SetDesktopSize: type 251, 10 x 6, one screen keeping the server's id
         assertArrayEquals(byteArrayOf(251.toByte(), 0, 0, 10, 0, 6, 1, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 10, 0, 6, 0, 0, 0, 0), sent)
     }
+
+    @Test
+    fun programsReadFromDesktopFiles() {
+        val listing = """
+            @@app firefox-esr.desktop
+            [Desktop Entry]
+            Name=Firefox ESR
+            Name[de]=Firefox ESR (de)
+            Exec=/usr/lib/firefox-esr/firefox-esr %u
+            Icon=firefox-esr
+            Type=Application
+            [Desktop Action new-window]
+            Name=New Window
+            Exec=firefox-esr --new-window
+
+            @@app xfce4-terminal.desktop
+            [Desktop Entry]
+            Name=Xfce Terminal
+            Exec=xfce4-terminal
+            Icon=org.xfce.terminal
+            Type=Application
+
+            @@app hidden.desktop
+            [Desktop Entry]
+            Name=Hidden
+            Exec=hidden
+            NoDisplay=true
+            Type=Application
+
+            @@app gnome-only.desktop
+            [Desktop Entry]
+            Name=Gnome thing
+            Exec=gnome-thing
+            OnlyShowIn=GNOME;
+            Type=Application
+
+            @@app htop.desktop
+            [Desktop Entry]
+            Name=Htop
+            Exec=htop
+            Terminal=true
+            Type=Application
+
+            @@app xfce4-terminal.desktop
+            [Desktop Entry]
+            Name=My Terminal
+            Exec=xfce4-terminal --maximize
+            Type=Application
+        """.trimIndent()
+        val apps = LinuxApps.parse(listing, java.util.Locale.GERMANY)
+        assertEquals(listOf("Firefox ESR (de)", "Htop", "My Terminal"), apps.map { it.name })
+        assertEquals("/usr/lib/firefox-esr/firefox-esr", apps[0].exec)
+        assertEquals("firefox-esr", apps[0].iconName)
+        assertTrue(apps[1].terminal)
+        // The user's own file of the same name wins
+        assertEquals("xfce4-terminal --maximize", apps[2].exec)
+    }
+
+    @Test
+    fun execFieldCodesAndIconNames() {
+        assertEquals("gimp --new 100%", LinuxApps.cleanExec("gimp %F --new 100%%"))
+        assertEquals("sh -c \"echo hi\"", LinuxApps.cleanExec("sh -c \"echo hi\" %U"))
+        assertTrue(LinuxApps.safeIcon("org.xfce.terminal"))
+        assertTrue(LinuxApps.safeIcon("/usr/share/pixmaps/htop.png"))
+        assertFalse(LinuxApps.safeIcon("../../etc/passwd"))
+        assertFalse(LinuxApps.safeIcon("a'b"))
+        val icons = LinuxApps.parseIcons("@@icon one\n" + java.util.Base64.getMimeEncoder().encodeToString(ByteArray(40) { it.toByte() }) + "\n\n@@icon two\n\n")
+        assertEquals(listOf("one"), icons.map { it.first })
+        assertEquals(40, icons[0].second.size)
+    }
 }

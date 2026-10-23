@@ -3,6 +3,11 @@ package it.palsoftware.pastiera.linux
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -123,12 +128,72 @@ class LinuxActivity : ComponentActivity() {
                     is LinuxDesktop.State.Failed -> Failed(current.step, log)
                 }
             }
+            // Each program in Linux, a tap from opening (installed: running or not)
+            if (state == LinuxDesktop.State.Stopped || state == LinuxDesktop.State.Running) Programs()
             Text(
                 stringResource(R.string.linux_note),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
+        }
+    }
+
+    /** The programs in Linux: a tap opens one in the desktop, a long press puts it on the home screen. */
+    @Composable
+    private fun Programs() {
+        val context = this
+        val apps by LinuxApps.apps.collectAsState()
+        // Read again each time the page opens: something new may have been installed with apt
+        LaunchedEffect(Unit) {
+            LinuxApps.cached(context)
+            kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) { LinuxApps.refresh(context) }
+        }
+        Card {
+            Text(stringResource(R.string.linux_programs), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+            Text(stringResource(R.string.linux_programs_hint), style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+            if (apps.isEmpty()) Text(stringResource(R.string.linux_programs_none), style = MaterialTheme.typography.bodyMedium)
+            apps.chunked(4).forEach { row ->
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                    row.forEach { app -> Program(app, Modifier.weight(1f)) }
+                    repeat(4 - row.size) { androidx.compose.foundation.layout.Spacer(Modifier.weight(1f)) }
+                }
+            }
+        }
+    }
+
+    @OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
+    @Composable
+    private fun Program(app: LinuxApps.App, modifier: Modifier) {
+        val context = this
+        val icon = remember(app.id, app.iconName) { LinuxApps.icon(context, app)?.asImageBitmap() }
+        val pinned = stringResource(R.string.linux_pinned, app.name)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier.clip(RoundedCornerShape(12.dp)).combinedClickable(
+                onClick = {
+                    val (w, h) = size(tv = false)
+                    LinuxApps.open(context, app, w, h)
+                },
+                onLongClick = {
+                    if (LinuxApps.pin(context, app)) android.widget.Toast.makeText(context, pinned, android.widget.Toast.LENGTH_SHORT).show()
+                }
+            ).padding(vertical = 6.dp)
+        ) {
+            androidx.compose.foundation.layout.Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.size(48.dp).clip(RoundedCornerShape(12.dp))
+                    .background(if (icon == null) MaterialTheme.colorScheme.secondaryContainer else androidx.compose.ui.graphics.Color.Transparent)
+            ) {
+                if (icon != null) androidx.compose.foundation.Image(icon, contentDescription = null, modifier = Modifier.size(44.dp))
+                else Text(app.name.take(1).uppercase(), style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer)
+            }
+            Text(app.name, style = MaterialTheme.typography.bodySmall, maxLines = 2,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                modifier = Modifier.padding(top = 4.dp))
         }
     }
 

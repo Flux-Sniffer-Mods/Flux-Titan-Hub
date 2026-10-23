@@ -3,7 +3,7 @@
 set -e
 MODE=${1:-proot}
 # Raised whenever this script changes what's installed: flux-linux.sh runs it again on start
-FLUX_GUEST_VERSION=2
+FLUX_GUEST_VERSION=3
 export DEBIAN_FRONTEND=noninteractive
 # apt stays root throughout: PRoot can't switch users
 echo 'APT::Sandbox::User "root";' > /etc/apt/apt.conf.d/01flux-sandbox
@@ -19,7 +19,7 @@ apt-get install -y --no-install-recommends \
     xfce4 xfce4-terminal thunar mousepad dbus-x11 \
     tigervnc-standalone-server tigervnc-tools xfonts-base \
     fonts-dejavu-core adwaita-icon-theme sudo firefox-esr ca-certificates \
-    pulseaudio pulseaudio-utils
+    pulseaudio pulseaudio-utils gvfs libglib2.0-bin
 id flux >/dev/null 2>&1 || useradd -m -s /bin/bash flux
 usermod -a -G sudo flux || true
 [ "$MODE" = chroot ] && usermod -a -G aid_inet,aid_net_raw flux
@@ -60,12 +60,53 @@ if [ "$FLUX_MODE" = proot ]; then
 fi
 sleep 1
 export DISPLAY=:1
-dbus-launch --exit-with-session startxfce4 >/tmp/flux-session.log 2>&1 &
+# The session's bus, started here so the phone's shortcuts can open programs in this session
+eval "$(dbus-launch --sh-syntax)"
+{
+    echo "export DISPLAY=:1"
+    echo "export XDG_RUNTIME_DIR='$XDG_RUNTIME_DIR'"
+    echo "export DBUS_SESSION_BUS_ADDRESS='$DBUS_SESSION_BUS_ADDRESS'"
+    [ "$FLUX_MODE" = proot ] && echo "export MOZ_DISABLE_CONTENT_SANDBOX=1 MOZ_DISABLE_GMP_SANDBOX=1 MOZ_DISABLE_RDD_SANDBOX=1 MOZ_DISABLE_SOCKET_PROCESS_SANDBOX=1"
+} > /tmp/flux-env
+startxfce4 >/tmp/flux-session.log 2>&1 &
 echo $! > /tmp/flux-session.pid
 wait $!
-kill "$(cat /tmp/flux-xvnc.pid)" "$(cat /tmp/flux-pulse.pid 2>/dev/null)" 2>/dev/null
-rm -f /tmp/flux-xvnc.pid /tmp/flux-session.pid /tmp/flux-pulse.pid
+kill "$DBUS_SESSION_BUS_PID" "$(cat /tmp/flux-xvnc.pid)" "$(cat /tmp/flux-pulse.pid 2>/dev/null)" 2>/dev/null
+rm -f /tmp/flux-xvnc.pid /tmp/flux-session.pid /tmp/flux-pulse.pid /tmp/flux-env
 SESSION
 chmod 755 /usr/local/bin/flux-session
+# One program in the running desktop, from the phone's shortcuts
+cat > /usr/local/bin/flux-run <<'RUN'
+#!/bin/sh
+[ -f /tmp/flux-env ] && . /tmp/flux-env
+cd "$HOME"
+if [ "$FLUX_TERMINAL" = 1 ]; then exec xfce4-terminal -e "$FLUX_EXEC"; else exec sh -c "$FLUX_EXEC"; fi
+RUN
+chmod 755 /usr/local/bin/flux-run
+# Each program's icon on the Xfce desktop, added once (one deleted stays deleted), as it signs in
+cat > /usr/local/bin/flux-desktop-icons <<'ICONS'
+#!/bin/sh
+desk="$HOME/Desktop"
+seen="$HOME/.config/flux-desktop-icons"
+mkdir -p "$desk" "$HOME/.config"
+touch "$seen"
+for f in /usr/share/applications/*.desktop /usr/local/share/applications/*.desktop; do
+    [ -f "$f" ] || continue
+    name=${f##*/}
+    grep -qxF "$name" "$seen" && continue
+    echo "$name" >> "$seen"
+    grep -q '^Type=Application' "$f" || continue
+    grep -q '^NoDisplay=true' "$f" && continue
+    grep -q '^OnlyShowIn=' "$f" && continue
+    grep -q '^Categories=.*Settings' "$f" && continue
+    cp "$f" "$desk/$name"
+    chmod +x "$desk/$name"
+    # Trusted, so Xfce opens it without asking first
+    gio set -t string "$desk/$name" metadata::xfce-exe-checksum "$(sha256sum "$desk/$name" | cut -d' ' -f1)" 2>/dev/null
+done
+ICONS
+chmod 755 /usr/local/bin/flux-desktop-icons
+mkdir -p /etc/xdg/autostart
+printf '[Desktop Entry]\nType=Application\nName=Flux desktop icons\nExec=/usr/local/bin/flux-desktop-icons\nNoDisplay=true\n' > /etc/xdg/autostart/flux-desktop-icons.desktop
 echo "$FLUX_GUEST_VERSION" > /etc/flux-guest-version
 echo "flux: guest ready"

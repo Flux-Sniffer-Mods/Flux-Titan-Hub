@@ -124,6 +124,17 @@ object LinuxDesktop {
         runCatching(work).onFailure { FluxLog.w(TAG, "$it") }
     }, "FluxLinux").apply { isDaemon = true; start() }
 
+    /** [action]'s output, through the shell; null when it failed. */
+    internal fun runForOutput(context: Context, mode: Mode, action: String, timeoutMs: Long = 30_000): String? =
+        AdbShell.run(command(context, mode, action), timeoutMs)
+
+    /** Opens [exec] in the running desktop ([terminal]: in a terminal). Blocking, briefly. */
+    fun launch(context: Context, exec: String, terminal: Boolean) {
+        val mode = installedMode(context) ?: return
+        val said = AdbShell.run(command(context, mode, "launch", mapOf("EXEC" to exec, "TERMINAL" to if (terminal) "1" else "0")), 10_000)
+        if (said?.contains("launched") != true) FluxLog.w(TAG, "launch $exec: ${said?.trim()}")
+    }
+
     /** Looks again: installed, running or neither. */
     fun refresh(context: Context) {
         val app = context.applicationContext

@@ -376,6 +376,14 @@
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|density|uiMode"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+        <!-- A Linux program's home-screen shortcut: opens it in the desktop -->
+        <activity
+            android:name=".linux.LinuxLaunchActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:noHistory="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <service
             android:name=".linux.LinuxService"
             android:exported="false"

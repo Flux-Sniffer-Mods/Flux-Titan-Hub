@@ -1,6 +1,6 @@
 # Flux Titan Hub's Linux desktop: Debian with Xfce, seen through VNC.
 # Run by Android's sh, as the built-in shell (proot: no root) or as root through su (chroot).
-#   flux-linux.sh install | start | stop | status | remove
+#   flux-linux.sh install | start | stop | status | remove | apps | icons NAME... | launch
 # From the app, in the environment:
 #   MODE     proot or chroot
 #   BASE     where it lives (/data/local/tmp/flux-linux, or /data/local/flux-linux with root)
@@ -8,6 +8,7 @@
 #   LIBDIR   the app's native libraries: libproot.so and libproot-loader.so (proot)
 #   GUEST    the script set up inside Debian (flux-guest.sh), for install
 #   GEOMETRY the desktop's size (1920x1080), PASSWORD its VNC password, for start
+#   EXEC     a program's command line, TERMINAL 1 to run it in a terminal, for launch
 
 set -u
 ROOTFS="$BASE/rootfs"
@@ -116,7 +117,7 @@ stop() {
     done
     sleep 1
     [ -f "$PIDS/start.pid" ] && kill "$(cat "$PIDS/start.pid")" 2>/dev/null
-    rm -f "$ROOTFS/tmp/flux-xvnc.pid" "$ROOTFS/tmp/flux-session.pid" "$ROOTFS/tmp/flux-pulse.pid" "$PIDS/start.pid"
+    rm -f "$ROOTFS/tmp/flux-xvnc.pid" "$ROOTFS/tmp/flux-session.pid" "$ROOTFS/tmp/flux-pulse.pid" "$ROOTFS/tmp/flux-env" "$PIDS/start.pid"
     [ "$MODE" = chroot ] && chroot_unmount
     say "stopped"
 }
@@ -139,11 +140,65 @@ remove() {
     say "removed"
 }
 
+# Every program's .desktop file, each after a line "@@app NAME" (the app reads them)
+apps() {
+    for dir in "$ROOTFS/usr/share/applications" "$ROOTFS/usr/local/share/applications" \
+        "$ROOTFS/root/.local/share/applications" "$ROOTFS/home/flux/.local/share/applications"; do
+        for f in "$dir"/*.desktop; do
+            [ -f "$f" ] || continue
+            echo "@@app ${f##*/}"
+            cat "$f"
+            echo
+        done
+    done
+}
+
+# Each named icon as a PNG in base64, after a line "@@icon NAME"; nothing for one not found
+icons() {
+    for name in "$@"; do
+        case "$name" in *..*) continue ;; esac
+        found=""
+        case "$name" in
+            /*) [ -f "$ROOTFS$name" ] && found="$ROOTFS$name" ;;
+            *)
+                for size in 64x64 48x48 96x96 128x128 256x256 32x32; do
+                    for theme in hicolor Adwaita; do
+                        f="$ROOTFS/usr/share/icons/$theme/$size/apps/$name.png"
+                        [ -z "$found" ] && [ -f "$f" ] && found="$f"
+                    done
+                done
+                [ -z "$found" ] && [ -f "$ROOTFS/usr/share/pixmaps/$name.png" ] && found="$ROOTFS/usr/share/pixmaps/$name.png"
+                ;;
+        esac
+        case "$found" in *.png) echo "@@icon $name"; base64 "$found"; echo ;; esac
+    done
+}
+
+# A program opened in the running desktop, left running after this returns
+launch() {
+    [ -f "$ROOTFS/tmp/flux-env" ] || { say "not running"; exit 7; }
+    setsid sh "$0" run-app </dev/null >/dev/null 2>&1 &
+    say "launched"
+}
+
+run_app() {
+    if [ "$MODE" = proot ]; then
+        proot_ready || exit 2
+        guest /usr/bin/env FLUX_EXEC="$EXEC" FLUX_TERMINAL="${TERMINAL:-0}" /bin/sh /usr/local/bin/flux-run
+    else
+        guest /usr/bin/env FLUX_EXEC="$EXEC" FLUX_TERMINAL="${TERMINAL:-0}" /bin/su - flux -w FLUX_EXEC,FLUX_TERMINAL -c /usr/local/bin/flux-run
+    fi
+}
+
 case "${1:-}" in
     install) install ;;
     start) start ;;
     stop) stop ;;
     status) status ;;
     remove) remove ;;
-    *) say "install | start | stop | status | remove"; exit 1 ;;
+    apps) apps ;;
+    icons) shift; icons "$@" ;;
+    launch) launch ;;
+    run-app) run_app ;;
+    *) say "install | start | stop | status | remove | apps | icons | launch"; exit 1 ;;
 esac

@@ -54,10 +54,11 @@ class LinuxViewerActivity : Activity() {
 
     private fun connect() {
         val password = LinuxDesktop.password(this)
-        // The server may still be starting: tried for half a minute
-        val until = System.currentTimeMillis() + 30_000
+        // The server may still be starting: tried for as long as it is, then half a minute more
+        var until = System.currentTimeMillis() + 30_000
         var vnc: VncClient? = null
-        while (open && vnc == null && System.currentTimeMillis() < until) {
+        while (open && vnc == null && (System.currentTimeMillis() < until || LinuxDesktop.state.value == LinuxDesktop.State.Starting)) {
+            if (LinuxDesktop.state.value == LinuxDesktop.State.Starting) until = System.currentTimeMillis() + 30_000
             vnc = runCatching {
                 VncClient.connect("127.0.0.1", LinuxDesktop.PORT,
                     onFrame = { x, y, w, h -> view.changed(x, y, w, h) },
