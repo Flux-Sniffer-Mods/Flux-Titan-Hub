@@ -2257,4 +2257,10 @@
     <string name="tile_desktop_running">Աշխատում է</string>
     <string name="tile_desktop_installed">Տեղադրված է, պատրաստ մեկնարկի</string>
     <string name="tile_desktop_not_installed">Դեռ տեղադրված չէ</string>
+    <string name="linux_programs">Ծրագրեր</string>
+    <string name="linux_programs_hint">Հպեք որևէ մեկին՝ աշխատասեղանում բացելու համար, երկար սեղմեք՝ գլխավոր էկրանին դնելու համար։</string>
+    <string name="linux_programs_none">Ծրագրեր դեռ չեն գտնվել։</string>
+    <string name="linux_pinned">%1$s-ն ավելացվեց գլխավոր էկրանին</string>
+    <string name="linux_opening">%1$s-ի բացում…</string>
+    <string name="linux_program_gone">Այդ ծրագիրն այլևս Linux-ում չէ։</string>
 </resources>

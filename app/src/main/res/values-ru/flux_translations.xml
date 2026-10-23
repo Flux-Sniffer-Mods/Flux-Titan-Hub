@@ -2269,4 +2269,10 @@
     <string name="tile_desktop_running">Запущен</string>
     <string name="tile_desktop_installed">Установлен, готов к запуску</string>
     <string name="tile_desktop_not_installed">Ещё не установлен</string>
+    <string name="linux_programs">Программы</string>
+    <string name="linux_programs_hint">Нажмите, чтобы открыть программу на рабочем столе; удерживайте, чтобы добавить её на главный экран.</string>
+    <string name="linux_programs_none">Программы пока не найдены.</string>
+    <string name="linux_pinned">%1$s добавлено на главный экран</string>
+    <string name="linux_opening">Открытие %1$s…</string>
+    <string name="linux_program_gone">Этой программы больше нет в Linux.</string>
 </resources>

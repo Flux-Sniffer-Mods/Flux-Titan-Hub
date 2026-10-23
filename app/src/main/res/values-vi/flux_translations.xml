@@ -2251,4 +2251,10 @@
     <string name="tile_desktop_running">Đang chạy</string>
     <string name="tile_desktop_installed">Đã cài, sẵn sàng khởi động</string>
     <string name="tile_desktop_not_installed">Chưa cài đặt</string>
+    <string name="linux_programs">Chương trình</string>
+    <string name="linux_programs_hint">Chạm để mở trong desktop; nhấn giữ để thêm vào màn hình chính.</string>
+    <string name="linux_programs_none">Chưa tìm thấy chương trình nào.</string>
+    <string name="linux_pinned">Đã thêm %1$s vào màn hình chính</string>
+    <string name="linux_opening">Đang mở %1$s…</string>
+    <string name="linux_program_gone">Chương trình đó không còn trong Linux.</string>
 </resources>

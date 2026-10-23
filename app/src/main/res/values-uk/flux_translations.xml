@@ -2269,4 +2269,10 @@
     <string name="tile_desktop_running">Працює</string>
     <string name="tile_desktop_installed">Встановлено, готовий до запуску</string>
     <string name="tile_desktop_not_installed">Ще не встановлено</string>
+    <string name="linux_programs">Програми</string>
+    <string name="linux_programs_hint">Торкніться, щоб відкрити програму на робочому столі; утримуйте, щоб додати її на головний екран.</string>
+    <string name="linux_programs_none">Програм поки не знайдено.</string>
+    <string name="linux_pinned">%1$s додано на головний екран</string>
+    <string name="linux_opening">Відкриття %1$s…</string>
+    <string name="linux_program_gone">Цієї програми більше немає в Linux.</string>
 </resources>

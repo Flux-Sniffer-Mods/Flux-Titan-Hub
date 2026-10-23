@@ -2269,4 +2269,10 @@
     <string name="tile_desktop_running">Działa</string>
     <string name="tile_desktop_installed">Zainstalowany, gotowy do uruchomienia</string>
     <string name="tile_desktop_not_installed">Jeszcze niezainstalowany</string>
+    <string name="linux_programs">Programy</string>
+    <string name="linux_programs_hint">Dotknij, aby otworzyć program na pulpicie; przytrzymaj, aby dodać go do ekranu głównego.</string>
+    <string name="linux_programs_none">Nie znaleziono jeszcze programów.</string>
+    <string name="linux_pinned">Dodano %1$s do ekranu głównego</string>
+    <string name="linux_opening">Otwieranie %1$s…</string>
+    <string name="linux_program_gone">Tego programu nie ma już w Linuksie.</string>
 </resources>

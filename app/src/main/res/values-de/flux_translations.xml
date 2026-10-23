@@ -1725,4 +1725,10 @@
     <string name="tile_desktop_running">Läuft</string>
     <string name="tile_desktop_installed">Installiert, startbereit</string>
     <string name="tile_desktop_not_installed">Noch nicht installiert</string>
+    <string name="linux_programs">Programme</string>
+    <string name="linux_programs_hint">Tippe auf eines, um es im Desktop zu öffnen; lange drücken legt es auf den Startbildschirm.</string>
+    <string name="linux_programs_none">Noch keine Programme gefunden.</string>
+    <string name="linux_pinned">%1$s auf den Startbildschirm gelegt</string>
+    <string name="linux_opening">%1$s wird geöffnet…</string>
+    <string name="linux_program_gone">Dieses Programm ist nicht mehr in Linux.</string>
 </resources>

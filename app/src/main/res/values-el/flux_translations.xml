@@ -1637,4 +1637,10 @@
     <string name="tile_desktop_running">Τρέχει</string>
     <string name="tile_desktop_installed">Εγκατεστημένο, έτοιμο για εκκίνηση</string>
     <string name="tile_desktop_not_installed">Δεν έχει εγκατασταθεί ακόμη</string>
+    <string name="linux_programs">Προγράμματα</string>
+    <string name="linux_programs_hint">Πατήστε ένα για να ανοίξει στην επιφάνεια εργασίας· με παρατεταμένο πάτημα μπαίνει στην αρχική οθόνη.</string>
+    <string name="linux_programs_none">Δεν βρέθηκαν προγράμματα ακόμη.</string>
+    <string name="linux_pinned">Το %1$s προστέθηκε στην αρχική οθόνη</string>
+    <string name="linux_opening">Άνοιγμα %1$s…</string>
+    <string name="linux_program_gone">Αυτό το πρόγραμμα δεν υπάρχει πια στο Linux.</string>
 </resources>

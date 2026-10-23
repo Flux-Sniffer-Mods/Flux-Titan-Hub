@@ -2263,4 +2263,10 @@
     <string name="tile_desktop_running">En cours</string>
     <string name="tile_desktop_installed">Installé, prêt à démarrer</string>
     <string name="tile_desktop_not_installed">Pas encore installé</string>
+    <string name="linux_programs">Programmes</string>
+    <string name="linux_programs_hint">Touchez-en un pour l\'ouvrir dans le bureau ; appui long pour le mettre sur l\'écran d\'accueil.</string>
+    <string name="linux_programs_none">Aucun programme trouvé pour l\'instant.</string>
+    <string name="linux_pinned">%1$s ajouté à l\'écran d\'accueil</string>
+    <string name="linux_opening">Ouverture de %1$s…</string>
+    <string name="linux_program_gone">Ce programme n\'est plus dans Linux.</string>
 </resources>
