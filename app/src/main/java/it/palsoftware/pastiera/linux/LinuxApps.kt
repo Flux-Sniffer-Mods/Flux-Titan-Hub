@@ -56,7 +56,7 @@ object LinuxApps {
         val mode = LinuxDesktop.installedMode(app) ?: return
         if (!LinuxDesktop.canRun(mode)) return
         val listing = LinuxDesktop.runForOutput(app, mode, "apps") ?: return
-        val found = parse(listing, Locale.getDefault())
+        val found = parse(listing, Locale.getDefault(), LinuxDesktop.desktop(app).xdg)
         val names = found.mapNotNull { it.iconName }.filter(::safeIcon).distinct()
         if (names.isNotEmpty()) {
             val icons = LinuxDesktop.runForOutput(app, mode, "icons " + names.joinToString(" ") { "'$it'" }).orEmpty()
@@ -80,10 +80,11 @@ object LinuxApps {
 
     /**
      * The programs in `apps`'s output: each file's [Desktop Entry], its name in [locale] where
-     * it has one; hidden ones, other desktops' own and anything without a command left out, a
+     * it has one; hidden ones, other desktops' own ([desktop] is this one's name) and anything
+     * without a command left out, a
      * later file of the same name (the user's own) replacing an earlier one.
      */
-    internal fun parse(output: String, locale: Locale): List<App> {
+    internal fun parse(output: String, locale: Locale, desktop: String = "XFCE"): List<App> {
         val byId = LinkedHashMap<String, App>()
         val language = locale.language
         val full = locale.toString()
@@ -101,9 +102,9 @@ object LinuxApps {
             if (fields["Type"] != "Application") continue
             if (fields["NoDisplay"] == "true" || fields["Hidden"] == "true") continue
             val only = fields["OnlyShowIn"]
-            if (only != null && only.split(';').none { it.equals("XFCE", true) }) continue
+            if (only != null && only.split(';').none { it.equals(desktop, true) }) continue
             val not = fields["NotShowIn"]
-            if (not != null && not.split(';').any { it.equals("XFCE", true) }) continue
+            if (not != null && not.split(';').any { it.equals(desktop, true) }) continue
             val exec = cleanExec(fields["Exec"] ?: continue)
             if (exec.isBlank()) continue
             val name = fields["Name[$full]"] ?: fields["Name[$language]"] ?: fields["Name"] ?: id.removeSuffix(".desktop")
@@ -149,7 +150,7 @@ object LinuxApps {
         when (LinuxDesktop.state.value) {
             LinuxDesktop.State.Running -> launch()
             LinuxDesktop.State.Starting -> Unit
-            // Started first: the program once Xfce has had a moment to come up
+            // Started first: the program once the desktop has had a moment to come up
             else -> LinuxDesktop.start(ctx, width, height) {
                 Thread.sleep(4_000)
                 launch()

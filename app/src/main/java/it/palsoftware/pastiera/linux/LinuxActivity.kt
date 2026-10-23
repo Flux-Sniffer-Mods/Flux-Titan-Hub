@@ -56,7 +56,7 @@ import it.palsoftware.pastiera.ui.theme.PastieraTheme
 import kotlinx.coroutines.delay
 
 /**
- * The Desktop module's page: Debian with Xfce installed, started and stopped, its picture opened
+ * The Desktop module's page: Linux and its desktop installed, started and stopped, its picture opened
  * on the phone or on a TV screen (a separate screen for Moonlight, or Miracast's), and removed.
  */
 class LinuxActivity : ComponentActivity() {
@@ -119,7 +119,7 @@ class LinuxActivity : ComponentActivity() {
                 when (val current = state) {
                     LinuxDesktop.State.Checking -> Text(stringResource(R.string.linux_checking))
                     LinuxDesktop.State.NotInstalled -> NotInstalled()
-                    is LinuxDesktop.State.Downloading -> Progress(stringResource(R.string.linux_downloading, current.percent), current.percent / 100f)
+                    is LinuxDesktop.State.Downloading -> Progress(stringResource(R.string.linux_downloading, LinuxDesktop.distro(this@LinuxActivity).label, current.percent), current.percent / 100f)
                     LinuxDesktop.State.Installing -> Progress(stringResource(R.string.linux_installing), null, log.lastOrNull())
                     LinuxDesktop.State.Starting -> Progress(stringResource(R.string.linux_starting), null, log.lastOrNull())
                     LinuxDesktop.State.Stopping -> Progress(stringResource(R.string.linux_stopping), null)
@@ -212,15 +212,48 @@ class LinuxActivity : ComponentActivity() {
     private fun NotInstalled() {
         val root = RootShell.active
         var mode by remember { mutableStateOf(LinuxDesktop.mode(this)) }
+        var distro by remember { mutableStateOf(LinuxDesktop.distro(this)) }
+        var desktop by remember { mutableStateOf(LinuxDesktop.desktop(this)) }
         Text(stringResource(R.string.linux_intro), style = MaterialTheme.typography.bodyMedium)
+        Heading(stringResource(R.string.linux_choose_distro))
+        Choice(distro == LinuxDesktop.Distro.DEBIAN, true, LinuxDesktop.Distro.DEBIAN.label,
+            stringResource(R.string.linux_distro_debian_description)) { distro = LinuxDesktop.Distro.DEBIAN }
+        Choice(distro == LinuxDesktop.Distro.UBUNTU, true, LinuxDesktop.Distro.UBUNTU.label,
+            stringResource(R.string.linux_distro_ubuntu_description)) { distro = LinuxDesktop.Distro.UBUNTU }
+        Heading(stringResource(R.string.linux_choose_desktop))
+        Choice(desktop == LinuxDesktop.Desktop.XFCE, true, LinuxDesktop.Desktop.XFCE.label,
+            stringResource(R.string.linux_desktop_xfce_description)) { desktop = LinuxDesktop.Desktop.XFCE }
+        Choice(desktop == LinuxDesktop.Desktop.KDE, true, LinuxDesktop.Desktop.KDE.label,
+            stringResource(R.string.linux_desktop_kde_description)) { desktop = LinuxDesktop.Desktop.KDE }
+        Heading(stringResource(R.string.linux_choose_mode))
         ModeChoice(LinuxDesktop.Mode.CHROOT, mode == LinuxDesktop.Mode.CHROOT, enabled = root,
             title = stringResource(R.string.linux_mode_chroot),
             description = stringResource(if (root) R.string.linux_mode_chroot_description else R.string.linux_mode_chroot_no_root)) { mode = it }
         ModeChoice(LinuxDesktop.Mode.PROOT, mode == LinuxDesktop.Mode.PROOT, enabled = true,
             title = stringResource(R.string.linux_mode_proot),
             description = stringResource(R.string.linux_mode_proot_description)) { mode = it }
-        Button(onClick = { LinuxDesktop.install(this, mode) }, enabled = LinuxDesktop.canRun(mode)) {
+        Button(onClick = { LinuxDesktop.install(this, mode, distro, desktop) }, enabled = LinuxDesktop.canRun(mode)) {
             Text(stringResource(R.string.linux_install))
+        }
+    }
+
+    @Composable
+    private fun Heading(text: String) {
+        Text(text, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+    }
+
+    @Composable
+    private fun Choice(selected: Boolean, enabled: Boolean, title: String, description: String, onPick: () -> Unit) {
+        Row(
+            modifier = Modifier.fillMaxWidth().selectable(selected = selected, enabled = enabled, onClick = onPick),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            RadioButton(selected = selected, onClick = null, enabled = enabled)
+            Column(modifier = Modifier.weight(1f)) {
+                Text(title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
+                Text(description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
         }
     }
 
@@ -253,7 +286,8 @@ class LinuxActivity : ComponentActivity() {
     private fun Stopped(tvThere: Boolean) {
         var removing by remember { mutableStateOf(false) }
         val mode = LinuxDesktop.installedMode(this)
-        Text(stringResource(R.string.linux_ready, stringResource(if (mode == LinuxDesktop.Mode.CHROOT) R.string.linux_mode_chroot else R.string.linux_mode_proot)),
+        Text(stringResource(R.string.linux_ready, LinuxDesktop.distro(this).label, LinuxDesktop.desktop(this).label,
+            stringResource(if (mode == LinuxDesktop.Mode.CHROOT) R.string.linux_mode_chroot else R.string.linux_mode_proot)),
             style = MaterialTheme.typography.bodyMedium)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(onClick = { startOn(tv = false) }) { Text(stringResource(R.string.linux_start_phone)) }

@@ -12,7 +12,7 @@ import android.os.IBinder
 import it.palsoftware.pastiera.R
 
 /**
- * Keeps the app going while Debian installs or the desktop runs (the shell does the work; this
+ * Keeps the app going while Linux installs or the desktop runs (the shell does the work; this
  * keeps Android from ending the app meanwhile), its notification saying which, with Stop.
  */
 class LinuxService : Service() {

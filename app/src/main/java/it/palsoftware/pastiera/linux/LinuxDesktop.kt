@@ -17,7 +17,7 @@ import java.security.SecureRandom
 import java.util.concurrent.TimeUnit
 
 /**
- * The Linux desktop: Debian with Xfce, run by the built-in shell. With root (Shell access through
+ * The Linux desktop: Debian or Ubuntu, with Xfce or KDE Plasma, run by the built-in shell. With root (Shell access through
  * su, any root manager) it's a chroot, at full speed; without, PRoot (built into the app) runs it
  * as the shell user, slower but needing nothing. Its picture is a VNC server on the phone itself
  * (127.0.0.1:5901, a fresh password each start), shown by [LinuxViewerActivity] on the phone or
@@ -28,10 +28,27 @@ object LinuxDesktop {
     private const val KEY_MODE = "linux_mode"
     private const val KEY_PASSWORD = "linux_vnc_password"
     const val PORT = 5901
-    private const val ROOTFS_URL =
+    private const val KEY_DISTRO = "linux_distro"
+    private const val KEY_DESKTOP = "linux_desktop"
+    private const val DEBIAN_URL =
         "https://raw.githubusercontent.com/debuerreotype/docker-debian-artifacts/dist-arm64v8/bookworm/oci/blobs/rootfs.tar.gz"
+    /** Ubuntu's base images, one per point release: the newest is picked from the folder. */
+    private const val UBUNTU_FOLDER = "https://cdimage.ubuntu.com/ubuntu-base/releases/noble/release/"
 
     enum class Mode { PROOT, CHROOT }
+
+    /** The Linux installed: its name as shown, and as the scripts know it. */
+    enum class Distro(val label: String, val id: String) { DEBIAN("Debian 12", "debian"), UBUNTU("Ubuntu 24.04", "ubuntu") }
+
+    /** Its desktop: as shown, as the scripts know it, and as .desktop files name it (OnlyShowIn). */
+    enum class Desktop(val label: String, val id: String, val xdg: String) { XFCE("Xfce", "xfce", "XFCE"), KDE("KDE Plasma", "kde", "KDE") }
+
+    /** The Linux chosen (or installed): Debian unless Ubuntu was picked. */
+    fun distro(context: Context): Distro =
+        prefs(context).getString(KEY_DISTRO, null)?.let { runCatching { Distro.valueOf(it) }.getOrNull() } ?: Distro.DEBIAN
+
+    fun desktop(context: Context): Desktop =
+        prefs(context).getString(KEY_DESKTOP, null)?.let { runCatching { Desktop.valueOf(it) }.getOrNull() } ?: Desktop.XFCE
 
     sealed class State {
         object Checking : State()
@@ -76,7 +93,7 @@ object LinuxDesktop {
 
     private fun files(context: Context): File = File(context.getExternalFilesDir(null), "linux").apply { mkdirs() }
 
-    private fun tarball(context: Context) = File(files(context), "debian-rootfs.tar.gz")
+    private fun tarball(context: Context, distro: Distro = distro(context)) = File(files(context), "${distro.id}-rootfs.tar.gz")
 
     /** A file of the app's as the shell (or root, through Android's own storage) reaches it. */
     private fun reach(file: File, mode: Mode): String {
@@ -102,7 +119,9 @@ object LinuxDesktop {
             "BASE" to base(mode),
             "TARBALL" to reach(tarball(context), mode),
             "LIBDIR" to context.applicationInfo.nativeLibraryDir,
-            "GUEST" to reach(guest, mode)
+            "GUEST" to reach(guest, mode),
+            "DISTRO" to distro(context).id,
+            "DESKTOP" to desktop(context).id
         ) + extra
         return env.entries.joinToString(" ") { "${it.key}=${quote(it.value)}" } + " sh ${quote(reach(script, mode))} $action 2>&1"
     }
@@ -151,10 +170,14 @@ object LinuxDesktop {
         }
     }
 
-    /** Downloads Debian (once) and sets the desktop up in [mode]: some minutes, most of it downloading. */
-    fun install(context: Context, mode: Mode) {
+    /**
+     * Downloads [distro] (once) and sets [desktop] up on it in [mode]: some minutes, most of it
+     * downloading and installing packages.
+     */
+    fun install(context: Context, mode: Mode, distro: Distro = Distro.DEBIAN, desktop: Desktop = Desktop.XFCE) {
         val app = context.applicationContext
         if (!canRun(mode)) { set(State.Failed(if (mode == Mode.CHROOT) Step.NO_ROOT else Step.NO_SHELL)); return }
+        prefs(app).edit().putString(KEY_DISTRO, distro.name).putString(KEY_DESKTOP, desktop.name).apply()
         mutableLog.value = emptyList()
         LinuxService.start(app)
         background {
@@ -164,7 +187,7 @@ object LinuxDesktop {
                 val result = run(app, mode, "install")
                 if (result != 0) { set(State.Failed(Step.INSTALL)); return@background }
                 prefs(app).edit().putString(KEY_MODE, mode.name).apply()
-                // The download's no longer needed: Debian is unpacked
+                // The download's no longer needed: Linux is unpacked
                 tarball(app).delete()
                 set(State.Stopped)
             } finally {
@@ -178,12 +201,18 @@ object LinuxDesktop {
         if (target.isFile && target.length() > 10_000_000) return true
         val part = File(target.path + ".part")
         set(State.Downloading(0))
-        line("flux: downloading Debian")
+        val distro = distro(context)
+        line("flux: downloading ${distro.label}")
         return runCatching {
             val client = OkHttpClient.Builder().readTimeout(60, TimeUnit.SECONDS).build()
+            val url = when (distro) {
+                Distro.DEBIAN -> DEBIAN_URL
+                Distro.UBUNTU -> UBUNTU_FOLDER + newestUbuntu(client.newCall(Request.Builder().url(UBUNTU_FOLDER).build()).execute()
+                    .use { it.body?.string().orEmpty() })
+            }
             // A download cut short goes on from where it stopped
             val have = if (part.isFile) part.length() else 0L
-            val request = Request.Builder().url(ROOTFS_URL).apply { if (have > 0) header("Range", "bytes=$have-") }.build()
+            val request = Request.Builder().url(url).apply { if (have > 0) header("Range", "bytes=$have-") }.build()
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) throw IllegalStateException("HTTP ${response.code}")
                 val resumed = response.code == 206
@@ -258,7 +287,13 @@ object LinuxDesktop {
         }
     }
 
-    /** Deletes Debian and everything in it (the phone's own files, mounted there, are left alone). */
+    /** The newest arm64 base image in Ubuntu's release folder's listing. */
+    internal fun newestUbuntu(listing: String): String =
+        Regex("ubuntu-base-(24\\.04(?:\\.\\d+)?)-base-arm64\\.tar\\.gz").findAll(listing)
+            .maxByOrNull { match -> match.groupValues[1].split('.').map { it.toIntOrNull() ?: 0 }.let { it.getOrElse(2) { 0 } } }
+            ?.value ?: throw IllegalStateException("no Ubuntu image listed")
+
+    /** Deletes Linux and everything in it (the phone's own files, mounted there, are left alone). */
     fun remove(context: Context) {
         val app = context.applicationContext
         val mode = installedMode(app) ?: return
@@ -266,9 +301,11 @@ object LinuxDesktop {
         background {
             val result = run(app, mode, "remove")
             if (result == 0) {
-                prefs(app).edit().remove(KEY_MODE).apply()
-                tarball(app).delete()
-                File(tarball(app).path + ".part").delete()
+                prefs(app).edit().remove(KEY_MODE).remove(KEY_DISTRO).remove(KEY_DESKTOP).apply()
+                for (distro in Distro.values()) {
+                    tarball(app, distro).delete()
+                    File(tarball(app, distro).path + ".part").delete()
+                }
                 set(State.NotInstalled)
             } else set(State.Stopped)
         }

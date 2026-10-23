@@ -206,7 +206,7 @@ class StreamingActivity : ComponentActivity() {
                 }
                 items(tiles.size, key = { tiles[it].key }) { index ->
                     when (val tile = tiles[index]) {
-                        is Tile.Linux -> AppTile(stringResource(R.string.linux_tile), "Debian",
+                        is Tile.Linux -> AppTile(stringResource(R.string.linux_tile), it.palsoftware.pastiera.linux.LinuxDesktop.distro(this@StreamingActivity).label,
                             { Symbol("\u25A4") }, onClick = { linux() }, onLongClick = { linux() })
                         is Tile.Script -> AppTile(it.palsoftware.pastiera.shortcuts.TermuxScripts.label(tile.script), "Termux",
                             { Symbol("\u276F") }, onClick = { run(tile.script) }, onLongClick = { run(tile.script) })

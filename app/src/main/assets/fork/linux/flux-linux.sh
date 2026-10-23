@@ -1,10 +1,11 @@
-# Flux Titan Hub's Linux desktop: Debian with Xfce, seen through VNC.
+# Flux Titan Hub's Linux desktop: Debian or Ubuntu, with Xfce or KDE Plasma, seen through VNC.
 # Run by Android's sh, as the built-in shell (proot: no root) or as root through su (chroot).
 #   flux-linux.sh install | start | stop | status | remove | apps | icons NAME... | launch
 # From the app, in the environment:
 #   MODE     proot or chroot
 #   BASE     where it lives (/data/local/tmp/flux-linux, or /data/local/flux-linux with root)
-#   TARBALL  Debian's root file system (rootfs.tar.gz), for install
+#   TARBALL  the distribution's root file system (a .tar.gz), for install
+#   DISTRO   debian or ubuntu, DESKTOP xfce or kde, for install and start
 #   LIBDIR   the app's native libraries: libproot.so and libproot-loader.so (proot)
 #   GUEST    the script set up inside Debian (flux-guest.sh), for install
 #   GEOMETRY the desktop's size (1920x1080), PASSWORD its VNC password, for start
@@ -58,7 +59,7 @@ chroot_unmount() {
 
 install() {
     if [ ! -x "$ROOTFS/usr/bin/env" ]; then
-        say "unpacking Debian"
+        say "unpacking Linux"
         rm -rf "$ROOTFS"
         mkdir -p "$ROOTFS"
         if [ "$MODE" = proot ]; then
@@ -78,7 +79,7 @@ install() {
     cp "$GUEST" "$ROOTFS/root/flux-guest.sh"
     [ "$MODE" = chroot ] && chroot_mounts
     say "installing the desktop (a few minutes)"
-    guest /bin/sh /root/flux-guest.sh "$MODE"
+    guest /bin/sh /root/flux-guest.sh "$MODE" "${DISTRO:-debian}" "${DESKTOP:-xfce}"
     result=$?
     [ "$MODE" = chroot ] && chroot_unmount
     [ $result -eq 0 ] || { say "install failed"; exit 4; }
@@ -97,7 +98,7 @@ start() {
     if [ "$(cat "$ROOTFS/etc/flux-guest-version" 2>/dev/null)" != "$wanted" ]; then
         say "updating the desktop"
         cp "$GUEST" "$ROOTFS/root/flux-guest.sh"
-        guest /bin/sh /root/flux-guest.sh "$MODE" || say "update failed, starting anyway"
+        guest /bin/sh /root/flux-guest.sh "$MODE" "${DISTRO:-debian}" "${DESKTOP:-xfce}" || say "update failed, starting anyway"
     fi
     say "starting"
     if [ "$MODE" = proot ]; then

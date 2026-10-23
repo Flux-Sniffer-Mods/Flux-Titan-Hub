@@ -130,6 +130,6 @@ Built into `app/src/main/jniLibs/arm64-v8a/libproot.so` and `libproot-loader.so`
 
 Linked into PRoot. `replace.h` is a small stand-in for Samba's lib/replace.
 
-## Debian
+## Debian and Ubuntu
 
-The Linux desktop downloads Debian's official arm64 image (debuerreotype, https://github.com/debuerreotype/docker-debian-artifacts) when it's installed, and its packages from Debian's servers; none of it is in the app. Each package keeps its own license, listed inside Debian under `/usr/share/doc`.
+The Linux desktop downloads Debian's official arm64 image (debuerreotype, https://github.com/debuerreotype/docker-debian-artifacts) or Ubuntu's (Ubuntu Base, https://cdimage.ubuntu.com/ubuntu-base/) when it's installed, and its packages from their servers; none of it is in the app. Each package keeps its own license, listed inside Linux under `/usr/share/doc`.

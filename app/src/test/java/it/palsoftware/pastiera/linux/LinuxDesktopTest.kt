@@ -220,4 +220,18 @@ class LinuxDesktopTest {
         assertEquals(listOf("one"), icons.map { it.first })
         assertEquals(40, icons[0].second.size)
     }
+
+    @Test
+    fun newestUbuntuImageIsPicked() {
+        val listing = "<a href=\"ubuntu-base-24.04.3-base-arm64.tar.gz\">x</a> ubuntu-base-24.04.10-base-arm64.tar.gz " +
+            "ubuntu-base-24.04.5-base-arm64.tar.gz ubuntu-base-24.04.5-base-amd64.tar.gz"
+        assertEquals("ubuntu-base-24.04.10-base-arm64.tar.gz", LinuxDesktop.newestUbuntu(listing))
+    }
+
+    @Test
+    fun kdeProgramsListedForKde() {
+        val listing = "@@app konsole.desktop\n[Desktop Entry]\nName=Konsole\nExec=konsole\nOnlyShowIn=KDE;\nType=Application\n"
+        assertEquals(listOf("Konsole"), LinuxApps.parse(listing, java.util.Locale.UK, "KDE").map { it.name })
+        assertTrue(LinuxApps.parse(listing, java.util.Locale.UK, "XFCE").isEmpty())
+    }
 }
